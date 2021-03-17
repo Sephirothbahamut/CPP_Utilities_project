@@ -41,7 +41,7 @@ namespace utils::angle
 		public:
 			deg() noexcept = default;
 			deg(float val) noexcept : value(value) {}
-			float value;
+			float value{0.f};
 
 			deg(const rad r) noexcept;//@section MISSING DEFINITIONS : value(rad_to_deg(r.value)) {}
 			rad to_rad() const noexcept;//@section MISSING DEFINITIONS { return rad{*this}; }
@@ -63,6 +63,11 @@ namespace utils::angle
 			deg& operator/=(float oth)       noexcept { return *this = *this / oth; }
 
 			deg  operator- () const noexcept { return {-value}; };
+
+			bool operator==(const deg oth) const noexcept { return value == oth.value; }
+			bool operator!=(const deg oth) const noexcept { return value != oth.value; }
+			bool operator==(const rad oth) const noexcept;//@section MISSING DEFINITIONS
+			bool operator!=(const rad oth) const noexcept { return !(*this == oth); }
 
 			       float sin()      const noexcept { return std::sin(deg_to_rad(value)); }
 			       float cos()      const noexcept { return std::cos(deg_to_rad(value)); }
@@ -86,7 +91,7 @@ namespace utils::angle
 		public:
 			rad() noexcept = default;
 			rad(float value) noexcept : value(value) {}
-			float value;
+			float value{0.f};
 
 			rad(const deg d) noexcept : value(deg_to_rad(d.value)) {}
 			deg to_deg() const noexcept { return deg{*this}; }
@@ -108,6 +113,11 @@ namespace utils::angle
 			rad& operator/=(float oth)       noexcept { return *this = *this / oth; }
 
 			rad  operator- ()          const noexcept { return {value - PI}; };
+
+			bool operator==(const rad oth) const noexcept { return value == oth.value; }
+			bool operator!=(const rad oth) const noexcept { return value != oth.value; } 
+			bool operator==(const deg oth) const noexcept { return *this == oth.to_rad(); }
+			bool operator!=(const deg oth) const noexcept { return !(*this == oth); }
 
 			       float sin()      const noexcept { return std::sin(value); }
 			       float cos()      const noexcept { return std::cos(value); }
@@ -241,12 +251,14 @@ namespace utils::angle
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== =====         MISSING DEFINITIONS         ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
+	inline deg::deg(const rad r) noexcept : value(rad_to_deg(r.value)) {}
+	inline rad deg::to_rad() const noexcept { return rad{*this}; }
+
 	inline deg  deg::operator+ (const rad oth) const noexcept { return deg{value + rad_to_deg(oth.value)}; }
 	inline deg  deg::operator- (const rad oth) const noexcept { return deg{value - rad_to_deg(oth.value)}; }
 	inline deg& deg::operator+=(const rad oth)       noexcept { return *this = *this + oth; }
 	inline deg& deg::operator-=(const rad oth)       noexcept { return *this = *this - oth; }
-	inline deg::deg(const rad r) noexcept : value(rad_to_deg(r.value)) {}
-	inline rad deg::to_rad() const noexcept { return rad{*this}; }
+	inline bool deg::operator==(const rad oth) const noexcept { return *this == oth.to_deg(); }
 
 	namespace literals
 		{

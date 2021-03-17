@@ -1,9 +1,20 @@
 #pragma once
-#define NOMINMAX
-#include <Windows.h>
-#include <iostream>
 
-//TODO Linux-compatible coloring
+#ifdef _WIN32
+
+	#ifdef NOMINMAX
+		#include <windows.h>
+	#else
+		#define NOMINMAX
+		#include <windows.h>
+		#undef NOMINMAX
+	#endif
+
+#elif __linux__
+	//TODO Linux-compatible coloring
+#endif
+
+#include <iostream>
 
 namespace utils::cout
 	{

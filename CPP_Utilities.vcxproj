@@ -88,6 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,6 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="console_io.h" />
     <ClInclude Include="include\utils\containers\indexed_container.h" />
     <ClInclude Include="include\utils\containers\listed_array.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
@@ -147,12 +150,13 @@
     <ClInclude Include="include\utils\cout_containers.h" />
     <ClInclude Include="include\utils\cout_utilities.h" />
     <ClInclude Include="include\utils\definitions.h" />
-    <ClInclude Include="include\utils\Logger.h" />
+    <ClInclude Include="include\utils\logger.h" />
     <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\bounded.h" />
     <ClInclude Include="include\utils\math\constants.h" />
     <ClInclude Include="include\utils\math\math.h" />
     <ClInclude Include="include\utils\memory.h" />
+    <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\type_checks.h" />
     <ClInclude Include="include\utils\variadic.h" />
   </ItemGroup>
