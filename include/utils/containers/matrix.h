@@ -3,6 +3,7 @@
 #include <array>
 #include <algorithm>
 #include <memory>
+#include <vector>
 
 #ifdef UTILS_COUT
 #include "../cout_utilities.h"
@@ -157,9 +158,9 @@ namespace utils
 		class matrix_dyn
 			{
 			private:
-				const size_t _width;
-				const size_t _height;
-				std::unique_ptr<T[]> _arr = nullptr;
+				size_t _width;
+				size_t _height;
+				std::vector<T> _arr;
 
 #ifdef UTILS_COUT
 				std::ostream& out(std::ostream& os) const
@@ -200,14 +201,16 @@ namespace utils
 					}
 #endif
 			public:
-				matrix_dyn(size_t width, size_t height) : _width(WIDTH), _height(HEIGHT), _arr{std::make_unique<T[]>(WIDTH * HEIGHT)} {}
+				matrix_dyn(size_t width, size_t height) : _width(width), _height(height), _arr(width * height) {}
 
 				using coords_t = std::pair<size_t, size_t>;
 
 				using coords_t = std::pair<size_t, size_t>;
-				constexpr size_t width()  const noexcept { return _width; }
-				constexpr size_t height() const noexcept { return _height; }
-				constexpr size_t size()   const noexcept { return _arr.size(); }
+				const size_t width()  const noexcept { return _width; }
+				const size_t height() const noexcept { return _height; }
+				const size_t size()   const noexcept { return _width * _height; }
+
+				T* get_arr_ptr() { return _arr.get(); }
 
 				size_t get_index(size_t x, size_t y) const noexcept
 					{
@@ -264,6 +267,15 @@ namespace utils
 				/*static T cross(const matrix_dyn& a, const matrix_dyn& b) noexcept { }//TODO
 				static T dot(const matrix_dyn& a, const matrix_dyn& b) noexcept {}//TODO
 				static T dot(const matrix_dyn& a, const matrix_dyn& b) noexcept {}//TODO*/
+
+				auto begin() { return _arr.begin(); }
+				auto end() { return _arr.end(); }
+				auto cbegin() { return _arr.cbegin(); }
+				auto cend() { return _arr.cend(); }
+				auto rbegin() { return _arr.rbegin(); }
+				auto rend() { return _arr.rend(); }
+				auto crbegin() { return _arr.crbegin(); }
+				auto crend() { return _arr.crend(); }
 
 #ifdef UTILS_COUT
 				friend std::ostream& cout::operator<<(std::ostream& os, const matrix_dyn<T, MEMORY>& la);

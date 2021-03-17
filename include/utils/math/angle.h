@@ -40,7 +40,7 @@ namespace utils::angle
 
 		public:
 			deg() noexcept = default;
-			deg(float val) noexcept : value(value) {}
+			deg(float value) noexcept : value(value) {}
 			float value{0.f};
 
 			deg(const rad r) noexcept;//@section MISSING DEFINITIONS : value(rad_to_deg(r.value)) {}
@@ -67,7 +67,7 @@ namespace utils::angle
 			bool operator==(const deg oth) const noexcept { return value == oth.value; }
 			bool operator!=(const deg oth) const noexcept { return value != oth.value; }
 			bool operator==(const rad oth) const noexcept;//@section MISSING DEFINITIONS
-			bool operator!=(const rad oth) const noexcept { return !(*this == oth); }
+			bool operator!=(const rad oth) const noexcept;//@section MISSING DEFINITIONS
 
 			       float sin()      const noexcept { return std::sin(deg_to_rad(value)); }
 			       float cos()      const noexcept { return std::cos(deg_to_rad(value)); }
@@ -259,7 +259,8 @@ namespace utils::angle
 	inline deg& deg::operator+=(const rad oth)       noexcept { return *this = *this + oth; }
 	inline deg& deg::operator-=(const rad oth)       noexcept { return *this = *this - oth; }
 	inline bool deg::operator==(const rad oth) const noexcept { return *this == oth.to_deg(); }
-
+	inline bool deg::operator!=(const rad oth) const noexcept { return !(*this == oth); }
+	
 	namespace literals
 		{
 		inline deg operator""_deg(long double        value) noexcept { return deg{float(value)}; }
