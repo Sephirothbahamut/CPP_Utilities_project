@@ -5,16 +5,9 @@
 #include <vector>
 #include <cassert>
 
-
-namespace//private
-    {
-    class A { virtual void a() const = 0; };
-    class B : public A { virtual void a() const override {}; };
-    class C : public A { virtual void a() const override {}; };
-    }
-
 namespace utils
 	{
+    //TODO deprecate
     template<typename Base, typename ... Children>
     struct polymorphic_storage
         {

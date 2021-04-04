@@ -9,6 +9,7 @@ namespace utils
 	{
 	//TODO
 	// With C++20 replace the time_points with actual readable time https://stackoverflow.com/questions/62954221/c-print-chronotime-pointchronohigh-resolution-clock-to-be-readable
+	//TODO check codereview stackexchange and apply changes
 	template <typename Message_type>
 	class logger
 		{

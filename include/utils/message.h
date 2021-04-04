@@ -42,6 +42,7 @@ namespace utils
 					case message::Type::inf: return "[INF]";
 					case message::Type::wrn: return "[WRN]";
 					case message::Type::err: return "[ERR]";
+					default: return "[This error code should be impossible to get]";
 					}
 				}
 			const char* out_type_verbose() const noexcept
@@ -53,6 +54,7 @@ namespace utils
 					case message::Type::inf: return "[INFO]";
 					case message::Type::wrn: return "[WARNING]";
 					case message::Type::err: return "[ERROR]";
+					default: return "[This error code should be impossible to get]";
 					}
 				}
 			utils::cout::color out_type_color() const noexcept
@@ -64,6 +66,7 @@ namespace utils
 					case message::Type::inf: return utils::cout::color::cyan;
 					case message::Type::wrn: return utils::cout::color::yellow;
 					case message::Type::err: return utils::cout::color::red;
+					default: return utils::cout::color::red;
 					}
 				}
 

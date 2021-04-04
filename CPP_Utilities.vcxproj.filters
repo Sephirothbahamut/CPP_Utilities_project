@@ -19,6 +19,9 @@
     <Filter Include="Header Files\math">
       <UniqueIdentifier>{bb64e2ba-6e4a-46e2-bf52-75dcd63c1e94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\algorithm">
+      <UniqueIdentifier>{46d13cc9-4a98-44b4-af27-31ab5477cec6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\cout_containers.h">
@@ -74,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="console_io.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\algorithm\containers.h">
+      <Filter>Header Files\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
