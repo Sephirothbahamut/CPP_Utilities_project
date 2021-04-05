@@ -4,7 +4,8 @@
 
 namespace utils
 	{
-	template <typename T, typename Trakcer_type>
+	class trackable;
+	template <typename T>
 	class tracking_ptr;
 	template <typename T>
 	class trackable_wrapper;
@@ -15,6 +16,12 @@ namespace utils
 		template <typename T>
 		class tracker
 			{
+			friend class trackable;
+			template <typename>
+			friend class tracking_ptr;
+			template <typename>
+			friend class trackable_wrapper;
+
 			public:
 				tracker() = default;
 				tracker(T* identified) noexcept : identified{identified} {}
@@ -31,8 +38,10 @@ namespace utils
 
 	class trackable
 		{
-		template <typename, typename>
+		template <typename>
 		friend class tracking_ptr;
+		template <typename>
+		friend class trackable_wrapper;
 		public:
 			trackable() : inner_identifier{std::make_shared<_implementation_details::tracker<trackable>>(this)} {}
 
@@ -40,7 +49,12 @@ namespace utils
 			trackable& operator=(const trackable& copy) { return *this; }
 
 			trackable(trackable&& move) noexcept : inner_identifier{std::move(move.inner_identifier)} { inner_identifier->identified = this; }
-			trackable& operator=(trackable&& move) noexcept { inner_identifier = std::move(move.inner_identifier); inner_identifier->identified = this; return *this; }
+			trackable& operator=(trackable&& move) noexcept
+				{
+				inner_identifier = std::move(move.inner_identifier);
+				inner_identifier->identified = this;
+				return *this;
+				}
 			~trackable() { if (inner_identifier) { inner_identifier->identified = nullptr; } }
 
 		private:
@@ -51,7 +65,7 @@ namespace utils
 	template <typename T>
 	class trackable_wrapper
 		{
-		friend class tracking_ptr<T, T>;
+		friend class tracking_ptr<T>;
 		public:
 			template <typename ...Args>
 			trackable_wrapper(Args&&... args) : object{std::forward<Args>(args)...}, inner_identifier{std::make_shared<_implementation_details::tracker<T>>(&object)} {}
@@ -67,41 +81,38 @@ namespace utils
 			~trackable_wrapper() { if (inner_identifier) { inner_identifier->identified = nullptr; } }
 
 			const T& operator* () const { return *get(); }
-				  T& operator* ()       { return *get(); }
+			T& operator* () { return *get(); }
 			const T* operator->() const { return  get(); }
-				  T* operator->()       { return  get(); }
+			T* operator->() { return  get(); }
 
 			const T* get() const
 				{
-#ifndef NDEBUG
-				if (!inner_identifier || inner_identifier->identified == nullptr) { throw std::runtime_error{"Attempting to retrive object from an identifier which identified object had already been destroyed."}; }
-#endif
 				return &object;
 				}
 
 			T* get()
 				{
-#ifndef NDEBUG
-				if (!inner_identifier || inner_identifier->identified == nullptr) { throw std::runtime_error{"Attempting to retrive object from an identifier which identified object had already been destroyed."}; }
-#endif
 				return &object;
 				}
 
 			T object;
 
 			operator T& () { return object; }
-			//explicit operator tracking_ptr<T>() const { return {object}; }
+
 		private:
 			std::shared_ptr<_implementation_details::tracker<T>> inner_identifier;
 		};
 
-	template <typename T, typename Tracker_type = trackable>
+	template <typename T>
 	class tracking_ptr
 		{
 		public:
 			tracking_ptr() = default;
-			tracking_ptr(Tracker_type& identified) : inner_identifier{identified.inner_identifier} {}
-			tracking_ptr& operator=(Tracker_type& identified) { inner_identifier = identified.inner_identifier; return *this; }
+			tracking_ptr(T& identified) : inner_identifier{identified.inner_identifier} {}
+			tracking_ptr& operator=(T& identified) { inner_identifier = identified.inner_identifier; return *this; }
+
+			tracking_ptr(trackable_wrapper<T>& identified) : inner_identifier{identified.inner_identifier} {}
+			tracking_ptr& operator=(trackable_wrapper<T>& identified) { inner_identifier = identified.inner_identifier; return *this; }
 
 			tracking_ptr(const tracking_ptr& copy) = default;
 			tracking_ptr& operator=(const tracking_ptr& copy) = default;
@@ -113,7 +124,7 @@ namespace utils
 			const T& operator* () const { check_all(); return static_cast<T&>(*inner_identifier->identified); }
 			T& operator* () { check_all(); return static_cast<T&>(*inner_identifier->identified); }
 			const T* operator->() const { check_all(); return  static_cast<T*>(inner_identifier->identified); }
-			T* operator->() { check_all(); return  static_cast<T*>(inner_identifier->identified); }
+			T* operator->() { check_all(); return static_cast<T*>(inner_identifier->identified); }
 
 			const T* get() const { check_initialized(); return static_cast<T*>(inner_identifier->identified); }
 			T* get() { check_initialized(); return static_cast<T*>(inner_identifier->identified); }
@@ -122,7 +133,8 @@ namespace utils
 			explicit operator bool() const noexcept { return has_value(); }
 
 		private:
-			std::shared_ptr<_implementation_details::tracker<Tracker_type>> inner_identifier{nullptr};
+			using tracker_type = std::conditional_t<std::is_base_of_v<trackable, T>, trackable, T>;
+			std::shared_ptr<_implementation_details::tracker<tracker_type>> inner_identifier{nullptr};
 
 			void check_initialized() const
 				{

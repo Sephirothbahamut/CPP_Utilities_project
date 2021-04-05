@@ -66,9 +66,6 @@
     <ClInclude Include="include\utils\containers\matrix.h">
       <Filter>Header Files\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\polymorphic_storage.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\containers\vector_utils.h">
       <Filter>Header Files\containers</Filter>
     </ClInclude>
@@ -80,6 +77,15 @@
     </ClInclude>
     <ClInclude Include="include\utils\algorithm\containers.h">
       <Filter>Header Files\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\polymorphic_value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\tracking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\enable_disable_vector.h">
+      <Filter>Header Files\containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
