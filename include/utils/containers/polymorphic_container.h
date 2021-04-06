@@ -1,6 +1,7 @@
 #pragma once
 #include "multitype_container.h"
-#include "polyval.h"
+#include "../polymorphic_value.h"
+#include "../variadic.h"
 
 namespace utils
 	{

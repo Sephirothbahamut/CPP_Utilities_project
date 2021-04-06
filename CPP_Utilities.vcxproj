@@ -145,14 +145,16 @@
   <ItemGroup>
     <ClInclude Include="console_io.h" />
     <ClInclude Include="include\utils\algorithm\containers.h" />
+    <ClInclude Include="include\utils\containers\enable_disable_vector.h" />
     <ClInclude Include="include\utils\containers\indexed_container.h" />
     <ClInclude Include="include\utils\containers\listed_array.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
+    <ClInclude Include="include\utils\containers\multitype_container.h" />
+    <ClInclude Include="include\utils\containers\polymorphic_container.h" />
     <ClInclude Include="include\utils\containers\vector_utils.h" />
     <ClInclude Include="include\utils\cout_containers.h" />
     <ClInclude Include="include\utils\cout_utilities.h" />
     <ClInclude Include="include\utils\definitions.h" />
-    <ClInclude Include="include\utils\enable_disable_vector.h" />
     <ClInclude Include="include\utils\logger.h" />
     <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\bounded.h" />
