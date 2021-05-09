@@ -36,21 +36,15 @@ namespace utils
 				if constexpr (utils::variadic::contains_type<Type, Types...>::value)
 					{
 					return container_emplace_helper<Container_type, Type>::emplace(set.get_containing_type<Type>(), std::forward<Args>(args)...);
-
-					//return set.get_containing_type<Type>().emplace_back(std::forward<Args>(args)...);
 					}
 				else 
 					{ 
 					return
-						static_cast<Type&>(
-							*container_emplace_helper<Container_type, utils::polymorphic_value<Base_type>>
+						*dynamic_cast<Type*>(
+							&*container_emplace_helper<Container_type, utils::polymorphic_value<Base_type>>
 							::emplace(
 								parent_container, 
 								utils::make_polymorphic_value<Type>(std::forward<Args>(args)...)));
-					
-					
-					//return static_cast<Type&>(
-					//	*parent_container.emplace_back(std::move(utils::make_polymorphic_value<Type>(std::forward<Args>(args)...)))); 
 					}
 				}
 
@@ -87,6 +81,8 @@ namespace utils
 				if constexpr (utils::variadic::contains_type<Type, Types...>::value) { return set.get_containing_type<Type>(); }
 				else { return parent_container; }
 				}
+
+			size_t size() { return parent_container.size() + set.size(); }
 
 		private:
 

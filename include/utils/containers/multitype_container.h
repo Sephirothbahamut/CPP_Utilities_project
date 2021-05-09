@@ -40,6 +40,13 @@ namespace utils
 					});
 				}
 
+			size_t size() 
+				{
+				size_t s = 0;
+				utils::tuple::for_each_in_tuple(containers, [&](auto& container) { s += container.size(); });
+				return s;
+				}
+
 		private:
 
 			template<typename T, std::size_t index = 0>

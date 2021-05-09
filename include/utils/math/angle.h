@@ -14,7 +14,7 @@ namespace utils::angle
 	using constants::PId;
 	using constants::PI;
 
-	inline float deg_to_rad(float d) noexcept { return d / (180 / PIf); }
+	inline float deg_to_rad(float d) noexcept { return d * (PIf / 180); }
 	inline float rad_to_deg(float r) noexcept { return r * (180 / PIf); }
 
 	class deg;
@@ -26,6 +26,8 @@ namespace utils::angle
 		inline deg operator""_deg(unsigned long long value) noexcept;
 		inline rad operator""_rad(long double value)        noexcept;
 		inline rad operator""_rad(unsigned long long value) noexcept;
+		inline rad operator""_radpi(long double value)        noexcept;
+		inline rad operator""_radpi(unsigned long long value) noexcept;
 		}
 
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
@@ -44,9 +46,17 @@ namespace utils::angle
 			float value{0.f};
 
 			deg(const rad r) noexcept;//@section MISSING DEFINITIONS : value(rad_to_deg(r.value)) {}
+			deg& operator=(const rad r) noexcept;//@section MISSING DEFINITIONS { value = rad_to_deg(r.value); return *this; };
 			rad to_rad() const noexcept;//@section MISSING DEFINITIONS { return rad{*this}; }
 
-			void clamp() noexcept { value = std::clamp(value, 0.f, 2.f * PI); }
+			deg clamped() const noexcept 
+				{
+				float v = value;
+				while (v < 0) { v += 360; }
+				while (v >= 360) { v -= 360; }
+				return deg{v};
+				}
+			void clamp() noexcept { *this = this->clamped(); }
 
 			deg  operator+ (const deg oth) const noexcept { return deg{value + oth.value}; }
 			deg  operator- (const deg oth) const noexcept { return deg{value - oth.value}; }
@@ -64,8 +74,8 @@ namespace utils::angle
 
 			deg  operator- () const noexcept { return {-value}; };
 
-			bool operator==(const deg oth) const noexcept { return value == oth.value; }
-			bool operator!=(const deg oth) const noexcept { return value != oth.value; }
+			bool operator==(const deg oth) const noexcept { return clamped().value == oth.clamped().value; }
+			bool operator!=(const deg oth) const noexcept { return !(*this == oth); }
 			bool operator==(const rad oth) const noexcept;//@section MISSING DEFINITIONS
 			bool operator!=(const rad oth) const noexcept;//@section MISSING DEFINITIONS
 
@@ -94,9 +104,17 @@ namespace utils::angle
 			float value{0.f};
 
 			rad(const deg d) noexcept : value(deg_to_rad(d.value)) {}
+			rad& operator=(const deg& d) noexcept { value = deg_to_rad(d.value); return *this; };
 			deg to_deg() const noexcept { return deg{*this}; }
 
-			void clamp() noexcept { value = std::clamp(value, 0.f, 260.f); }
+			deg clamped() const noexcept
+				{
+				float v = value;
+				while (v < 0) { v += 2 * PIf; }
+				while (v >= 2*PIf) { v -= 2 * PIf; }
+				return deg{v};
+				}
+			void clamp() noexcept { *this = this->clamped(); }
 
 			rad  operator+ (const rad oth) const noexcept { return {value + oth.value}; }
 			rad  operator- (const rad oth) const noexcept { return {value - oth.value}; }
@@ -114,8 +132,8 @@ namespace utils::angle
 
 			rad  operator- ()          const noexcept { return {value - PI}; };
 
-			bool operator==(const rad oth) const noexcept { return value == oth.value; }
-			bool operator!=(const rad oth) const noexcept { return value != oth.value; } 
+			bool operator==(const rad oth) const noexcept { return clamped().value == oth.clamped().value; }
+			bool operator!=(const rad oth) const noexcept { return !(*this == oth); } 
 			bool operator==(const deg oth) const noexcept { return *this == oth.to_rad(); }
 			bool operator!=(const deg oth) const noexcept { return !(*this == oth); }
 
@@ -252,6 +270,7 @@ namespace utils::angle
 	// ===== ===== ===== ===== ===== ===== =====         MISSING DEFINITIONS         ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	inline deg::deg(const rad r) noexcept : value(rad_to_deg(r.value)) {}
+	deg& deg::operator=(const rad r) noexcept { value = rad_to_deg(r.value); return *this; };
 	inline rad deg::to_rad() const noexcept { return rad{*this}; }
 
 	inline deg  deg::operator+ (const rad oth) const noexcept { return deg{value + rad_to_deg(oth.value)}; }
@@ -267,6 +286,8 @@ namespace utils::angle
 		inline deg operator""_deg(unsigned long long value) noexcept { return deg{float(value)}; }
 		inline rad operator""_rad(long double        value) noexcept { return rad{float(value)}; }
 		inline rad operator""_rad(unsigned long long value) noexcept { return rad{float(value)}; }
+		inline rad operator""_radpi(long double        value) noexcept { return rad{float(value) * PIf}; }
+		inline rad operator""_radpi(unsigned long long value) noexcept { return rad{float(value) * PIf}; }
 		}
 
 	}

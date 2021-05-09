@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <stdexcept>
+#include <concepts>
 
 namespace utils
 	{
@@ -81,9 +82,9 @@ namespace utils
 			~trackable_wrapper() { if (inner_identifier) { inner_identifier->identified = nullptr; } }
 
 			const T& operator* () const { return *get(); }
-			T& operator* () { return *get(); }
+			      T& operator* ()       { return *get(); }
 			const T* operator->() const { return  get(); }
-			T* operator->() { return  get(); }
+			      T* operator->()       { return  get(); }
 
 			const T* get() const
 				{
@@ -102,7 +103,7 @@ namespace utils
 		private:
 			std::shared_ptr<_implementation_details::tracker<T>> inner_identifier;
 		};
-
+	
 	template <typename T>
 	class tracking_ptr
 		{
@@ -122,12 +123,12 @@ namespace utils
 
 
 			const T& operator* () const { check_all(); return static_cast<T&>(*inner_identifier->identified); }
-			T& operator* () { check_all(); return static_cast<T&>(*inner_identifier->identified); }
-			const T* operator->() const { check_all(); return  static_cast<T*>(inner_identifier->identified); }
-			T* operator->() { check_all(); return static_cast<T*>(inner_identifier->identified); }
+			      T& operator* ()       { check_all(); return static_cast<T&>(*inner_identifier->identified); }
+			const T* operator->() const { check_all(); return static_cast<T*>(inner_identifier->identified); }
+			      T* operator->()       { check_all(); return static_cast<T*>(inner_identifier->identified); }
 
 			const T* get() const { check_initialized(); return static_cast<T*>(inner_identifier->identified); }
-			T* get() { check_initialized(); return static_cast<T*>(inner_identifier->identified); }
+			      T* get()       { check_initialized(); return static_cast<T*>(inner_identifier->identified); }
 
 			bool has_value() const noexcept { return inner_identifier && inner_identifier->identified != nullptr; }
 			explicit operator bool() const noexcept { return has_value(); }

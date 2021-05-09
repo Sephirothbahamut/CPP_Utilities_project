@@ -93,5 +93,11 @@
     <ClInclude Include="include\utils\containers\polymorphic_container.h">
       <Filter>Header Files\containers</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\compilation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\deferred_RAII.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

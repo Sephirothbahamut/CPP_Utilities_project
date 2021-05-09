@@ -5,15 +5,15 @@
 #include <thread>
 #include <mutex>
 
+#include "message.h"
+
 namespace utils
 	{
-	//TODO
-	// With C++20 replace the time_points with actual readable time https://stackoverflow.com/questions/62954221/c-print-chronotime-pointchronohigh-resolution-clock-to-be-readable
 	//TODO check codereview stackexchange and apply changes
 	template <typename Message_type>
 	class logger
 		{
-		private:
+		protected:
 			std::ofstream file;
 			std::queue<Message_type> queue_log;
 			std::queue<Message_type> queue_write;
@@ -102,3 +102,10 @@ namespace utils
 				}
 		};
 	}
+
+#ifndef CPP_UTILS_disable_global_logger
+namespace utils::globals
+	{
+	inline utils::logger<utils::message> logger;
+	}
+#endif

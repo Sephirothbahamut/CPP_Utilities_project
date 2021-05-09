@@ -135,6 +135,8 @@ namespace utils
 				update_new();
 				}
 
+			size_t size() { return end() - begin(); }
+
 		private:
 			std::vector<T> objects;
 			std::vector<T> new_active_objects;

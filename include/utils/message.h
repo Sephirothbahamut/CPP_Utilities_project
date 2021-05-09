@@ -10,28 +10,19 @@ namespace utils
 	{
 	class message
 		{
-		private:
-			static std::string filter_last_newline(const std::string& string)
-				{
-				if (string.length() > 0 && string[string.length() - 1] == '\n') { return string.substr(0, string.length() - 1); }
-				else { return string; }
-				}
+		enum class Type { log, dgn, inf, wrn, err };
 
 		public:
-			enum class Type { log, dgn, inf, wrn, err };
-			message(Type type, const std::string& string, std::chrono::time_point<std::chrono::system_clock> time) noexcept
-				: type(type), string(string), time(time)
-				{}
-			message(Type type, const std::string& string) noexcept
-				: type(type), string(string), time(std::chrono::system_clock::now())
-				{}
-			message(const std::string& string) noexcept
-				: type(Type::log), string(string), time(std::chrono::system_clock::now())
-				{}
+			message(const message& copy) = default;
+			message& operator=(const message& copy) = default;
+			message(message&& move) = default;
+			message& operator=(message&& move) = default;
 
-			Type type = Type::log;
-			std::string string = "";
-			std::chrono::time_point<std::chrono::system_clock> time;
+			static message log(std::string&& string = "") noexcept { return {Type::log, std::move(string), std::chrono::system_clock::now()}; }
+			static message dgn(std::string&& string = "") noexcept { return {Type::dgn, std::move(string), std::chrono::system_clock::now()}; }
+			static message inf(std::string&& string = "") noexcept { return {Type::inf, std::move(string), std::chrono::system_clock::now()}; }
+			static message wrn(std::string&& string = "") noexcept { return {Type::wrn, std::move(string), std::chrono::system_clock::now()}; }
+			static message err(std::string&& string = "") noexcept { return {Type::err, std::move(string), std::chrono::system_clock::now()}; }
 
 			const char* out_type() const noexcept
 				{
@@ -70,11 +61,27 @@ namespace utils
 					}
 				}
 
-			static message log(const std::string& string) { return {Type::log, filter_last_newline(string), std::chrono::system_clock::now()}; }
-			static message dgn(const std::string& string) { return {Type::dgn, filter_last_newline(string), std::chrono::system_clock::now()}; }
-			static message inf(const std::string& string) { return {Type::inf, filter_last_newline(string), std::chrono::system_clock::now()}; }
-			static message wrn(const std::string& string) { return {Type::wrn, filter_last_newline(string), std::chrono::system_clock::now()}; }
-			static message err(const std::string& string) { return {Type::err, filter_last_newline(string), std::chrono::system_clock::now()}; }
+		private:
+			message(Type type, std::string&& string, std::chrono::time_point<std::chrono::system_clock> time) noexcept
+				: type{type}, string{string}, time{time}
+				{}
+			message(Type type, std::string&& string) noexcept
+				: type{type}, string{string}, time{std::chrono::system_clock::now()}
+				{}
+			message(std::string&& string) noexcept
+				: type{Type::log}, string{string}, time{std::chrono::system_clock::now()}
+				{}
+
+			Type type = Type::log;
+			std::string string{};
+			std::chrono::time_point<std::chrono::system_clock> time;
+
+			static std::string filter_last_newline(const std::string& string) noexcept
+				{
+				if (string.length() > 0 && string[string.length() - 1] == '\n') { return string.substr(0, string.length() - 1); }
+				else { return string; }
+				}
+
 
 			//ON LINE VERSION
 			friend std::ostream& operator<<(std::ostream& os, const message& m)
@@ -113,13 +120,13 @@ namespace utils
 				{
 				size_t beg = 0;
 				size_t end = m.string.find_first_of('\n', beg);
-				if (end == std::string::npos) { end = m.string.length(); }
+				if (end == std::string::npos) { end = string.length(); }
 
 				//Data line
 				os << "_________________________________\n";
 				os << m.out_type_color() << ' ' << std::left << std::setw(12) << m.out_type_verbose() << ' ' << std::right << std::setw(18) << m.time.time_since_epoch().count() << '\n';
 				//First line
-				os << utils::cout::color::dw << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+				os << utils::cout::color::dw << ' ' << std::string_view(string).substr(beg, end - beg) << '\n';
 
 				//Other lines
 				while (true)
@@ -132,7 +139,7 @@ namespace utils
 						if (end == std::string::npos) { end = m.string.length(); }
 						}
 
-					os << std::string_view(m.string).substr(beg, end - beg) << '\n';
+					os << std::string_view(string).substr(beg, end - beg) << '\n';
 					}
 
 				return os;

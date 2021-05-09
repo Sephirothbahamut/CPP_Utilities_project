@@ -219,13 +219,13 @@ namespace utils
 					}
 
 				const T& operator[](size_t i)        const noexcept { return _arr[i]; }
-				T& operator[](size_t i)              noexcept { return _arr[i]; }
+				      T& operator[](size_t i)              noexcept { return _arr[i]; }
 				const T& operator[](coords_t coords) const noexcept { return _arr[get_index(coords.first, coords.second)]; }
-				T& operator[](coords_t coords)       noexcept { return _arr[get_index(coords.first, coords.second)]; }
+				      T& operator[](coords_t coords)       noexcept { return _arr[get_index(coords.first, coords.second)]; }
 				const T& at(size_t i)        const { if (i >= _arr.size()) { throw "Matrix access out of bounds."; } return operator[](i); }
-				T& at(size_t i) { if (i >= _arr.size()) { throw "Matrix access out of bounds."; } return operator[](i); }
+				      T& at(size_t i)              { if (i >= _arr.size()) { throw "Matrix access out of bounds."; } return operator[](i); }
 				const T& at(coords_t coords) const { if (coords.first >= _width || coords.second >= _height) { throw "Matrix access out of bounds."; } return operator[](coords); }
-				T& at(coords_t coords) { if (coords.first >= _width || coords.second >= _height) { throw "Matrix access out of bounds."; } return operator[](coords); }
+				      T& at(coords_t coords)       { if (coords.first >= _width || coords.second >= _height) { throw "Matrix access out of bounds."; } return operator[](coords); }
 
 				// Arithmetic
 				constexpr bool is_square() const noexcept { return _width == _height; }
@@ -268,14 +268,22 @@ namespace utils
 				static T dot(const matrix_dyn& a, const matrix_dyn& b) noexcept {}//TODO
 				static T dot(const matrix_dyn& a, const matrix_dyn& b) noexcept {}//TODO*/
 
-				auto begin() { return _arr.begin(); }
-				auto end() { return _arr.end(); }
-				auto cbegin() { return _arr.cbegin(); }
-				auto cend() { return _arr.cend(); }
-				auto rbegin() { return _arr.rbegin(); }
-				auto rend() { return _arr.rend(); }
-				auto crbegin() { return _arr.crbegin(); }
-				auto crend() { return _arr.crend(); }
+				const auto begin()   const { return _arr.begin(); }
+				      auto begin()         { return _arr.begin(); }
+				const auto end()     const { return _arr.end(); }
+				      auto end()           { return _arr.end(); }
+				const auto cbegin()  const { return _arr.cbegin(); }
+				      auto cbegin()        { return _arr.cbegin(); }
+				const auto cend()    const { return _arr.cend(); }
+				      auto cend()          { return _arr.cend(); }
+				const auto rbegin()  const { return _arr.rbegin(); }
+				      auto rbegin()        { return _arr.rbegin(); }
+				const auto rend()    const { return _arr.rend(); }
+				      auto rend()          { return _arr.rend(); }
+				const auto crbegin() const { return _arr.crbegin(); }
+				      auto crbegin()       { return _arr.crbegin(); }
+				const auto crend()   const { return _arr.crend(); }
+				      auto crend()         { return _arr.crend(); }
 
 #ifdef UTILS_COUT
 				friend std::ostream& cout::operator<<(std::ostream& os, const matrix_dyn<T, MEMORY>& la);
