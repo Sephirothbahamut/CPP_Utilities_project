@@ -37,4 +37,6 @@
 			perror("tcsetattr ~ICANON");
 		return buf;
 		}
+#else
+#error Compilation target OS not recognized.
 #endif

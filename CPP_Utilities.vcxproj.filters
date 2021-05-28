@@ -22,6 +22,9 @@
     <Filter Include="Header Files\algorithm">
       <UniqueIdentifier>{46d13cc9-4a98-44b4-af27-31ab5477cec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\compilation">
+      <UniqueIdentifier>{12c89e0f-43ef-4304-a8b5-4d4daa8a6723}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\cout_containers.h">
@@ -39,17 +42,8 @@
     <ClInclude Include="include\utils\memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\type_checks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\variadic.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\angle.h">
-      <Filter>Header Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\bounded.h">
-      <Filter>Header Files\math</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\constants.h">
       <Filter>Header Files\math</Filter>
@@ -57,22 +51,7 @@
     <ClInclude Include="include\utils\math\math.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\indexed_container.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\listed_array.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\matrix.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\vector_utils.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="console_io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\algorithm\containers.h">
@@ -84,20 +63,22 @@
     <ClInclude Include="include\utils\tracking.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\enable_disable_vector.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multitype_container.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\polymorphic_container.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\compilation.h">
+    <ClInclude Include="include\utils\wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\deferred_RAII.h">
+    <ClInclude Include="include\utils\console_io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\compilation\debug.h">
+      <Filter>Header Files\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\compilation\OS.h">
+      <Filter>Header Files\compilation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="quick_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

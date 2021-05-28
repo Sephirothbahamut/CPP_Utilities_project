@@ -14,10 +14,10 @@ namespace utils
 
 			tuple_t containers;
 
-			template <typename Type>
+			template <typename msg_t>
 			auto& get_containing_type()
 				{
-				return std::get<get_index_containing_type<Type>()>(containers);
+				return std::get<get_index_containing_type<msg_t>()>(containers);
 				}
 
 			template <typename Function>
@@ -25,18 +25,18 @@ namespace utils
 			template <typename Function>
 			void for_each_element(Function function) { for_each_container([&](auto& container) { for (auto& element : container) { function(element); } }); }
 
-			template <typename Type, typename Function>
+			template <typename msg_t, typename Function>
 			void for_each_element_of_type(Function function)
 				{
-				for_each_containing_type<Type>([&](auto& container) { for (auto& element : container) { function(element); } });
+				for_each_containing_type<msg_t>([&](auto& container) { for (auto& element : container) { function(element); } });
 				}
 
-			template <typename Type, typename Function>
+			template <typename msg_t, typename Function>
 			void for_each_containing_type(Function function)
 				{
 				utils::tuple::for_each_in_tuple(containers, [&](auto& container)
 					{
-					if constexpr (std::is_base_of_v<Type, typename std::remove_reference_t<decltype(container)>::value_type>) { function(container); }
+					if constexpr (std::is_base_of_v<msg_t, typename std::remove_reference_t<decltype(container)>::value_type>) { function(container); }
 					});
 				}
 

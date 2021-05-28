@@ -10,8 +10,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 struct TrackableClass : public utils::trackable
 	{
-	TrackableClass(int n) : value(n) {}
-	int value = 0;
+	TrackableClass(int n) : n(n) {}
+	int n = 0;
 	void function() {}
 	};
 
@@ -19,11 +19,12 @@ struct DerivedTrackable : public TrackableClass {};
 
 struct SomeClass
 	{
-	SomeClass(int n) : value(n) {}
-	int value;
+	SomeClass(int n) : n(n) {}
+	int n;
 	void function() {}
 	};
 
+using WrappedClass = utils::trackable_wrapper<SomeClass>;
 
 namespace Tests
 	{
@@ -41,8 +42,8 @@ namespace Tests
 
 				std::swap(a, b);
 
-				Assert::AreEqual(ptr_a->value, b.value);
-				Assert::AreEqual(ptr_b->value, a.value);
+				Assert::AreEqual(ptr_a->n, b.n);
+				Assert::AreEqual(ptr_b->n, a.n);
 				}
 
 			TEST_METHOD(access_derived_class_after_move)
@@ -55,8 +56,8 @@ namespace Tests
 
 				std::swap(a, b);
 
-				Assert::AreEqual(ptr_a->value, b.value);
-				Assert::AreEqual(ptr_b->value, a.value);
+				Assert::AreEqual(ptr_a->n, b.n);
+				Assert::AreEqual(ptr_b->n, a.n);
 				}
 
 			TEST_METHOD(access_derived_class_from_parent_ptr)
@@ -69,22 +70,50 @@ namespace Tests
 
 				std::swap(a, b);
 
-				Assert::AreEqual(ptr_a->value, b.value);
-				Assert::AreEqual(ptr_b->value, a.value);
+				Assert::AreEqual(ptr_a->n, b.n);
+				Assert::AreEqual(ptr_b->n, a.n);
 				}
 
 			TEST_METHOD(access_wrapped_class_after_move)
 				{
-				utils::trackable_wrapper<SomeClass> a{0};
-				utils::trackable_wrapper<SomeClass> b{1};
+				WrappedClass a{0};
+				WrappedClass b{1};
 
 				utils::tracking_ptr<SomeClass> ptr_a{a};
 				utils::tracking_ptr<SomeClass> ptr_b{b};
 
 				std::swap(a, b);
 
-				Assert::AreEqual(ptr_a->value, b->value);
-				Assert::AreEqual(ptr_b->value, a->value);
+				Assert::AreEqual(ptr_a->n, b->n);
+				Assert::AreEqual(ptr_b->n, a->n);
+				}
+
+			TEST_METHOD(not_access_moved_from_derived_class)
+				{
+				DerivedTrackable a{0};
+				DerivedTrackable b{1};
+
+				utils::tracking_ptr<DerivedTrackable> ptr_a{a};
+				utils::tracking_ptr<DerivedTrackable> ptr_b{b};
+
+				a = std::move(b);
+
+				Assert::AreEqual(ptr_b->n, a.n);
+				Assert::IsFalse(ptr_a.has_value());
+				}
+
+			TEST_METHOD(not_access_moved_from_wrapped_class)
+				{
+				WrappedClass a{0};
+				WrappedClass b{1};
+
+				utils::tracking_ptr<SomeClass> ptr_a{a};
+				utils::tracking_ptr<SomeClass> ptr_b{b};
+
+				a = std::move(b);
+
+				Assert::AreEqual(ptr_b->n, a->n);
+				Assert::IsFalse(ptr_a.has_value());
 				}
 
 			TEST_METHOD(nullptr_after_trackable_destruction)
@@ -95,10 +124,10 @@ namespace Tests
 					{
 					TrackableClass a{1};
 					ptr = a;
-					Assert::AreEqual(ptr->value, a.value);
+					Assert::AreEqual(ptr->n, a.n);
 					}
 
-				Assert::AreEqual(ptr.has_value(), false);
+				Assert::AreEqual(static_cast<bool>(ptr), false);
 				}
 
 			TEST_METHOD(nullptr_after_wrapped_destruction)
@@ -107,12 +136,12 @@ namespace Tests
 
 				if (true)
 					{
-					utils::trackable_wrapper<SomeClass> a{1};
+					WrappedClass a{1};
 					ptr = a;
-					Assert::AreEqual(ptr->value, a->value);
+					Assert::AreEqual(ptr->n, a->n);
 					}
 
-				Assert::AreEqual(ptr.has_value(), false);
+				Assert::AreEqual(static_cast<bool>(ptr), false);
 				}
 
 			TEST_METHOD(move_around_vector_inheritance)
@@ -125,27 +154,27 @@ namespace Tests
 				utils::tracking_ptr<TrackableClass> ptr4 = vec[4];
 				utils::tracking_ptr<TrackableClass> ptr6 = vec[6];
 
-				std::partition(vec.begin(), vec.end(), [](TrackableClass& element) { return (element.value % 2); });
+				std::partition(vec.begin(), vec.end(), [](TrackableClass& element) { return (element.n % 2); });
 
-				Assert::AreEqual(vec[0].value % 2, 1);
-				Assert::AreEqual(vec[1].value % 2, 1);
-				Assert::AreEqual(vec[2].value % 2, 1);
-				Assert::AreEqual(vec[3].value % 2, 1);
-				Assert::AreEqual(vec[4].value % 2, 1);
-				Assert::AreEqual(vec[5].value % 2, 0);
-				Assert::AreEqual(vec[6].value % 2, 0);
-				Assert::AreEqual(vec[7].value % 2, 0);
-				Assert::AreEqual(vec[8].value % 2, 0);
-				Assert::AreEqual(vec[9].value % 2, 0);
+				Assert::AreEqual(vec[0].n % 2, 1);
+				Assert::AreEqual(vec[1].n % 2, 1);
+				Assert::AreEqual(vec[2].n % 2, 1);
+				Assert::AreEqual(vec[3].n % 2, 1);
+				Assert::AreEqual(vec[4].n % 2, 1);
+				Assert::AreEqual(vec[5].n % 2, 0);
+				Assert::AreEqual(vec[6].n % 2, 0);
+				Assert::AreEqual(vec[7].n % 2, 0);
+				Assert::AreEqual(vec[8].n % 2, 0);
+				Assert::AreEqual(vec[9].n % 2, 0);
 
-				Assert::AreEqual(ptr2->value, 2);
-				Assert::AreEqual(ptr4->value, 4);
-				Assert::AreEqual(ptr6->value, 6);
+				Assert::AreEqual(ptr2->n, 2);
+				Assert::AreEqual(ptr4->n, 4);
+				Assert::AreEqual(ptr6->n, 6);
 				}
 
 			TEST_METHOD(move_around_vector_wrapped)
 				{
-				std::vector<utils::trackable_wrapper<SomeClass>> vec;
+				std::vector<WrappedClass> vec;
 
 				for (size_t i = 0; i < 10; i++) { vec.emplace_back(i); }
 
@@ -153,22 +182,22 @@ namespace Tests
 				utils::tracking_ptr<SomeClass> ptr4 = vec[4];
 				utils::tracking_ptr<SomeClass> ptr6 = vec[6];
 
-				std::partition(vec.begin(), vec.end(), [](SomeClass& element) { return (element.value % 2); });
+				std::partition(vec.begin(), vec.end(), [](SomeClass& element) { return (element.n % 2); });
 
-				Assert::AreEqual(vec[0]->value % 2, 1);
-				Assert::AreEqual(vec[1]->value % 2, 1);
-				Assert::AreEqual(vec[2]->value % 2, 1);
-				Assert::AreEqual(vec[3]->value % 2, 1);
-				Assert::AreEqual(vec[4]->value % 2, 1);
-				Assert::AreEqual(vec[5]->value % 2, 0);
-				Assert::AreEqual(vec[6]->value % 2, 0);
-				Assert::AreEqual(vec[7]->value % 2, 0);
-				Assert::AreEqual(vec[8]->value % 2, 0);
-				Assert::AreEqual(vec[9]->value % 2, 0);
+				Assert::AreEqual(vec[0]->n % 2, 1);
+				Assert::AreEqual(vec[1]->n % 2, 1);
+				Assert::AreEqual(vec[2]->n % 2, 1);
+				Assert::AreEqual(vec[3]->n % 2, 1);
+				Assert::AreEqual(vec[4]->n % 2, 1);
+				Assert::AreEqual(vec[5]->n % 2, 0);
+				Assert::AreEqual(vec[6]->n % 2, 0);
+				Assert::AreEqual(vec[7]->n % 2, 0);
+				Assert::AreEqual(vec[8]->n % 2, 0);
+				Assert::AreEqual(vec[9]->n % 2, 0);
 
-				Assert::AreEqual(ptr2->value, 2);
-				Assert::AreEqual(ptr4->value, 4);
-				Assert::AreEqual(ptr6->value, 6);
+				Assert::AreEqual(ptr2->n, 2);
+				Assert::AreEqual(ptr4->n, 4);
+				Assert::AreEqual(ptr6->n, 6);
 				}
 
 		};

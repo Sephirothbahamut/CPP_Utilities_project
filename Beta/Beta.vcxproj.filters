@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\algorithm">
+      <UniqueIdentifier>{1541fb1e-57d0-473c-bc8e-4be0f96701ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\containers">
+      <UniqueIdentifier>{c483b145-a44f-4c94-8555-17007273f886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\math">
+      <UniqueIdentifier>{3d1008c2-d7c1-416c-b12f-e7f0c2b64faf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\utils\deferred_RAII.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\id_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\angle.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\bounded.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\enable_disable_vector.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\indexed_container.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\listed_array.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\matrix.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multitype_container.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\polymorphic_container.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\vector_utils.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

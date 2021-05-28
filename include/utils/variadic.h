@@ -30,16 +30,16 @@ namespace utils
 			constexpr static bool value = search_for == element;
 			};
 
-		template <typename Type, typename Current, typename... R>
+		template <typename msg_t, typename Current, typename... R>
 		struct contains_type
 			{
-			constexpr static bool value = std::is_same<Type, Current>::value || contains_type<Type, R...>::value;
+			constexpr static bool value = std::is_same<msg_t, Current>::value || contains_type<msg_t, R...>::value;
 			};
 
-		template <typename Type, typename Current>
-		struct contains_type<Type, Current>
+		template <typename msg_t, typename Current>
+		struct contains_type<msg_t, Current>
 			{
-			constexpr static bool value = std::is_same<Type, Current>::value;
+			constexpr static bool value = std::is_same<msg_t, Current>::value;
 			};
 
 		template <typename Child, typename Parent, typename... R>

@@ -14,7 +14,7 @@ namespace utils
 			size_t size() { return objects.size(); }
 			bool empty() { return !size(); }
 		private:
-			void push(T&& object) { objects.push_back(std::move(object)); }
+			void push(T&& element) { objects.push_back(std::move(element)); }
 			std::deque<T> objects;
 		};
 
@@ -23,28 +23,28 @@ namespace utils
 		{
 		public:
 			template <typename ...Args>
-			deferred_wrapper(deferred_deleter<T>& deleter, Args&&... args) : object{std::forward<Args>(args)...}, deleter{&deleter} {}
+			deferred_wrapper(deferred_deleter<T>& deleter, Args&&... args) : element{std::forward<Args>(args)...}, deleter{&deleter} {}
 
 			deferred_wrapper(const deferred_wrapper& copy) = default;
 			deferred_wrapper& operator=(const deferred_wrapper& copy) = default;
 
-			deferred_wrapper(deferred_wrapper&& move) noexcept : object{std::move(move.object)}, deleter{move.deleter} { move.deleter = nullptr; }
-			deferred_wrapper& operator=(deferred_wrapper&& move) noexcept { object = std::move(move.object); deleter = move.deleter; move.deleter = nullptr; return *this; }
+			deferred_wrapper(deferred_wrapper&& move) noexcept : element{std::move(move.element)}, deleter{move.deleter} { move.deleter = nullptr; }
+			deferred_wrapper& operator=(deferred_wrapper&& move) noexcept { element = std::move(move.element); deleter = move.deleter; move.deleter = nullptr; return *this; }
 
-			~deferred_wrapper() { if (deleter) { deleter->push(std::move(object)); } }
+			~deferred_wrapper() { if (deleter) { deleter->push(std::move(element)); } }
 
 			const T& operator* () const { return *get(); }
 			      T& operator* () { return *get(); }
 			const T* operator->() const { return  get(); }
 			      T* operator->() { return  get(); }
 
-			const T* get() const { return &object; }
+			const T* get() const { return &element; }
 
-			T* get() { return &object; }
+			T* get() { return &element; }
 
-			T object;
+			T element;
 
-			operator T& () { return object; }
+			operator T& () { return element; }
 
 		private:
 			deferred_deleter<T>* deleter;

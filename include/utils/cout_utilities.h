@@ -1,20 +1,13 @@
 #pragma once
 
-#ifdef _WIN32
-
-	#ifdef NOMINMAX
-		#include <windows.h>
-	#else
-		#define NOMINMAX
-		#include <windows.h>
-		#undef NOMINMAX
-	#endif
-
-#elif __linux__
-	//TODO Linux-compatible coloring
-#endif
+#include "console_io.h"
 
 #include <iostream>
+
+//TODO linux compatible colouring
+#ifdef __linux__
+#error Linux compatible console colouring is not yet available
+#endif
 
 namespace utils
 	{

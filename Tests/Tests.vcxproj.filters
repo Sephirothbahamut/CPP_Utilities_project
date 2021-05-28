@@ -27,6 +27,9 @@
     <ClCompile Include="test_deferred.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_id_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

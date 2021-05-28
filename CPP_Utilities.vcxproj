@@ -143,31 +143,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="console_io.h" />
     <ClInclude Include="include\utils\algorithm\containers.h" />
-    <ClInclude Include="include\utils\compilation.h" />
-    <ClInclude Include="include\utils\containers\enable_disable_vector.h" />
-    <ClInclude Include="include\utils\containers\indexed_container.h" />
-    <ClInclude Include="include\utils\containers\listed_array.h" />
-    <ClInclude Include="include\utils\containers\matrix.h" />
-    <ClInclude Include="include\utils\containers\multitype_container.h" />
-    <ClInclude Include="include\utils\containers\polymorphic_container.h" />
-    <ClInclude Include="include\utils\containers\vector_utils.h" />
+    <ClInclude Include="include\utils\compilation\debug.h" />
+    <ClInclude Include="include\utils\compilation\OS.h" />
+    <ClInclude Include="include\utils\console_io.h" />
     <ClInclude Include="include\utils\cout_containers.h" />
     <ClInclude Include="include\utils\cout_utilities.h" />
-    <ClInclude Include="include\utils\deferred_RAII.h" />
     <ClInclude Include="include\utils\definitions.h" />
     <ClInclude Include="include\utils\logger.h" />
-    <ClInclude Include="include\utils\math\angle.h" />
-    <ClInclude Include="include\utils\math\bounded.h" />
     <ClInclude Include="include\utils\math\constants.h" />
     <ClInclude Include="include\utils\math\math.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
     <ClInclude Include="include\utils\tracking.h" />
-    <ClInclude Include="include\utils\type_checks.h" />
     <ClInclude Include="include\utils\variadic.h" />
+    <ClInclude Include="include\utils\wrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
