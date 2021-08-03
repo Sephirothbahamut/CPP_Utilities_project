@@ -9,9 +9,9 @@ namespace utils
 		public:
 			using value_type = T;
 			using reference = value_type&;
-			using const_reference = const value_type const&;
+			using const_reference = const value_type& const;
 			using pointer = value_type*;
-			using const_pointer = const value_type const*;
+			using const_pointer = const value_type* const;
 
 			template <typename ...Args>
 			wrapper(Args&& ...args) : element{std::forward<Args>(args)...} {}
@@ -32,6 +32,7 @@ namespace utils
 									     
 			      pointer   get()              noexcept { return std::addressof(element); }
 			const_pointer   get()        const noexcept { return std::addressof(element); }
+
 		protected:
 		};
 	}

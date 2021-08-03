@@ -147,9 +147,9 @@
     <ClInclude Include="include\utils\containers\polymorphic_container.h" />
     <ClInclude Include="include\utils\containers\vector_utils.h" />
     <ClInclude Include="include\utils\deferred_RAII.h" />
-    <ClInclude Include="include\utils\id_pool.h" />
     <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\bounded.h" />
+    <ClInclude Include="include\utils\math\vec.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

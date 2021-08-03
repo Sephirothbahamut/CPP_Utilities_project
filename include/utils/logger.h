@@ -209,6 +209,6 @@ namespace utils
 #ifndef CPP_UTILS_disable_global_logger
 namespace utils::globals
 	{
-	inline utils::logger<utils::message<utils::message_output_style_t::on_line>> logger;
+	inline utils::logger<utils::message> logger;
 	}
 #endif

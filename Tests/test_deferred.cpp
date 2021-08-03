@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <algorithm>
-#include <utils/deferred_RAII.h>
+#include "../Beta/include/utils/deferred_RAII.h"
 #include <iostream>
 
 #include "CppUnitTest.h"
