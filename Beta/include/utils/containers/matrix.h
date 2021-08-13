@@ -77,6 +77,9 @@ namespace utils
 			constexpr size_t height() const noexcept { return HEIGHT; }
 			constexpr size_t size()   const noexcept { return _arr.size(); }
 
+			constexpr const T* data() const noexcept { return _arr.data(); }
+			constexpr       T* data()       noexcept { return _arr.data(); }
+
 			static size_t get_index(size_t x, size_t y) noexcept
 				{
 				if constexpr (MEMORY == matrix_memory::width_first) { return x + (y * WIDTH); }

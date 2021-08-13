@@ -1,15 +1,23 @@
 #pragma once
 #include <ostream>
+#include <cmath>
+#include <numbers>
 
 #include "math.h"
+
+#ifndef UTILS_NOANGLE
 #include "angle.h"
+#endif
+#ifdef COUT_CONTAINERS
 #include "../cout_utilities.h"
+#endif
 
 namespace utils::math
 	{
 	template <typename T> class vec2;
 	}
 
+#ifdef COUT_CONTAINERS
 namespace utils::cout
 	{
 	template <typename T>
@@ -19,6 +27,7 @@ namespace utils::cout
 		return os << ccu::type << "vec2" << ccu::brace << "(" << ccu::value << vec.x << ccu::separ << ", " << ccu::value << vec.y << ccu::brace << ")";
 		}
 	}
+#endif
 
 namespace utils::math
 	{
@@ -62,6 +71,11 @@ namespace utils::math
 			vec2<T>  normal() const noexcept { return magnitude() ? *this / magnitude() : *this; }
 			vec2<T>& normalize()    noexcept { return *this = normal(); }
 
+			float to_angle() const noexcept 
+				{
+				return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f; 
+				}
+
 			// OPERATORS
 			vec2<T>  operator-() const noexcept { return {-x, -y}; }
 
@@ -81,6 +95,7 @@ namespace utils::math
 			vec2<T>& operator= (const T n)       noexcept { return normalize() *= n; }
 
 			// VEC & ANGLE OPERATIONS
+#ifndef UTILS_NOANGLE
 			vec2<T>  operator+ (const utils::angle::deg angle) const noexcept { utils::angle::rad rngle{angle}; return {x * rngle.cos() - y * rngle.sin(), x * rngle.sin() + y * rngle.cos()}; }
 			vec2<T>  operator+ (const utils::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
 			vec2<T>  operator- (const utils::angle::deg angle) const noexcept { utils::angle::rad rngle{angle}; return {x * rngle.cos() - y * rngle.sin(), x * rngle.sin() + y * rngle.cos()}; }
@@ -91,7 +106,7 @@ namespace utils::math
 			vec2<T>& operator-=(const utils::angle::rad angle)       noexcept { return *this = *this - angle; }
 			vec2<T>& operator= (const utils::angle::deg angle)       noexcept { return *this = angle.to_rad(); }
 			vec2<T>& operator= (const utils::angle::rad angle)       noexcept { return *this = {angle.cos() * magnitude(), angle.sin() * magnitude()}; }
-
+#endif
 			// VEC & VEC OPERATORS
 			vec2<T>  operator+ (const vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
 			vec2<T>  operator- (const vec2<T>& oth) const noexcept { return {x - oth.x, y - oth.y}; }

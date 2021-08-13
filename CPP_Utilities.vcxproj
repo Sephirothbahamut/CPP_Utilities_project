@@ -148,6 +148,7 @@
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\console_io.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
+    <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\cout_containers.h" />
     <ClInclude Include="include\utils\cout_utilities.h" />
     <ClInclude Include="include\utils\definitions.h" />
@@ -165,7 +166,9 @@
     <ClInclude Include="include\utils\timer.h" />
     <ClInclude Include="include\utils\tracking.h" />
     <ClInclude Include="include\utils\variadic.h" />
+    <ClInclude Include="include\utils\window.h" />
     <ClInclude Include="include\utils\wrapper.h" />
+    <ClInclude Include="private\SetWindowCompositionAttribute.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp" />
