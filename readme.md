@@ -37,32 +37,41 @@ std::cout << v; // Output: [1, 2, 3]
 
 ### Logger
 _logger.h, message.h_
+
 Delegate output operations to a dedicated thread, in order to save the main thread from output operations overhead.
 
 ### Tracking pointer
 _tracking.h_
+
 A "smart observer pointer" which follows resources in memory when its ownership moves around. 
 The resource must follow strict criteria (either inherit from trackable, or be wrapped in a trackable_wrapper). 
+
 See the [tests](https://github.com/Sephirothbahamut/utils/blob/master/Tests/test_tracking.cpp) for examples.
 
 ### Wrapper
 _wrapper.h_
+
 Useless alone. It exists as a pre-made class to inherit from any time a wrapper is needed. 
 It exposes std::optional and std::\*\_pointer-like syntax for accessing the wrapped content.
 
 ### Algorithms
 _algorithm/_
+
 Additional algorithms with an stl-like syntax
 
 ### Containers
 _containers/_
+
 stl-like containers. Note: Custom allocatores are not supported (yet).
 
 ### Math
 _math/_
+
 Math-related utilities. Some are already present in recent C++ standards (lerp, constants...).
 
 ### Polymorphic value
 _polymorphic_value.h_
+
 THIS CODE IS __NOT__ MINE. It's in the collection only because I use it frequently.
+
 Click [here](https://github.com/jbcoe/polymorphic_value) for the actual source (potentially more updated).
