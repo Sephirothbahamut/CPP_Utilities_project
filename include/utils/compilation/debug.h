@@ -12,9 +12,11 @@ namespace utils::compilation
 	}
 
 #ifdef NDEBUG
-	#define utils_ifdebug(x)
-	#define utils_ifrelease(x) x
+	#define utils_is_release
+	#define utils_if_debug(x)
+	#define utils_if_release(x) x
 #else
-	#define utils_ifdebug(x) x
-	#define utils_ifrelease(x)
+	#define utils_is_debug
+	#define utils_if_debug(x) x
+	#define utils_if_release(x)
 #endif

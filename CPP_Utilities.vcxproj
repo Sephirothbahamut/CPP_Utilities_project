@@ -155,6 +155,7 @@
     <ClInclude Include="include\utils\extensions.h" />
     <ClInclude Include="include\utils\id_pool.h" />
     <ClInclude Include="include\utils\logger.h" />
+    <ClInclude Include="include\utils\math\average.h" />
     <ClInclude Include="include\utils\math\constants.h" />
     <ClInclude Include="include\utils\math\math.h" />
     <ClInclude Include="include\utils\math\Transform2.h" />
