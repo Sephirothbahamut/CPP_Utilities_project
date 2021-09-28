@@ -42,7 +42,7 @@ namespace utils::math
 	using vec2u8  = vec2<uint8_t>;
 	using vec2u16 = vec2<uint16_t>;
 	using vec2u32 = vec2<uint32_t>;
-	using vec2u46 = vec2<uint64_t>;
+	using vec2u64 = vec2<uint64_t>;
 	
 	using vec2s = vec2<size_t>;
 	using vec2f = vec2<float>;
