@@ -154,10 +154,17 @@
     <ClInclude Include="include\utils\cout_utilities.h" />
     <ClInclude Include="include\utils\definitions.h" />
     <ClInclude Include="include\utils\extensions.h" />
+    <ClInclude Include="include\utils\graphics\color.h" />
     <ClInclude Include="include\utils\id_pool.h" />
+    <ClInclude Include="include\utils\index_range.h" />
     <ClInclude Include="include\utils\logger.h" />
+    <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\average.h" />
     <ClInclude Include="include\utils\math\constants.h" />
+    <ClInclude Include="include\utils\math\easings.h" />
+    <ClInclude Include="include\utils\math\geometry\polygon.h" />
+    <ClInclude Include="include\utils\math\geometry\segment.h" />
+    <ClInclude Include="include\utils\math\geometry\shapes.h" />
     <ClInclude Include="include\utils\math\math.h" />
     <ClInclude Include="include\utils\math\Transform2.h" />
     <ClInclude Include="include\utils\math\vec2.h" />
@@ -173,6 +180,7 @@
     <ClInclude Include="private\SetWindowCompositionAttribute.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\utils\graphics\color.cpp" />
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

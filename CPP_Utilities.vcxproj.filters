@@ -25,6 +25,9 @@
     <Filter Include="Header Files\compilation">
       <UniqueIdentifier>{12c89e0f-43ef-4304-a8b5-4d4daa8a6723}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\math\geomtry">
+      <UniqueIdentifier>{79610ac4-bf12-4770-b969-df21470748d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\cout_containers.h">
@@ -111,9 +114,33 @@
     <ClInclude Include="include\utils\algorithm\join.h">
       <Filter>Header Files\algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\angle.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\easings.h">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\polygon.h">
+      <Filter>Header Files\math\geomtry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\segment.h">
+      <Filter>Header Files\math\geomtry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes.h">
+      <Filter>Header Files\math\geomtry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\index_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\graphics\color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\utils\graphics\color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

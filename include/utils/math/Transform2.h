@@ -6,29 +6,29 @@
 
 #include "Vec2.h"
 
-namespace engine::core
+namespace utils::math
 	{
 	class Transform2
 		{
 		private:
 
 		public:
-			Transform2(Vec2f translation = {}, utils::angle::deg rotation = {}, float scaling = {}) noexcept : position(translation), orientation(rotation), size(scaling) {}
+			Transform2(vec2f translation = {}, utils::angle::deg rotation = {}, float scaling = {}) noexcept : position(translation), orientation(rotation), size(scaling) {}
 			static Transform2 zero() { return {}; }
 
-			Vec2f             position{};
+			vec2f             position{};
 			utils::angle::deg orientation{};
 			float             size{};
 			
-			Vec2f&    translate  (      Vec2f& v)    const noexcept { return v += position; }
-			Vec2f&    rotate     (      Vec2f& v)    const noexcept { return v += orientation; }
-			Vec2f&    scale      (      Vec2f& v)    const noexcept { return v *= size; }
-			Vec2f     translation(const Vec2f& v)    const noexcept { return v +  position; }
-			Vec2f     rotation   (const Vec2f& v)    const noexcept { return v +  orientation; }
-			Vec2f     scaling    (const Vec2f& v)    const noexcept { return v *  size; }
+			vec2f&    translate  (      vec2f& v)    const noexcept { return v += position; }
+			vec2f&    rotate     (      vec2f& v)    const noexcept { return v += orientation; }
+			vec2f&    scale      (      vec2f& v)    const noexcept { return v *= size; }
+			vec2f     translation(const vec2f& v)    const noexcept { return v +  position; }
+			vec2f     rotation   (const vec2f& v)    const noexcept { return v +  orientation; }
+			vec2f     scaling    (const vec2f& v)    const noexcept { return v *  size; }
 			
-			Vec2f&    transform  (      Vec2f& v)    const noexcept { return translate(rotate(scale(v))); }
-			Vec2f     transformed(const Vec2f& v)    const noexcept { Vec2f ret{v}; return transform(ret); }
+			vec2f&    transform  (      vec2f& v)    const noexcept { return translate(rotate(scale(v))); }
+			vec2f     transformed(const vec2f& v)    const noexcept { vec2f ret{v}; return transform(ret); }
 
 			Transform2  operator+ (const Transform2& oth) const noexcept 
 				{
@@ -53,7 +53,7 @@ namespace engine::core
 
 			static Transform2 lerp(Transform2 a, Transform2 b, float position)
 				{
-				return { Vec2f::lerp(a.position, b.position, position),
+				return { vec2f::lerp(a.position, b.position, position),
 					utils::lerp(a.orientation.value, b.orientation.value, position),
 					utils::lerp(a.size, b.size, position) };
 				}
@@ -62,7 +62,7 @@ namespace engine::core
 
 namespace utils::cout
 	{
-	inline std::ostream& operator<<(std::ostream& os, const engine::core::Transform2& transform) noexcept
+	inline std::ostream& operator<<(std::ostream& os, const utils::math::Transform2& transform) noexcept
 		{
 		namespace ccu = cout::support;
 		return os << ccu::type << "Transform" << ccu::brace << "("

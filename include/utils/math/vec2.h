@@ -122,14 +122,20 @@ namespace utils::math
 			bool     operator!=(const vec2<T>& oth) const noexcept { return !(*this == oth); }
 
 			static T dot(const vec2<T>& a, const vec2<T>& b) noexcept { return a.x * b.x + a.y * b.y; }
-			static T distance(const vec2<T>& a, const vec2<T>& b) noexcept
+			static T distance2(const vec2<T>& a, const vec2<T>& b) noexcept
 				{
 				T dx = a.x - b.x;
 				T dy = a.y - b.y;
-				return std::sqrt(dx * dx + dy * dy);
+				return dx * dx + dy * dy;
 				}
+			static T distance(const vec2<T>& a, const vec2<T>& b) noexcept { return std::sqrt(distance2(a, b)); }
 
 			// OTHER
+			vec2<T> perpendicular_right()            const noexcept { return {y, -x}; }
+			vec2<T> perpendicular_left()             const noexcept { return {-y,  x}; }
+			vec2<T> perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
+			vec2<T> perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+
 			static vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) noexcept
 				{
 				return {utils::lerp(a.x, b.x, t), utils::lerp(a.y, b.y, t)};

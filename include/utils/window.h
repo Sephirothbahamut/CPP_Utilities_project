@@ -16,6 +16,7 @@
 
 	#include <WinUser.h>
 	#include <dwmapi.h>
+	#pragma comment (lib, "dwmapi.lib")//without this dwmapi.h doesn't work :shrugs: no idea whatsoever where the compiler is taking this file from
 	#include <tchar.h>
 	#include <Shlwapi.h>
 
