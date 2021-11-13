@@ -37,13 +37,13 @@ namespace utils::math
 	using vec2i16 = vec2<int16_t>;
 	using vec2i32 = vec2<int32_t>;
 	using vec2i64 = vec2<int64_t>;
-	
+
 	using vec2u   = vec2<unsigned>;
 	using vec2u8  = vec2<uint8_t>;
 	using vec2u16 = vec2<uint16_t>;
 	using vec2u32 = vec2<uint32_t>;
 	using vec2u64 = vec2<uint64_t>;
-	
+
 	using vec2s = vec2<size_t>;
 	using vec2f = vec2<float>;
 	using vec2d = vec2<double>;
@@ -71,9 +71,9 @@ namespace utils::math
 			vec2<T>  normal() const noexcept { return magnitude() ? *this / magnitude() : *this; }
 			vec2<T>& normalize()    noexcept { return *this = normal(); }
 
-			float to_angle() const noexcept 
+			float to_angle() const noexcept
 				{
-				return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f; 
+				return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f;
 				}
 
 			// OPERATORS
@@ -105,7 +105,7 @@ namespace utils::math
 			vec2<T>& operator-=(const utils::angle::deg angle)       noexcept { return *this = *this - angle; }
 			vec2<T>& operator-=(const utils::angle::rad angle)       noexcept { return *this = *this - angle; }
 			vec2<T>& operator= (const utils::angle::deg angle)       noexcept { return *this = angle.to_rad(); }
-			vec2<T>& operator= (const utils::angle::rad angle)       noexcept { return *this = {angle.cos() * magnitude(), angle.sin() * magnitude()}; }
+			vec2<T>& operator= (const utils::angle::rad angle)       noexcept { return *this ={angle.cos() * magnitude(), angle.sin() * magnitude()}; }
 #endif
 			// VEC & VEC OPERATORS
 			vec2<T>  operator+ (const vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
@@ -134,7 +134,7 @@ namespace utils::math
 			vec2<T> perpendicular_right()            const noexcept { return {y, -x}; }
 			vec2<T> perpendicular_left()             const noexcept { return {-y,  x}; }
 			vec2<T> perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
-			vec2<T> perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+			vec2<T> perpendicular_counterclockwise() const noexcept { return perpendicular_left(); }
 
 			static vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) noexcept
 				{
@@ -158,4 +158,50 @@ namespace utils::math
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 				}
 		};
+
+	namespace operators
+		{
+		struct _dot
+			{
+			template <typename T>
+			class _inner;
+
+			template <typename T>
+			inline friend _inner<T> operator<(const vec2<T>& lhs, const _dot& proxy) noexcept { return {lhs}; }
+
+			template <typename T>
+			class _inner
+				{
+				public:
+					T operator>(const vec2<T>& rhs) const noexcept { return vec2<T>::dot(lhs, rhs); }
+					_inner(const vec2<T>& lhs) noexcept : lhs{lhs} {}
+				private:
+					const vec2<T>& lhs;
+				};
+
+			};
+		inline const _dot dot;
+
+		struct _cross
+			{
+			template <typename T>
+			class _inner;
+
+			template <typename T>
+			inline friend _inner<T> operator<(const vec2<T>& lhs, const _cross& proxy) noexcept { return {lhs}; }
+
+			template <typename T>
+			class _inner
+				{
+				public:
+					vec2<T> operator>(const vec2<T>& rhs) const noexcept { return lhs * rhs; }
+					_inner(const vec2<T>& lhs) noexcept : lhs{lhs} {}
+				private:
+					const vec2<T>& lhs;
+				};
+
+			};
+		inline const _cross cross;
+		}
+
 	}
