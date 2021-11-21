@@ -10,7 +10,7 @@
 namespace utils::math::geometry
 	{
 	enum class vertex_name { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z };
-	enum class position { left = -1, equal = 0, right = 1 };
+	enum class side_t { left = -1, equal = 0, right = 1 };
 
 	class polygon;
 
@@ -51,9 +51,9 @@ namespace utils::math::geometry
 				//TODO
 				}
 
-			position point_position(const vec2f& point) const noexcept
+			side_t point_side(const vec2f& point) const noexcept
 				{
-				return position::equal;
+				return side_t::equal;
 				/*
 				var dir = triangle(point, a, b).area2;
 				return dir < 0 ? position.left : dir == 0 ? position.equal : position.right;
@@ -62,7 +62,7 @@ namespace utils::math::geometry
 
 			bool intersects_line(const segment& other) const noexcept
 				{
-				return other.point_position(a) != other.point_position(b);
+				return other.point_side(a) != other.point_side(b);
 				}
 			bool intersects(const segment& other) const noexcept
 				{

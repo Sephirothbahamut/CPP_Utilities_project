@@ -164,7 +164,7 @@
     <ClInclude Include="include\utils\math\easings.h" />
     <ClInclude Include="include\utils\math\geometry\polygon.h" />
     <ClInclude Include="include\utils\math\geometry\segment.h" />
-    <ClInclude Include="include\utils\math\geometry\shapes.h" />
+    <ClInclude Include="include\utils\math\geometry\shape.h" />
     <ClInclude Include="include\utils\math\math.h" />
     <ClInclude Include="include\utils\math\Transform2.h" />
     <ClInclude Include="include\utils\math\vec2.h" />

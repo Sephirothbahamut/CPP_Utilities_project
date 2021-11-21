@@ -20,15 +20,15 @@ namespace utils::math
 			utils::angle::deg orientation{};
 			float             size{};
 			
-			vec2f&    translate  (      vec2f& v)    const noexcept { return v += position; }
-			vec2f&    rotate     (      vec2f& v)    const noexcept { return v += orientation; }
-			vec2f&    scale      (      vec2f& v)    const noexcept { return v *= size; }
-			vec2f     translation(const vec2f& v)    const noexcept { return v +  position; }
-			vec2f     rotation   (const vec2f& v)    const noexcept { return v +  orientation; }
-			vec2f     scaling    (const vec2f& v)    const noexcept { return v *  size; }
+			vec2f& translate  (      vec2f& v) const noexcept { return v += position; }
+			vec2f& rotate     (      vec2f& v) const noexcept { return v += orientation; }
+			vec2f& scale      (      vec2f& v) const noexcept { return v *= size; }
+			vec2f  translation(const vec2f& v) const noexcept { return v +  position; }
+			vec2f  rotation   (const vec2f& v) const noexcept { return v +  orientation; }
+			vec2f  scaling    (const vec2f& v) const noexcept { return v *  size; }
 			
-			vec2f&    transform  (      vec2f& v)    const noexcept { return translate(rotate(scale(v))); }
-			vec2f     transformed(const vec2f& v)    const noexcept { vec2f ret{v}; return transform(ret); }
+			vec2f& transform  (      vec2f& v) const noexcept { return translate(rotate(scale(v))); }
+			vec2f  transformed(const vec2f& v) const noexcept { vec2f ret{v}; return transform(ret); }
 
 			Transform2  operator+ (const Transform2& oth) const noexcept 
 				{

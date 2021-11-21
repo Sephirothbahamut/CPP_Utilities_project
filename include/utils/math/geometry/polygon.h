@@ -5,18 +5,10 @@
 #include <array>
 #include <iterator>
 
-#include "../vec2.h"
-//#include "segment.h" Must be included by segment
+#include "shape.h"
 
 namespace utils::math::geometry
 	{
-	class shape
-		{
-		public:
-			//virtual bool contains(const vec2f& point) = 0;
-			//virtual bool contains(const shape& shape) = 0;
-		};
-
 	class polygon : shape
 		{
 		public:
@@ -152,13 +144,6 @@ namespace utils::math::geometry
 				};
 #pragma endregion vertices and segments iteration
 
-			class concave;
-			class convex;
-			class n_gon;
-			class triangle;
-			class AABB;
-			using axis_aligned_bounding_box = AABB;
-
 			vertices_ref get_vertices_ref()   noexcept { return vertices_ref{this}; }
 			vertices_cpy get_vertices() const noexcept { return vertices_cpy{this}; }
 			edges_ref    get_edges_ref()      noexcept { return edges_ref   {this}; }
@@ -173,23 +158,25 @@ namespace utils::math::geometry
 
 			segment get_edge(size_t index) const noexcept { return {vertices_get(index), vertices_get((index + 1) % vertices_count())}; }
 
-		protected:
 		};
 
-	class polygon::n_gon : public polygon
-		{
-		public:
-			virtual size_t vertices_count() const noexcept override final { return  _vertices.size(); };
-			virtual vertex_ref vertices_ref_get(size_t index)       noexcept override { return  _vertices[index];  }
-			virtual vec2f      vertices_get    (size_t index) const noexcept override { return {_vertices[index]}; }
+		class concave : polygon
+			{};
 
-			n_gon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
+		class n_gon : public polygon
+			{
+			public:
+				virtual size_t vertices_count() const noexcept override final { return  _vertices.size(); };
+				virtual vertex_ref vertices_ref_get(size_t index)       noexcept override { return  _vertices[index]; }
+				virtual vec2f      vertices_get(size_t index) const noexcept override { return {_vertices[index]}; }
 
-		private:
-			std::vector<vec2f> _vertices;
-		};
+				n_gon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
 
-	class polygon::triangle : public polygon
+			private:
+				std::vector<vec2f> _vertices;
+			};
+
+	class triangle : public polygon
 		{
 		public:
 			virtual size_t vertices_count() const noexcept override final { return 3; };
@@ -199,7 +186,7 @@ namespace utils::math::geometry
 			std::array<vec2f, 3> _vertices;
 		};
 
-	class polygon::AABB : public polygon
+	class AABB : public polygon
 		{
 		public:
 			float up{0.f};
@@ -243,4 +230,5 @@ namespace utils::math::geometry
 					}
 				};
 		};
+	using axis_aligned_bounding_box = AABB;
 	}
