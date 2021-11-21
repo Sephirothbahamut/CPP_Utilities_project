@@ -223,7 +223,7 @@ namespace utils::graphics
 
 		return {r, g, b};
 		}
-	inline color::hsl::operator color::hsv() const noexcept { return {color::rgb{*this}}; }
+	inline color::hsl::operator color::hsv() const noexcept { return hsl{color::rgb{*this}}; }
 
 	inline color::hsv::operator color::rgb() const noexcept
 		{
@@ -248,5 +248,5 @@ namespace utils::graphics
 
 		return {r, g, b};
 		}
-	inline color::hsv::operator color::hsl() const noexcept { return {color::rgb{*this}}; }
+	inline color::hsv::operator color::hsl() const noexcept { return static_cast<color::hsv>(static_cast<color::rgb>(*this)); }
 	}
