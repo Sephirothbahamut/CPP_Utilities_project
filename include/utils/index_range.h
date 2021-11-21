@@ -1,9 +1,21 @@
 #pragma once
 #include <iterator>
 #include <compare>
+#include <ranges>
+#include <numeric>
 
 namespace utils
 	{
+	
+	template <typename T>
+	concept random_access_container = std::ranges::random_access_range<T> && std::ranges::sized_range<T>;
+
+	/// <summary>
+	/// Note: assumes whatever crap you put inside to start from 0
+	/// </summary>
+	template <random_access_container T>
+	auto indices(const T& container) { return std::ranges::iota_view{decltype(std::ranges::size(container)){0}, std::ranges::size(container)}; }
+
 	class Index_range
 		{
 		public:
