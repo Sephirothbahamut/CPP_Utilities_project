@@ -28,6 +28,9 @@
     <Filter Include="Header Files\math\geomtry">
       <UniqueIdentifier>{79610ac4-bf12-4770-b969-df21470748d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{191ce12c-9a9a-4768-a301-d4c75da0aa1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\cout_containers.h">
@@ -133,14 +136,11 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\graphics\color.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\utils\graphics\color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

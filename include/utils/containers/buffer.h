@@ -37,10 +37,10 @@ namespace utils::container
 				}
 
 			template <typename T>
-			T get() utils_ifrelease(noexcept)
+			T get() utils_if_release(noexcept)
 				{
 				static_assert(std::is_trivially_copyable<T>());
-				utils_ifdebug(check_bytes_sufficient<T>());
+				utils_if_debug(check_bytes_sufficient<T>());
 
 				std::array<std::byte, sizeof(T)> pulled;
 				for (size_t i = 0; i < sizeof(T); i++) { pulled[i] = data.front(); data.pop_front(); }

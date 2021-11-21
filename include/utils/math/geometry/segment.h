@@ -24,7 +24,7 @@ namespace utils::math::geometry
 			float length () const noexcept { return vec2f::distance (a, b); }
 
 			const vec2f& operator[](size_t index) const noexcept { return index == 0 ? a : b; }
-			vec2f& operator[](size_t index)       noexcept { return index == 0 ? a : b; }
+			      vec2f& operator[](size_t index)       noexcept { return index == 0 ? a : b; }
 
 			vec2f closest_point(const vec2f& point) const noexcept
 				{//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-a-point-and-a-line-segment-in-c/
@@ -48,7 +48,7 @@ namespace utils::math::geometry
 
 			bool contains(const vec2f& point) const noexcept
 				{
-
+				//TODO
 				}
 
 			position point_position(const vec2f& point) const noexcept
@@ -81,7 +81,7 @@ namespace utils::math::geometry
 	{
 	inline bool segment::intersects(const polygon& polygon) const noexcept
 		{
-		for (const segment& edge : polygon.edges()) { if (intersects(edge)) { return true; } }
+		//for (const segment& edge : polygon.edges()) { if (intersects(edge)) { return true; } }
 		return false;
 		}
 	}

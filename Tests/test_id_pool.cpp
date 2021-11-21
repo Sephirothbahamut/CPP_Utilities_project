@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "../Beta/include/utils/id_pool.h"
+#include "../include/utils/id_pool.h"
 
 #include "CppUnitTest.h"
 
@@ -15,7 +15,7 @@ namespace Tests
 
 			TEST_METHOD(operations)
 				{
-				using id_pool = utils::id_pool<>;
+				using id_pool = utils::id_pool;
 				using id_t = id_pool::id_t;
 
 				id_pool pool;
