@@ -6,17 +6,17 @@
 
 namespace utils
 	{
-	/*template <typename T = size_t, T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()>
+	template <std::convertible_to<size_t> T = size_t, T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()>
 	class id_pool
 		{
 		public:
 			using id_t = T;
 			using value_type = id_t;
 
-			size_t size() const noexcept { return max - min; }
+			size_t size()      const noexcept { return max - min; }
 			size_t available() const noexcept { return max - count; }
-			size_t used() const noexcept { return count - min; }
-			bool empty() const noexcept { return available() == 0; }
+			size_t used()      const noexcept { return count - min; }
+			bool   empty()     const noexcept { return available() == 0; }
 
 			id_t get() noexcept
 				{
@@ -45,9 +45,9 @@ namespace utils
 		private:
 			id_t count = min;
 			std::vector<id_t> unused;
-		};*/
-
-	class id_pool
+		};
+	
+	/*class id_pool
 		{
 		inline static constexpr size_t min = std::numeric_limits<size_t>::min();
 		inline static constexpr size_t max = std::numeric_limits<size_t>::max();
@@ -89,5 +89,5 @@ namespace utils
 		private:
 			id_t count = min;
 			std::vector<id_t> unused;
-		};
+		};*/
 	}
