@@ -7,8 +7,8 @@
 
 #include "include/utils/containers/buffer.h"
 #include "include/utils/math/vec2.h"
-#include "include/utils/math/geometry/segment.h"
-#include "include/utils/math/geometry/polygon.h"
+//#include "include/utils/math/geometry/segment.h"
+//#include "include/utils/math/geometry/polygon.h"
 
 #include "include/utils/index_range.h"
 
@@ -33,7 +33,7 @@ int main()
 	dot_result   = a <dot> b;
 	cross_result = a <cross> b;*/
 
-	using namespace utils::math::geometry;
+	/*using namespace utils::math::geometry;
 
 	using it_t = polygon::iterator<polygon::vertices_cpy>;
 	static_assert(std::weakly_incrementable<it_t>);
@@ -76,5 +76,11 @@ int main()
 	for (auto vertex : n_gon.get_vertices())
 		{
 		std::cout << "(" << vertex.x << ", " << vertex.y << ") ";
+		}*/
+
+	std::vector<int> v;
+	for (size_t i : utils::indices(v))
+		{
+
 		}
 	}

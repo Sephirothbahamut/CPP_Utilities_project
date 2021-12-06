@@ -14,7 +14,7 @@ namespace utils
 	/// Note: assumes whatever crap you put inside to start from 0
 	/// </summary>
 	template <random_accessible_sized_range T>
-	auto indices(const T& container) { return std::ranges::iota_view{decltype(std::ranges::size(container)){0}, std::ranges::size(container)}; }
+	auto indices(const T& container) { return std::ranges::iota_view {decltype(std::ranges::size(container)){0}, std::ranges::size(container)}; }
 
 	class Index_range
 		{
