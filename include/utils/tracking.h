@@ -19,7 +19,7 @@ namespace utils
 		template <typename T>
 		class tracker_updater;
 
-		// A pointer to an tracked object. This object lives in the heap and is used to share information with all identifiers about the object moving in memory.
+		// A pointer to a tracked object. This object lives in the heap and is used to share information with all identifiers about the object moving in memory.
 		template <typename T>
 		class tracker_t
 			{
