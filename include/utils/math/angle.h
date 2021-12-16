@@ -270,7 +270,7 @@ namespace utils::angle
 	// ===== ===== ===== ===== ===== ===== =====         MISSING DEFINITIONS         ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	inline deg::deg(const rad r) noexcept : value(rad_to_deg(r.value)) {}
-	deg& deg::operator=(const rad r) noexcept { value = rad_to_deg(r.value); return *this; };
+	inline deg& deg::operator=(const rad r) noexcept { value = rad_to_deg(r.value); return *this; };
 	inline rad deg::to_rad() const noexcept { return rad{*this}; }
 
 	inline deg  deg::operator+ (const rad oth) const noexcept { return deg{value + rad_to_deg(oth.value)}; }

@@ -24,7 +24,7 @@
 
 	namespace utils::window
 		{
-		bool make_glass_CompositionAttribute(HWND hwnd)
+		inline bool make_glass_CompositionAttribute(HWND hwnd)
 			{
 			if (HMODULE hUser = GetModuleHandleA("user32.dll"))
 				{
@@ -44,7 +44,7 @@
 				}
 			return false;
 			}
-		bool make_glass_DWM_BlurBehind(HWND hwnd)
+		inline bool make_glass_DWM_BlurBehind(HWND hwnd)
 			{
 			DWM_BLURBEHIND bb = {0};
 			bb.dwFlags = DWM_BB_ENABLE;
@@ -53,7 +53,7 @@
 			HRESULT result = DwmEnableBlurBehindWindow(hwnd, &bb);
 			return result == S_OK;
 			}
-		bool make_glass_DWM_margin(HWND hwnd)
+		inline bool make_glass_DWM_margin(HWND hwnd)
 			{
 			// Negative margins have special meaning to DwmExtendFrameIntoClientArea.
 			// Negative margins create the "sheet of glass" effect, where the client area
@@ -66,7 +66,7 @@
 			return (SUCCEEDED(hr));
 			}
 
-		bool make_transparent_Layered(HWND hWnd, BYTE opacity = 100)
+		inline bool make_transparent_Layered(HWND hWnd, BYTE opacity = 100)
 			{
 			//Transparent window
 			SetWindowLong(hWnd, GWL_EXSTYLE,

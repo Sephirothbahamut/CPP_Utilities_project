@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 namespace utils
 	{
 	template <typename T>
@@ -28,7 +30,6 @@ namespace utils
 		return y;
 		}
 
-	//Danke dige (only numeric types)
-	template <typename T>
+	template <std::integral T>
 	void swap(T& a, T& b) { a ^= b ^= a ^= b; }
 	}

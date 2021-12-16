@@ -138,6 +138,9 @@
     <ClInclude Include="include\utils\graphics\color.h">
       <Filter>Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\custom_operators.h">
+      <Filter>Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

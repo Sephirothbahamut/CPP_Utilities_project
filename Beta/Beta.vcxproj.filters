@@ -27,9 +27,6 @@
     <ClInclude Include="include\utils\deferred_RAII.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\angle.h">
-      <Filter>Header Files\math</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\math\bounded.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>

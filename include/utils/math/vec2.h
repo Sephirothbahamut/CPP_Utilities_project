@@ -2,7 +2,9 @@
 #include <ostream>
 #include <cmath>
 #include <numbers>
+#include <algorithm>
 
+#include "../custom_operators.h"
 #include "math.h"
 
 #ifndef UTILS_NOANGLE
@@ -161,6 +163,7 @@ namespace utils::math
 
 	namespace operators
 		{
+		
 		struct _dot
 			{
 			template <typename T>

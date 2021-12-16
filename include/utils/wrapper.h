@@ -9,7 +9,7 @@ namespace utils
 		public:
 			using value_type = T;
 			using reference = value_type&;
-			using const_reference = const value_type& const;
+			using const_reference = const value_type&;
 			using pointer = value_type*;
 			using const_pointer = const value_type* const;
 

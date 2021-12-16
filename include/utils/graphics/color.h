@@ -89,9 +89,9 @@ namespace utils::graphics
 				};
 
 			color() noexcept = default;
-			color(rgb rgb) noexcept : inner{rgb} {}
-			color(hsv hsv) noexcept : inner{hsv} {}
-			color(hsl hsl) noexcept : inner{hsl} {}
+			color(rgb rgb, uint8_t a = 255) noexcept : inner{rgb}, a{a} {}
+			color(hsv hsv, uint8_t a = 255) noexcept : inner{hsv}, a{a} {}
+			color(hsl hsl, uint8_t a = 255) noexcept : inner{hsl}, a{a} {}
 
 			rgb   as_rgb() const noexcept { return inner; }
 			hsv   as_hsv() const noexcept { return inner; }
@@ -136,18 +136,20 @@ namespace utils::graphics
 			static const color yellow;
 			static const color magenta;
 			static const color cyan;
+			static const color transparent;
 		private:
 			rgb inner;
 		};
 
-	inline const color color::black	 {rgb{  0,   0,   0}};
-	inline const color color::white	 {rgb{255, 255, 255}};
-	inline const color color::red	 {rgb{255,   0,   0}};
-	inline const color color::green	 {rgb{  0, 255,   0}};
-	inline const color color::blue	 {rgb{  0,   0, 255}};
-	inline const color color::yellow {rgb{255, 255,   0}};
-	inline const color color::magenta{rgb{255,   0, 255}};
-	inline const color color::cyan	 {rgb{  0, 255, 255}};
+	inline const color color::black      {rgb{  0,   0,   0}};
+	inline const color color::white      {rgb{255, 255, 255}};
+	inline const color color::red        {rgb{255,   0,   0}};
+	inline const color color::green      {rgb{  0, 255,   0}};
+	inline const color color::blue       {rgb{  0,   0, 255}};
+	inline const color color::yellow     {rgb{255, 255,   0}};
+	inline const color color::magenta    {rgb{255,   0, 255}};
+	inline const color color::cyan       {rgb{  0, 255, 255}};
+	inline const color color::transparent{rgb{  0,   0,   0}, 0};
 
 	inline color::rgb::operator color::hsv() const noexcept
 		{
@@ -166,9 +168,9 @@ namespace utils::graphics
 			}
 		else
 			{
-			if (max == r) { h = (g - b) / d + (g < b ? 6.f : 0.f); }
-			else if (max == g) { h = (b - r) / d + 2.f; }
-			else if (max == b) { h = (r - g) / d + 4.f; }
+			/**/   if (max == r)   { h = (g - b) / d + (g < b ? 6.f : 0.f); }
+			else   if (max == g)   { h = (b - r) / d + 2.f; }
+			else /*if (max == b)*/ { h = (r - g) / d + 4.f; }
 			h /= 6.f;
 			}
 
@@ -187,9 +189,9 @@ namespace utils::graphics
 			{
 			float d = max - min;
 			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-			     if (max == r) { h = (g - b) / d + (g < b ? 6.f : 0.f); }
-			else if (max == g) { h = (b - r) / d + 2.f; }
-			else if (max == b) { h = (r - g) / d + 4.f; }
+			/**/ if   (max == r)   { h = (g - b) / d + (g < b ? 6.f : 0.f); }
+			else if   (max == g)   { h = (b - r) / d + 2.f; }
+			else /*if (max == b)*/ { h = (r - g) / d + 4.f; }
 			h /= 6.f;
 			}
 
@@ -243,9 +245,11 @@ namespace utils::graphics
 			case 2: r = p, g = v, b = t; break;
 			case 3: r = p, g = q, b = v; break;
 			case 4: r = t, g = p, b = v; break;
-			case 5: r = v, g = p, b = q; break;
+			case 5: r = v, g = p, b = q; break; 
+			default: //Actually unreachable, but the compiler doesn't realize that 0 <= i < 6, so it thinks r, g and b aren't always initialized
+				r = 0, g = 0, b = 0;
 			}
-
+		
 		return {r, g, b};
 		}
 	inline color::hsv::operator color::hsl() const noexcept { return static_cast<color::hsv>(static_cast<color::rgb>(*this)); }
