@@ -9,42 +9,63 @@ namespace utils
 	class id_pool
 		{
 		public:
-			using id_t = size_t;
-			using value_type = id_t;
-			inline static constexpr size_t min{std::numeric_limits<id_t>::min()};
-			inline static constexpr size_t max{std::numeric_limits<id_t>::max()};
+			inline static constexpr size_t min{std::numeric_limits<size_t>::min()};
+			inline static constexpr size_t max{std::numeric_limits<size_t>::max()};
 
 			size_t size()      const noexcept { return max - min; }
 			size_t available() const noexcept { return max - count; }
 			size_t used()      const noexcept { return count - min; }
 			bool   empty()     const noexcept { return available() == 0; }
 
-			id_t get() noexcept
+			size_t get() noexcept
 				{
 				if (unused.size()) 
 					{
-					id_t ret = unused.back();
+					size_t ret = unused.back();
 					unused.pop_back();
 					return ret;
 					}
 				else { return count++; }
 				}
 
-			id_t get_except()
+			size_t get_except()
 				{
 				if (empty()) { throw std::out_of_range{"All available ids have already been assigned"}; }
 				return get();
 				}
 
-			void release(id_t id)
+			void release(size_t id)
 				{
 				unused.push_back(id);
 				}
 
-			id_t last() { return count - 1; }
+			size_t last() { return count - 1; }
 
 		private:
-			id_t count = min;
-			std::vector<id_t> unused;
+			size_t count = min;
+			std::vector<size_t> unused;
+		};
+
+	class id_t
+		{
+		public:
+			id_t(id_pool& pool) : pool{&pool}, _value{pool.get()} {}
+			id_t(const id_t& copy) = delete;
+			id_t& operator=(const id_t& copy) = delete;
+			id_t(id_t&& move) noexcept : pool{move.pool}, _value{move._value} { move._value = std::numeric_limits<size_t>::max(); }
+			id_t& operator=(id_t&& move) noexcept { release(); pool = move.pool; _value = move._value; move._value = std::numeric_limits<size_t>::max(); }
+			~id_t() { release(); }
+
+			operator int() const noexcept { return _value; }
+			int value() const noexcept { return _value; }
+
+		private:
+			void release() const noexcept
+				{
+				if (_value != std::numeric_limits<size_t>::max()) { pool->release(_value); }
+				}
+
+			id_pool* pool;
+			size_t _value;
 		};
 	}
