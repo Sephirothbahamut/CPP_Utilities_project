@@ -6,7 +6,7 @@
 
 namespace utils
 	{
-	class id_pool
+	class id_pool_manual
 		{
 		public:
 			inline static constexpr size_t min{std::numeric_limits<size_t>::min()};
@@ -46,26 +46,70 @@ namespace utils
 			std::vector<size_t> unused;
 		};
 
-	class id_t
+	class id_pool
 		{
 		public:
-			id_t(id_pool& pool) : pool{&pool}, _value{pool.get()} {}
-			id_t(const id_t& copy) = delete;
-			id_t& operator=(const id_t& copy) = delete;
-			id_t(id_t&& move) noexcept : pool{move.pool}, _value{move._value} { move._value = std::numeric_limits<size_t>::max(); }
-			id_t& operator=(id_t&& move) noexcept { release(); pool = move.pool; _value = move._value; move._value = std::numeric_limits<size_t>::max(); }
-			~id_t() { release(); }
+			class id_t;
+			friend class id_pool::id_t;
+			class id_t
+				{
+				public:
+					id_t(id_pool& pool) : pool{&pool}, _value{pool.get()} {}
+					id_t(const id_t& copy) = delete;
+					id_t& operator=(const id_t& copy) = delete;
+					id_t(id_t&& move) noexcept : pool{move.pool}, _value{move._value} { move._value = std::numeric_limits<size_t>::max(); }
+					id_t& operator=(id_t&& move) noexcept { release(); pool = move.pool; _value = move._value; move._value = std::numeric_limits<size_t>::max(); }
+					~id_t() { release(); }
 
-			operator int() const noexcept { return _value; }
-			int value() const noexcept { return _value; }
+					operator int() const noexcept { return _value; }
+					int value() const noexcept { return _value; }
+
+				private:
+					void release() const noexcept
+						{
+						if (_value != std::numeric_limits<size_t>::max()) { pool->release(_value); }
+						}
+
+					id_pool* pool;
+					size_t _value;
+				};
+
+			inline static constexpr size_t min{std::numeric_limits<size_t>::min()};
+			inline static constexpr size_t max{std::numeric_limits<size_t>::max()};
+
+			size_t size()      const noexcept { return max - min; }
+			size_t available() const noexcept { return max - count; }
+			size_t used()      const noexcept { return count - min; }
+			bool   empty()     const noexcept { return available() == 0; }
+
+
+			size_t last() { return count - 1; }
 
 		private:
-			void release() const noexcept
+			size_t count = min;
+			std::vector<size_t> unused;
+
+			size_t get() noexcept
 				{
-				if (_value != std::numeric_limits<size_t>::max()) { pool->release(_value); }
+				if (unused.size())
+					{
+					size_t ret = unused.back();
+					unused.pop_back();
+					return ret;
+					}
+				else { return count++; }
 				}
 
-			id_pool* pool;
-			size_t _value;
+			size_t get_except()
+				{
+				if (empty()) { throw std::out_of_range{"All available ids have already been assigned"}; }
+				return get();
+				}
+
+			void release(size_t id)
+				{
+				unused.push_back(id);
+				}
 		};
+
 	}
