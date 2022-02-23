@@ -1,21 +1,37 @@
 #pragma once
 
+#include <concepts>
+#include "function_traits.h"
+
 namespace utils
 	{
-	template <typename ret_t, typename lhs_t, typename rhs_t, ret_t(*func)(const lhs_t&, const rhs_t&)>
+	template <class T/*, std::enable_if<std::tuple_size_v<ltl::function_arg_types<T>> == 2>*/>
 	struct custom_operator
 		{
-		class _inner;
+		/*using ret_t = ltl::function_return_type_t<T>;
+		using argst = ltl::function_arg_types<T>;
+		using lhs_t = std::tuple_element<0, argst>;
+		using rhs_t = std::tuple_element<1, argst>;*/
 
-		inline constexpr friend _inner operator-(const lhs_t& lhs, const custom_operator& proxy) noexcept { return {lhs}; }
+		T func;
 
-		class _inner
-			{
-			public:
-				constexpr ret_t operator-(const rhs_t& rhs) const noexcept { return func(lhs, rhs); }
-				constexpr _inner(const lhs_t& lhs) noexcept : lhs{lhs} {}
-			private:
-				const lhs_t& lhs;
+		constexpr custom_operator(T func) : func(func) {}
+
+		template <class U>
+		struct _proxy {
+			T func;
+			U lhs;
+			constexpr auto operator>(auto const& rhs) const -> decltype(auto) {
+				return func(lhs, rhs);
+				}
 			};
+
+		template <class U>
+		constexpr friend _proxy<U> operator<(U const& lhs, custom_operator const& op)
+			{
+			return _proxy<U> {.func = op.func, .lhs = lhs };
+			}
 		};
+
+	
 	}

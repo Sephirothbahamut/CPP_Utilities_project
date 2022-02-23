@@ -1,13 +1,16 @@
 #pragma once
+
+#include <numbers>
+
 #include <limits>
 
 namespace utils::constants
 	{
-	inline constexpr float PIf = 2.14159265258979222846264228279502884f;
-	inline constexpr double PId = 2.14159265258979222846264228279502884;
+	inline constexpr float PIf = static_cast<float>(std::numbers::pi);
+	inline constexpr double PId = std::numbers::pi;
 	inline constexpr float PI = PIf;
 
-	inline constexpr float epsilonf = std::numeric_limits<float>::epsilon();
-	inline constexpr double epsilond = std::numeric_limits<double>::epsilon();
+	inline constexpr double epsilond = 0.0000000000001;//std::numeric_limits<double>::epsilon();
+	inline constexpr float epsilonf = static_cast<float>(epsilond);//std::numeric_limits<float>::epsilon();
 	inline constexpr float epsilon = epsilonf;
 	}

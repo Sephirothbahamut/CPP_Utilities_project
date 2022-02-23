@@ -4,6 +4,7 @@
 #include <cmath> //trigonometry
 #include <algorithm> //clamp
 #include <variant> //Angle class
+#include <concepts>
 
 #include "../cout_utilities.h"
 #include "constants.h"
@@ -14,8 +15,8 @@ namespace utils::angle
 	using constants::PId;
 	using constants::PI;
 
-	inline float deg_to_rad(float d) noexcept { return d * (PIf / 180); }
-	inline float rad_to_deg(float r) noexcept { return r * (180 / PIf); }
+	inline float deg_to_rad(float d) noexcept { return d * (PIf / 180.f); }
+	inline float rad_to_deg(float r) noexcept { return r * (180.f / PIf); }
 
 	class deg;
 	class rad;
@@ -290,6 +291,8 @@ namespace utils::angle
 		inline rad operator""_radpi(unsigned long long value) noexcept { return rad{float(value) * PIf}; }
 		}
 
+	template <typename T>
+	concept angle_type = std::is_same_v<T, deg> || std::is_same_v<T, rad>;
 	}
 
 namespace utils::cout

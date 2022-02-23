@@ -54,9 +54,9 @@ namespace utils::math
 	class vec2
 		{
 		public:
-			vec2<T>()         noexcept = default;
-			vec2<T>(T x, T y) noexcept : x(x), y(y) {};
-			vec2<T>(T xy)     noexcept : x(xy), y(xy) {}
+			//vec2<T>()         noexcept = default;
+			//vec2<T>(T x, T y) noexcept : x(x), y(y) {};
+			//vec2<T>(T xy)     noexcept : x(xy), y(xy) {}
 			static vec2<T> rr()    noexcept { return {T{ 1}, T{ 0}}; }
 			static vec2<T> ll()    noexcept { return {T{-1}, T{ 0}}; }
 			static vec2<T> up()    noexcept { return {T{ 0}, T{-1}}; }
@@ -163,48 +163,45 @@ namespace utils::math
 
 	namespace operators
 		{
-		
-		struct _dot
+		inline constexpr struct _dot
 			{
 			template <typename T>
 			class _inner;
 
 			template <typename T>
-			inline friend _inner<T> operator<(const vec2<T>& lhs, const _dot& proxy) noexcept { return {lhs}; }
+			inline friend _inner<T> operator<(vec2<T> lhs, _dot proxy) noexcept { return {lhs}; }
 
 			template <typename T>
 			class _inner
 				{
 				public:
-					T operator>(const vec2<T>& rhs) const noexcept { return vec2<T>::dot(lhs, rhs); }
-					_inner(const vec2<T>& lhs) noexcept : lhs{lhs} {}
+					T operator>(vec2<T> rhs) const noexcept { return vec2<T>::dot(lhs, rhs); }
+					_inner(vec2<T> lhs) noexcept : lhs{lhs} {}
 				private:
-					const vec2<T>& lhs;
+					vec2<T> lhs;
 				};
 
-			};
-		inline const _dot dot;
+			} dot;
 
-		struct _cross
+		inline constexpr struct _cross
 			{
 			template <typename T>
 			class _inner;
 
 			template <typename T>
-			inline friend _inner<T> operator<(const vec2<T>& lhs, const _cross& proxy) noexcept { return {lhs}; }
+			inline friend _inner<T> operator<(vec2<T> lhs, _cross proxy) noexcept { return {lhs}; }
 
 			template <typename T>
 			class _inner
 				{
 				public:
-					vec2<T> operator>(const vec2<T>& rhs) const noexcept { return lhs * rhs; }
-					_inner(const vec2<T>& lhs) noexcept : lhs{lhs} {}
+					vec2<T> operator>(vec2<T> rhs) const noexcept { return lhs * rhs; }
+					_inner(vec2<T> lhs) noexcept : lhs{lhs} {}
 				private:
-					const vec2<T>& lhs;
+					vec2<T> lhs;
 				};
 
-			};
-		inline const _cross cross;
+			} cross;
 		}
 
 	}

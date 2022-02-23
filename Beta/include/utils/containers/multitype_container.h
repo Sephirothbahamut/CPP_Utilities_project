@@ -14,6 +14,8 @@ namespace utils
 
 			tuple_t containers;
 
+			// TODO standard compliant iterators
+
 			template <typename msg_t>
 			auto& get_containing_type()
 				{

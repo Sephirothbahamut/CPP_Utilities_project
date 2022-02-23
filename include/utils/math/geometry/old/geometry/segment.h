@@ -1,9 +1,5 @@
 #pragma once
-
-#include <algorithm>
-
 #include "../../compilation/debug.h"
-#include "../constants.h"
 #include "../vec2.h"
 
 #ifdef utils_is_debug
@@ -15,6 +11,8 @@ namespace utils::math::geometry
 	{
 	enum class vertex_name { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z };
 	enum class side_t { left = -1, equal = 0, right = 1 };
+
+	class polygon;
 
 	class segment
 		{
@@ -46,28 +44,11 @@ namespace utils::math::geometry
 				return {a.x + t * delta.x, a.y + t * delta.y};
 				}
 
-
-			float minimum_distance(const vec2f& point) const noexcept {
-				// https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
-
-				// Return minimum distance between line segment vw and point p
-				const float l2 = vec2f::distance2(a, b);  // i.e. |b-a|^2 -  avoid a sqrt
-				if (l2 == 0.0) { return vec2f::distance(point, a); } // a == b case
-				// Consider the line extending the segment, parameterized as a + t (b - a).
-				// We find projection of point p onto the line. 
-				// It falls where t = [(p-a) . (b-a)] / |b-a|^2
-				// We clamp t from [0,1] to handle points outside the segment vw.
-				const float t = std::max(0.f, std::min(1.f, vec2f::dot(point - a, b - a) / l2));
-				const vec2f projection = a + (b - a) * t;  // Projection falls on the segment
-				return vec2f::distance(point, projection);
-				}
-
 			vec2f vector() const noexcept { return b - a; }
 
 			bool contains(const vec2f& point) const noexcept
 				{
-				// https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
-				return minimum_distance(point) < constants::epsilonf;
+				//TODO
 				}
 
 			side_t point_side(const vec2f& point) const noexcept
@@ -88,6 +69,19 @@ namespace utils::math::geometry
 				return intersects_line(other) && other.intersects_line(*this);
 				}
 
+			bool intersects(const polygon& poly) const noexcept;
+
 		private:
 		};
+	}
+
+#include "polygon.h"
+
+namespace utils::math::geometry
+	{
+	inline bool segment::intersects(const polygon& polygon) const noexcept
+		{
+		//for (const segment& edge : polygon.edges()) { if (intersects(edge)) { return true; } }
+		return false;
+		}
 	}

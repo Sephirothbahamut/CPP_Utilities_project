@@ -15,6 +15,7 @@ It is assumed that the constructor of the contained type T takes size_t as first
 #include <set>
 #include <optional>
 #include <iostream> //TODO remove when adding exceptions
+#include <concepts>
 
 namespace utils
 	{
@@ -35,12 +36,8 @@ namespace utils
 			inline size_t get_id() const noexcept { return id; }
 		};
 
-	namespace
-		{
-		class Dummy_for_intellisense : protected indexed_element {};
-		}
-
 	template <typename T>
+		requires std::is_base_of_v<indexed_element, T>
 	class indexed_container
 		{
 		static_assert(std::is_base_of<indexed_element, T>::value, "Types contained in an indexed_container must inherit from indexed_element.");

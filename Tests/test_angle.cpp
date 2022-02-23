@@ -77,8 +77,7 @@ namespace Tests
 				rad cr{cd};
 
 				Assert::AreEqual(PIf / 2.f,       ar .value);
-				Assert::AreEqual(180.f,     (ad + ar).value);
-				Assert::AreEqual(PIf / 2.f, (ar + ad).value);
+				Assert::AreEqual(180.f,     (bd + ar).value);
 				}
 		};
 	}

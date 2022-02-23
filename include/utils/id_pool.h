@@ -12,9 +12,9 @@ namespace utils
 			inline static constexpr size_t min{std::numeric_limits<size_t>::min()};
 			inline static constexpr size_t max{std::numeric_limits<size_t>::max()};
 
-			size_t size()      const noexcept { return max - used(); }
-			size_t used()      const noexcept { return count - unused.size(); }
-			bool   empty()     const noexcept { return size() == 0; }
+			size_t size()  const noexcept { return max - used(); }
+			size_t used()  const noexcept { return count - unused.size(); }
+			bool   empty() const noexcept { return size() == 0; }
 
 			size_t get() noexcept
 				{

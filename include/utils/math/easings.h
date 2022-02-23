@@ -6,7 +6,7 @@
 
 namespace utils::math::easing
 	{
-	namespace details
+	namespace _
 		{
 		template <std::floating_point T>
 		T ease_in_sine(T t)
@@ -265,36 +265,36 @@ namespace utils::math::easing
 		switch (type)
 			{
 			case utils::math::easing::linear: return t;
-			case utils::math::easing::sine:    if constexpr (dir == dir::in)     { return details::ease_in_sine       (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_sine      (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_sine   (t); }
-			case utils::math::easing::quad:    if constexpr (dir == dir::in)     { return details::ease_in_quad       (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_quad      (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_quad   (t); }
-			case utils::math::easing::cubic:   if constexpr (dir == dir::in)     { return details::ease_in_cubic      (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_cubic     (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_cubic  (t); }
-			case utils::math::easing::quart:   if constexpr (dir == dir::in)     { return details::ease_in_quart      (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_quart     (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_quart  (t); }
-			case utils::math::easing::quint:   if constexpr (dir == dir::in)     { return details::ease_in_quint      (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_quint     (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_quint  (t); }
-			case utils::math::easing::expo:    if constexpr (dir == dir::in)     { return details::ease_in_expo       (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_expo      (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_expo   (t); }
-			case utils::math::easing::circ:    if constexpr (dir == dir::in)     { return details::ease_in_circ       (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_circ      (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_circ   (t); }
-			case utils::math::easing::back:    if constexpr (dir == dir::in)     { return details::ease_in_back       (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_back      (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_back   (t); }
-			case utils::math::easing::elastic: if constexpr (dir == dir::in)     { return details::ease_in_elastic    (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_elastic   (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_elastic(t); }
-			case utils::math::easing::bounce:  if constexpr (dir == dir::in)     { return details::ease_in_bounce     (t); }
-			                              else if constexpr (dir == dir::out)    { return details::ease_out_bounce    (t); }
-			                              else if constexpr (dir == dir::in_out) { return details::ease_in_out_bounce (t); }
+			case utils::math::easing::sine:    if constexpr (dir == dir::in)     { return _::ease_in_sine       (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_sine      (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_sine   (t); }
+			case utils::math::easing::quad:    if constexpr (dir == dir::in)     { return _::ease_in_quad       (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_quad      (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_quad   (t); }
+			case utils::math::easing::cubic:   if constexpr (dir == dir::in)     { return _::ease_in_cubic      (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_cubic     (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_cubic  (t); }
+			case utils::math::easing::quart:   if constexpr (dir == dir::in)     { return _::ease_in_quart      (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_quart     (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_quart  (t); }
+			case utils::math::easing::quint:   if constexpr (dir == dir::in)     { return _::ease_in_quint      (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_quint     (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_quint  (t); }
+			case utils::math::easing::expo:    if constexpr (dir == dir::in)     { return _::ease_in_expo       (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_expo      (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_expo   (t); }
+			case utils::math::easing::circ:    if constexpr (dir == dir::in)     { return _::ease_in_circ       (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_circ      (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_circ   (t); }
+			case utils::math::easing::back:    if constexpr (dir == dir::in)     { return _::ease_in_back       (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_back      (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_back   (t); }
+			case utils::math::easing::elastic: if constexpr (dir == dir::in)     { return _::ease_in_elastic    (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_elastic   (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_elastic(t); }
+			case utils::math::easing::bounce:  if constexpr (dir == dir::in)     { return _::ease_in_bounce     (t); }
+			                              else if constexpr (dir == dir::out)    { return _::ease_out_bounce    (t); }
+			                              else if constexpr (dir == dir::in_out) { return _::ease_in_out_bounce (t); }
 			}
 		}
 

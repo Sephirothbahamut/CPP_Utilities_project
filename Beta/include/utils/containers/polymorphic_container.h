@@ -48,6 +48,8 @@ namespace utils
 					}
 				}
 
+			//TODO standard compliant iterators
+
 			template <typename Function>
 			void for_each_container(Function function) { function(parent_container); set.for_each_container(function); }
 			template <typename Function>
