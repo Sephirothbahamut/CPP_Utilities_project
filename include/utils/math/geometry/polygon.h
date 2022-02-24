@@ -145,24 +145,3 @@ namespace utils::math::geometry
 		private:
 		};
 	}
-
-namespace utils::math
-	{
-	inline geometry::polygon& operator*=(geometry::convex_polygon& polygon, const Transform2& transform) noexcept
-		{
-		/*polygon *= transform.size;
-		polygon += transform.orientation;
-		polygon += transform.position;*/
-		for (auto& vertex : polygon.get_vertices())
-			{
-			vertex *= transform;
-			}
-		return polygon;
-		}
-	inline geometry::polygon  operator* (const geometry::convex_polygon& polygon, const Transform2& transform) noexcept
-		{
-		geometry::convex_polygon ret{polygon};
-		ret *= transform;
-		return ret;
-		}
-	}

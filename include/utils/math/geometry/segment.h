@@ -72,11 +72,9 @@ namespace utils::math::geometry
 
 			side_t point_side(const vec2f& point) const noexcept
 				{
-				return side_t::equal;
-				/*
-				var dir = triangle(point, a, b).area2;
-				return dir < 0 ? position.left : dir == 0 ? position.equal : position.right;
-				*/
+				// a-b-point triangle signed area^2
+				const float some_significant_name_ive_yet_to_figure_out{((b.x - a.x) * (point.y - a.y)) - ((point.x - a.x) * (b.y - a.y))};
+				return some_significant_name_ive_yet_to_figure_out < -constants::epsilonf ? side_t::left : some_significant_name_ive_yet_to_figure_out > constants::epsilonf ? side_t::right : side_t::equal;
 				}
 
 			bool intersects_line(const segment& other) const noexcept
