@@ -221,6 +221,11 @@ namespace utils::math::geometry
 			
 			if (collides(polygon, circle.center)) { return true; }
 
+			for (const auto& edge : polygon.get_edges())
+			{
+				if (collides(circle, edge)) { return true; }
+			}
+
 			return false;
 			}
 
