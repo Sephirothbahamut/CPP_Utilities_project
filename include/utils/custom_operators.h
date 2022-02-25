@@ -32,6 +32,4 @@ namespace utils
 			return _proxy<U> {.func = op.func, .lhs = lhs };
 			}
 		};
-
-	
 	}

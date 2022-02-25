@@ -138,11 +138,11 @@ namespace utils::math::geometry
 				{
 				aabb ret
 					{
-					.up =  finf;
-					.dw = -finf;
-					.ll = -finf;
-					.rr =  finf;
-					}
+					.up =  constants::finf,
+					.dw = -constants::finf,
+					.rr =  constants::finf,
+					.ll = -constants::finf,
+					};
 
 				for(const auto& vertex : get_vertices())
 					{

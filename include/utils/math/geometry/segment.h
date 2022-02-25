@@ -90,11 +90,11 @@ namespace utils::math::geometry
 			{
 				aabb ret
 					{
-					.up =  std::min(a.y,  b.y);
-					.dw =  std::max(a.y,  a.y);
-					.ll =  std::min(a.x,  b.x);
-					.rr =  std::max(a.x,  b.x);
-					}
+					.up = std::min(a.y,  b.y),
+					.dw = std::max(a.y,  a.y),
+					.rr = std::max(a.x,  b.x),
+					.ll = std::min(a.x,  b.x),
+					};
 
 				return ret;
 			}

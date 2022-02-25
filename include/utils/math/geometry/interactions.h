@@ -82,7 +82,7 @@ namespace utils::math::geometry
 				segment tmp_segment{point, vec2f{point.x + static_cast<aabb>(polygon).right, point.y}}; //A segment which lies on a generic horizontal line
 				for (const auto& edge : polygon.get_edges())
 					{
-					if (intersects(edge, tmp_segment)) { is_inside = !is_inside; }
+					if (intersects(edge, tmp_segment) && tmp_segment.a.y != edge.b.y) { is_inside = !is_inside; }
 					}
 				return is_inside;
 				}
@@ -122,11 +122,11 @@ namespace utils::math::geometry
 		inline bool collides(const polygon<polygon_type>& polygon, const segment& segment) noexcept { return intersects(polygon, segment) || contains<collision_strictness_t::loose>(polygon, segment); }
 
 		template <polygon_type_t polygon_type>
-		inline bool intersects(const segment& segment, const polygon<polygon_type_t::convex>& polygon) noexcept { return intersects(polygon, segment); }
+		inline bool intersects(const segment& segment, const polygon<polygon_type>& polygon) noexcept { return intersects(polygon, segment); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose, polygon_type_t polygon_type>
-		inline bool contains  (const segment& segment, const polygon<polygon_type_t::convex>& polygon) noexcept { return contains  (polygon, segment); }
+		inline bool contains  (const segment& segment, const polygon<polygon_type>& polygon) noexcept { return contains  (polygon, segment); }
 		template <polygon_type_t polygon_type>
-		inline bool collides  (const segment& segment, const polygon<polygon_type_t::convex>& polygon) noexcept { return collides  (polygon, segment); }
+		inline bool collides  (const segment& segment, const polygon<polygon_type>& polygon) noexcept { return collides  (polygon, segment); }
 	#pragma endregion Polygon-segment
 
 	#pragma region Polygon-polygon
@@ -221,7 +221,8 @@ namespace utils::math::geometry
 	#pragma endregion Circle-segment
 
 	#pragma region Circle-polygon
-		inline bool intersects(const circle& circle, const polygon<polygon_type_t::convex>& polygon) noexcept
+		template <polygon_type_t polygon_type>
+		inline bool intersects(const circle& circle, const polygon<polygon_type>& polygon) noexcept
 			{
 			for (const auto& edge : polygon.get_edges())
 				{
@@ -229,8 +230,8 @@ namespace utils::math::geometry
 				}
 			return false;
 			}
-		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const circle& circle, const polygon<polygon_type_t::convex>& polygon) noexcept
+		template <collision_strictness_t strictness = collision_strictness_t::loose, polygon_type_t polygon_type>
+		inline bool contains(const circle& circle, const polygon<polygon_type>& polygon) noexcept
 			{
 			for (const auto& vertex : polygon.get_vertices())
 				{
@@ -238,7 +239,8 @@ namespace utils::math::geometry
 				}
 			return true;
 			}
-		inline bool collides(const circle& circle, const polygon<polygon_type_t::convex>& polygon) noexcept
+		template <polygon_type_t polygon_type>
+		inline bool collides(const circle& circle, const polygon<polygon_type>& polygon) noexcept
 			{
 			for (const auto& vertex : polygon.get_vertices())
 				{
@@ -255,10 +257,12 @@ namespace utils::math::geometry
 			return false;
 			}
 
-		inline bool intersects(const polygon<polygon_type_t::convex>& polygon, const circle& circle) noexcept { return intersects(circle, polygon); }
-		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains  (const polygon<polygon_type_t::convex>& polygon, const circle& circle) noexcept { return contains  (circle, polygon); }
-		inline bool collides  (const polygon<polygon_type_t::convex>& polygon, const circle& circle) noexcept { return collides  (circle, polygon); }
+		template <polygon_type_t polygon_type>
+		inline bool intersects(const polygon<polygon_type>& polygon, const circle& circle) noexcept { return intersects(circle, polygon); }
+		template <collision_strictness_t strictness = collision_strictness_t::loose, polygon_type_t polygon_type>
+		inline bool contains  (const polygon<polygon_type>& polygon, const circle& circle) noexcept { return contains  (circle, polygon); }
+		template <polygon_type_t polygon_type>
+		inline bool collides  (const polygon<polygon_type>& polygon, const circle& circle) noexcept { return collides  (circle, polygon); }
 	#pragma endregion Circle-polygon
 
 	#pragma region Circle-circle

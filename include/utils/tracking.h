@@ -60,7 +60,7 @@ namespace utils
 					: tracker{std::move(move.tracker)}
 					{
 					//Source needs a new tracker pointing at its address, which is still stored in the tracker I stole
-					move.tracker = std::make_shared<tracker_t<T>>(tracker->s);
+					move.tracker = std::make_shared<tracker_t<T>>(tracker->tracked);
 
 					//Update my tracker with my address. tracking_ptr following the target of the source now point at me, where the source has moved.
 					tracker->tracked = my_address;
