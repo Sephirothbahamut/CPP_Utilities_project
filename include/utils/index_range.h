@@ -14,7 +14,7 @@ namespace utils
 	/// Note: assumes whatever crap you put inside to start from 0
 	/// </summary>
 	template <random_accessible_sized_range T>
-	auto indices(const T& container) { return std::ranges::iota_view {decltype(std::ranges::size(container)){0}, std::ranges::size(container)}; }
+	auto indices(const T& container, size_t min = 0) { return std::ranges::iota_view {decltype(std::ranges::size(container)){min}, std::ranges::size(container)}; }
 
 	class Index_range
 		{
@@ -46,12 +46,13 @@ namespace utils
 				bool operator<=(const iterator& other) { return index <= other.index; }
 				};
 
-			iterator begin() const noexcept { return {0}; }
+			iterator begin() const noexcept { return {min}; }
 			iterator end()   const noexcept { return {max};   }
 
-			Index_range(size_t max) noexcept : max{max} {}
+			Index_range(size_t max, size_t min = 0) noexcept : max{max}, min{min} {}
 
 		private:
 			size_t max;
+			size_t min;
 		};
 	}

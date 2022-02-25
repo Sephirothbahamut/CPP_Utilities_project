@@ -51,6 +51,7 @@ namespace utils::math::geometry
 #pragma region Properties
 		// Aliases
 		__declspec(property(get = get_up, put = set_up)) float top;
+		__declspec(property(get = get_dw, put = set_dw)) float down;
 		__declspec(property(get = get_dw, put = set_dw)) float bottom;
 		__declspec(property(get = get_ll, put = set_ll)) float left;
 		__declspec(property(get = get_rr, put = set_rr)) float right;
@@ -61,10 +62,13 @@ namespace utils::math::geometry
 		__declspec(property(get = get_ul, put = set_ul)) vec2f top_left;
 		__declspec(property(get = get_ur, put = set_ur)) vec2f ur;
 		__declspec(property(get = get_ur, put = set_ur)) vec2f up_right;
+		__declspec(property(get = get_ur, put = set_ur)) vec2f top_right;
 		__declspec(property(get = get_dr, put = set_dr)) vec2f dr;
 		__declspec(property(get = get_dr, put = set_dr)) vec2f down_right;
+		__declspec(property(get = get_dr, put = set_dr)) vec2f bottom_right;
 		__declspec(property(get = get_dl, put = set_dl)) vec2f dl;
 		__declspec(property(get = get_dl, put = set_dl)) vec2f down_left;
+		__declspec(property(get = get_dl, put = set_dl)) vec2f bottom_left;
 
 		// Pos-size
 		__declspec(property(get = get_x, put = set_x)) float x;

@@ -6,6 +6,7 @@
 #include <iterator>
 #include <ranges>
 
+#include "aabb.h"
 #include "segment.h"
 #include "../vec2.h"
 #include "../angle.h"
@@ -14,6 +15,9 @@
 
 namespace utils::math::geometry
 	{
+	enum class polygon_type_t { concave, convex };
+
+	template <polygon_type_t polygon_type>
 	class polygon
 		{
 		public:
@@ -130,18 +134,30 @@ namespace utils::math::geometry
 
 #pragma endregion vertices and segments iteration
 
+			operator aabb() const noexcept
+				{
+				aabb ret
+					{
+					.up =  finf;
+					.dw = -finf;
+					.ll = -finf;
+					.rr =  finf;
+					}
+
+				for(const auto& vertex : get_vertices())
+					{
+					ret.left  = std::min(ret.left,  vertex.x);
+					ret.right = std::max(ret.right, vertex.x);
+					ret.up    = std::min(ret.up,    vertex.y);
+					ret.down  = std::max(ret.down,  vertex.y);
+					}
+
+				return ret;
+				}
+
 			private:
 				std::vector<vec2f> _vertices;
 
 		};
 
-	/// <summary>
-	/// NOTE: Assumes convex!
-	/// </summary>
-	class convex_polygon : public polygon
-		{
-		public:
-			using polygon::polygon;
-		private:
-		};
 	}

@@ -85,6 +85,19 @@ namespace utils::math::geometry
 				{
 				return intersects_line(other) && other.intersects_line(*this);
 				}
+			
+			operator aabb() const noexcept
+			{
+				aabb ret
+					{
+					.up =  std::min(a.y,  b.y);
+					.dw =  std::max(a.y,  a.y);
+					.ll =  std::min(a.x,  b.x);
+					.rr =  std::max(a.x,  b.x);
+					}
+
+				return ret;
+			}
 
 		private:
 		};

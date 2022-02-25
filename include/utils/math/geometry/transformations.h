@@ -47,41 +47,49 @@ namespace utils::math::geometry::transformations
 #pragma endregion segment
 
 #pragma region polygon
-	inline geometry::convex_polygon operator*(const geometry::convex_polygon& polygon, float scale) noexcept
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type> operator*(const geometry::polygon<polygon_type>& polygon, float scale) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
 		for (auto& v : new_vertices) { v *= scale; }
 		return {std::move(new_vertices)};
 		}
-	inline geometry::convex_polygon operator+(const geometry::convex_polygon& polygon, angle::deg rotation) noexcept
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type> operator+(const geometry::polygon<polygon_type>& polygon, angle::deg rotation) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
 		for (auto& v : new_vertices) { v += rotation; }
 		return {std::move(new_vertices)};
 		}
-	inline geometry::convex_polygon operator+(const geometry::convex_polygon& polygon, vec2f translation) noexcept
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type> operator+(const geometry::polygon<polygon_type>& polygon, vec2f translation) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
 		for (auto& v : new_vertices) { v += translation; }
 		return {std::move(new_vertices)};
 		}
-	inline geometry::convex_polygon& operator*=(geometry::convex_polygon& polygon, float scale) noexcept
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type>& operator*=(geometry::polygon<polygon_type>& polygon, float scale) noexcept
 		{
 		for (auto& v : polygon.get_vertices()) { v *= scale; }
 		return polygon;
 		}
-	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& polygon, angle::deg rotation) noexcept
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type>& operator+=(geometry::polygon<polygon_type>& polygon, angle::deg rotation) noexcept
 		{
 		for (auto& v : polygon.get_vertices()) { v += rotation; }
 		return polygon;
 		}
-	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& polygon, vec2f translation) noexcept
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type>& operator+=(geometry::polygon<polygon_type>& polygon, vec2f translation) noexcept
 		{
 		for (auto& v : polygon.get_vertices()) { v += translation; }
 		return polygon;
 		}
-	inline geometry::convex_polygon  operator* (const geometry::convex_polygon& shape, const Transform2& transform) noexcept { return         ((shape * transform.size) + transform.orientation) + transform.position; }
-	inline geometry::convex_polygon& operator*=(      geometry::convex_polygon& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type>  operator* (const geometry::polygon<polygon_type>& shape, const Transform2& transform) noexcept { return         ((shape * transform.size) + transform.orientation) + transform.position; }
+	template <polygon_type_t polygon_type>
+	inline geometry::polygon<polygon_type>& operator*=(      geometry::polygon<polygon_type>& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 
 #pragma endregion polygon
 #pragma region circle
