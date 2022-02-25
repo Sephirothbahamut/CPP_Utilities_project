@@ -127,8 +127,8 @@ namespace utils::math::geometry
 			edges_ref    get_edges_ref()      noexcept { return edges_ref{this}; }
 			edges_cpy    get_edges()    const noexcept { return edges_cpy{this}; }
 
-			segment_ref edges_ref_get(size_t index) noexcept { return {_vertices[index], _vertices[index % _vertices.size()]}; };
-			segment     edges_get(size_t index) const noexcept { return {_vertices[index], _vertices[index % _vertices.size()]}; };
+			segment_ref edges_ref_get(size_t index)       noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]}; };
+			segment     edges_get    (size_t index) const noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]}; };
 			//segment get_edge(size_t index) const noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]]}; }
 			size_t edges_count() const noexcept { return _vertices.size(); }
 
