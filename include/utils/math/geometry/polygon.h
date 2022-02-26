@@ -15,9 +15,7 @@
 
 namespace utils::math::geometry
 	{
-	enum class polygon_type_t { concave, convex };
 
-	template <polygon_type_t polygon_type>
 	class polygon
 		{
 		public:
@@ -158,6 +156,14 @@ namespace utils::math::geometry
 			private:
 				std::vector<vec2f> _vertices;
 
+
 		};
 
+	class convex_polygon : public polygon 
+		{
+		public:
+			using polygon::polygon;
+
+			
+		};
 	}
