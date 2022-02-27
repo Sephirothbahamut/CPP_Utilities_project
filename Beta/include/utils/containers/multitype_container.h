@@ -1,8 +1,53 @@
 #pragma once
-#include <utils/variadic.h>
+#include <vector>
+#include <deque>
+#include <list>
+#include <set>
+#include "../../../../include/utils/variadic.h"
 
 namespace utils
 	{
+	template<template<typename> typename Container_type, typename T>
+	struct container_emplace_helper
+		{};
+
+	template<typename T>
+	struct container_emplace_helper<std::vector, T>
+		{
+		template<typename... Args>
+		static T& emplace(std::vector<T>& v, Args&&... args)
+			{
+			return v.emplace_back(std::forward<Args>(args)...);
+			}
+		};
+	template<typename T>
+	struct container_emplace_helper<std::deque, T>
+		{
+		template<typename... Args>
+		static T& emplace(std::deque<T>& v, Args&&... args)
+			{
+			return v.emplace_back(std::forward<Args>(args)...);
+			}
+		};
+	template<typename T>
+	struct container_emplace_helper<std::list, T>
+		{
+		template<typename... Args>
+		static T& emplace(std::list<T>& v, Args&&... args)
+			{
+			return v.emplace_back(std::forward<Args>(args)...);
+			}
+		};
+	template<typename T>
+	struct container_emplace_helper<std::set, T>
+		{
+		template<typename... Args>
+		static T& emplace(std::set<T>& v, Args&&... args)
+			{
+			return v.emplace(std::forward<Args>(args)...);
+			}
+		};
+
 	template <template<class> class Container_type, typename ...Types>
 	class multitype_container
 		{
@@ -15,6 +60,16 @@ namespace utils
 			tuple_t containers;
 
 			// TODO standard compliant iterators
+
+
+			template <typename msg_t, typename ...Args>
+			msg_t& emplace(Args ...args)
+				{
+				if constexpr (utils::variadic::contains_type<msg_t, Types...>::value)
+					{
+					return container_emplace_helper<Container_type, msg_t>::emplace(get_containing_type<msg_t>(), std::forward<Args>(args)...);
+					}
+				}
 
 			template <typename msg_t>
 			auto& get_containing_type()

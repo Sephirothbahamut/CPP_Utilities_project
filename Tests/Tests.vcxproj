@@ -171,6 +171,7 @@
     <ClCompile Include="test_buffer.cpp" />
     <ClCompile Include="test_deferred.cpp" />
     <ClCompile Include="test_id_pool.cpp" />
+    <ClCompile Include="test_multitype_container.cpp" />
     <ClCompile Include="test_tracking.cpp" />
     <ClCompile Include="transform.cpp" />
   </ItemGroup>

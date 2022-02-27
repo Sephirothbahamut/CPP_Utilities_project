@@ -1,24 +1,10 @@
 #pragma once
-#include "multitype_container.h"
+#include "../../../../include/utils/containers/multitype_container.h"
 #include "../../../../include/utils/polymorphic_value.h"
 #include "../../../../include/utils/variadic.h"
 
 namespace utils
 	{
-	template<template<typename> typename Container_type, typename T>
-	struct container_emplace_helper
-		{};
-
-	template<typename T>
-	struct container_emplace_helper<std::vector, T>
-		{
-		template<typename... Args>
-		static T& emplace(std::vector<T>& v, Args&&... args)
-			{
-			return v.emplace_back(std::forward<Args>(args)...);
-			}
-		};
-
 	//TODO ensure that all Types inherit from Base_type
 	template <template<class> class Container_type, typename Base_type, typename ...Types>
 	class polymorphic_container
