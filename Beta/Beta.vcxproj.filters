@@ -51,5 +51,8 @@
     <ClInclude Include="include\utils\math\vec.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\tracking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
