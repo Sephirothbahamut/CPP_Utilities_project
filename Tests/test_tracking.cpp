@@ -173,6 +173,39 @@ namespace Tests
 				Assert::AreEqual(ptr6->n, 6);
 				}
 
+			TEST_METHOD(track_from_emplace)
+				{
+				std::vector<TrackableClass> vec;
+				utils::tracking_ptr<TrackableClass> ptr0{vec.emplace_back(0)};
+				utils::tracking_ptr<TrackableClass> ptr1{vec.emplace_back(1)};
+				utils::tracking_ptr<TrackableClass> ptr2{vec.emplace_back(2)};
+				utils::tracking_ptr<TrackableClass> ptr3{vec.emplace_back(3)};
+				utils::tracking_ptr<TrackableClass> ptr4{vec.emplace_back(4)};
+				utils::tracking_ptr<TrackableClass> ptr5{vec.emplace_back(5)};
+				utils::tracking_ptr<TrackableClass> ptr6{vec.emplace_back(6)};
+				utils::tracking_ptr<TrackableClass> ptr7{vec.emplace_back(7)};
+				utils::tracking_ptr<TrackableClass> ptr8{vec.emplace_back(8)};
+				utils::tracking_ptr<TrackableClass> ptr9{vec.emplace_back(9)};
+
+
+				std::partition(vec.begin(), vec.end(), [](TrackableClass& element) { return (element.n % 2); });
+
+				Assert::AreEqual(vec[0].n % 2, 1);
+				Assert::AreEqual(vec[1].n % 2, 1);
+				Assert::AreEqual(vec[2].n % 2, 1);
+				Assert::AreEqual(vec[3].n % 2, 1);
+				Assert::AreEqual(vec[4].n % 2, 1);
+				Assert::AreEqual(vec[5].n % 2, 0);
+				Assert::AreEqual(vec[6].n % 2, 0);
+				Assert::AreEqual(vec[7].n % 2, 0);
+				Assert::AreEqual(vec[8].n % 2, 0);
+				Assert::AreEqual(vec[9].n % 2, 0);
+
+				Assert::AreEqual(ptr2->n, 2);
+				Assert::AreEqual(ptr4->n, 4);
+				Assert::AreEqual(ptr6->n, 6);
+				}
+
 			TEST_METHOD(move_around_vector_wrapped)
 				{
 				std::vector<WrappedClass> vec;
