@@ -9,6 +9,7 @@
 #include "../cout_utilities.h"
 #include "constants.h"
 
+//TODO put inside math
 namespace utils::angle
 	{
 	using constants::PIf;
@@ -30,7 +31,7 @@ namespace utils::angle
 		inline rad operator""_radpi(long double value)        noexcept;
 		inline rad operator""_radpi(unsigned long long value) noexcept;
 		}
-
+	
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== =====                 DEG                 ===== ===== ===== ===== ===== ===== =====
 	// ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== =====
@@ -86,6 +87,12 @@ namespace utils::angle
 			static float sin(const deg a) noexcept { return a.sin(); }
 			static float cos(const deg a) noexcept { return a.cos(); }
 			static float tan(const deg a) noexcept { return a.tan(); }
+
+			static deg lerp(deg a, deg b, float t)
+				{
+				if (a.value <= b.value) { return std::lerp(a.value, b.value, t); }
+				//TODO
+				}
 		};
 
 

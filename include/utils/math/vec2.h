@@ -7,9 +7,8 @@
 #include "../custom_operators.h"
 #include "math.h"
 
-#ifndef UTILS_NOANGLE
 #include "angle.h"
-#endif
+
 #ifdef COUT_CONTAINERS
 #include "../cout_utilities.h"
 #endif
@@ -54,9 +53,16 @@ namespace utils::math
 	class vec2
 		{
 		public:
-			//vec2<T>()         noexcept = default;
-			//vec2<T>(T x, T y) noexcept : x(x), y(y) {};
-			//vec2<T>(T xy)     noexcept : x(xy), y(xy) {}
+			vec2<T>()                              noexcept = default;
+			vec2<T>(T x, T y)                      noexcept : x{x}, y{y} {};
+			vec2<T>(angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
+			vec2<T>(angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
+			vec2<T>(angle::deg angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
+			vec2<T>(angle::rad angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
+			template <typename other_t>
+			vec2<T>(vec2<other_t> other)           noexcept : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {}    //TODO test
+
+
 			static vec2<T> rr()    noexcept { return {T{ 1}, T{ 0}}; }
 			static vec2<T> ll()    noexcept { return {T{-1}, T{ 0}}; }
 			static vec2<T> up()    noexcept { return {T{ 0}, T{-1}}; }
@@ -73,10 +79,15 @@ namespace utils::math
 			vec2<T>  normal() const noexcept { return magnitude() ? *this / magnitude() : *this; }
 			vec2<T>& normalize()    noexcept { return *this = normal(); }
 
-			float to_angle() const noexcept
-				{
-				return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f;
-				}
+			// CASTS
+
+			//float to_angle() const noexcept { return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f; }
+			operator angle::deg() const noexcept { return angle::trigonometry::atan2(y, x); } //TODO test
+			operator angle::rad() const noexcept { return angle::trigonometry::atan2(y, x); } //TODO test
+			operator T         () const noexcept { return magnitude(); }
+
+			template <typename other_t>
+			operator vec2<other_t>() const noexcept { return {static_cast<other_t>(x), static_cast<other_t>(y)}; }
 
 			// OPERATORS
 			vec2<T>  operator-() const noexcept { return {-x, -y}; }
@@ -160,6 +171,7 @@ namespace utils::math
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 				}
 		};
+
 
 	namespace operators
 		{

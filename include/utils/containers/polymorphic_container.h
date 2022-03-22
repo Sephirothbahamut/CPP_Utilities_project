@@ -1,7 +1,7 @@
 #pragma once
-#include "../../../../include/utils/containers/multitype_container.h"
-#include "../../../../include/utils/polymorphic_value.h"
-#include "../../../../include/utils/variadic.h"
+#include "multitype_container.h"
+#include "../polymorphic_value.h"
+#include "../variadic.h"
 
 namespace utils
 	{
@@ -45,6 +45,15 @@ namespace utils
 				set.for_each_element(function);
 				}
 
+
+			template <typename execution_policy, typename Function>
+			void for_each_element(execution_policy policy, Function function)
+				{
+				std::for_each(policy, parent_container.begin(), parent_container.end(), [](auto* element) { function(*element); });
+				set.for_each_element(policy, function);
+				}
+
+
 			template <typename msg_t, typename Function>
 			void for_each_containing_type(Function function) { set.for_each_containing_type<msg_t>(function); }
 
@@ -61,6 +70,20 @@ namespace utils
 					}
 
 				set.for_each_element_of_type<msg_t>(function);
+				}
+
+			template <typename msg_t, typename execution_policy, typename Function>
+			void for_each_element_of_type(execution_policy policy, Function function)
+				{
+				std::for_each(policy, parent_container.begin(), parent_container.end(), [&](auto* element)
+					{
+					msg_t* element_cast = dynamic_cast<msg_t*>(&*element);
+					if (element_cast != nullptr)
+						{
+						function(*element_cast);
+						}
+					});
+				set.for_each_element_of_type<msg_t>(policy, function);
 				}
 
 			template <typename msg_t>

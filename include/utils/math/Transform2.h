@@ -15,7 +15,7 @@ namespace utils::math
 
 		public:
 			//Transform2() = default;
-			Transform2(vec2f translation = {}, utils::angle::deg rotation = {}, float scaling = {1.f}) noexcept : position(translation), orientation(rotation), size(scaling) {}
+			//Transform2(vec2f translation = {}, utils::angle::deg rotation = {}, float scaling = {1.f}) noexcept : position(translation), orientation(rotation), size(scaling) {}
 			static Transform2 zero() { return {}; }
 
 			vec2f             position{};
@@ -56,6 +56,7 @@ namespace utils::math
 
 	}
 
+#ifdef COUT_CONTAINERS
 namespace utils::cout
 	{
 	inline std::ostream& operator<<(std::ostream& os, const utils::math::Transform2& transform) noexcept
@@ -67,3 +68,4 @@ namespace utils::cout
 			<< ccu::type << "Size: " << ccu::value << transform.size << ccu::brace << ")";
 		}
 	}
+#endif

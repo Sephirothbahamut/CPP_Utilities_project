@@ -3,6 +3,8 @@
 #include <cassert>
 #include <algorithm>
 #include <cmath>
+#include <concepts>
+#include "../math/angle.h"
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 
@@ -10,6 +12,7 @@ namespace utils::graphics
 	{
 	class color
 		{
+		using deg = utils::angle::deg;
 		public:
 			struct hsv;
 			struct hsl;
@@ -21,19 +24,20 @@ namespace utils::graphics
 			struct rgb
 				{
 				uint8_t r{0}, g{0}, b{0};
-				rgb(float   r, float   g, float   b) noexcept : rgb{static_cast<uint8_t>(r * 255.f), static_cast<uint8_t>(g * 255.f), static_cast<uint8_t>(b * 255.f)}
+
+				template <std::floating_point T>
+				rgb(T r, T g, T b) noexcept : rgb{static_cast<uint8_t>(r * 255.f), static_cast<uint8_t>(g * 255.f), static_cast<uint8_t>(b * 255.f)}
 					{
 					assert(r >= 0.f && r <= 1.f);
 					assert(g >= 0.f && g <= 1.f);
 					assert(b >= 0.f && b <= 1.f);
 					}
-				rgb(uint8_t r, uint8_t g, uint8_t b) noexcept : r{r}, g{g}, b{b} {}
 
 				/// <summary>
 				/// Redirect integral types to uint8_t constructor
 				/// </summary>
-				template <typename T>
-				rgb(T r, T g, T b, typename std::enable_if<std::is_integral<T>::value, T>::type=0) : rgb{static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b)}
+				template <std::integral T>
+				rgb(T r, T g, T b) : rgb{static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b)}
 					{
 					assert(r >= T{0} && r <= T{255});
 					assert(g >= T{0} && g <= T{255});
@@ -51,13 +55,14 @@ namespace utils::graphics
 			/// </summary>
 			struct hsv
 				{
-				float h{0}, s{0}, v{0};
+				deg h{0};
+				float s{0}, v{0};
 
-				hsv(float h, float s, float v) noexcept : h{h}, s{s}, v{v} { assert(validate()); }
+				hsv(utils::angle::deg h, float s, float v) noexcept : h{h}, s{s}, v{v} { assert(validate()); }
 
 				bool validate() const noexcept
 					{
-					return h >= 0.f && h <= 360.f
+					return h == h.clamped()
 						&& s >= 0.f && s <= 1.f
 						&& v >= 0.f && v <= 1.f;
 					}
@@ -73,13 +78,14 @@ namespace utils::graphics
 			/// </summary>
 			struct hsl
 				{
-				float h{0}, s{0}, l{0};
+				deg h{0};
+				float s{0}, l{0};
 
-				hsl(float h, float s, float l) noexcept : h{h}, s{s}, l{l} { assert(validate()); }
+				hsl(utils::angle::deg h, float s, float l) noexcept : h{h}, s{s}, l{l} { assert(validate()); }
 
 				bool validate() const noexcept
 					{
-					return h >= 0.f && h <= 360.f
+					return h == h.clamped()
 						&& s >= 0.f && s <= 1.f
 						&& l >= 0.f && l <= 1.f;
 					}
@@ -103,7 +109,7 @@ namespace utils::graphics
 			uint8_t get_r    () const noexcept { return inner.r; }
 			uint8_t get_g    () const noexcept { return inner.g; }
 			uint8_t get_b    () const noexcept { return inner.b; }
-			float   get_h    () const noexcept { return as_hsv().h; }
+			deg     get_h    () const noexcept { return as_hsv().h; }
 			float   get_hsv_s() const noexcept { return as_hsv().s; }
 			float   get_v    () const noexcept { return as_hsv().v; }
 			float   get_hsl_s() const noexcept { return as_hsl().s; }
@@ -111,7 +117,7 @@ namespace utils::graphics
 			void set_r    (uint8_t r) noexcept { inner.r = r; }
 			void set_g    (uint8_t g) noexcept { inner.g = g; }
 			void set_b    (uint8_t b) noexcept { inner.b = b; }
-			void set_h    (float   h) noexcept { auto tmp{as_hsv()}; tmp.h = h; *this = tmp; }
+			void set_h    (deg     h) noexcept { auto tmp{as_hsv()}; tmp.h = h; *this = tmp; }
 			void set_hsv_s(float   s) noexcept { auto tmp{as_hsv()}; tmp.s = s; *this = tmp; }
 			void set_v    (float   v) noexcept { auto tmp{as_hsv()}; tmp.v = v; *this = tmp; }
 			void set_hsl_s(float   s) noexcept { auto tmp{as_hsl()}; tmp.s = s; *this = tmp; }
@@ -200,7 +206,7 @@ namespace utils::graphics
 	
 	inline color::hsl::operator color::rgb() const noexcept
 		{
-		float h{this->h / 360.f};
+		float h{this->h.value / 360.f};
 		float r, g, b;
 
 		if (s == 0) { r = g = b = l; } // achromatic
@@ -229,7 +235,7 @@ namespace utils::graphics
 
 	inline color::hsv::operator color::rgb() const noexcept
 		{
-		float h{this->h / 360.f};
+		float h{this->h.value / 360.f};
 		float r, g, b;
 
 		unsigned i = h * 6.f;

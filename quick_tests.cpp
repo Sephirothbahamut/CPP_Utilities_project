@@ -15,8 +15,36 @@
 template <std::forward_iterator T>
 void f(T t) {};
 
+
+
+
+struct A
+	{
+	        void f() { std::cout << "pippo\n"; }
+	virtual void g() { std::cout << "pippo\n"; }
+	};
+
+struct B : A
+	{
+	        void f()          { std::cout << "pluto\n"; }
+	virtual void g() override { std::cout << "pluto\n"; }
+	void h() { A::g(); }
+	};
+
+
 int main()
 	{
+	B b;
+
+	b.f();
+	b.g();
+	b.h();
+	}
+
+
+int mainz()
+	{
+	return 0;
 	/*namespace utm = utils::math;
 
 	utm::vec2f a{2, 3};

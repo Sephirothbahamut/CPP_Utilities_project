@@ -18,14 +18,14 @@ namespace utils
 	namespace variadic
 		{
 		template <typename Container_T, Container_T search_for, Container_T element, Container_T... rest>
-		struct contains_value
+		struct container_contains_value
 			{
 			constexpr static bool value = search_for == element &&
-				contains_value<Container_T, search_for, rest...>::value;
+				container_contains_value<Container_T, search_for, rest...>::value;
 			};
 
 		template <typename Container_T, Container_T search_for, Container_T element>
-		struct contains_value<Container_T, search_for, element>
+		struct container_contains_value<Container_T, search_for, element>
 			{
 			constexpr static bool value = search_for == element;
 			};

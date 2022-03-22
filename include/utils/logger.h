@@ -206,9 +206,7 @@ namespace utils
 		};
 	}
 
-#ifndef CPP_UTILS_disable_global_logger
 namespace utils::globals
 	{
 	inline utils::logger<utils::message> logger;
 	}
-#endif

@@ -154,6 +154,7 @@
     <ClInclude Include="include\utils\containers\buffer.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\multitype_container.h" />
+    <ClInclude Include="include\utils\containers\polymorphic_container.h" />
     <ClInclude Include="include\utils\cout_containers.h" />
     <ClInclude Include="include\utils\cout_utilities.h" />
     <ClInclude Include="include\utils\custom_operators.h" />
