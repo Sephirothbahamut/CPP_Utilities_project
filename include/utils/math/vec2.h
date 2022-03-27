@@ -32,6 +32,9 @@ namespace utils::cout
 
 namespace utils::math
 	{
+	template <template<typename> class To, typename T, template<typename> class From, typename F>
+	inline static To<T> vec_cast(From<F> from) { return {static_cast<T>(from.x), static_cast<T>(from.y)}; }
+
 	//fast typenames
 	using vec2i   = vec2<int>;
 	using vec2i8  = vec2<int8_t>;
@@ -80,6 +83,8 @@ namespace utils::math
 			vec2<T>& normalize()    noexcept { return *this = normal(); }
 
 			// CASTS
+			template <template<typename> class To, typename T_t>
+			inline To<T_t> vec_cast() { return {static_cast<T_t>(x), static_cast<T_t>(y)}; }
 
 			//float to_angle() const noexcept { return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f; }
 			operator angle::deg() const noexcept { return angle::trigonometry::atan2(y, x); } //TODO test

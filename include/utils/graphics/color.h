@@ -43,6 +43,13 @@ namespace utils::graphics
 					assert(g >= T{0} && g <= T{255});
 					assert(b >= T{0} && b <= T{255});
 					}
+				template <>
+				rgb(uint8_t r, uint8_t g, uint8_t b) : r{r}, g{g}, b{b}
+					{
+					assert(r >= uint8_t{0} && r <= uint8_t{255});
+					assert(g >= uint8_t{0} && g <= uint8_t{255});
+					assert(b >= uint8_t{0} && b <= uint8_t{255});
+					}
 
 				operator hsv() const noexcept;
 				operator hsl() const noexcept;
@@ -126,7 +133,7 @@ namespace utils::graphics
 			__declspec(property(get = get_r,     put = set_r))     uint8_t r;
 			__declspec(property(get = get_g,     put = set_g))     uint8_t g;
 			__declspec(property(get = get_b,     put = set_b))     uint8_t b;
-			__declspec(property(get = get_h,     put = set_h))     float   h;
+			__declspec(property(get = get_h,     put = set_h))     deg     h;
 			__declspec(property(get = get_hsv_s, put = set_hsv_s)) float   hsv_s;
 			__declspec(property(get = get_v,     put = set_v))     float   v;
 			__declspec(property(get = get_hsl_s, put = set_hsl_s)) float   hsl_s;
