@@ -5,6 +5,7 @@
 #include "../../compilation/debug.h"
 #include "../constants.h"
 #include "../vec2.h"
+#include "aabb.h"
 
 #ifdef utils_is_debug
 #include <stdexcept>

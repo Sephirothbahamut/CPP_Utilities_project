@@ -5,6 +5,7 @@
 #include <array>
 #include <iterator>
 #include <ranges>
+#include <initializer_list>
 
 #include "aabb.h"
 #include "segment.h"
@@ -19,6 +20,8 @@ namespace utils::math::geometry
 	class polygon
 		{
 		public:
+			polygon(std::initializer_list<vec2f> vertices) : _vertices{ vertices } {};
+
 			polygon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
 			polygon(std::vector<vec2f>& vertices) : _vertices{std::move(vertices)} {}
 
