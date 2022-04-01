@@ -139,10 +139,10 @@ namespace utils::math::geometry
 				{
 				aabb ret
 					{
-					.up =  constants::finf,
-					.dw = -constants::finf,
-					.rr =  constants::finf,
 					.ll = -constants::finf,
+					.up =  constants::finf,
+					.rr =  constants::finf,
+					.dw = -constants::finf,
 					};
 
 				for(const auto& vertex : get_vertices())
@@ -162,11 +162,8 @@ namespace utils::math::geometry
 
 		};
 
-	class convex_polygon : public polygon 
+	struct convex_polygon : polygon 
 		{
-		public:
-			using polygon::polygon;
-
-			
+		using polygon::polygon;
 		};
 	}

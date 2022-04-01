@@ -97,119 +97,119 @@ namespace utils::math::geometry::transformations
 
 #pragma region convex_polygon
 	inline geometry::convex_polygon operator*(const geometry::convex_polygon& convex_polygon, float scale) noexcept
-	{
-		std::vector<vec2f> new_vertices{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
-		for (auto& v : new_vertices) { v *= scale; }
-		return { std::move(new_vertices) };
-	}
+		{
+		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
+		for (auto& v : new_vertices) 	{ v *= scale; }
+		return 	{ std::move(new_vertices) };
+		}
 
 	inline geometry::convex_polygon operator+(const geometry::convex_polygon& convex_polygon, angle::deg rotation) noexcept
-	{
-		std::vector<vec2f> new_vertices{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
-		for (auto& v : new_vertices) { v += rotation; }
-		return { std::move(new_vertices) };
-	}
+		{
+		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
+		for (auto& v : new_vertices) 	{ v += rotation; }
+		return 	{ std::move(new_vertices) };
+		}
 
 	inline geometry::convex_polygon operator+(const geometry::convex_polygon& convex_polygon, vec2f translation) noexcept
-	{
-		std::vector<vec2f> new_vertices{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
-		for (auto& v : new_vertices) { v += translation; }
-		return { std::move(new_vertices) };
-	}
+		{
+		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
+		for (auto& v : new_vertices) 	{ v += translation; }
+		return 	{ std::move(new_vertices) };
+		}
 
 	inline geometry::convex_polygon& operator*=(geometry::convex_polygon& convex_polygon, float scale) noexcept
-	{
-		for (auto& v : convex_polygon.get_vertices()) { v *= scale; }
+		{
+		for (auto& v : convex_polygon.get_vertices()) 	{ v *= scale; }
 		return convex_polygon;
-	}
+		}
 
 	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& convex_polygon, angle::deg rotation) noexcept
-	{
-		for (auto& v : convex_polygon.get_vertices()) { v += rotation; }
+		{
+		for (auto& v : convex_polygon.get_vertices()) 	{ v += rotation; }
 		return convex_polygon;
-	}
+		}
 
 	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& convex_polygon, vec2f translation) noexcept
-	{
-		for (auto& v : convex_polygon.get_vertices()) { v += translation; }
+		{
+		for (auto& v : convex_polygon.get_vertices()) 	{ v += translation; }
 		return convex_polygon;
-	}
+		}
 
-	inline geometry::convex_polygon  operator* (const geometry::convex_polygon& shape, const Transform2& transform) noexcept { return         ((shape * transform.size) + transform.orientation) + transform.position; }
+	inline geometry::convex_polygon  operator* (const geometry::convex_polygon& shape, const Transform2& transform) noexcept 	{ return         ((shape * transform.size) + transform.orientation) + transform.position; }
 
-	inline geometry::convex_polygon& operator*=(geometry::convex_polygon& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
+	inline geometry::convex_polygon& operator*=(geometry::convex_polygon& shape, const Transform2& transform) noexcept 	{ return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 
 #pragma endregion convex_polygon
 
 #pragma region aabb
 	inline geometry::aabb operator*(const geometry::aabb& aabb, float scale) noexcept
-	{
-		return { aabb.up * scale, aabb.dw * scale, aabb.rr * scale, aabb.ll * scale };
-	}
+		{
+		return 	{aabb.ll * scale, aabb.up * scale, aabb.rr * scale, aabb.dw * scale, };
+		}
 
 	inline geometry::aabb operator+(const geometry::aabb& aabb, vec2f translation) noexcept
-	{
-		return { aabb.up + translation, aabb.dw + translation, aabb.rr + translation, aabb.ll + translation };
-	}
+		{
+		return 	{aabb.ll + translation.x, aabb.up + translation.y, aabb.rr + translation.x, aabb.dw + translation.y};
+		}
 
 	namespace _
-	{
-		class proxy_rotation
 		{
+		class proxy_rotation
+			{
 			const geometry::aabb& aabb;
 			angle::deg        rotation;
 
 		public:
-			proxy_rotation(const geometry::aabb& aabb, angle::deg rotation) noexcept : aabb{ aabb }, rotation{ rotation }{};
+			proxy_rotation(const geometry::aabb& aabb, angle::deg rotation) noexcept : aabb	{ aabb }, rotation	{ rotation }	{};
 
-			operator geometry::aabb() { return aabb; };
-			//operator geometry::convex_polygon() { return geometry::convex_polygon{ aabb.ul, aabb.ur, aabb.dr, aabb.dl } + rotation; };
-		};
+			operator geometry::aabb() 	{ return aabb; };
+			//operator geometry::convex_polygon() 	{ return geometry::convex_polygon	{ aabb.ul, aabb.ur, aabb.dr, aabb.dl } + rotation; };
+			};
 
 		class proxy_transform
-		{
+			{
 			const geometry::aabb&  aabb;
 			const Transform2& transform;
 
 		public:
-			proxy_transform(const geometry::aabb& shape, const Transform2& transform) noexcept : aabb{ aabb }, transform{ transform }{};
+			proxy_transform(const geometry::aabb& shape, const Transform2& transform) noexcept : aabb	{ aabb }, transform	{ transform }	{};
 
-			operator geometry::aabb()           { return static_cast<geometry::aabb>          ((aabb * transform.size) + transform.orientation) + transform.position; };
-			//operator geometry::convex_polygon() { return static_cast<geometry::convex_polygon>((aabb * transform.size) + transform.orientation) + transform.position; };
-		};
-	}
+			operator geometry::aabb()           	{ return static_cast<geometry::aabb>          ((aabb * transform.size) + transform.orientation) + transform.position; };
+			//operator geometry::convex_polygon() 	{ return static_cast<geometry::convex_polygon>((aabb * transform.size) + transform.orientation) + transform.position; };
+			};
+		}
 	
 	/*inline auto operator+(const geometry::aabb& aabb, angle::deg rotation) noexcept
-	{
-		return _::proxy_rotation{ aabb, rotation };
-	}*/
+		{
+		return _::proxy_rotation	{ aabb, rotation };
+		}*/
 
 	inline geometry::aabb operator+(const geometry::aabb& aabb, angle::deg rotation) noexcept
-	{
+		{
 		return aabb;
-	}
+		}
 
 	inline geometry::aabb& operator*=(geometry::aabb& aabb, float scale) noexcept
-	{
+		{
 		aabb = aabb * scale;
 		return aabb;
-	}
+		}
 	inline geometry::aabb& operator+=(geometry::aabb& aabb, angle::deg rotation) noexcept
-	{
+		{
 		aabb = aabb + rotation;
 		return aabb;
-	}
+		}
 	inline geometry::aabb& operator+=(geometry::aabb& aabb, vec2f translation) noexcept
-	{
+		{
 		aabb = aabb + translation;
 		return aabb;
-	}
+		}
 
 	/*inline auto operator* (const geometry::aabb& shape, const Transform2& transform) noexcept
-	{
-		return _::proxy_transform{ shape, transform };
-	}*/
-	inline geometry::aabb operator*(geometry::aabb& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
+		{
+		return _::proxy_transform	{ shape, transform };
+		}*/
+	inline geometry::aabb  operator* (geometry::aabb& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
 	inline geometry::aabb& operator*=(geometry::aabb& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 #pragma endregion aabb
 

@@ -176,7 +176,9 @@ namespace utils::math
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 				}
 		};
-
+	
+	template <typename T>
+	vec2<T> abs(const vec2<T> vec) { return {std::abs(vec.x), std::abs(vec.y)}; }
 
 	namespace operators
 		{

@@ -14,10 +14,10 @@ namespace utils::math::geometry
 			{
 				aabb ret
 					{
-					.up = center.y - radius,
-					.dw = center.y + radius,
-					.rr = center.x - radius,
 					.ll = center.x - radius,
+					.up = center.y - radius,
+					.rr = center.x - radius,
+					.dw = center.y + radius,
 					};
 
 				return ret;

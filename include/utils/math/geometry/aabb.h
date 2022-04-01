@@ -7,10 +7,10 @@ namespace utils::math::geometry
 	struct axis_aligned_bounding_box
 		{
 #pragma region Variables
-		float up;
-		float dw;
-		float rr;
 		float ll;
+		float up;
+		float rr;
+		float dw;
 #pragma endregion Variables
 
 #pragma region Accessors
@@ -55,6 +55,10 @@ namespace utils::math::geometry
 		__declspec(property(get = get_dw, put = set_dw)) float bottom;
 		__declspec(property(get = get_ll, put = set_ll)) float left;
 		__declspec(property(get = get_rr, put = set_rr)) float right;
+		__declspec(property(get = get_ll, put = set_ll)) float x1;
+		__declspec(property(get = get_rr, put = set_rr)) float x2;
+		__declspec(property(get = get_up, put = set_up)) float y1;
+		__declspec(property(get = get_dw, put = set_dw)) float y2;
 
 		// Corners
 		__declspec(property(get = get_ul, put = set_ul)) vec2f ul;
