@@ -1,11 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include "../vec2.h"
 #include "../angle.h"
 #include "segment.h"
 #include "polygon.h"
 #include "circle.h"
 #include "aabb.h"
+#include "../constants.h"
 
 namespace utils::math::geometry
 	{
@@ -60,13 +62,73 @@ namespace utils::math::geometry
 		inline bool contains(const polygon& polygon, const vec2f& point) noexcept
 			{
 			// A point is inside a polygon if given a line in any direction, it intersects the polygon segments an uneven number of times
-			bool is_inside = false;
 			segment tmp_segment{point, vec2f{point.x + static_cast<aabb>(polygon).right, point.y}}; //A segment which lies on a generic horizontal line
+
+			bool is_inside = false;
+			//	/*for (const auto& edge : polygon.get_edges())
+			//		{
+			//		if (intersects(edge, tmp_segment) && std::abs(tmp_segment.a.y - edge.b.y) > constants::epsilonf) { is_inside = !is_inside; }
+			//		}*/
+			//	
+			/*const auto& edges{polygon.get_edges()};
+			for (size_t i{0}; i < edges.size(); i++)
+				{
+				const auto& edge{edges[i]};
+				
+				if (vec2f::distance2(tmp_segment.closest_point_in_line(edge.b), edge.b) < constants::epsilonf)
+					{
+					const auto& next{edges[(i + 1) % edges.size()]};
+				
+					if (tmp_segment.point_side(edge.a) != tmp_segment.point_side(next.b)) { is_inside = !is_inside; }
+					}
+				else if (intersects(tmp_segment, edge)) { is_inside = !is_inside; }
+				//else {}
+				}*/
+
+			const auto& vertices{polygon.get_vertices()};
+			for (size_t i{0}; i < vertices.size(); i++)
+				{
+				const auto& a{vertices[i]};
+				const auto& b{vertices[(i + 1) % vertices.size()]};
+
+				// Exclude non colliding with line to right BEGIN
+				//if (a.y < point.y == b.y < point.y) { continue; }
+				//if (a.x < point.x && b.x < point.x) { continue; }
+				//if (!segment{a, b}.intersects(tmp_segment)) { continue; }
+				//all other edges intersect the tmp_segment (maybe?) END
+
+				//no intersection
+				if ((a.y < point.y && b.y < point.y) || (a.y > point.y && b.y > point.y)) { continue; }
+				if (a.x < point.x && b.x < point.x) { continue; }
+				if (!segment{a, b}.intersects(tmp_segment)) { continue; }
+
+				if (b.y == point.y) // If vertex b is on line
+					{
+					const auto& c{vertices[(i + 2) % vertices.size()]};
+
+					if (tmp_segment.point_side(a) != tmp_segment.point_side(c)) { is_inside = !is_inside; }
+					else { /*no swap*/ }
+					}
+				//else if (a.y == point.y) { /*no swap*/ }
+				else if(a.y != point.y) // If edge intersects line (excluding vertex a)
+					{
+					is_inside = !is_inside;
+					}
+				}
+
+				
+			return is_inside;
+
+			/*int16_t magic_number{0};
 			for (const auto& edge : polygon.get_edges())
 				{
-				if (intersects(edge, tmp_segment) && tmp_segment.a.y != edge.b.y) { is_inside = !is_inside; }
+				if (intersects(edge, tmp_segment)) 
+					{
+					     if (edge.a.y < edge.b.y) { magic_number--; }
+					else if (edge.a.y > edge.b.y) { magic_number++; }
+					}
 				}
-			return is_inside;
+			return magic_number < 0;*/
 			}
 
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
@@ -122,7 +184,7 @@ namespace utils::math::geometry
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains(const polygon& polygon, const segment& segment) noexcept
 			{
-			if (!contains<strictness>(polygon, segment.a) || contains<strictness>(polygon, segment.b)) { return false; }
+			if (!(contains<strictness>(polygon, segment.a) || contains<strictness>(polygon, segment.b))) { return false; }
 
 			for (const auto& edge : polygon.get_edges())
 				{
@@ -137,10 +199,15 @@ namespace utils::math::geometry
 			return contains<strictness>(polygon, segment.a) && contains<strictness>(polygon, segment.b);
 			}
 
-		inline bool collides(const        polygon& polygon, const segment& segment) noexcept { return intersects(polygon, segment) || contains<collision_strictness_t::loose>(polygon, segment); }
-		inline bool collides(const convex_polygon& polygon, const segment& segment) noexcept { return intersects(polygon, segment) || contains<collision_strictness_t::loose>(polygon, segment); }
+		inline bool collides(const        polygon& polygon, const segment& segment) noexcept 
+			{
+			return intersects(polygon, segment) || contains<collision_strictness_t::loose>(polygon, segment.a) || contains<collision_strictness_t::loose>(polygon, segment.b);
+			}
+		inline bool collides(const convex_polygon& polygon, const segment& segment) noexcept
+			{
+			return intersects(polygon, segment) || contains<collision_strictness_t::loose>(polygon, segment.a) || contains<collision_strictness_t::loose>(polygon, segment.b);
+			}
 
-		
 		inline bool intersects(const segment& segment, const polygon& polygon) noexcept { return intersects(polygon, segment); }
 
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
@@ -191,7 +258,7 @@ namespace utils::math::geometry
 				{
 				if (collides(a, vertex)) { return true; }
 				}
-			return false;
+			return intersects(a, b);
 			}
 		inline bool collides(const convex_polygon& a, const polygon& b) noexcept
 			{
@@ -203,7 +270,7 @@ namespace utils::math::geometry
 				{
 				if (collides(a, vertex)) { return true; }
 				}
-			return false;
+			return intersects(a, b);
 			}
 	#pragma endregion Polygon-polygon
 #pragma endregion Polygon

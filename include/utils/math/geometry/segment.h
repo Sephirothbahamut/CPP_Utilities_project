@@ -68,19 +68,22 @@ namespace utils::math::geometry
 			bool contains(const vec2f& point) const noexcept
 				{
 				// https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
-				return minimum_distance(point) < constants::epsilonf;
+				auto dist{minimum_distance(point)};
+				return dist < constants::epsilonf;
 				}
 
 			side_t point_side(const vec2f& point) const noexcept
 				{
 				// a-b-point triangle signed area^2
 				const float some_significant_name_ive_yet_to_figure_out{((b.x - a.x) * (point.y - a.y)) - ((point.x - a.x) * (b.y - a.y))};
-				return some_significant_name_ive_yet_to_figure_out < -constants::epsilonf ? side_t::left : some_significant_name_ive_yet_to_figure_out > constants::epsilonf ? side_t::right : side_t::equal;
+				return some_significant_name_ive_yet_to_figure_out < -constants::epsilonf? side_t::left : some_significant_name_ive_yet_to_figure_out > constants::epsilonf ? side_t::right : side_t::equal;
 				}
 
 			bool intersects_line(const segment& other) const noexcept
 				{
-				return other.point_side(a) != other.point_side(b);
+				auto point_side_a{other.point_side(a)};
+				auto point_side_b{other.point_side(b)};
+				return (point_side_a != point_side_b) || (point_side_a == side_t::equal); // second condition returns true when the two lines are the same
 				}
 			bool intersects(const segment& other) const noexcept
 				{
