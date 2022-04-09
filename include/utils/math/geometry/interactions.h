@@ -65,25 +65,6 @@ namespace utils::math::geometry
 			segment tmp_segment{point, vec2f{point.x + static_cast<aabb>(polygon).right, point.y}}; //A segment which lies on a generic horizontal line
 
 			bool is_inside = false;
-			//	/*for (const auto& edge : polygon.get_edges())
-			//		{
-			//		if (intersects(edge, tmp_segment) && std::abs(tmp_segment.a.y - edge.b.y) > constants::epsilonf) { is_inside = !is_inside; }
-			//		}*/
-			//	
-			/*const auto& edges{polygon.get_edges()};
-			for (size_t i{0}; i < edges.size(); i++)
-				{
-				const auto& edge{edges[i]};
-				
-				if (vec2f::distance2(tmp_segment.closest_point_in_line(edge.b), edge.b) < constants::epsilonf)
-					{
-					const auto& next{edges[(i + 1) % edges.size()]};
-				
-					if (tmp_segment.point_side(edge.a) != tmp_segment.point_side(next.b)) { is_inside = !is_inside; }
-					}
-				else if (intersects(tmp_segment, edge)) { is_inside = !is_inside; }
-				//else {}
-				}*/
 
 			const auto& vertices{polygon.get_vertices()};
 			for (size_t i{0}; i < vertices.size(); i++)
@@ -91,25 +72,17 @@ namespace utils::math::geometry
 				const auto& a{vertices[i]};
 				const auto& b{vertices[(i + 1) % vertices.size()]};
 
-				// Exclude non colliding with line to right BEGIN
-				//if (a.y < point.y == b.y < point.y) { continue; }
-				//if (a.x < point.x && b.x < point.x) { continue; }
-				//if (!segment{a, b}.intersects(tmp_segment)) { continue; }
-				//all other edges intersect the tmp_segment (maybe?) END
-
 				//no intersection
 				if ((a.y < point.y && b.y < point.y) || (a.y > point.y && b.y > point.y)) { continue; }
 				if (a.x < point.x && b.x < point.x) { continue; }
-				if (!segment{a, b}.intersects(tmp_segment)) { continue; }
+				if (!segment{a, b}.intersects(tmp_segment)) { continue; } //TODO optimize for tmp_segment being an horizontal line to infinity
 
 				if (b.y == point.y) // If vertex b is on line
 					{
 					const auto& c{vertices[(i + 2) % vertices.size()]};
 
 					if (tmp_segment.point_side(a) != tmp_segment.point_side(c)) { is_inside = !is_inside; }
-					else { /*no swap*/ }
 					}
-				//else if (a.y == point.y) { /*no swap*/ }
 				else if(a.y != point.y) // If edge intersects line (excluding vertex a)
 					{
 					is_inside = !is_inside;
@@ -118,17 +91,6 @@ namespace utils::math::geometry
 
 				
 			return is_inside;
-
-			/*int16_t magic_number{0};
-			for (const auto& edge : polygon.get_edges())
-				{
-				if (intersects(edge, tmp_segment)) 
-					{
-					     if (edge.a.y < edge.b.y) { magic_number--; }
-					else if (edge.a.y > edge.b.y) { magic_number++; }
-					}
-				}
-			return magic_number < 0;*/
 			}
 
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
