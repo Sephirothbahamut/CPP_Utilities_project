@@ -6,9 +6,10 @@
 
 namespace utils
 	{
+	void discard(auto v) { static_cast<void>(v); }
+
 	namespace literals
 		{
 		constexpr size_t operator "" _size(unsigned long long n) { return n; }
-
 		}
 	}
