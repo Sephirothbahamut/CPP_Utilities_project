@@ -49,7 +49,8 @@ namespace utils::math
 	using vec2u64 = vec2<uint64_t>;
 
 	using vec2s = vec2<size_t>;
-	using vec2f = vec2<float>;
+	//using vec2f = vec2<float>;
+	typedef vec2<float> vec2f;
 	using vec2d = vec2<double>;
 
 	template <typename T>
@@ -63,7 +64,7 @@ namespace utils::math
 			vec2<T>(angle::deg angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
 			vec2<T>(angle::rad angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
 			template <typename other_t>
-			vec2<T>(vec2<other_t> other)           noexcept : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {}    //TODO test
+			vec2<T>(vec2<other_t> other)           noexcept : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {} //TODO test
 
 
 			static vec2<T> rr()    noexcept { return {T{ 1}, T{ 0}}; }

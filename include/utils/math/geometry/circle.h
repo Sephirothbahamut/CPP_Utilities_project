@@ -16,7 +16,7 @@ namespace utils::math::geometry
 					{
 					.ll = center.x - radius,
 					.up = center.y - radius,
-					.rr = center.x - radius,
+					.rr = center.x + radius,
 					.dw = center.y + radius,
 					};
 

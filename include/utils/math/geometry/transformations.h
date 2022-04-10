@@ -42,9 +42,6 @@ namespace utils::math::geometry::transformations
 		segment = segment + translation;
 		return segment;
 		}
-
-	inline geometry::segment  operator* (const geometry::segment& shape, const Transform2& transform) noexcept { return         ((shape * transform.size) + transform.orientation) + transform.position; }
-	inline geometry::segment& operator*=(      geometry::segment& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 #pragma endregion segment
 
 
@@ -88,10 +85,6 @@ namespace utils::math::geometry::transformations
 		for (auto& v : polygon.get_vertices()) { v += translation; }
 		return polygon;
 		}
-	
-	inline geometry::polygon  operator* (const geometry::polygon& shape, const Transform2& transform) noexcept { return         ((shape * transform.size) + transform.orientation) + transform.position; }
-	
-	inline geometry::polygon& operator*=(      geometry::polygon& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 
 #pragma endregion polygon
 
@@ -135,10 +128,6 @@ namespace utils::math::geometry::transformations
 		return convex_polygon;
 		}
 
-	inline geometry::convex_polygon  operator* (const geometry::convex_polygon& shape, const Transform2& transform) noexcept 	{ return         ((shape * transform.size) + transform.orientation) + transform.position; }
-
-	inline geometry::convex_polygon& operator*=(geometry::convex_polygon& shape, const Transform2& transform) noexcept 	{ return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
-
 #pragma endregion convex_polygon
 
 #pragma region aabb
@@ -152,7 +141,7 @@ namespace utils::math::geometry::transformations
 		return 	{aabb.ll + translation.x, aabb.up + translation.y, aabb.rr + translation.x, aabb.dw + translation.y};
 		}
 
-	namespace _
+	/*namespace _
 		{
 		class proxy_rotation
 			{
@@ -179,7 +168,7 @@ namespace utils::math::geometry::transformations
 			};
 		}
 	
-	/*inline auto operator+(const geometry::aabb& aabb, angle::deg rotation) noexcept
+	inline auto operator+(const geometry::aabb& aabb, angle::deg rotation) noexcept
 		{
 		return _::proxy_rotation	{ aabb, rotation };
 		}*/
@@ -209,8 +198,6 @@ namespace utils::math::geometry::transformations
 		{
 		return _::proxy_transform	{ shape, transform };
 		}*/
-	inline geometry::aabb  operator* (geometry::aabb& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
-	inline geometry::aabb& operator*=(geometry::aabb& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 #pragma endregion aabb
 
 #pragma region circle
@@ -241,8 +228,11 @@ namespace utils::math::geometry::transformations
 		circle = circle + translation;
 		return circle;
 		}
-
-	inline geometry::circle  operator* (const geometry::circle& shape, const Transform2& transform) noexcept { return         ((shape * transform.size) + transform.orientation) + transform.position; }
-	inline geometry::circle& operator*=(      geometry::circle& shape, const Transform2& transform) noexcept { return shape = ((shape * transform.size) + transform.orientation) + transform.position; }
 #pragma endregion circle
+
+
+	template <typename T>
+	inline T  operator* (const T& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
+	template <typename T>
+	inline T& operator*=(T& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
 	}
