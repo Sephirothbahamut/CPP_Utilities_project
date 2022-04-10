@@ -185,6 +185,7 @@
     <ClInclude Include="include\utils\timer.h" />
     <ClInclude Include="include\utils\tracking.h" />
     <ClInclude Include="include\utils\variadic.h" />
+    <ClInclude Include="include\utils\variant.h" />
     <ClInclude Include="include\utils\window.h" />
     <ClInclude Include="include\utils\wrapper.h" />
     <ClInclude Include="private\SetWindowCompositionAttribute.h" />

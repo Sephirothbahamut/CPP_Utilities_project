@@ -6,7 +6,7 @@
 
 namespace utils
 	{
-	void discard(auto v) { static_cast<void>(v); }
+	void discard(const auto& v) { static_cast<void>(v); }
 
 	namespace literals
 		{
