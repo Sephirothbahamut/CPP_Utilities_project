@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../concepts.h"
+
 #include "../vec2.h"
 #include "../angle.h"
 #include "../Transform2.h"
@@ -230,9 +232,11 @@ namespace utils::math::geometry::transformations
 		}
 #pragma endregion circle
 
+	template <typename T>
+	concept is_shape = ::utils::concepts::any_of<T, geometry::segment, geometry::aabb, geometry::circle, geometry::polygon, geometry::convex_polygon>;
 
-	template <typename T>
+	template <is_shape T>
 	inline T  operator* (const T& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
-	template <typename T>
-	inline T& operator*=(T& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
+	template <is_shape T>
+	inline T& operator*=(T& shape, const Transform2& transform) noexcept { shape = ((shape * transform.size) + transform.orientation) + transform.position; return shape; }
 	}
