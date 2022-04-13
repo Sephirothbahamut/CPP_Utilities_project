@@ -139,17 +139,17 @@ namespace utils::math::geometry
 				{
 				aabb ret
 					{
-					.ll = -constants::finf,
-					.up = -constants::finf,
-					.rr =  constants::finf,
-					.dw =  constants::finf,
+					.ll =  constants::finf,
+					.up =  constants::finf,
+					.rr = -constants::finf,
+					.dw = -constants::finf,
 					};
 
 				for(const auto& vertex : get_vertices())
 					{
 					ret.left  = std::min(ret.left,  vertex.x);
-					ret.right = std::max(ret.right, vertex.x);
 					ret.up    = std::min(ret.up,    vertex.y);
+					ret.right = std::max(ret.right, vertex.x);
 					ret.down  = std::max(ret.down,  vertex.y);
 					}
 
