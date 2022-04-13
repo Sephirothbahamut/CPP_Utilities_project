@@ -140,9 +140,9 @@ namespace utils::math::geometry
 				aabb ret
 					{
 					.ll = -constants::finf,
-					.up =  constants::finf,
+					.up = -constants::finf,
 					.rr =  constants::finf,
-					.dw = -constants::finf,
+					.dw =  constants::finf,
 					};
 
 				for(const auto& vertex : get_vertices())
