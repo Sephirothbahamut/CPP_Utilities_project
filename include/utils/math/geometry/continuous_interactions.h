@@ -19,33 +19,70 @@ namespace utils::math::geometry
 	struct collision_data
 		{
 		vec2f normal;
-		vec2f impat_point;
+		vec2f impact_point;
 		float t;
 		};
 
 	using collision = std::optional<collision_data>;
 
-	inline collision continuous_collides(const continuous_point& point, const aabb& aabb) noexcept
+	namespace details
 		{
-		vec2f intersection;
-		float distance{std::numeric_limits<float>::infinity()};
-
-		auto check = [&](vec2f a, vec2f b)
+		void check_continuous_point_to_edge(const continuous_point& point, const segment& edge, std::optional<vec2f>& intersection, segment& hit_edge, float& distance)
 			{
-			vec2f tmp_intersection{point.intersects_line(segment{aabb.ul, aabb.ur})};
-			float tmp_distance{vec2f::distance2(tmp_intersection, point.a)};
+			auto tmp_intersection{point.intersection(edge)};
+			if (!tmp_intersection) { return; }
+
+			float tmp_distance{vec2f::distance2(tmp_intersection.value(), point.a)};
 
 			if (tmp_distance < distance)
 				{
 				intersection = tmp_intersection;
 				distance = tmp_distance;
+				hit_edge = edge;
 				}
-			};
+			}
+		}
 
-		check(aabb.ul, aabb.ur);
-		check(aabb.ur, aabb.dr);
-		check(aabb.dr, aabb.dl);
-		check(aabb.dl, aabb.ul);
+	inline collision continuous_collides(const continuous_point& point, const aabb& aabb) noexcept
+		{
+		std::optional<vec2f> intersection{std::nullopt};
+		segment hit_edge;
+		float distance{std::numeric_limits<float>::infinity()};
+
+		details::check_continuous_point_to_edge(point, segment{aabb.ul, aabb.ur}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(point, segment{aabb.ur, aabb.dr}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(point, segment{aabb.dr, aabb.dl}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(point, segment{aabb.dl, aabb.ul}, intersection, hit_edge, distance);
+
+		if (!intersection) { return std::nullopt; }
+
+		return collision_data
+			{
+			.normal{hit_edge.perpendicular_left()},
+			.impact_point{intersection.value()},
+			.t{distance}
+			};
+		}
+	inline collision continuous_collides(const continuous_point& point, const polygon& polygon) noexcept
+		{
+		std::optional<vec2f> intersection{std::nullopt};
+		segment hit_edge;
+		float distance{std::numeric_limits<float>::infinity()};
+
+		for (const auto& edge : polygon.get_edges()) { details::check_continuous_point_to_edge(point, edge, intersection, hit_edge, distance); }
+
+		if (!intersection) { return std::nullopt; }
+
+		return collision_data
+			{
+			.normal{hit_edge.perpendicular_left()},
+			.impact_point{intersection.value()},
+			.t{distance}
+			};
+		}
+	inline collision continuous_collides(const continuous_point& point, const circle& circle) noexcept
+		{//https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
+		//TODO
 		}
 
 	}

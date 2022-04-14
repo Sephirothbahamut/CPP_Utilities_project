@@ -48,6 +48,13 @@ namespace utils::math::geometry
 				return {a.x + t * delta.x, a.y + t * delta.y};
 				}
 
+			/// <summary> Unit vector from a towards b. </summary>
+			vec2f forward() const noexcept { return (b - a).normal(); }
+			/// <summary> Unit vector perpendicular on the left from a to b. </summary>
+			vec2f perpendicular_right() const noexcept { const auto tmp{forward()}; return { tmp.y, -tmp.x}; }
+			/// <summary> Unit vector perpendicular on the right from a to b. </summary>
+			vec2f perpendicular_left()  const noexcept { const auto tmp{forward()}; return {-tmp.y,  tmp.x}; }
+
 
 			float minimum_distance(const vec2f& point) const noexcept {
 				// https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
@@ -91,7 +98,7 @@ namespace utils::math::geometry
 				return intersects_line(other) && other.intersects_line(*this);
 				}
 
-			std::optional<vec2f> intersection(const segment& other)
+			std::optional<vec2f> intersection(const segment& other) const noexcept
 				{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 				float s1_x, s1_y, s2_x, s2_y;
 				s1_x = b.x - a.x;     s1_y = b.y - a.y;

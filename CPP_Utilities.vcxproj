@@ -172,6 +172,8 @@
     <ClInclude Include="include\utils\math\easings.h" />
     <ClInclude Include="include\utils\math\geometry\aabb.h" />
     <ClInclude Include="include\utils\math\geometry\circle.h" />
+    <ClInclude Include="include\utils\math\geometry\continuous_interactions.h" />
+    <ClInclude Include="include\utils\math\geometry\continuous_point.h" />
     <ClInclude Include="include\utils\math\geometry\polygon.h" />
     <ClInclude Include="include\utils\math\geometry\segment.h" />
     <ClInclude Include="include\utils\math\geometry\interactions.h" />
