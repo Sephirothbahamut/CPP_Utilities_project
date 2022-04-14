@@ -84,7 +84,7 @@
     <ClInclude Include="include\utils\timer.h">
       <Filter>Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\Transform2.h">
+    <ClInclude Include="include\utils\math\transform2.h">
       <Filter>Files\math</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\vec2.h">

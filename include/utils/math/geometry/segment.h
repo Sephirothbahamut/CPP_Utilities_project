@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <optional>
 
 #include "../../compilation/debug.h"
 #include "../constants.h"
@@ -88,6 +89,24 @@ namespace utils::math::geometry
 			bool intersects(const segment& other) const noexcept
 				{
 				return intersects_line(other) && other.intersects_line(*this);
+				}
+
+			std::optional<vec2f> intersection(const segment& other)
+				{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+				float s1_x, s1_y, s2_x, s2_y;
+				s1_x = b.x - a.x;     s1_y = b.y - a.y;
+				s2_x = other.b.x - other.a.x;     s2_y = other.b.y - other.a.y;
+
+				float s, t;
+				s = (-s1_y * (a.x - other.a.x) + s1_x * (a.y - other.a.y)) / (-s2_x * s1_y + s1_x * s2_y);
+				t = (s2_x * (a.y - other.a.y) - s2_y * (a.x - other.a.x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+				if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+					{
+					return vec2f{a.x + (t * s1_x), a.y + (t * s1_y)};
+					}
+
+				return std::nullopt;
 				}
 			
 			operator aabb() const noexcept

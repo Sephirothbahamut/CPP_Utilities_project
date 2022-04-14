@@ -4,7 +4,7 @@
 
 #include "../vec2.h"
 #include "../angle.h"
-#include "../Transform2.h"
+#include "../transform2.h"
 #include "segment.h"
 #include "polygon.h"
 #include "circle.h"
@@ -160,10 +160,10 @@ namespace utils::math::geometry::transformations
 		class proxy_transform
 			{
 			const geometry::aabb&  aabb;
-			const Transform2& transform;
+			const transform2& transform;
 
 		public:
-			proxy_transform(const geometry::aabb& shape, const Transform2& transform) noexcept : aabb	{ aabb }, transform	{ transform }	{};
+			proxy_transform(const geometry::aabb& shape, const transform2& transform) noexcept : aabb	{ aabb }, transform	{ transform }	{};
 
 			operator geometry::aabb()           	{ return static_cast<geometry::aabb>          ((aabb * transform.size) + transform.orientation) + transform.position; };
 			//operator geometry::convex_polygon() 	{ return static_cast<geometry::convex_polygon>((aabb * transform.size) + transform.orientation) + transform.position; };
@@ -196,7 +196,7 @@ namespace utils::math::geometry::transformations
 		return aabb;
 		}
 
-	/*inline auto operator* (const geometry::aabb& shape, const Transform2& transform) noexcept
+	/*inline auto operator* (const geometry::aabb& shape, const transform2& transform) noexcept
 		{
 		return _::proxy_transform	{ shape, transform };
 		}*/
@@ -236,7 +236,7 @@ namespace utils::math::geometry::transformations
 	concept is_shape = ::utils::concepts::any_of<T, geometry::segment, geometry::aabb, geometry::circle, geometry::polygon, geometry::convex_polygon>;
 
 	template <is_shape T>
-	inline T  operator* (const T& shape, const Transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
+	inline T  operator* (const T& shape, const transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
 	template <is_shape T>
-	inline T& operator*=(T& shape, const Transform2& transform) noexcept { shape = ((shape * transform.size) + transform.orientation) + transform.position; return shape; }
+	inline T& operator*=(T& shape, const transform2& transform) noexcept { shape = ((shape * transform.size) + transform.orientation) + transform.position; return shape; }
 	}

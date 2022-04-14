@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include "../vec2.h"
 #include "../angle.h"
 #include "segment.h"
