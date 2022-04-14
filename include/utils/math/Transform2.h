@@ -27,7 +27,7 @@ namespace utils::math
 
 			Transform2  operator+ (const Transform2& oth) const noexcept 
 				{
-				return {position + oth.position, orientation + oth.orientation, size * oth.size}; 
+				return {position + oth.position, orientation + oth.orientation, size + oth.size}; 
 				}
 			Transform2& operator+=(const Transform2& oth)       noexcept { return *this = *this + oth; }
 			Transform2  operator- ()                      const noexcept
@@ -38,8 +38,11 @@ namespace utils::math
 				}
 			Transform2& operator--()                            noexcept { return *this = -(*this); }
 
-			bool     operator==(const Transform2& oth) const noexcept { return position == oth.position && orientation == oth.orientation && size == oth.size; }
-			bool     operator!=(const Transform2& oth) const noexcept { return !(*this == oth); }
+			Transform2  operator* (float delta_time) const noexcept { return  {position * delta_time, orientation * delta_time, size * delta_time}; }
+			Transform2& operator*=(float delta_time)       noexcept { *this = {position * delta_time, orientation * delta_time, size * delta_time}; return *this; }
+
+			bool operator==(const Transform2& oth) const noexcept { return position == oth.position && orientation == oth.orientation && size == oth.size; }
+			bool operator!=(const Transform2& oth) const noexcept { return !(*this == oth); }
 
 			Transform2  composite(const Transform2& oth)  const noexcept { return *this +  oth; }
 			Transform2& compose  (const Transform2& oth)        noexcept { return *this += oth; }
