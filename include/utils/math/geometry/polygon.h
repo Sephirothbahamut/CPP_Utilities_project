@@ -20,7 +20,7 @@ namespace utils::math::geometry
 	class polygon
 		{
 		public:
-			polygon(std::initializer_list<vec2f> vertices) : _vertices{ vertices } {};
+			polygon(std::initializer_list<vec2f>&& vertices) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};
 
 			polygon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
 			polygon(std::vector<vec2f>& vertices) : _vertices{std::move(vertices)} {}
@@ -164,8 +164,8 @@ namespace utils::math::geometry
 
 	struct convex_polygon : polygon 
 		{
-		convex_polygon(std::initializer_list<vec2f> vertices) : polygon{vertices} {};
-
-		using polygon::polygon;
+		convex_polygon(std::initializer_list<vec2f>&& vertices) : polygon{std::forward<std::initializer_list<vec2f>>(vertices)} {};
+		convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
+		convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}
 		};
 	}
