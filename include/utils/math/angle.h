@@ -9,7 +9,7 @@
 #include "../cout_utilities.h"
 #include "constants.h"
 
-//TODO put inside math
+
 namespace utils::math::angle
 	{
 	using constants::PIf;
