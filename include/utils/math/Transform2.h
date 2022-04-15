@@ -15,11 +15,11 @@ namespace utils::math
 
 		public:
 			//transform2() = default;
-			//transform2(vec2f translation = {}, utils::angle::deg rotation = {}, float scaling = {1.f}) noexcept : position(translation), orientation(rotation), size(scaling) {}
+			//transform2(vec2f translation = {}, utils::math::angle::deg rotation = {}, float scaling = {1.f}) noexcept : position(translation), orientation(rotation), size(scaling) {}
 			static transform2 zero() { return {}; }
 
 			vec2f             position{};
-			utils::angle::deg orientation{};
+			utils::math::angle::deg orientation{};
 			float             size{1.f};
 
 			inline friend vec2f  operator* (const vec2f& v, const transform2& t) noexcept { return ((v * t.size) + t.orientation) + t.position; }

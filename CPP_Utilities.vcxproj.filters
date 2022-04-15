@@ -117,9 +117,6 @@
     <ClInclude Include="include\utils\algorithm\join.h">
       <Filter>Files\algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\angle.h">
-      <Filter>Files\math</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\math\easings.h">
       <Filter>Files\math</Filter>
     </ClInclude>
@@ -173,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="include\utils\math\geometry\point.h">
       <Filter>Files\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\angle.h">
+      <Filter>Files\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

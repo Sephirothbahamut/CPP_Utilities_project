@@ -13,8 +13,8 @@ namespace Microsoft
 		{
 		namespace CppUnitTestFramework
 			{
-			template<> static std::wstring ToString<utils::angle::deg>(const class utils::angle::deg& a) { return std::to_wstring(a.value); }
-			template<> static std::wstring ToString<utils::angle::rad>(const class utils::angle::rad& a) { return std::to_wstring(a.value); }
+			template<> static std::wstring ToString<utils::math::angle::deg>(const class utils::math::angle::deg& a) { return std::to_wstring(a.value); }
+			template<> static std::wstring ToString<utils::math::angle::rad>(const class utils::math::angle::rad& a) { return std::to_wstring(a.value); }
 			}
 		}
 	}
@@ -30,8 +30,8 @@ namespace Tests
 
 			TEST_METHOD(operations)
 				{
-				using namespace utils::angle::literals;
-				using namespace utils::angle;
+				using namespace utils::math::angle::literals;
+				using namespace utils::math::angle;
 				
 				auto ad{ 90_deg};
 				auto bd{ 90_deg};
@@ -50,8 +50,8 @@ namespace Tests
 
 			TEST_METHOD(equality_over_0_to_360)
 				{
-				using namespace utils::angle::literals;
-				using namespace utils::angle;
+				using namespace utils::math::angle::literals;
+				using namespace utils::math::angle;
 				
 				auto ad{ 90_deg};
 				auto bd{ 90_deg};
@@ -65,8 +65,8 @@ namespace Tests
 
 			TEST_METHOD(casts)
 				{
-				using namespace utils::angle::literals;
-				using namespace utils::angle;
+				using namespace utils::math::angle::literals;
+				using namespace utils::math::angle;
 
 				auto ad{ 90_deg};
 				auto bd{ 90_deg};

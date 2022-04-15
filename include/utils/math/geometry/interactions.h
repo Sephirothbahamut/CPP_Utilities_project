@@ -234,6 +234,19 @@ namespace utils::math::geometry
 				}
 			return intersects(a, b);
 			}
+		inline bool collides(const polygon& a, const convex_polygon& b) noexcept { return collides(b, a); }
+		inline bool collides(const convex_polygon& a, const convex_polygon& b) noexcept
+			{
+			for (const auto& vertex : a.get_vertices())
+				{
+				if (collides(b, vertex)) { return true; }
+				}
+			for (const auto& vertex : b.get_vertices())
+				{
+				if (collides(a, vertex)) { return true; }
+				}
+			return intersects(a, b);
+			}
 	#pragma endregion Polygon-polygon
 #pragma endregion Polygon
 

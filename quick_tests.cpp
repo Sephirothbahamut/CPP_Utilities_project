@@ -16,3 +16,4 @@
 template <std::forward_iterator T>
 void f(T t) {};
 
+int main() {}

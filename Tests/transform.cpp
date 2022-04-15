@@ -32,12 +32,12 @@ namespace Tests
 
 			TEST_METHOD(vec2)
 				{
-				using namespace utils::angle::literals;
-				using namespace utils::angle;
+				using namespace utils::math::angle::literals;
+				using namespace utils::math::angle;
 				using namespace utils::math::operators;
 
 				utils::math::vec2f v{0, 5};
-				utils::math::Transform2 t{{10, 10}, 0_deg, 1.f};
+				utils::math::transform2 t{{10, 10}, 0_deg, 1.f};
 
 				Assert::AreEqual(utils::math::vec2f{10, 15}, v * t);
 				}

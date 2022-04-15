@@ -1,5 +1,6 @@
 #pragma once
 
+#include "point.h"
 #include "segment.h"
 
 namespace utils::math::geometry
@@ -8,6 +9,6 @@ namespace utils::math::geometry
 		{
 		using segment::segment;
 
-		continuous_point(const segment& segment) : segment{segment} {}
+		continuous_point(const point& a, const point& b) : segment{a, b} {}
 		};
 	}

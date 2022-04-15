@@ -164,6 +164,8 @@ namespace utils::math::geometry
 
 	struct convex_polygon : polygon 
 		{
+		convex_polygon(std::initializer_list<vec2f> vertices) : polygon{vertices} {};
+
 		using polygon::polygon;
 		};
 	}

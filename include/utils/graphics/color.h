@@ -12,7 +12,7 @@ namespace utils::graphics
 	{
 	class color
 		{
-		using deg = utils::angle::deg;
+		using deg = utils::math::angle::deg;
 		public:
 			struct hsv;
 			struct hsl;
@@ -65,7 +65,7 @@ namespace utils::graphics
 				deg h{0};
 				float s{0}, v{0};
 
-				hsv(utils::angle::deg h, float s, float v) noexcept : h{h}, s{s}, v{v} { assert(validate()); }
+				hsv(utils::math::angle::deg h, float s, float v) noexcept : h{h}, s{s}, v{v} { assert(validate()); }
 
 				bool validate() const noexcept
 					{
@@ -88,7 +88,7 @@ namespace utils::graphics
 				deg h{0};
 				float s{0}, l{0};
 
-				hsl(utils::angle::deg h, float s, float l) noexcept : h{h}, s{s}, l{l} { assert(validate()); }
+				hsl(utils::math::angle::deg h, float s, float l) noexcept : h{h}, s{s}, l{l} { assert(validate()); }
 
 				bool validate() const noexcept
 					{

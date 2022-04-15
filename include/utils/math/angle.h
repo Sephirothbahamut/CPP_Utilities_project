@@ -10,7 +10,7 @@
 #include "constants.h"
 
 //TODO put inside math
-namespace utils::angle
+namespace utils::math::angle
 	{
 	using constants::PIf;
 	using constants::PId;
@@ -304,9 +304,9 @@ namespace utils::angle
 
 namespace utils::cout
 	{
-	inline std::ostream& operator<<(std::ostream& os, const angle::deg& d)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << d.value << ccu::type << "d"; }
-	inline std::ostream& operator<<(std::ostream& os, const angle::rad& r)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << r.value << ccu::type << "r"; }
-	inline std::ostream& operator<<(std::ostream& os, const angle::Angle& a) noexcept { namespace ccu = utils::cout::support; return os << angle::Angle{a}.get_deg(); }
+	inline std::ostream& operator<<(std::ostream& os, const math::angle::deg& d)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << d.value << ccu::type << "d"; }
+	inline std::ostream& operator<<(std::ostream& os, const math::angle::rad& r)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << r.value << ccu::type << "r"; }
+	inline std::ostream& operator<<(std::ostream& os, const math::angle::Angle& a) noexcept { namespace ccu = utils::cout::support; return os << math::angle::Angle{a}.get_deg(); }
 	}
 
 
