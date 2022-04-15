@@ -131,7 +131,8 @@ namespace utils::math::geometry
 		inline bool contains  (const point& point, const        polygon& polygon) noexcept { return false; }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		
-		inline bool collides  (const point& point, const polygon& polygon) noexcept { return collides(polygon, point); }
+		inline bool collides  (const point& point, const        polygon& polygon) noexcept { return collides(polygon, point); }
+		inline bool collides  (const point& point, const convex_polygon& polygon) noexcept { return collides(polygon, point); }
 	#pragma endregion Polygon-point
 
 	#pragma region Polygon-segment
@@ -352,7 +353,8 @@ namespace utils::math::geometry
 			return contains<strictness>(polygon, aabb.ul) && contains<strictness>(polygon, aabb.ur)
 				&& contains<strictness>(polygon, aabb.dr) && contains<strictness>(polygon, aabb.dl);
 			}
-		inline bool collides(const polygon& polygon, const aabb& aabb) noexcept { return collides(aabb, polygon); }
+		inline bool collides(const        polygon& polygon, const aabb& aabb) noexcept { return collides(aabb, polygon); }
+		inline bool collides(const convex_polygon& polygon, const aabb& aabb) noexcept { return collides(aabb, polygon); }
 	#pragma endregion AABB - polygon
 	#pragma region AABB - AABB
 		inline bool intersects(const aabb& a, const aabb& b) noexcept
@@ -469,6 +471,23 @@ namespace utils::math::geometry
 			return false;
 			}
 
+		inline bool collides(const circle& circle, const convex_polygon& polygon) noexcept
+		{//TODO
+			for (const auto& vertex : polygon.get_vertices())
+			{
+				if (collides(circle, vertex)) { return true; }
+			}
+
+			if (collides(polygon, circle.center)) { return true; }
+
+			for (const auto& edge : polygon.get_edges())
+			{
+				if (collides(circle, edge)) { return true; }
+			}
+
+			return false;
+		}
+
 		inline bool intersects(const polygon& polygon, const circle& circle) noexcept { return intersects(circle, polygon); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains  (const polygon& polygon, const circle& circle) noexcept 
@@ -483,7 +502,8 @@ namespace utils::math::geometry
 			return true;
 			}
 		
-		inline bool collides  (const polygon& polygon, const circle& circle) noexcept { return collides  (circle, polygon); }
+		inline bool collides  (const        polygon& polygon, const circle& circle) noexcept { return collides  (circle, polygon); }
+		inline bool collides  (const convex_polygon& polygon, const circle& circle) noexcept { return collides  (circle, polygon); }
 	#pragma endregion Circle-polygon
 
 #pragma region Circle-aabb
