@@ -3,6 +3,7 @@
 #include "../vec2.h"
 #include "../angle.h"
 #include "segment.h"
+#include "point.h"
 #include "polygon.h"
 #include "circle.h"
 #include "aabb.h"
@@ -15,11 +16,11 @@ namespace utils::math::geometry
 
 #pragma region Point
 	#pragma region Point-point
-		inline bool intersects(const vec2f& a, const vec2f& b) { return a == b; };
+		inline bool intersects(const point& a, const point& b) { return a == b; };
 		
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const vec2f& a, const vec2f& b) { return a == b; };
-		inline bool collides(const vec2f& a, const vec2f& b) { return a == b; };
+		inline bool contains(const point& a, const point& b) { return a == b; };
+		inline bool collides(const point& a, const point& b) { return a == b; };
 	#pragma endregion Point-point
 
 #pragma endregion Point
@@ -27,15 +28,15 @@ namespace utils::math::geometry
 #pragma region Segment
 	#pragma region Segment-point
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool intersects(const segment& segment, const vec2f& point) noexcept { return segment.contains(point); }
+		inline bool intersects(const segment& segment, const point& point) noexcept { return segment.contains(point); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains  (const segment& segment, const vec2f& point) noexcept { return segment.contains(point); }
-		inline bool collides  (const segment& segment, const vec2f& point) noexcept { return segment.contains(point); }
+		inline bool contains  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
+		inline bool collides  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
 
-		inline bool intersects(const vec2f& point, const segment& segment) noexcept { return segment.contains(point); }
+		inline bool intersects(const point& point, const segment& segment) noexcept { return segment.contains(point); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains  (const vec2f& point, const segment& segment) noexcept { return false; }
-		inline bool collides  (const vec2f& point, const segment& segment) noexcept { return segment.contains(point); }
+		inline bool contains  (const point& point, const segment& segment) noexcept { return false; }
+		inline bool collides  (const point& point, const segment& segment) noexcept { return segment.contains(point); }
 	#pragma endregion Segment-point
 
 	#pragma region Segment-segment
@@ -49,7 +50,7 @@ namespace utils::math::geometry
 #pragma region Polygon
 	#pragma region Polygon-point
 		
-		inline bool intersects(const polygon& polygon, const vec2f& point) noexcept
+		inline bool intersects(const polygon& polygon, const point& point) noexcept
 			{
 			for (const auto& edge : polygon.get_edges())
 				{
@@ -58,7 +59,7 @@ namespace utils::math::geometry
 			return false;
 			}
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const polygon& polygon, const vec2f& point) noexcept
+		inline bool contains(const polygon& polygon, const point& point) noexcept
 			{
 			// A point is inside a polygon if given a line in any direction, it intersects the polygon segments an uneven number of times
 			segment tmp_segment{point, vec2f{point.x + static_cast<aabb>(polygon).right, point.y}}; //A segment which lies on a generic horizontal line
@@ -93,7 +94,7 @@ namespace utils::math::geometry
 			}
 
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const convex_polygon& polygon, const vec2f& point) noexcept
+		inline bool contains(const convex_polygon& polygon, const point& point) noexcept
 			{
 			size_t i{ 0 };
 			for (const auto& edge : polygon.get_edges())
@@ -114,23 +115,23 @@ namespace utils::math::geometry
 			}
 
 
-		inline bool collides(const polygon& polygon, const vec2f& point) noexcept
+		inline bool collides(const polygon& polygon, const point& point) noexcept
 			{
 			return contains<collision_strictness_t::loose>(polygon, point);
 			}
-		inline bool collides(const convex_polygon& polygon, const vec2f& point) noexcept
+		inline bool collides(const convex_polygon& polygon, const point& point) noexcept
 			{
 			return contains<collision_strictness_t::loose>(polygon, point);
 			}
 
 		
-		inline bool intersects(const vec2f& point, const polygon& polygon) noexcept { return intersects(polygon, point); }
+		inline bool intersects(const point& point, const polygon& polygon) noexcept { return intersects(polygon, point); }
 
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains  (const vec2f& point, const        polygon& polygon) noexcept { return false; }
+		inline bool contains  (const point& point, const        polygon& polygon) noexcept { return false; }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		
-		inline bool collides  (const vec2f& point, const polygon& polygon) noexcept { return collides(polygon, point); }
+		inline bool collides  (const point& point, const polygon& polygon) noexcept { return collides(polygon, point); }
 	#pragma endregion Polygon-point
 
 	#pragma region Polygon-segment
@@ -239,7 +240,7 @@ namespace utils::math::geometry
 #pragma region AABB
 
 	#pragma region AABB-point
-		inline bool intersects(const aabb& a, const vec2f& b) noexcept
+		inline bool intersects(const aabb& a, const point& b) noexcept
 			{
 			return b.y == a.up && b.x >= a.ll && b.x <= a.rr 
 				|| b.y == a.dw && b.x >= a.ll && b.x <= a.rr
@@ -247,7 +248,7 @@ namespace utils::math::geometry
 				|| b.x == a.ll && b.y >= a.up && b.y <= a.dw;
 			}
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const aabb& a, const vec2f& b) noexcept
+		inline bool contains(const aabb& a, const point& b) noexcept
 			{
 			if constexpr (strictness == collision_strictness_t::strict)
 				{
@@ -261,12 +262,12 @@ namespace utils::math::geometry
 				}
 			}
 
-		inline bool collides(const aabb& a, const vec2f& b) noexcept { return contains<collision_strictness_t::loose>(a, b); }
+		inline bool collides(const aabb& a, const point& b) noexcept { return contains<collision_strictness_t::loose>(a, b); }
 
-		inline bool intersects(const vec2f& vec2f, const aabb& aabb) noexcept { return intersects(aabb, vec2f); }
+		inline bool intersects(const point& point, const aabb& aabb) noexcept { return intersects(aabb, point); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const vec2f& vec2f, const aabb& aabb) noexcept { return false; }
-		inline bool collides(const vec2f& vec2f, const aabb& aabb) noexcept { return collides(aabb, vec2f); }
+		inline bool contains(const point& point, const aabb& aabb) noexcept { return false; }
+		inline bool collides(const point& point, const aabb& aabb) noexcept { return collides(aabb, point); }
 	#pragma endregion AABB-point
 	
 	#pragma region AABB - segment
@@ -365,12 +366,12 @@ namespace utils::math::geometry
 #pragma region Circle
 	#pragma region Circle-point
 
-		inline bool intersects(const circle& circle, const vec2f& point) noexcept
+		inline bool intersects(const circle& circle, const point& point) noexcept
 			{
 			return vec2f::distance2(circle.center, point) == circle.radius * circle.radius;
 			}
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const circle& circle, const vec2f& point) noexcept
+		inline bool contains(const circle& circle, const point& point) noexcept
 			{
 			if constexpr (strictness == collision_strictness_t::strict)
 				{
@@ -381,15 +382,15 @@ namespace utils::math::geometry
 				return vec2f::distance2(circle.center, point) <= (circle.radius * circle.radius);
 				}
 			}
-		inline bool collides(const circle& circle, const vec2f& point) noexcept
+		inline bool collides(const circle& circle, const point& point) noexcept
 			{
 			return contains<collision_strictness_t::loose>(circle, point);
 			}
 
-		inline bool intersects(const vec2f& point, const circle& circle) noexcept { return intersects(circle, point); }
+		inline bool intersects(const point& point, const circle& circle) noexcept { return intersects(circle, point); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains  (const vec2f& point, const circle& circle) noexcept { return false; }
-		inline bool collides  (const vec2f& point, const circle& circle) noexcept { return collides  (circle, point); }
+		inline bool contains  (const point& point, const circle& circle) noexcept { return false; }
+		inline bool collides  (const point& point, const circle& circle) noexcept { return collides  (circle, point); }
 	#pragma endregion Circle-point
 
 	#pragma region Circle-segment

@@ -78,10 +78,10 @@ namespace utils::math
 
 			T x = 0, y = 0;
 
-			T magnitude2()    const noexcept { return x * x + y * y; }
-			T magnitude()     const noexcept { return std::sqrt(magnitude2()); }
-			vec2<T>  normal() const noexcept { return magnitude() ? *this / magnitude() : *this; }
-			vec2<T>& normalize()    noexcept { return *this = normal(); }
+			T magnitude2()        const noexcept { return x * x + y * y; }
+			T magnitude ()        const noexcept { return std::sqrt(magnitude2()); }
+			vec2<T>  normalized() const noexcept { return magnitude() ? *this / magnitude() : *this; }
+			vec2<T>& normalize ()       noexcept { return *this = normalized(); }
 
 			// CASTS
 			template <template<typename> class To, typename T_t>
@@ -102,8 +102,8 @@ namespace utils::math
 			vec2<T>  operator++() noexcept { return *this += T(1); }
 			vec2<T>  operator--() noexcept { return *this -= T(1); }
 
-			vec2<T>  operator+ (const T n) const noexcept { return {normal() * (magnitude() + n)}; }
-			vec2<T>  operator- (const T n) const noexcept { return {normal() * (magnitude() - n)}; }
+			vec2<T>  operator+ (const T n) const noexcept { return {normalized() * (magnitude() + n)}; }
+			vec2<T>  operator- (const T n) const noexcept { return {normalized() * (magnitude() - n)}; }
 			vec2<T>  operator* (const T n) const noexcept { return {x * n, y * n}; }
 			vec2<T>  operator/ (const T n) const noexcept { return {x / n, y / n}; }
 
@@ -150,7 +150,7 @@ namespace utils::math
 			static T distance(const vec2<T>& a, const vec2<T>& b) noexcept { return std::sqrt(distance2(a, b)); }
 
 			// OTHER
-			vec2<T> perpendicular_right()            const noexcept { return {y, -x}; }
+			vec2<T> perpendicular_right()            const noexcept { return { y, -x}; }
 			vec2<T> perpendicular_left()             const noexcept { return {-y,  x}; }
 			vec2<T> perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
 			vec2<T> perpendicular_counterclockwise() const noexcept { return perpendicular_left(); }
@@ -173,7 +173,7 @@ namespace utils::math
 				{
 				T dot = std::clamp(vec2::dot(a, b), -1.0f, 1.0f);
 				T theta = std::acos(dot) * t;
-				vec2<T> relative_vec = (b - a * dot).normal();
+				vec2<T> relative_vec = (b - a * dot).normalized();
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 				}
 		};

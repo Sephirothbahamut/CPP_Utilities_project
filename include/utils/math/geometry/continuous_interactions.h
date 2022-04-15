@@ -27,7 +27,7 @@ namespace utils::math::geometry
 
 	namespace details
 		{
-		void check_continuous_point_to_edge(const continuous_point& point, const segment& edge, std::optional<vec2f>& intersection, segment& hit_edge, float& distance)
+		inline void check_continuous_point_to_edge(const continuous_point& point, const segment& edge, std::optional<vec2f>& intersection, segment& hit_edge, float& distance)
 			{
 			auto tmp_intersection{point.intersection(edge)};
 			if (!tmp_intersection) { return; }
@@ -60,7 +60,7 @@ namespace utils::math::geometry
 			{
 			.normal{hit_edge.perpendicular_left()},
 			.impact_point{intersection.value()},
-			.t{distance}
+			.t{point.length() / std::sqrt(distance)}
 			};
 		}
 	inline collision continuous_collides(const continuous_point& point, const polygon& polygon) noexcept
@@ -77,12 +77,14 @@ namespace utils::math::geometry
 			{
 			.normal{hit_edge.perpendicular_left()},
 			.impact_point{intersection.value()},
-			.t{distance}
+			.t{point.length() / std::sqrt(distance)}
 			};
 		}
+
 	inline collision continuous_collides(const continuous_point& point, const circle& circle) noexcept
 		{//https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
 		//TODO
+		return std::nullopt;
 		}
 
 	}

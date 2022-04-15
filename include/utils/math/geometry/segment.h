@@ -49,11 +49,11 @@ namespace utils::math::geometry
 				}
 
 			/// <summary> Unit vector from a towards b. </summary>
-			vec2f forward() const noexcept { return (b - a).normal(); }
+			vec2f forward() const noexcept { return (b - a).normalized(); }
 			/// <summary> Unit vector perpendicular on the left from a to b. </summary>
-			vec2f perpendicular_right() const noexcept { const auto tmp{forward()}; return { tmp.y, -tmp.x}; }
+			vec2f perpendicular_right() const noexcept { const auto tmp{forward()}; return tmp.perpendicular_right(); }
 			/// <summary> Unit vector perpendicular on the right from a to b. </summary>
-			vec2f perpendicular_left()  const noexcept { const auto tmp{forward()}; return {-tmp.y,  tmp.x}; }
+			vec2f perpendicular_left()  const noexcept { const auto tmp{forward()}; return tmp.perpendicular_left(); }
 
 
 			float minimum_distance(const vec2f& point) const noexcept {
@@ -100,17 +100,19 @@ namespace utils::math::geometry
 
 			std::optional<vec2f> intersection(const segment& other) const noexcept
 				{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-				float s1_x, s1_y, s2_x, s2_y;
-				s1_x = b.x - a.x;     s1_y = b.y - a.y;
-				s2_x = other.b.x - other.a.x;     s2_y = other.b.y - other.a.y;
+				vec2f s1, s2;
+				s1.x = b.x - a.x;
+				s1.y = b.y - a.y;
+				s2.x = other.b.x - other.a.x; 
+				s2.y = other.b.y - other.a.y;
 
 				float s, t;
-				s = (-s1_y * (a.x - other.a.x) + s1_x * (a.y - other.a.y)) / (-s2_x * s1_y + s1_x * s2_y);
-				t = (s2_x * (a.y - other.a.y) - s2_y * (a.x - other.a.x)) / (-s2_x * s1_y + s1_x * s2_y);
+				s = (-s1.y * (a.x - other.a.x) + s1.x * (a.y - other.a.y)) / (-s2.x * s1.y + s1.x * s2.y);
+				t = ( s2.x * (a.y - other.a.y) - s2.y * (a.x - other.a.x)) / (-s2.x * s1.y + s1.x * s2.y);
 
 				if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 					{
-					return vec2f{a.x + (t * s1_x), a.y + (t * s1_y)};
+					return vec2f{a.x + (t * s1.x), a.y + (t * s1.y)};
 					}
 
 				return std::nullopt;

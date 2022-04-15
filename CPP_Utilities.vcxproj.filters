@@ -171,6 +171,9 @@
     <ClInclude Include="include\utils\math\geometry\continuous_interactions.h">
       <Filter>Files\math\geometry</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\point.h">
+      <Filter>Files\math\geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

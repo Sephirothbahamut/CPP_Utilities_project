@@ -9,6 +9,7 @@
 #include "polygon.h"
 #include "circle.h"
 #include "aabb.h"
+#include "point.h"
 
 namespace utils::math::geometry::transformations
 	{
@@ -233,7 +234,7 @@ namespace utils::math::geometry::transformations
 #pragma endregion circle
 
 	template <typename T>
-	concept is_shape = ::utils::concepts::any_of<T, geometry::segment, geometry::aabb, geometry::circle, geometry::polygon, geometry::convex_polygon>;
+	concept is_shape = ::utils::concepts::any_of<T, geometry::point, geometry::segment, geometry::aabb, geometry::circle, geometry::polygon, geometry::convex_polygon>;
 
 	template <is_shape T>
 	inline T  operator* (const T& shape, const transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
