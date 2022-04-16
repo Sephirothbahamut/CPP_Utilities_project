@@ -90,7 +90,7 @@ namespace utils::math
 			//float to_angle() const noexcept { return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f; }
 			operator math::angle::deg() const noexcept { return math::angle::trigonometry::atan2(y, x); } //TODO test
 			operator math::angle::rad() const noexcept { return math::angle::trigonometry::atan2(y, x); } //TODO test
-			operator T         () const noexcept { return magnitude(); }
+			//operator T         () const noexcept { return magnitude(); }
 
 			template <typename other_t>
 			operator vec2<other_t>() const noexcept { return {static_cast<other_t>(x), static_cast<other_t>(y)}; }
