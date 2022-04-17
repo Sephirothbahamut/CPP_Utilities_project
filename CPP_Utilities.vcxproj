@@ -178,6 +178,9 @@
     <ClInclude Include="include\utils\math\geometry\polygon.h" />
     <ClInclude Include="include\utils\math\geometry\segment.h" />
     <ClInclude Include="include\utils\math\geometry\interactions.h" />
+    <ClInclude Include="include\utils\math\geometry\shapes.h" />
+    <ClInclude Include="include\utils\math\geometry\shapes_continuous.h" />
+    <ClInclude Include="include\utils\math\geometry\shapes_discrete.h" />
     <ClInclude Include="include\utils\math\geometry\transformations.h" />
     <ClInclude Include="include\utils\math\math.h" />
     <ClInclude Include="include\utils\math\transform2.h" />
