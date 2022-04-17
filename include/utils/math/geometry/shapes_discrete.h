@@ -1,6 +1,7 @@
 #pragma once
 #include "../../concepts.h"
 
+#include "segment.h"
 #include "aabb.h"
 #include "circle.h"
 #include "point.h"
