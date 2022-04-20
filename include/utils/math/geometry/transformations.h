@@ -166,8 +166,8 @@ namespace utils::math::geometry::transformations
 		public:
 			proxy_transform(const geometry::aabb& shape, const transform2& transform) noexcept : aabb	{ aabb }, transform	{ transform }	{};
 
-			operator geometry::aabb()           	{ return static_cast<geometry::aabb>          ((aabb * transform.size) + transform.orientation) + transform.position; };
-			//operator geometry::convex_polygon() 	{ return static_cast<geometry::convex_polygon>((aabb * transform.size) + transform.orientation) + transform.position; };
+			operator geometry::aabb()           	{ return static_cast<geometry::aabb>          ((aabb * transform.scaling) + transform.rotation) + transform.translation; };
+			//operator geometry::convex_polygon() 	{ return static_cast<geometry::convex_polygon>((aabb * transform.scaling) + transform.rotation) + transform.translation; };
 			};
 		}
 	
@@ -237,7 +237,7 @@ namespace utils::math::geometry::transformations
 	concept is_shape = ::utils::concepts::any_of<T, geometry::point, geometry::segment, geometry::aabb, geometry::circle, geometry::polygon, geometry::convex_polygon>;
 
 	template <is_shape T>
-	inline T  operator* (const T& shape, const transform2& transform) noexcept { return ((shape * transform.size) + transform.orientation) + transform.position; }
+	inline T  operator* (const T& shape, const transform2& transform) noexcept { return ((shape * transform.scaling) + transform.rotation) + transform.translation; }
 	template <is_shape T>
-	inline T& operator*=(T& shape, const transform2& transform) noexcept { shape = ((shape * transform.size) + transform.orientation) + transform.position; return shape; }
+	inline T& operator*=(T& shape, const transform2& transform) noexcept { shape = ((shape * transform.scaling) + transform.rotation) + transform.translation; return shape; }
 	}
