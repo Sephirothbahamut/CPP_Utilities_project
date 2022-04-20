@@ -17,7 +17,8 @@ namespace utils
 			wrapper(Args&& ...args) : element{std::forward<Args>(args)...} {}
 
 			//No reason to make it private
-			operator value_type& () { return element; }
+			operator const value_type& () { return element; }
+			operator       value_type& () { return element; }
 			value_type element;
 			
 			//Compatible interface with pointers and optional

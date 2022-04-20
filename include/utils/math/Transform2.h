@@ -8,7 +8,6 @@
 
 namespace utils::math
 	{
-
 	class transform2
 		{
 		private:
@@ -16,11 +15,11 @@ namespace utils::math
 		public:
 			//transform2() = default;
 			//transform2(vec2f translation = {}, utils::math::angle::deg rotation = {}, float scaling = {1.f}) noexcept : position(translation), orientation(rotation), size(scaling) {}
-			static transform2 zero() { return {}; }
+			constexpr static transform2 zero() noexcept { return {{}, {}, 0.f}; }
 
-			vec2f             position{};
+			vec2f                   position{};
 			utils::math::angle::deg orientation{};
-			float             size{1.f};
+			float                   size{1.f};
 
 			inline friend vec2f  operator* (const vec2f& v, const transform2& t) noexcept { return ((v * t.size) + t.orientation) + t.position; }
 			inline friend vec2f& operator*=(      vec2f& v, const transform2& t) noexcept { return v = (v * t); }
