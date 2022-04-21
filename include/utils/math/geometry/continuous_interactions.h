@@ -96,7 +96,11 @@ namespace utils::math::geometry
 		}
 
 	inline collision continuous_collides(const continuous_point& cpoint, const circle& circle, bool inside = false) noexcept
-		{// https://answers.unity.com/questions/1658184/circle-line-intersection-points.html
+		{
+		bool intersection{intersects(circle, cpoint)};
+		if (!intersection) { return std::nullopt; }
+		
+		// https://answers.unity.com/questions/1658184/circle-line-intersection-points.html
 		using namespace operators;
 		//  get the distance between X and Z on the segment
 		vec2f delta_point = cpoint.b - cpoint.a;
@@ -127,15 +131,15 @@ namespace utils::math::geometry
 		else
 			{
 			float μ{std::min(μ1, μ2)};
-			chosen_one = cpoint.a + (cpoint.b - cpoint.a) * μ1;
+			chosen_one = cpoint.a + (cpoint.b - cpoint.a) * μ;
 			}
-
-		return collision_data
+		collision_data ret
 			{
 			.normal{(chosen_one - circle.center).normalized() * (inside ? -1.f : 1.f)},
 			.impact_point{chosen_one},
 			.t{std::sqrt(vec2f::distance(chosen_one, circle.center)) / std::sqrt(vec2f::distance(cpoint.a, circle.center))}
 			};
+		return ret;
 #pragma region Chosen One reference
 //            .
 //            |\
