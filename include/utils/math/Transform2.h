@@ -26,7 +26,7 @@ namespace utils::math
 
 			transform2  operator+ (const transform2& oth) const noexcept 
 				{
-				return {translation + oth.translation, rotation + oth.rotation, scaling + oth.scaling}; 
+				return {translation + oth.translation, rotation + oth.rotation, scaling * oth.scaling}; 
 				}
 			transform2& operator+=(const transform2& oth)       noexcept { return *this = *this + oth; }
 			transform2  operator- ()                      const noexcept
@@ -37,8 +37,8 @@ namespace utils::math
 				}
 			transform2& operator--()                            noexcept { return *this = -(*this); }
 
-			transform2  operator* (float delta_time) const noexcept { return  {translation * delta_time, rotation * delta_time, scaling * delta_time}; }
-			transform2& operator*=(float delta_time)       noexcept { *this = {translation * delta_time, rotation * delta_time, scaling * delta_time}; return *this; }
+			transform2  operator* (float delta_time) const noexcept { return  {translation * delta_time, rotation * delta_time, scaling}; }
+			transform2& operator*=(float delta_time)       noexcept { *this = {translation * delta_time, rotation * delta_time, scaling}; return *this; }
 
 			bool operator==(const transform2& oth) const noexcept { return translation == oth.translation && rotation == oth.rotation && scaling == oth.scaling; }
 			bool operator!=(const transform2& oth) const noexcept { return !(*this == oth); }
