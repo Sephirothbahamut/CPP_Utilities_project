@@ -81,9 +81,9 @@ namespace utils::math::geometry
 		{
 		std::optional<vec2f> intersection{std::nullopt};
 		segment hit_edge;
-		float distance{std::numeric_limits<float>::infinity()};
+		float distance2{std::numeric_limits<float>::infinity()};
 
-		for (const auto& edge : polygon.get_edges()) { details::check_continuous_point_to_edge(cpoint, edge, intersection, hit_edge, distance); }
+		for (const auto& edge : polygon.get_edges()) { details::check_continuous_point_to_edge(cpoint, edge, intersection, hit_edge, distance2); }
 
 		if (!intersection) { return std::nullopt; }
 
@@ -91,7 +91,7 @@ namespace utils::math::geometry
 			{
 			.normal{inside ? hit_edge.perpendicular_right() : hit_edge.perpendicular_left()},
 			.impact_point{intersection.value()},
-			.t{std::sqrt(distance) / cpoint.length()}
+			.t{std::sqrt(distance2) / cpoint.length()}
 			};
 		}
 
@@ -137,7 +137,7 @@ namespace utils::math::geometry
 			{
 			.normal{(chosen_one - circle.center).normalized() * (inside ? -1.f : 1.f)},
 			.impact_point{chosen_one},
-			.t{std::sqrt(vec2f::distance(chosen_one, circle.center)) / std::sqrt(vec2f::distance(cpoint.a, circle.center))}
+			.t{vec2f::distance(cpoint.a, chosen_one) / cpoint.length()}//std::sqrt(vec2f::distance(chosen_one, circle.center)) / std::sqrt(vec2f::distance(cpoint.a, circle.center))}
 			};
 		return ret;
 #pragma region Chosen One reference
