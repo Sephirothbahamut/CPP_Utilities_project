@@ -143,19 +143,19 @@ namespace utils::beta::math::angle
 
 	namespace literals
 		{
-		inline deg operator""_deg  (         long double value) noexcept { return angle::deg{value}; }
-		inline deg operator""_deg  (unsigned long long   value) noexcept { return angle::deg{value}; }
-		inline rad operator""_rad  (         long double value) noexcept { return angle::rad{value}; }
-		inline rad operator""_rad  (unsigned long long   value) noexcept { return angle::rad{value}; }
-		inline rad operator""_radpi(         long double value) noexcept { return angle::rad{value * constants::PIf}; }
-		inline rad operator""_radpi(unsigned long long   value) noexcept { return angle::rad{value * constants::PIf}; }
+		inline deg operator""_deg  (         long double value) noexcept { return angle::deg{static_cast<float>(value)}; }
+		inline deg operator""_deg  (unsigned long long   value) noexcept { return angle::deg{static_cast<float>(value)}; }
+		inline rad operator""_rad  (         long double value) noexcept { return angle::rad{static_cast<float>(value)}; }
+		inline rad operator""_rad  (unsigned long long   value) noexcept { return angle::rad{static_cast<float>(value)}; }
+		inline rad operator""_radpi(         long double value) noexcept { return angle::rad{static_cast<float>(value) * constants::PIf}; }
+		inline rad operator""_radpi(unsigned long long   value) noexcept { return angle::rad{static_cast<float>(value) * constants::PIf}; }
 		}
 	}
 
 namespace utils::cout
 	{
 	template <float full_angle>
-	inline std::ostream& operator<<(std::ostream& os, const beta::math::angle::base_angle<full_angle>& angle)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << static_cast<deg>(angle).value << ccu::type << "°"; }
+	inline std::ostream& operator<<(std::ostream& os, const beta::math::angle::base_angle<full_angle>& angle)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << static_cast<beta::math::angle::deg>(angle).value << ccu::type << "°"; }
 	}
 
 namespace utils::math::angle
