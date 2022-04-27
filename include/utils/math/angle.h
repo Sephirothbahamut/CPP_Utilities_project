@@ -17,27 +17,32 @@ namespace utils::beta::math::angle
 	class base_angle
 		{
 		public:
-			inline static constexpr float full_angle = 1.f;
+			inline static constexpr float full_angle = full_angle_value;
 			inline static constexpr float half_angle = full_angle / 2.f;
 
-			float value{0.f};
+			float value{ 0.f };
 
 			base_angle() = default;
-			base_angle(float value) : value{value}
+			base_angle(float value) : value{ value } {}
 
 			template <float other_full_angle>
-			base_angle(const base_angle<other_full_angle>& src) : value{(src / other_full_angle) * full_angle} {}
+			base_angle(const base_angle<other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
 
 			template <float other_full_angle>
-			operator base_angle<other_full_angle>() const noexcept { return {(value / full_angle) * other_full_angle}; }
+			operator base_angle<other_full_angle>() const noexcept { return { (value / full_angle) * other_full_angle }; }
 
 
-			base_angle  normalized() const noexcept
+			base_angle  clamped() const noexcept
 				{
-				if constepxr(full_angle == 1.f) { return {value - std::floor(value)}; }
-				else { return {std::fmod(value, full_angle)}; }
+				if (false) {}//constepxr (full_angle == 1.f) { return {value - std::floor(value)}; }
+				else
+					{
+					float new_value{ std::fmod(value, full_angle) };
+					if (new_value < 0) { new_value += full_angle; }
+					return { new_value };
+					}
 				}
-			base_angle& normalize()       noexcept { *this = this->normalized(); return *this; }
+			base_angle& clamp()       noexcept { *this = this->clamped(); return *this; }
 
 			// Shouldn't be needed because...
 			//template <float other_full_angle> base_angle  operator+ (const base_angle<other_full_angle> oth) const noexcept { return {value + static_cast<base_angle<full_angle>>(oth).value}; }
@@ -46,67 +51,72 @@ namespace utils::beta::math::angle
 			//template <float other_full_angle> base_angle& operator-=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this - oth; }
 
 			// ...other should automatically cast here
-			base_angle  operator+ (const base_angle oth) const noexcept { return {value + oth.value}; }
-			base_angle  operator- (const base_angle oth) const noexcept { return {value - oth.value}; }
+			base_angle  operator+ (const base_angle oth) const noexcept { return { value + oth.value }; }
+			base_angle  operator- (const base_angle oth) const noexcept { return { value - oth.value }; }
 			base_angle& operator+=(const base_angle oth)       noexcept { return *this = *this + oth; }
 			base_angle& operator-=(const base_angle oth)       noexcept { return *this = *this - oth; }
 
-			base_angle  operator* (float oth) const noexcept { return {value * oth}; }
-			base_angle  operator/ (float oth) const noexcept { return {value / oth}; }
+			base_angle  operator* (float oth) const noexcept { return { value * oth }; }
+			base_angle  operator/ (float oth) const noexcept { return { value / oth }; }
 			base_angle& operator*=(float oth)       noexcept { return *this = *this * oth; }
 			base_angle& operator/=(float oth)       noexcept { return *this = *this / oth; }
 
-			base_angle  operator-()const noexcept { return angle{value + half_angle}.normalized(); }
+			base_angle  operator-()const noexcept { return base_angle{ value + half_angle }.clamped(); }
 
 			float normalize_in_range(base_angle min, base_angle max) const noexcept
 				{
-				float delta_min{(min - *this).normalized().value};
-				float delta_max_from_min{(min - max).normalized().value};
-				float normalized{delta_min / delta_max_from_min};
+				min.clamp();
+				max.clamp();
+				float next_max{ min.value <= max.value ? max.value : max.value + full_angle };
+				float min_to_this{ (min.value <= value ? value : value + full_angle) - min.value };
+				float min_to_max{ next_max - min.value };
+				if (min_to_this < min_to_max) { return min_to_this / min_to_max; }
 
-				if (normalized >= 0 && normalized <= 1) { return normalized; }
+				base_angle halfway{ (next_max + min.value) * .5f };
+				base_angle opposite{ -halfway };
+				float next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
+				if (next_opposite < next_max) { next_opposite += full_angle; }
 
-				base_angle halfway{(min + max) / 2.f};
-				base_angle opposite{-halfway};
-				float delta_from_opposite{opposite.value - value};
-				return delta_from_opposite < half_angle ? 0 : 1;
-				}
-
-			base_angle clamped_beta(base_angle min, base_angle max) const noexcept
-				{
-				//TODO think better and fix
-				angle min_to_this{(*this - min).normalized()};
-				angle min_to_max{(max - min).normalized()};
-
-				if (min_to_this.value <= min_to_max.value) { return *this; }
-
-				angle midway{(min + max) / 2.f};
-				angle opposite{-midway};
-
-				angle min_to_opposite{(opposite - min).normalized()};
-				return min_to_opposite.value < min_to_max.value ? max : min;
+				float min_to_opposite{ next_opposite - min.value };
+				return min_to_this < min_to_opposite ? min_to_this / min_to_max : (min_to_this - full_angle) / min_to_max;
 				}
 
 			base_angle clamped(base_angle min, base_angle max) const noexcept
 				{
-				//TODO replace with clamped2 when/if it works
-				float tmp{normalize_in_range(min, max)};
+				min.clamp();
+				max.clamp();
+				float next_max{ min.value <= max.value ? max.value : max.value + full_angle };
+				float min_to_this{ (min.value <= value ? value : value + full_angle) - min.value };
+				float min_to_max{ next_max - min.value };
+				if (min_to_this < min_to_max) { return *this; }
 
-				float delta_max_from_min{(min - max).normalized().value};
-				return {(tmp * delta_max_from_min) + min.value};
+				base_angle halfway{ (next_max + min.value) * .5f };
+				base_angle opposite{ -halfway };
+				float next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
+				if (next_opposite < next_max) { next_opposite += full_angle; }
+
+				float min_to_opposite{ next_opposite - min.value };
+				return min_to_this < min_to_opposite ? max : min;
 				}
 
-			bool operator==(const base_angle oth) const noexcept { return normalized().value == oth.normalized().value; }
+			base_angle& clamp(base_angle min, base_angle max)       noexcept { *this = this->clamped(min, max); return *this; }
+
+			inline static base_angle lerp(base_angle a, base_angle b) noexcept
+				{
+				return {std::lerp(a.value, b.value)};
+				}
+
+			bool operator==(const base_angle oth) const noexcept { return clamped().value == oth.clamped().value; }
 			bool operator!=(const base_angle oth) const noexcept { return !(*this == oth); }
 
 	#pragma region Trigonometry
 			constexpr float sin() const noexcept { return std::sin(rad_value()); }
 			constexpr float cos() const noexcept { return std::cos(rad_value()); }
 			constexpr float tan() const noexcept { return std::tan(rad_value()); }
-			inline static constexpr base_angle asin (float n)          noexcept { return {base_angle<2.f * constants::PIf>{std::asin (n)}}; }
-			inline static constexpr base_angle acos (float n)          noexcept { return {base_angle<2.f * constants::PIf>{std::acos (n)}}; }
-			inline static constexpr base_angle atan (float n)          noexcept { return {base_angle<2.f * constants::PIf>{std::atan (n)}}; }
-			inline static constexpr base_angle atan2(float a, float b) noexcept { return {base_angle<2.f * constants::PIf>{std::atan2(a, b)}}; }
+			inline static constexpr base_angle asin(float n)          noexcept { return { base_angle<2.f * constants::PIf>{std::asin(n)} }; }
+			inline static constexpr base_angle acos(float n)          noexcept { return { base_angle<2.f * constants::PIf>{std::acos(n)} }; }
+			inline static constexpr base_angle atan(float n)          noexcept { return { base_angle<2.f * constants::PIf>{std::atan(n)} }; }
+			inline static constexpr base_angle atan2(float a, float b) noexcept { return { base_angle<2.f * constants::PIf>{std::atan2(a, b)} }; }
 	#pragma endregion Trigonometry
 
 		private:
@@ -141,85 +151,6 @@ namespace utils::beta::math::angle
 		inline rad operator""_radpi(unsigned long long   value) noexcept { return angle::rad{value * constants::PIf}; }
 		}
 	}
-/*namespace utils::beta::math
-	{
-	
-	struct angle
-		{
-		float value{0.f};
-		
-		angle  normalized() const noexcept { return {value - std::floor(value)}; }
-		angle& normalize ()       noexcept { *this = this->normalized(); return *this; }
-
-		angle  operator+ (const angle oth) const noexcept { return {value + oth.value}; }
-		angle  operator- (const angle oth) const noexcept { return {value - oth.value}; }
-		angle& operator+=(const angle oth)       noexcept { return *this = *this + oth; }
-		angle& operator-=(const angle oth)       noexcept { return *this = *this - oth; }
-
-		angle  operator* (float oth) const noexcept { return {value * oth}; }
-		angle  operator/ (float oth) const noexcept { return {value / oth}; }
-		angle& operator*=(float oth)       noexcept { return *this = *this * oth; }
-		angle& operator/=(float oth)       noexcept { return *this = *this / oth; }
-
-		angle  operator- ()          const noexcept { return angle{value + .5f}.normalized(); }
-
-		float normalize_in_range(angle min, angle max) const noexcept
-			{
-			float delta_min{(min - *this).normalized().value};
-			float delta_max_from_min{(min - max).normalized().value};
-			float normalized{delta_min / delta_max_from_min};
-
-			if(normalized >= 0 && normalized <= 1) { return normalized; }
-			
-			angle halfway{(min + max) / 2.f};
-			angle opposite{-halfway};
-			float delta_from_opposite{opposite.value - value};
-			return delta_from_opposite < .5f ? 0 : 1;
-			}
-
-		angle clamped_beta(angle min, angle max) const noexcept
-			{
-				//TODO think better and fix
-			angle min_to_this{(*this - min).normalized()};
-			angle min_to_max {(max   - min).normalized()};
-
-			if (min_to_this.value <= min_to_max.value) { return *this; }
-
-			angle midway{(min + max) / 2.f};
-			angle opposite{-midway};
-
-			angle min_to_opposite{(opposite - min).normalized()};
-			return min_to_opposite.value < min_to_max.value ? max : min;
-			}
-
-		angle clamped(angle min, angle max) const noexcept
-			{
-				//TODO replace with clamped2 when/if it works
-			float tmp{normalize_in_range(min, max)};
-			
-			float delta_max_from_min{(min - max).normalized().value};
-			return {(tmp * delta_max_from_min) + min.value};
-			}
-
-		bool operator==(const angle oth) const noexcept { return normalized().value == oth.normalized().value; }
-		bool operator!=(const angle oth) const noexcept { return !(*this == oth); } 
-
-		inline static constexpr angle deg(float value) noexcept { return {value / 360.f}; }
-		inline static constexpr angle rad(float value) noexcept { return {value * constants::PIf * .5f}; }
-		float as_deg() const noexcept { return value * 360.f; }
-		float as_rad() const noexcept { return value * 2.f / constants::PIf; }
-		};
-	
-	namespace literals
-		{
-		inline angle operator""_deg  (         long double value) noexcept { return angle::deg(value); }
-		inline angle operator""_deg  (unsigned long long   value) noexcept { return angle::deg(value); }
-		inline angle operator""_rad  (         long double value) noexcept { return angle::rad(value); }
-		inline angle operator""_rad  (unsigned long long   value) noexcept { return angle::rad(value); }
-		inline angle operator""_radpi(         long double value) noexcept { return angle::rad(value * constants::PIf); }
-		inline angle operator""_radpi(unsigned long long   value) noexcept { return angle::rad(value * constants::PIf); }
-		}
-	}*/
 
 namespace utils::cout
 	{
