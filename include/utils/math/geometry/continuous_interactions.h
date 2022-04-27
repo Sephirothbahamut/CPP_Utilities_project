@@ -139,6 +139,7 @@ namespace utils::math::geometry
 			.impact_point{chosen_one},
 			.t{vec2f::distance(cpoint.a, chosen_one) / cpoint.length()}//std::sqrt(vec2f::distance(chosen_one, circle.center)) / std::sqrt(vec2f::distance(cpoint.a, circle.center))}
 			};
+
 		return ret;
 #pragma region Chosen One reference
 //            .
