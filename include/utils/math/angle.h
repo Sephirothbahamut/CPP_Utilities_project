@@ -9,6 +9,52 @@
 #include "../cout_utilities.h"
 #include "constants.h"
 
+/*
+namespace utils::beta::math
+	{
+	struct angle
+		{
+		float value{0.f};
+		
+		angle  clamped() const noexcept { return {value - std::floor(value)}; }
+		angle& clamp  ()       noexcept { *this = this->clamped(); return *this; }
+
+		angle  operator+ (const angle oth) const noexcept { return {value + oth.value}; }
+		angle  operator- (const angle oth) const noexcept { return {value - oth.value}; }
+		angle& operator+=(const angle oth)       noexcept { return *this = *this + oth; }
+		angle& operator-=(const angle oth)       noexcept { return *this = *this - oth; }
+
+		angle  operator* (float oth) const noexcept { return {value * oth}; }
+		angle  operator/ (float oth) const noexcept { return {value / oth}; }
+		angle& operator*=(float oth)       noexcept { return *this = *this * oth; }
+		angle& operator/=(float oth)       noexcept { return *this = *this / oth; }
+
+		angle  operator- ()          const noexcept { return {value - PI}; };
+
+		bool operator==(const angle oth) const noexcept { return clamped().value == oth.clamped().value; }
+		bool operator!=(const angle oth) const noexcept { return !(*this == oth); } 
+
+		inline static constexpr angle deg(float value) noexcept { return {value / 360.f}; }
+		inline static constexpr angle rad(float value) noexcept { return {value * constants::PIf * .5f}; }
+		float as_deg() const noexcept { return value * 360.f; }
+		float as_rad() const noexcept { return value * 2.f / constants::PIf; }
+		};
+	
+	namespace literals
+		{
+		inline angle operator""_deg  (         long double value) noexcept { return angle::deg(value); }
+		inline angle operator""_deg  (unsigned long long   value) noexcept { return angle::deg(value); }
+		inline angle operator""_rad  (         long double value) noexcept { return angle::rad(value); }
+		inline angle operator""_rad  (unsigned long long   value) noexcept { return angle::rad(value); }
+		inline angle operator""_radpi(         long double value) noexcept { return angle::rad(value * constants::PIf); }
+		inline angle operator""_radpi(unsigned long long   value) noexcept { return angle::rad(value * constants::PIf); }
+		}
+	}
+
+namespace utils::cout
+	{
+	inline std::ostream& operator<<(std::ostream& os, const beta::math::angle& angle)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << angle.as_deg() << ccu::type << "°"; }
+	}*/
 
 namespace utils::math::angle
 	{
