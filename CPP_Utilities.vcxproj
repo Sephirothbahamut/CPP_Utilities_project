@@ -188,6 +188,7 @@
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
+    <ClInclude Include="include\utils\string.h" />
     <ClInclude Include="include\utils\synchronization.h" />
     <ClInclude Include="include\utils\timer.h" />
     <ClInclude Include="include\utils\tracking.h" />
