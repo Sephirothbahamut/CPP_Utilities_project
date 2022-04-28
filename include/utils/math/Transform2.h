@@ -17,9 +17,9 @@ namespace utils::math
 			//transform2(vec2f translation = {}, utils::math::angle::deg rotation = {}, float scaling = {1.f}) noexcept : translation(translation), rotation(rotation), scaling(scaling) {}
 			constexpr static transform2 zero() noexcept { return {{}, {}, 0.f}; }
 
-			vec2f                   translation{};
-			utils::math::angle::deg rotation{};
-			float                   scaling{1.f};
+			vec2f							translation{};
+			utils::beta::math::angle::rad	rotation{};
+			float							scaling{1.f};
 
 			inline friend vec2f  operator* (const vec2f& v, const transform2& t) noexcept { return ((v * t.scaling) + t.rotation) + t.translation; }
 			inline friend vec2f& operator*=(      vec2f& v, const transform2& t) noexcept { return v = (v * t); }
@@ -48,15 +48,20 @@ namespace utils::math
 			transform2  inverse()                         const noexcept { return  -(*this); }
 			transform2& invert ()                               noexcept { return --(*this); }
 
-			static transform2 lerp(transform2 a, transform2 b, float translation)
-				{
-				return { vec2f::lerp(a.translation, b.translation, translation),
-					utils::lerp(a.rotation.value, b.rotation.value, translation),
-					utils::lerp(a.scaling, b.scaling, translation) };
-				}
+			
 		};
 
 	}
+
+namespace utils
+{
+	inline math::transform2 lerp(math::transform2 a, math::transform2 b, float t) noexcept
+	{
+		return {	utils::lerp(a.translation, b.translation, t),
+					utils::lerp(a.rotation, b.rotation, t),
+					utils::lerp(a.scaling, b.scaling, t) };
+	}
+}
 
 #ifdef COUT_CONTAINERS
 namespace utils::cout

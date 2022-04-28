@@ -22,7 +22,7 @@ namespace utils::math::geometry::transformations
 		{
 		return {segment.a * scale, segment.b * scale};
 		}
-	inline geometry::segment operator+(const geometry::segment& segment, math::angle::deg rotation) noexcept
+	inline geometry::segment operator+(const geometry::segment& segment, beta::math::angle::rad rotation) noexcept
 		{
 		return {segment.a + rotation, segment.b + rotation};
 		}
@@ -35,7 +35,7 @@ namespace utils::math::geometry::transformations
 		segment = segment * scale;
 		return segment;
 		}
-	inline geometry::segment& operator+=(geometry::segment& segment, math::angle::deg rotation) noexcept
+	inline geometry::segment& operator+=(geometry::segment& segment, beta::math::angle::rad rotation) noexcept
 		{
 		segment = segment + rotation;
 		return segment;
@@ -57,7 +57,7 @@ namespace utils::math::geometry::transformations
 		return {std::move(new_vertices)};
 		}
 	
-	inline geometry::polygon operator+(const geometry::polygon& polygon, math::angle::deg rotation) noexcept
+	inline geometry::polygon operator+(const geometry::polygon& polygon, beta::math::angle::rad rotation) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
 		for (auto& v : new_vertices) { v += rotation; }
@@ -77,7 +77,7 @@ namespace utils::math::geometry::transformations
 		return polygon;
 		}
 	
-	inline geometry::polygon& operator+=(geometry::polygon& polygon, math::angle::deg rotation) noexcept
+	inline geometry::polygon& operator+=(geometry::polygon& polygon, beta::math::angle::rad rotation) noexcept
 		{
 		for (auto& v : polygon.get_vertices()) { v += rotation; }
 		return polygon;
@@ -99,7 +99,7 @@ namespace utils::math::geometry::transformations
 		return 	{ std::move(new_vertices) };
 		}
 
-	inline geometry::convex_polygon operator+(const geometry::convex_polygon& convex_polygon, math::angle::deg rotation) noexcept
+	inline geometry::convex_polygon operator+(const geometry::convex_polygon& convex_polygon, beta::math::angle::rad rotation) noexcept
 		{
 		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
 		for (auto& v : new_vertices) 	{ v += rotation; }
@@ -119,7 +119,7 @@ namespace utils::math::geometry::transformations
 		return convex_polygon;
 		}
 
-	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& convex_polygon, math::angle::deg rotation) noexcept
+	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& convex_polygon, beta::math::angle::rad rotation) noexcept
 		{
 		for (auto& v : convex_polygon.get_vertices()) 	{ v += rotation; }
 		return convex_polygon;
@@ -149,10 +149,10 @@ namespace utils::math::geometry::transformations
 		class proxy_rotation
 			{
 			const geometry::aabb& aabb;
-			angle::deg        rotation;
+			angle::rad        rotation;
 
 		public:
-			proxy_rotation(const geometry::aabb& aabb, math::angle::deg rotation) noexcept : aabb	{ aabb }, rotation	{ rotation }	{};
+			proxy_rotation(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept : aabb	{ aabb }, rotation	{ rotation }	{};
 
 			operator geometry::aabb() 	{ return aabb; };
 			//operator geometry::convex_polygon() 	{ return geometry::convex_polygon	{ aabb.ul, aabb.ur, aabb.dr, aabb.dl } + rotation; };
@@ -171,12 +171,12 @@ namespace utils::math::geometry::transformations
 			};
 		}
 	
-	inline auto operator+(const geometry::aabb& aabb, math::angle::deg rotation) noexcept
+	inline auto operator+(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
 		{
 		return _::proxy_rotation	{ aabb, rotation };
 		}*/
 
-	inline geometry::aabb operator+(const geometry::aabb& aabb, math::angle::deg rotation) noexcept
+	inline geometry::aabb operator+(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
 		{
 		return aabb;
 		}
@@ -186,7 +186,7 @@ namespace utils::math::geometry::transformations
 		aabb = aabb * scale;
 		return aabb;
 		}
-	inline geometry::aabb& operator+=(geometry::aabb& aabb, math::angle::deg rotation) noexcept
+	inline geometry::aabb& operator+=(geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
 		{
 		aabb = aabb + rotation;
 		return aabb;
@@ -208,7 +208,7 @@ namespace utils::math::geometry::transformations
 		{
 		return {circle.center * scale, circle.radius * scale};
 		}
-	inline geometry::circle operator+(const geometry::circle& circle, math::angle::deg rotation) noexcept
+	inline geometry::circle operator+(const geometry::circle& circle, beta::math::angle::rad rotation) noexcept
 		{
 		return {circle.center + rotation, circle.radius};
 		}
@@ -221,7 +221,7 @@ namespace utils::math::geometry::transformations
 		circle = circle * scale;
 		return circle;
 		}
-	inline geometry::circle& operator+=(geometry::circle& circle, math::angle::deg rotation) noexcept
+	inline geometry::circle& operator+=(geometry::circle& circle, beta::math::angle::rad rotation) noexcept
 		{
 		circle = circle + rotation;
 		return circle;

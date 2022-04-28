@@ -6,16 +6,17 @@
 namespace utils
 	{
 	template <typename T>
-	bool will_overflow_mult(T a, T b)
+	inline bool will_overflow_mult(T a, T b)
 		{
 		T x = a * b;
 		return (a != 0 && x / a != b);
 		}
 
 	template <typename T>
-	T lerp(T a, T b, T t) { return (a * (T{1} - t)) + (b * t); }
+	inline T lerp(T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
 
-	template <typename T, char iterations = 2> inline T inv_sqrt(T x)
+	template <typename T, char iterations = 2> 
+	inline T inv_sqrt(T x)
 		{//https://stackoverflow.com/questions/11644441/fast-inverse-square-root-on-x64/11644533
 		static_assert(std::is_floating_point<T>::value, "T must be floating point");
 		static_assert(iterations == 1 || iterations == 2, "itarations must equal 1 or 2");
@@ -32,5 +33,5 @@ namespace utils
 		}
 
 	template <std::integral T>
-	void swap(T& a, T& b) { a ^= b ^= a ^= b; }
+	inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
 	}

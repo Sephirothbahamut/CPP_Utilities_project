@@ -114,16 +114,12 @@ namespace utils::math
 
 			// VEC & ANGLE OPERATIONS
 #ifndef UTILS_NOANGLE
-			vec2<T>  operator+ (const utils::math::angle::deg angle) const noexcept { utils::math::angle::rad rngle{angle}; return {x * rngle.cos() - y * rngle.sin(), x * rngle.sin() + y * rngle.cos()}; }
-			vec2<T>  operator+ (const utils::math::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-			vec2<T>  operator- (const utils::math::angle::deg angle) const noexcept { utils::math::angle::rad rngle{angle}; return {x * rngle.cos() - y * rngle.sin(), x * rngle.sin() + y * rngle.cos()}; }
-			vec2<T>  operator- (const utils::math::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-			vec2<T>& operator+=(const utils::math::angle::deg angle)       noexcept { return *this = *this + angle; }
-			vec2<T>& operator+=(const utils::math::angle::rad angle)       noexcept { return *this = *this + angle; }
-			vec2<T>& operator-=(const utils::math::angle::deg angle)       noexcept { return *this = *this - angle; }
-			vec2<T>& operator-=(const utils::math::angle::rad angle)       noexcept { return *this = *this - angle; }
-			vec2<T>& operator= (const utils::math::angle::deg angle)       noexcept { return *this = angle.to_rad(); }
-			vec2<T>& operator= (const utils::math::angle::rad angle)       noexcept { return *this ={angle.cos() * magnitude(), angle.sin() * magnitude()}; }
+			
+			vec2<T>  operator+ (const utils::beta::math::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
+			vec2<T>  operator- (const utils::beta::math::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
+			vec2<T>& operator+=(const utils::beta::math::angle::rad angle)       noexcept { return *this = *this + angle; }
+			vec2<T>& operator-=(const utils::beta::math::angle::rad angle)       noexcept { return *this = *this - angle; }
+			vec2<T>& operator= (const utils::beta::math::angle::rad angle)       noexcept { return *this ={angle.cos() * magnitude(), angle.sin() * magnitude()}; }
 #endif
 			// VEC & VEC OPERATORS
 			vec2<T>  operator+ (const vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
@@ -222,5 +218,13 @@ namespace utils::math
 
 			} cross;
 		}
-
+	}
+	
+namespace utils
+	{
+	template <typename T>
+	inline math::vec2<T> lerp(math::vec2<T> a, math::vec2<T> b, float t)
+		{
+		return { math::vec2<T>::lerp(a, b, t) };
+		}
 	}

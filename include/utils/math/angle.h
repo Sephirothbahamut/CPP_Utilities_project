@@ -101,11 +101,6 @@ namespace utils::beta::math::angle
 
 			base_angle& clamp(base_angle min, base_angle max)       noexcept { *this = this->clamped(min, max); return *this; }
 
-			inline static base_angle lerp(base_angle a, base_angle b) noexcept
-				{
-				return {std::lerp(a.value, b.value)};
-				}
-
 			bool operator==(const base_angle oth) const noexcept { return clamped().value == oth.clamped().value; }
 			bool operator!=(const base_angle oth) const noexcept { return !(*this == oth); }
 
@@ -125,7 +120,6 @@ namespace utils::beta::math::angle
 
 	using deg = base_angle<360.f>;
 	using rad = base_angle<2.f * constants::PIf>;
-	
 
 	namespace trigonometry
 		{
@@ -151,6 +145,15 @@ namespace utils::beta::math::angle
 		inline rad operator""_radpi(unsigned long long   value) noexcept { return angle::rad{static_cast<float>(value) * constants::PIf}; }
 		}
 	}
+
+	namespace utils
+		{
+		template <float full_angle_value = 1.f>
+		inline utils::beta::math::angle::base_angle<full_angle_value> lerp(utils::beta::math::angle::base_angle<full_angle_value> a, utils::beta::math::angle::base_angle<full_angle_value> b, float t)
+			{
+			return { utils::lerp(a.value, b.value, t) };
+			}
+		}
 
 namespace utils::cout
 	{
