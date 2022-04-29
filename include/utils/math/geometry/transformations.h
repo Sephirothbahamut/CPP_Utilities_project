@@ -5,141 +5,87 @@
 #include "../vec2.h"
 #include "../angle.h"
 #include "../transform2.h"
-#include "segment.h"
-#include "polygon.h"
-#include "circle.h"
-#include "aabb.h"
-#include "point.h"
+#include "shapes.h"
 
+//TODO replace operators with named functions (translate, rotate, scale)
 namespace utils::math::geometry::transformations
 	{
 #pragma region point
-	// NOT to do //note, there's a space between to and do to not make it appear when searching for "TO[blank]DO"
+	// NOT to do, already defined in vec2.h //note, there's a space between to and do to not make it appear when searching for "TO[blank]DO"
 #pragma endregion point
 
 #pragma region segment
-	inline geometry::segment operator*(const geometry::segment& segment, float scale) noexcept
+	inline geometry::segment scale(const geometry::segment& segment, float scaling) noexcept
 		{
-		return {segment.a * scale, segment.b * scale};
+		return {segment.a * scaling, segment.b * scaling};
 		}
-	inline geometry::segment operator+(const geometry::segment& segment, beta::math::angle::rad rotation) noexcept
+	inline geometry::segment rotate(const geometry::segment& segment, beta::math::angle::rad rotation) noexcept
 		{
 		return {segment.a + rotation, segment.b + rotation};
 		}
-	inline geometry::segment operator+(const geometry::segment& segment, vec2f translation) noexcept
+	inline geometry::segment translate(const geometry::segment& segment, vec2f translation) noexcept
 		{
 		return {segment.a + translation, segment.b + translation};
-		}
-	inline geometry::segment& operator*=(geometry::segment& segment, float scale) noexcept
-		{
-		segment = segment * scale;
-		return segment;
-		}
-	inline geometry::segment& operator+=(geometry::segment& segment, beta::math::angle::rad rotation) noexcept
-		{
-		segment = segment + rotation;
-		return segment;
-		}
-	inline geometry::segment& operator+=(geometry::segment& segment, vec2f translation) noexcept
-		{
-		segment = segment + translation;
-		return segment;
 		}
 #pragma endregion segment
 
 
 
 #pragma region polygon
-	inline geometry::polygon operator*(const geometry::polygon& polygon, float scale) noexcept
+	inline geometry::polygon scale(const geometry::polygon& polygon, float scaling) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
-		for (auto& v : new_vertices) { v *= scale; }
+		for (auto& v : new_vertices) { v *= scaling; }
 		return {std::move(new_vertices)};
 		}
 	
-	inline geometry::polygon operator+(const geometry::polygon& polygon, beta::math::angle::rad rotation) noexcept
+	inline geometry::polygon rotate(const geometry::polygon& polygon, beta::math::angle::rad rotation) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
 		for (auto& v : new_vertices) { v += rotation; }
 		return {std::move(new_vertices)};
 		}
 	
-	inline geometry::polygon operator+(const geometry::polygon& polygon, vec2f translation) noexcept
+	inline geometry::polygon translate(const geometry::polygon& polygon, vec2f translation) noexcept
 		{
 		std::vector<vec2f> new_vertices{polygon.get_vertices().begin(), polygon.get_vertices().end()};
 		for (auto& v : new_vertices) { v += translation; }
 		return {std::move(new_vertices)};
 		}
-	
-	inline geometry::polygon& operator*=(geometry::polygon& polygon, float scale) noexcept
-		{
-		for (auto& v : polygon.get_vertices()) { v *= scale; }
-		return polygon;
-		}
-	
-	inline geometry::polygon& operator+=(geometry::polygon& polygon, beta::math::angle::rad rotation) noexcept
-		{
-		for (auto& v : polygon.get_vertices()) { v += rotation; }
-		return polygon;
-		}
-	
-	inline geometry::polygon& operator+=(geometry::polygon& polygon, vec2f translation) noexcept
-		{
-		for (auto& v : polygon.get_vertices()) { v += translation; }
-		return polygon;
-		}
 
 #pragma endregion polygon
 
 #pragma region convex_polygon
-	inline geometry::convex_polygon operator*(const geometry::convex_polygon& convex_polygon, float scale) noexcept
+	inline geometry::convex_polygon scale(const geometry::convex_polygon& convex_polygon, float scaling) noexcept
 		{
 		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
-		for (auto& v : new_vertices) 	{ v *= scale; }
+		for (auto& v : new_vertices) 	{ v *= scaling; }
 		return 	{ std::move(new_vertices) };
 		}
 
-	inline geometry::convex_polygon operator+(const geometry::convex_polygon& convex_polygon, beta::math::angle::rad rotation) noexcept
+	inline geometry::convex_polygon rotate(const geometry::convex_polygon& convex_polygon, beta::math::angle::rad rotation) noexcept
 		{
 		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
 		for (auto& v : new_vertices) 	{ v += rotation; }
 		return 	{ std::move(new_vertices) };
 		}
 
-	inline geometry::convex_polygon operator+(const geometry::convex_polygon& convex_polygon, vec2f translation) noexcept
+	inline geometry::convex_polygon translate(const geometry::convex_polygon& convex_polygon, vec2f translation) noexcept
 		{
 		std::vector<vec2f> new_vertices	{ convex_polygon.get_vertices().begin(), convex_polygon.get_vertices().end() };
 		for (auto& v : new_vertices) 	{ v += translation; }
 		return 	{ std::move(new_vertices) };
 		}
 
-	inline geometry::convex_polygon& operator*=(geometry::convex_polygon& convex_polygon, float scale) noexcept
-		{
-		for (auto& v : convex_polygon.get_vertices()) 	{ v *= scale; }
-		return convex_polygon;
-		}
-
-	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& convex_polygon, beta::math::angle::rad rotation) noexcept
-		{
-		for (auto& v : convex_polygon.get_vertices()) 	{ v += rotation; }
-		return convex_polygon;
-		}
-
-	inline geometry::convex_polygon& operator+=(geometry::convex_polygon& convex_polygon, vec2f translation) noexcept
-		{
-		for (auto& v : convex_polygon.get_vertices()) 	{ v += translation; }
-		return convex_polygon;
-		}
-
 #pragma endregion convex_polygon
 
 #pragma region aabb
-	inline geometry::aabb operator*(const geometry::aabb& aabb, float scale) noexcept
+	inline geometry::aabb scale(const geometry::aabb& aabb, float scaling) noexcept
 		{
-		return 	{aabb.ll * scale, aabb.up * scale, aabb.rr * scale, aabb.dw * scale, };
+		return 	{aabb.ll * scaling, aabb.up * scaling, aabb.rr * scaling, aabb.dw * scaling, };
 		}
 
-	inline geometry::aabb operator+(const geometry::aabb& aabb, vec2f translation) noexcept
+	inline geometry::aabb rotate(const geometry::aabb& aabb, vec2f translation) noexcept
 		{
 		return 	{aabb.ll + translation.x, aabb.up + translation.y, aabb.rr + translation.x, aabb.dw + translation.y};
 		}
@@ -171,73 +117,72 @@ namespace utils::math::geometry::transformations
 			};
 		}
 	
-	inline auto operator+(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
+	inline auto rotate(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
 		{
 		return _::proxy_rotation	{ aabb, rotation };
 		}*/
 
-	inline geometry::aabb operator+(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
+	inline geometry::aabb rotate(const geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
 		{
 		return aabb;
 		}
 
-	inline geometry::aabb& operator*=(geometry::aabb& aabb, float scale) noexcept
-		{
-		aabb = aabb * scale;
-		return aabb;
-		}
-	inline geometry::aabb& operator+=(geometry::aabb& aabb, beta::math::angle::rad rotation) noexcept
-		{
-		aabb = aabb + rotation;
-		return aabb;
-		}
-	inline geometry::aabb& operator+=(geometry::aabb& aabb, vec2f translation) noexcept
-		{
-		aabb = aabb + translation;
-		return aabb;
-		}
-
-	/*inline auto operator* (const geometry::aabb& shape, const transform2& transform) noexcept
+	/*inline auto scale (const geometry::aabb& shape, const transform2& transform) noexcept
 		{
 		return _::proxy_transform	{ shape, transform };
 		}*/
 #pragma endregion aabb
 
 #pragma region circle
-	inline geometry::circle operator*(const geometry::circle& circle, float scale) noexcept
+	inline geometry::circle scale(const geometry::circle& circle, float scaling) noexcept
 		{
-		return {circle.center * scale, circle.radius * scale};
+		return {circle.center * scaling, circle.radius * scaling};
 		}
-	inline geometry::circle operator+(const geometry::circle& circle, beta::math::angle::rad rotation) noexcept
+	inline geometry::circle rotate(const geometry::circle& circle, beta::math::angle::rad rotation) noexcept
 		{
 		return {circle.center + rotation, circle.radius};
 		}
-	inline geometry::circle operator+(const geometry::circle& circle, vec2f translation) noexcept
+	inline geometry::circle translate(const geometry::circle& circle, vec2f translation) noexcept
 		{
 		return {circle.center + translation, circle.radius};
 		}
-	inline geometry::circle& operator*=(geometry::circle& circle, float scale) noexcept
-		{
-		circle = circle * scale;
-		return circle;
-		}
-	inline geometry::circle& operator+=(geometry::circle& circle, beta::math::angle::rad rotation) noexcept
-		{
-		circle = circle + rotation;
-		return circle;
-		}
-	inline geometry::circle& operator+=(geometry::circle& circle, vec2f translation) noexcept
-		{
-		circle = circle + translation;
-		return circle;
-		}
 #pragma endregion circle
 
-	template <typename T>
-	concept is_shape = ::utils::concepts::any_of<T, geometry::point, geometry::segment, geometry::aabb, geometry::circle, geometry::polygon, geometry::convex_polygon>;
 
-	template <is_shape T>
-	inline T  operator* (const T& shape, const transform2& transform) noexcept { return ((shape * transform.scaling) + transform.rotation) + transform.translation; }
-	template <is_shape T>
-	inline T& operator*=(T& shape, const transform2& transform) noexcept { shape = ((shape * transform.scaling) + transform.rotation) + transform.translation; return shape; }
+	///////////////////////////////////////////////////////////////////////// COMMON
+	template <shape T>
+	inline T  transform(const T& shape, const transform2& transform) noexcept { return ((shape * transform.scaling) + transform.rotation) + transform.translation; }
+	template <shape T>
+	inline T& transform_self(T& shape, const transform2& transform) noexcept { shape = ((shape * transform.scaling) + transform.rotation) + transform.translation; return shape; }
+
+	template <shape_discrete T>
+	inline T& scale_self(T& shape, float scaling) noexcept { shape = scale(shape, scaling); return shape; }
+	template <shape_discrete T>
+	inline T& rotate_self(T& shape, beta::math::angle::rad rotation) noexcept { shape = rotate(shape, rotation); return shape; }
+	template <shape_discrete T>
+	inline T  translate_self(T& shape, vec2f translation) noexcept { shape = translate(shape, translation); return shape; }
+
+#pragma region continuous shapes
+	template <shape_continuous T>
+	inline geometry::continuous_point scale(const T& continuous, float scaling, float scaling_next) noexcept
+		{
+		return T{scale(continuous.a, scaling), scale(continuous.b, scaling_next)};
+		}
+	template <shape_continuous T>
+	inline geometry::continuous_point rotate(const T& continuous, beta::math::angle::rad rotation, beta::math::angle::rad rotation_next) noexcept
+		{
+		return T{rotate(continuous.a, rotation), rotate(continuous.b, rotation_next)};
+		}
+	template <shape_continuous T>
+	inline geometry::continuous_point translate(const T& continuous, vec2f translation, vec2f translation_next) noexcept
+		{
+		return T{translate(continuous.a, translation), translate(continuous.b, translation_next)};
+		}
+	template <shape_continuous T>
+	inline T& scale_self(T& shape, float scaling, float scaling_next) noexcept { shape = scale(shape, scaling, scaling_next); return shape; }
+	template <shape_continuous T>
+	inline T& rotate_self(T& shape, beta::math::angle::rad rotation, beta::math::angle::rad rotation_next) noexcept { shape = rotate(shape, rotation, rotation_next); return shape; }
+	template <shape_continuous T>
+	inline T  translate_self(T& shape, vec2f translation, vec2f translation_next) noexcept { shape = translate(shape, translation, translation_next); return shape; }
+#pragma endregion continuous shapes
 	}

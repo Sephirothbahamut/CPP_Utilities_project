@@ -77,10 +77,10 @@ namespace utils::math
 
 			T x = 0, y = 0;
 
-			T magnitude2()        const noexcept { return x * x + y * y; }
-			T magnitude ()        const noexcept { return std::sqrt(magnitude2()); }
-			vec2<T>  normalized() const noexcept { return magnitude() ? *this / magnitude() : *this; }
-			vec2<T>& normalize ()       noexcept { return *this = normalized(); }
+			T magnitude2()            const noexcept { return x * x + y * y; }
+			T magnitude ()            const noexcept { return std::sqrt(magnitude2()); }
+			vec2<T>  normalize()      const noexcept { return magnitude() ? *this / magnitude() : *this; }
+			vec2<T>& normalize_self()       noexcept { return *this = normalized(); }
 
 			// CASTS
 			template <template<typename> class To, typename T_t>

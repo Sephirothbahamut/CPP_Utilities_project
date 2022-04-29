@@ -15,7 +15,7 @@ namespace utils
 	template <typename T>
 	inline T lerp(T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
 
-	template <typename T, char iterations = 2> 
+	template <typename T, char iterations = 2>
 	inline T inv_sqrt(T x)
 		{//https://stackoverflow.com/questions/11644441/fast-inverse-square-root-on-x64/11644533
 		static_assert(std::is_floating_point<T>::value, "T must be floating point");
@@ -32,6 +32,11 @@ namespace utils
 		return y;
 		}
 
+	template <typename T>
+	inline void swap(T& a, T& b) { std::swap(a, b); }
 	template <std::integral T>
 	inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
+
+	template <typename T>
+	inline T clamp(const T& in, const T& min, const T& max) { return std::clamp(in, min, max); }
 	}

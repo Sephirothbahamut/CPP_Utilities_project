@@ -31,10 +31,9 @@ namespace utils::beta::math::angle
 			template <float other_full_angle>
 			operator base_angle<other_full_angle>() const noexcept { return { (value / full_angle) * other_full_angle }; }
 
-
-			base_angle  clamped() const noexcept
+			base_angle clamp() const noexcept
 				{
-				if (false) {}//constepxr (full_angle == 1.f) { return {value - std::floor(value)}; }
+				if constepxr (full_angle == 1.f) { return {value - std::floor(value)}; }
 				else
 					{
 					float new_value{ std::fmod(value, full_angle) };
@@ -42,7 +41,7 @@ namespace utils::beta::math::angle
 					return { new_value };
 					}
 				}
-			base_angle& clamp()       noexcept { *this = this->clamped(); return *this; }
+			base_angle& clamp_self()       noexcept { *this = this->clamped(); return *this; }
 
 			// Shouldn't be needed because...
 			//template <float other_full_angle> base_angle  operator+ (const base_angle<other_full_angle> oth) const noexcept { return {value + static_cast<base_angle<full_angle>>(oth).value}; }
@@ -61,7 +60,7 @@ namespace utils::beta::math::angle
 			base_angle& operator*=(float oth)       noexcept { return *this = *this * oth; }
 			base_angle& operator/=(float oth)       noexcept { return *this = *this / oth; }
 
-			base_angle  operator-()const noexcept { return base_angle{ value + half_angle }.clamped(); }
+			base_angle  operator-()const noexcept { return base_angle{ value + half_angle }.clamp(); }
 
 			float normalize_in_range(base_angle min, base_angle max) const noexcept
 				{
@@ -81,27 +80,7 @@ namespace utils::beta::math::angle
 				return min_to_this < min_to_opposite ? min_to_this / min_to_max : (min_to_this - full_angle) / min_to_max;
 				}
 
-			base_angle clamped(base_angle min, base_angle max) const noexcept
-				{
-				min.clamp();
-				max.clamp();
-				float next_max{ min.value <= max.value ? max.value : max.value + full_angle };
-				float min_to_this{ (min.value <= value ? value : value + full_angle) - min.value };
-				float min_to_max{ next_max - min.value };
-				if (min_to_this < min_to_max) { return *this; }
-
-				base_angle halfway{ (next_max + min.value) * .5f };
-				base_angle opposite{ -halfway };
-				float next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
-				if (next_opposite < next_max) { next_opposite += full_angle; }
-
-				float min_to_opposite{ next_opposite - min.value };
-				return min_to_this < min_to_opposite ? max : min;
-				}
-
-			base_angle& clamp(base_angle min, base_angle max)       noexcept { *this = this->clamped(min, max); return *this; }
-
-			bool operator==(const base_angle oth) const noexcept { return clamped().value == oth.clamped().value; }
+			bool operator==(const base_angle oth) const noexcept { return clamp().value == oth.clamp().value; }
 			bool operator!=(const base_angle oth) const noexcept { return !(*this == oth); }
 
 	#pragma region Trigonometry
@@ -146,14 +125,32 @@ namespace utils::beta::math::angle
 		}
 	}
 
-	namespace utils
+namespace utils
+	{
+	template <float full_angle_value = 1.f>
+	inline utils::beta::math::angle::base_angle<full_angle_value> lerp(utils::beta::math::angle::base_angle<full_angle_value> a, utils::beta::math::angle::base_angle<full_angle_value> b, float t)
 		{
-		template <float full_angle_value = 1.f>
-		inline utils::beta::math::angle::base_angle<full_angle_value> lerp(utils::beta::math::angle::base_angle<full_angle_value> a, utils::beta::math::angle::base_angle<full_angle_value> b, float t)
-			{
-			return { utils::lerp(a.value, b.value, t) };
-			}
+		return { utils::lerp(a.value, b.value, t) };
 		}
+	template <float full_angle_value = 1.f>
+	inline utils::beta::math::angle::base_angle<full_angle_value> clamp(utils::beta::math::angle::base_angle<full_angle_value> in, utils::beta::math::angle::base_angle<full_angle_value> min, utils::beta::math::angle::base_angle<full_angle_value> max)
+		{
+		min = min.clamp();
+		max = max.clamp();
+		float next_max{min.value <= max.value ? max.value : max.value + full_angle};
+		float min_to_this{(min.value <= in.value ? in.value : in.value + full_angle) - min.value};
+		float min_to_max{next_max - min.value};
+		if (min_to_this < min_to_max) { return *this; }
+
+		base_angle halfway{(next_max + min.value) * .5f};
+		base_angle opposite{-halfway};
+		float next_opposite{next_max < opposite.value ? opposite.value : opposite.value + full_angle};
+		if (next_opposite < next_max) { next_opposite += full_angle; }
+
+		float min_to_opposite{next_opposite - min.value};
+		return min_to_this < min_to_opposite ? max : min;
+		}
+	}
 
 namespace utils::cout
 	{
