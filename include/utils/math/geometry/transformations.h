@@ -165,9 +165,9 @@ namespace utils::math::geometry::transformations
 
 	///////////////////////////////////////////////////////////////////////// COMMON
 	template <shape T>
-	inline T  transform(const T& shape, const transform2& transform) noexcept { return ((shape * transform.scaling) + transform.rotation) + transform.translation; }
+	inline T  transform(const T& shape, const transform2& transform) noexcept { return translate(rotate(scale(shape, transform.scaling), transform.rotation), transform.translation); }
 	template <shape T>
-	inline T& transform_self(T& shape, const transform2& transform) noexcept { shape = ((shape * transform.scaling) + transform.rotation) + transform.translation; return shape; }
+	inline T& transform_self(T& shape, const transform2& transform) noexcept { shape = transformations::transform(shape, transform); return shape; }
 
 	template <shape_discrete T>
 	inline T& scale_self(T& shape, float scaling) noexcept { shape = scale(shape, scaling); return shape; }
