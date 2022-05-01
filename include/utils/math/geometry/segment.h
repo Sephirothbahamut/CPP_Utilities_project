@@ -49,7 +49,7 @@ namespace utils::math::geometry
 				}
 
 			/// <summary> Unit vector from a towards b. </summary>
-			vec2f forward() const noexcept { return (b - a).normalized(); }
+			vec2f forward() const noexcept { return (b - a).normalize(); }
 			/// <summary> Unit vector perpendicular on the left from a to b. </summary>
 			vec2f perpendicular_right() const noexcept { const auto tmp{forward()}; return tmp.perpendicular_right(); }
 			/// <summary> Unit vector perpendicular on the right from a to b. </summary>

@@ -32,8 +32,9 @@ namespace utils
 		return y;
 		}
 
-	template <typename T>
-	inline void swap(T& a, T& b) { std::swap(a, b); }
+	//TODO understand why it doesn't compile because it tries to instantiate the template with "utils::message**" ???
+	//template <typename T>
+	//inline void swap(T& a, T& b) { std::swap(a, b); }
 	template <std::integral T>
 	inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
 

@@ -135,7 +135,7 @@ namespace utils::math::geometry
 			}
 		collision_data ret
 			{
-			.normal{(chosen_one - circle.center).normalized() * (inside ? -1.f : 1.f)},
+			.normal{(chosen_one - circle.center).normalize() * (inside ? -1.f : 1.f)},
 			.impact_point{chosen_one},
 			.t{vec2f::distance(cpoint.a, chosen_one) / cpoint.length()}//std::sqrt(vec2f::distance(chosen_one, circle.center)) / std::sqrt(vec2f::distance(cpoint.a, circle.center))}
 			};

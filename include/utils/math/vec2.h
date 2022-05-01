@@ -58,10 +58,10 @@ namespace utils::math
 		public:
 			vec2<T>()                              noexcept = default;
 			vec2<T>(T x, T y)                      noexcept : x{x}, y{y} {};
-			vec2<T>(angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
-			vec2<T>(angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
-			vec2<T>(angle::deg angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
-			vec2<T>(angle::rad angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
+			vec2<T>(math::angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
+			vec2<T>(math::angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
+			vec2<T>(math::angle::deg angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
+			vec2<T>(math::angle::rad angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
 			template <typename other_t>
 			vec2<T>(vec2<other_t> other)           noexcept : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {} //TODO test
 
@@ -80,16 +80,14 @@ namespace utils::math
 			T magnitude2()            const noexcept { return x * x + y * y; }
 			T magnitude ()            const noexcept { return std::sqrt(magnitude2()); }
 			vec2<T>  normalize()      const noexcept { return magnitude() ? *this / magnitude() : *this; }
-			vec2<T>& normalize_self()       noexcept { return *this = normalized(); }
+			vec2<T>& normalize_self()       noexcept { return *this = normalize(); }
 
 			// CASTS
 			template <template<typename> class To, typename T_t>
 			inline To<T_t> vec_cast() { return {static_cast<T_t>(x), static_cast<T_t>(y)}; }
 
-			//float to_angle() const noexcept { return (std::atan2f(x, y) * 180.f / static_cast<float>(std::acos(-1)/*numbers::pi*/)) + 180.f; }
-			operator math::angle::deg() const noexcept { return math::angle::trigonometry::atan2(y, x); } //TODO test
-			operator math::angle::rad() const noexcept { return math::angle::trigonometry::atan2(y, x); } //TODO test
-			//operator T         () const noexcept { return magnitude(); }
+			template <float full_angle_value = 360.f>
+			math::angle::base_angle<full_angle_value> angle() const noexcept { return math::angle::base_angle<full_angle_value>::atan2(y, x); }
 
 			template <typename other_t>
 			operator vec2<other_t>() const noexcept { return {static_cast<other_t>(x), static_cast<other_t>(y)}; }
@@ -101,8 +99,8 @@ namespace utils::math
 			vec2<T>  operator++() noexcept { return *this += T(1); }
 			vec2<T>  operator--() noexcept { return *this -= T(1); }
 
-			vec2<T>  operator+ (const T n) const noexcept { return {normalized() * (magnitude() + n)}; }
-			vec2<T>  operator- (const T n) const noexcept { return {normalized() * (magnitude() - n)}; }
+			vec2<T>  operator+ (const T n) const noexcept { return {normalize() * (magnitude() + n)}; }
+			vec2<T>  operator- (const T n) const noexcept { return {normalize() * (magnitude() - n)}; }
 			vec2<T>  operator* (const T n) const noexcept { return {x * n, y * n}; }
 			vec2<T>  operator/ (const T n) const noexcept { return {x / n, y / n}; }
 
@@ -110,17 +108,15 @@ namespace utils::math
 			vec2<T>& operator-=(const T n)       noexcept { return *this = *this - n; }
 			vec2<T>& operator*=(const T n)       noexcept { return *this = *this * n; }
 			vec2<T>& operator/=(const T n)       noexcept { return *this = *this / n; }
-			vec2<T>& operator= (const T n)       noexcept { return normalize() *= n; }
+			vec2<T>& operator= (const T n)       noexcept { *this = normalize() * n; return *this; }
 
 			// VEC & ANGLE OPERATIONS
-#ifndef UTILS_NOANGLE
-			
-			vec2<T>  operator+ (const utils::beta::math::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-			vec2<T>  operator- (const utils::beta::math::angle::rad angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-			vec2<T>& operator+=(const utils::beta::math::angle::rad angle)       noexcept { return *this = *this + angle; }
-			vec2<T>& operator-=(const utils::beta::math::angle::rad angle)       noexcept { return *this = *this - angle; }
-			vec2<T>& operator= (const utils::beta::math::angle::rad angle)       noexcept { return *this ={angle.cos() * magnitude(), angle.sin() * magnitude()}; }
-#endif
+			template <float full_angle_value> vec2<T>  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
+			template <float full_angle_value> vec2<T>  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
+			template <float full_angle_value> vec2<T>& operator+=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept { return *this = *this + angle; }
+			template <float full_angle_value> vec2<T>& operator-=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept { return *this = *this - angle; }
+			template <float full_angle_value> vec2<T>& operator= (const utils::math::angle::base_angle<full_angle_value> angle)       noexcept { return *this ={angle.cos() * magnitude(), angle.sin() * magnitude()}; }
+
 			// VEC & VEC OPERATORS
 			vec2<T>  operator+ (const vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
 			vec2<T>  operator- (const vec2<T>& oth) const noexcept { return {x - oth.x, y - oth.y}; }

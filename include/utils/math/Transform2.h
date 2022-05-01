@@ -17,9 +17,9 @@ namespace utils::math
 			//transform2(vec2f translation = {}, utils::math::angle::deg rotation = {}, float scaling = {1.f}) noexcept : translation(translation), rotation(rotation), scaling(scaling) {}
 			constexpr static transform2 zero() noexcept { return {{}, {}, 0.f}; }
 
-			vec2f							translation{};
-			utils::beta::math::angle::rad	rotation{};
-			float							scaling{1.f};
+			vec2f translation{};
+			utils::math::angle::rad	rotation{};
+			float scaling{1.f};
 
 			inline friend vec2f  operator* (const vec2f& v, const transform2& t) noexcept { return ((v * t.scaling) + t.rotation) + t.translation; }
 			inline friend vec2f& operator*=(      vec2f& v, const transform2& t) noexcept { return v = (v * t); }
