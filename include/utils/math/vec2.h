@@ -215,7 +215,19 @@ namespace utils::math
 			} cross;
 		}
 	}
-	
+namespace utils
+	{
+	template <typename T>
+	inline utils::math::vec2<T> lerp(utils::math::vec2<T> a, utils::math::vec2<T> b, float t)
+		{
+		return {utils::lerp(a.x, b.x, t), utils::lerp(a.y, b.y, t)};
+		}
+	template <typename T>
+	inline utils::math::vec2<T> clamp(utils::math::vec2<T> in, utils::math::vec2<T> min, utils::math::vec2<T> max)
+		{
+		return {std::clamp(in.x, min.x, max.x), std::clamp(in.y, min.y, max.y)};
+		}
+	}
 namespace utils
 	{
 	template <typename T>

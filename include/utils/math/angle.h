@@ -26,6 +26,8 @@ namespace utils::math::angle
 			
 			template <float other_full_angle>
 			base_angle(const base_angle<other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
+			template <>
+			base_angle<full_angle_value>(const base_angle<full_angle_value>& src) : value{src.value} {}
 
 			template <float other_full_angle>
 			operator base_angle<other_full_angle>() const noexcept { return { (value / full_angle) * other_full_angle }; }

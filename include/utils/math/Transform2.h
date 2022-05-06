@@ -43,8 +43,8 @@ namespace utils::math
 			bool operator==(const transform2& oth) const noexcept { return translation == oth.translation && rotation == oth.rotation && scaling == oth.scaling; }
 			bool operator!=(const transform2& oth) const noexcept { return !(*this == oth); }
 
-			transform2  composite(const transform2& oth)  const noexcept { return *this +  oth; }
-			transform2& compose  (const transform2& oth)        noexcept { return *this += oth; }
+			transform2  composite(const transform2& oth)  const noexcept { return *this +  oth; }//TODO fix, adding elements is not compose :(
+			transform2& compose  (const transform2& oth)        noexcept { return *this += oth; }//TODO fix, adding elements is not compose :(
 			transform2  inverse()                         const noexcept { return  -(*this); }
 			transform2& invert ()                               noexcept { return --(*this); }
 
