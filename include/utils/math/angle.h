@@ -135,12 +135,12 @@ namespace utils::math::angle
 namespace utils
 	{
 	template <float full_angle_value = 1.f>
-	inline utils::math::angle::base_angle<full_angle_value> lerp(utils::math::angle::base_angle<full_angle_value> a, utils::math::angle::base_angle<full_angle_value> b, float t)
+	inline math::angle::base_angle<full_angle_value> lerp(math::angle::base_angle<full_angle_value> a, math::angle::base_angle<full_angle_value> b, float t)
 		{
 		return { utils::lerp(a.value, b.value, t) };
 		}
 	template <float full_angle_value = 1.f>
-	inline utils::math::angle::base_angle<full_angle_value> clamp(utils::math::angle::base_angle<full_angle_value> in, utils::math::angle::base_angle<full_angle_value> min, utils::math::angle::base_angle<full_angle_value> max)
+	inline math::angle::base_angle<full_angle_value> clamp(math::angle::base_angle<full_angle_value> in, math::angle::base_angle<full_angle_value> min, math::angle::base_angle<full_angle_value> max)
 		{
 		min = min.clamp();
 		max = max.clamp();
@@ -149,8 +149,8 @@ namespace utils
 		float min_to_max{next_max - min.value};
 		if (min_to_this < min_to_max) { return in; }
 
-		utils::math::angle::base_angle<full_angle_value> halfway{(next_max + min.value) * .5f};
-		utils::math::angle::base_angle<full_angle_value> opposite{-halfway};
+		math::angle::base_angle<full_angle_value> halfway{(next_max + min.value) * .5f};
+		math::angle::base_angle<full_angle_value> opposite{-halfway};
 		float next_opposite{next_max < opposite.value ? opposite.value : opposite.value + full_angle_value};
 		if (next_opposite < next_max) { next_opposite += full_angle_value; }
 
