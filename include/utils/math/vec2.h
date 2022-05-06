@@ -60,8 +60,8 @@ namespace utils::math
 			vec2<T>(T x, T y)                      noexcept : x{x}, y{y} {};
 			vec2<T>(math::angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
 			vec2<T>(math::angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
-			vec2<T>(math::angle::deg angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
-			vec2<T>(math::angle::rad angle)              noexcept : x{angle.cos()            }, y{angle.sin()            } {} //TODO test
+			template <float full_angle_value>
+			vec2<T>(math::angle::base_angle<full_angle_value> angle) noexcept : x{angle.cos()}, y{angle.sin()} {} //TODO test
 			template <typename other_t>
 			vec2<T>(vec2<other_t> other)           noexcept : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {} //TODO test
 
@@ -226,5 +226,15 @@ namespace utils
 	inline math::vec2<T> clamp(math::vec2<T> in, math::vec2<T> min, math::vec2<T> max)
 		{
 		return {std::clamp(in.x, min.x, max.x), std::clamp(in.y, min.y, max.y)};
+		}
+	template <typename T>
+	inline math::vec2<T> min(math::vec2<T> in, math::vec2<T> min)
+		{
+		return {std::min(in.x, min.x), std::min(in.y, min.y)};
+		}
+	template <typename T>
+	inline math::vec2<T> max(math::vec2<T> in, math::vec2<T> max)
+		{
+		return {std::max(in.x, max.x), std::max(in.y, max.y)};
 		}
 	}
