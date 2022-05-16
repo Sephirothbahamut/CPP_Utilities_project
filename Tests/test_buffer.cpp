@@ -28,7 +28,7 @@ namespace Tests
 
 			TEST_METHOD(operations)
 				{
-				utils::container::buffer buffer;
+				utils::containers::buffer buffer;
 
 				float a = 5;
 				char b = 'a';

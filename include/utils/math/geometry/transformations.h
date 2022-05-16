@@ -16,7 +16,7 @@ namespace utils::math::geometry::transformations
 
 	inline geometry::point scale(const geometry::point& point, float scaling) noexcept
 		{
-		return point * scaling;
+		return geometry::point{ point * scaling };
 		}
 	inline geometry::point rotate(const geometry::point& point, math::angle::rad rotation) noexcept
 		{

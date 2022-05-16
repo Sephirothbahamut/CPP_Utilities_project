@@ -119,7 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
     </ClCompile>
@@ -153,6 +153,7 @@
     <ClInclude Include="include\utils\concepts.h" />
     <ClInclude Include="include\utils\console_io.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
+    <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\multitype_container.h" />
     <ClInclude Include="include\utils\containers\polymorphic_container.h" />

@@ -54,6 +54,37 @@ namespace utils
 			{
 			constexpr static bool value = std::is_base_of<Parent, Child>::value;
 			};
+
+		template <template <typename> class a, template <typename> class b, typename current_t, typename... other_ts>
+		struct check_b_for_all_that_a
+			{
+			constexpr static bool value = check_b_for_all_that_a<a, b, current_t>::value && check_b_for_all_that_a<a, b, other_ts...>::value;
+			};
+
+		template <template <typename> class a, template <typename> class b, typename current_t>
+		struct check_b_for_all_that_a<a, b, current_t>
+			{
+			constexpr static bool value = a<current_t>::value ? b<current_t>::value : true;
+			};
+		// Previous usage example:
+		//	template <typename a, typename b>
+		//	struct is_same_undecorated
+		//		{
+		//		constexpr static bool value = std::is_same_v<std::remove_cv_t<a>, std::remove_cv_t<b>>;
+		//		};
+		//	
+		//	template <typename a>
+		//	struct is_float
+		//		{
+		//		constexpr static bool value = std::is_same_v<std::remove_cv_t<a>, float>;
+		//		};
+		//	
+		//	template <typename ... Args>
+		//	void asd()
+		//		{
+		//		if constexpr (check_b_for_all_that_a<is_float, std::is_const, Args...>::value) { std::cout << "asd" << std::endl; }
+		//		else { std::cout << "zxc" << std::endl; }
+		//		}
 		}
 
 
@@ -73,4 +104,12 @@ namespace utils
 
 	template<typename Container_T, typename D>
 	struct true_contained_type<std::unique_ptr<Container_T, D>> { using type = Container_T; };
+
+
+
+	template <typename a, typename b>
+	struct is_same_undecorated
+		{
+		constexpr static bool value = std::is_same_v<std::remove_cv_t<a>, std::remove_cv_t<b>>;
+		};
 	}

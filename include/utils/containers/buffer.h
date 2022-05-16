@@ -8,7 +8,7 @@
 
 #include "../compilation/debug.h"
 
-namespace utils::container
+namespace utils::containers
 	{
 	class buffer
 		{

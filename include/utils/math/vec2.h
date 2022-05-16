@@ -56,14 +56,15 @@ namespace utils::math
 	class vec2
 		{
 		public:
-			vec2<T>()                              noexcept = default;
-			vec2<T>(T x, T y)                      noexcept : x{x}, y{y} {};
-			vec2<T>(math::angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
-			vec2<T>(math::angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
+			vec2()                              noexcept = default;
+			vec2(T x, T y)                      noexcept : x{x}, y{y} {};
+			vec2(math::angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
+			vec2(math::angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
 			template <float full_angle_value>
-			vec2<T>(math::angle::base_angle<full_angle_value> angle) noexcept : x{angle.cos()}, y{angle.sin()} {} //TODO test
+			vec2(math::angle::base_angle<full_angle_value> angle) noexcept : x{angle.cos()}, y{angle.sin()} {} //TODO test
 			template <typename other_t>
-			vec2<T>(vec2<other_t> other)           noexcept : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {} //TODO test
+			vec2(vec2<other_t> other)           noexcept : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {} //TODO test
+			vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
 
 
 			static vec2<T> rr()    noexcept { return {T{ 1}, T{ 0}}; }
