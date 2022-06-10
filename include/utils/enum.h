@@ -98,7 +98,7 @@
 #  define MAGIC_ENUM_RANGE_MAX 128
 #endif
 
-namespace utils::enum {
+namespace utils::magic_enum {
 
     // If need another optional type, define the macro MAGIC_ENUM_USING_ALIAS_OPTIONAL.
 #if defined(MAGIC_ENUM_USING_ALIAS_OPTIONAL)
@@ -128,10 +128,10 @@ namespace utils::enum {
         // If need another range for specific enum type, add specialization enum_range for necessary enum type.
         template <typename E>
         struct enum_range {
-            static_assert(std::is_enum_v<E>, "utils::enum::customize::enum_range requires enum type.");
+            static_assert(std::is_enum_v<E>, "utils::magic_enum::customize::enum_range requires enum type.");
             static constexpr int min = MAGIC_ENUM_RANGE_MIN;
             static constexpr int max = MAGIC_ENUM_RANGE_MAX;
-            static_assert(max > min, "utils::enum::customize::enum_range requires max > min.");
+            static_assert(max > min, "utils::magic_enum::customize::enum_range requires max > min.");
             };
 
         static_assert(MAGIC_ENUM_RANGE_MAX > MAGIC_ENUM_RANGE_MIN, "MAGIC_ENUM_RANGE_MAX must be greater than MAGIC_ENUM_RANGE_MIN.");
@@ -140,7 +140,7 @@ namespace utils::enum {
         namespace detail {
             enum class default_customize_tag {};
             enum class invalid_customize_tag {};
-            } // namespace utils::enum::customize::detail
+            } // namespace utils::magic_enum::customize::detail
 
         using customize_t = std::variant<string_view, detail::default_customize_tag, detail::invalid_customize_tag>;
 
@@ -161,7 +161,7 @@ namespace utils::enum {
             return default_tag;
             }
 
-        } // namespace utils::enum::customize
+        } // namespace utils::magic_enum::customize
 
     namespace detail {
 
@@ -266,7 +266,7 @@ namespace utils::enum {
             template <typename L, typename R>
             constexpr auto operator()([[maybe_unused]] L lhs, [[maybe_unused]] R rhs) const noexcept -> std::enable_if_t<std::is_same_v<std::decay_t<L>, char>&& std::is_same_v<std::decay_t<R>, char>, bool> {
 #if defined(MAGIC_ENUM_ENABLE_NONASCII)
-                static_assert(always_false_v<L, R>, "utils::enum::case_insensitive not supported Non-ASCII feature.");
+                static_assert(always_false_v<L, R>, "utils::magic_enum::case_insensitive not supported Non-ASCII feature.");
                 return false;
 #else
                 return to_lower(lhs) == to_lower(rhs);
@@ -345,7 +345,7 @@ namespace utils::enum {
 
         template <typename L, typename R>
         constexpr bool cmp_less(L lhs, R rhs) noexcept {
-            static_assert(std::is_integral_v<L> && std::is_integral_v<R>, "utils::enum::detail::cmp_less requires integral type.");
+            static_assert(std::is_integral_v<L> && std::is_integral_v<R>, "utils::magic_enum::detail::cmp_less requires integral type.");
 
             if constexpr (std::is_signed_v<L> == std::is_signed_v<R>) {
                 // If same signedness (both signed or both unsigned).
@@ -369,7 +369,7 @@ namespace utils::enum {
 
         template <typename I>
         constexpr I log2(I value) noexcept {
-            static_assert(std::is_integral_v<I>, "utils::enum::detail::log2 requires integral type.");
+            static_assert(std::is_integral_v<I>, "utils::magic_enum::detail::log2 requires integral type.");
 
             if constexpr (std::is_same_v<I, bool>) { // bool special case
                 return assert(false), value;
@@ -387,13 +387,13 @@ namespace utils::enum {
 
         template <typename E>
         constexpr auto n() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::n requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::n requires enum type.");
 
             [[maybe_unused]] constexpr auto custom = customize::enum_type_name<E>();
-            static_assert(std::is_same_v<std::decay_t<decltype(custom)>, customize::customize_t>, "utils::enum::customize requires customize_t type.");
+            static_assert(std::is_same_v<std::decay_t<decltype(custom)>, customize::customize_t>, "utils::magic_enum::customize requires customize_t type.");
             if constexpr (custom.index() == 0) {
                 constexpr auto name = std::get<string_view>(custom);
-                static_assert(!name.empty(), "utils::enum::customize requires not empty string.");
+                static_assert(!name.empty(), "utils::magic_enum::customize requires not empty string.");
                 return static_string<name.size()>{name};
                 }
             else if constexpr (custom.index() == 1 && supported<E>::value) {
@@ -416,13 +416,13 @@ namespace utils::enum {
 
         template <typename E, E V>
         constexpr auto n() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::n requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::n requires enum type.");
 
             [[maybe_unused]] constexpr auto custom = customize::enum_name<E>(V);
-            static_assert(std::is_same_v<std::decay_t<decltype(custom)>, customize::customize_t>, "utils::enum::customize requires customize_t type.");
+            static_assert(std::is_same_v<std::decay_t<decltype(custom)>, customize::customize_t>, "utils::magic_enum::customize requires customize_t type.");
             if constexpr (custom.index() == 0) {
                 constexpr auto name = std::get<string_view>(custom);
-                static_assert(!name.empty(), "utils::enum::customize requires not empty string.");
+                static_assert(!name.empty(), "utils::magic_enum::customize requires not empty string.");
                 return static_string<name.size()>{name};
                 }
             else if constexpr (custom.index() == 1 && supported<E>::value) {
@@ -445,17 +445,17 @@ namespace utils::enum {
 
         template <typename E, auto V>
         constexpr bool is_valid() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::is_valid requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::is_valid requires enum type.");
 
             return n<E, static_cast<E>(V)>().size() != 0;
             }
 
         template <typename E, int O, bool IsFlags, typename U = std::underlying_type_t<E>>
         constexpr E value(std::size_t i) noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::value requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::value requires enum type.");
 
             if constexpr (std::is_same_v<U, bool>) { // bool special case
-                static_assert(O == 0, "utils::enum::detail::value requires valid offset.");
+                static_assert(O == 0, "utils::magic_enum::detail::value requires valid offset.");
 
                 return static_cast<E>(i);
                 }
@@ -469,7 +469,7 @@ namespace utils::enum {
 
         template <typename E, bool IsFlags, typename U = std::underlying_type_t<E>>
         constexpr int reflected_min() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::reflected_min requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::reflected_min requires enum type.");
 
             if constexpr (IsFlags) {
                 return 0;
@@ -489,7 +489,7 @@ namespace utils::enum {
 
         template <typename E, bool IsFlags, typename U = std::underlying_type_t<E>>
         constexpr int reflected_max() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::reflected_max requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::reflected_max requires enum type.");
 
             if constexpr (IsFlags) {
                 return std::numeric_limits<U>::digits - 1;
@@ -527,7 +527,7 @@ namespace utils::enum {
 
         template <typename E, bool IsFlags, int Min, std::size_t... I>
         constexpr auto values(std::index_sequence<I...>) noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::values requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::values requires enum type.");
             constexpr bool valid[sizeof...(I)] = {is_valid<E, value<E, Min, IsFlags>(I)>()...};
             constexpr std::size_t count = values_count(valid);
 
@@ -548,19 +548,19 @@ namespace utils::enum {
 
         template <typename E, bool IsFlags, typename U = std::underlying_type_t<E>>
         constexpr auto values() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::values requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::values requires enum type.");
             constexpr auto min = reflected_min_v<E, IsFlags>;
             constexpr auto max = reflected_max_v<E, IsFlags>;
             constexpr auto range_size = max - min + 1;
-            static_assert(range_size > 0, "utils::enum::enum_range requires valid size.");
-            static_assert(range_size < (std::numeric_limits<std::uint16_t>::max)(), "utils::enum::enum_range requires valid size.");
+            static_assert(range_size > 0, "utils::magic_enum::enum_range requires valid size.");
+            static_assert(range_size < (std::numeric_limits<std::uint16_t>::max)(), "utils::magic_enum::enum_range requires valid size.");
 
             return values<E, IsFlags, reflected_min_v<E, IsFlags>>(std::make_index_sequence<range_size>{});
             }
 
         template <typename E, typename U = std::underlying_type_t<E>>
         constexpr bool is_flags_enum() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::is_flags_enum requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::is_flags_enum requires enum type.");
 
             if constexpr (has_is_flags<E>::value) {
                 return customize::enum_range<E>::is_flags;
@@ -608,7 +608,7 @@ namespace utils::enum {
 
         template <typename E, std::size_t... I>
         constexpr auto names(std::index_sequence<I...>) noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::names requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::names requires enum type.");
 
             return std::array<string_view, sizeof...(I)>{ {enum_name_v<E, values_v<E>[I]>...}};
             }
@@ -621,7 +621,7 @@ namespace utils::enum {
 
         template <typename E, std::size_t... I>
         constexpr auto entries(std::index_sequence<I...>) noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::entries requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::entries requires enum type.");
 
             return std::array<std::pair<E, string_view>, sizeof...(I)>{ { {values_v<E>[I], enum_name_v<E, values_v<E>[I]>}...}};
             }
@@ -634,7 +634,7 @@ namespace utils::enum {
 
         template <typename E, typename U = std::underlying_type_t<E>>
         constexpr bool is_sparse() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::is_sparse requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::is_sparse requires enum type.");
 
             if constexpr (count_v<E> == 0) {
                 return false;
@@ -656,7 +656,7 @@ namespace utils::enum {
 
         template <typename E, typename U = std::underlying_type_t<E>>
         constexpr U values_ors() noexcept {
-            static_assert(is_enum_v<E>, "utils::enum::detail::values_ors requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::values_ors requires enum type.");
 
             auto ors = U{0};
             for (std::size_t i = 0; i < count_v<E>; ++i) {
@@ -867,13 +867,13 @@ namespace utils::enum {
         if constexpr (std::is_invocable_r_v<result_t, Lambda, std::integral_constant<std::size_t, val + Page>>) {                 \
           return detail::invoke_r<result_t>(std::forward<Lambda>(lambda), std::integral_constant<std::size_t, val + Page>{});     \
         } else if constexpr (std::is_invocable_v<Lambda, std::integral_constant<std::size_t, val + Page>>) {                      \
-          assert(false && "utils::enum::detail::constexpr_switch wrong result type.");                                             \
+          assert(false && "utils::magic_enum::detail::constexpr_switch wrong result type.");                                             \
         }                                                                                                                         \
       } else if constexpr (CallValue == case_call_t::value) {                                                                     \
         if constexpr (std::is_invocable_r_v<result_t, Lambda, enum_constant<values[val + Page]>>) {                               \
           return detail::invoke_r<result_t>(std::forward<Lambda>(lambda), enum_constant<values[val + Page]>{});                   \
         } else if constexpr (std::is_invocable_r_v<result_t, Lambda, enum_constant<values[val + Page]>>) {                        \
-          assert(false && "utils::enum::detail::constexpr_switch wrong result type.");                                             \
+          assert(false && "utils::magic_enum::detail::constexpr_switch wrong result type.");                                             \
         }                                                                                                                         \
       }                                                                                                                           \
       break;                                                                                                                      \
@@ -912,7 +912,7 @@ namespace utils::enum {
 
         template <typename E, typename Lambda, std::size_t... I>
         constexpr auto for_each(Lambda&& lambda, std::index_sequence<I...>) {
-            static_assert(is_enum_v<E>, "utils::enum::detail::for_each requires enum type.");
+            static_assert(is_enum_v<E>, "utils::magic_enum::detail::for_each requires enum type.");
             constexpr bool has_void_return = (std::is_void_v<std::invoke_result_t<Lambda, enum_constant<values_v<E>[I]>>> || ...);
             constexpr bool all_same_return = (std::is_same_v<std::invoke_result_t<Lambda, enum_constant<values_v<E>[0]>>, std::invoke_result_t<Lambda, enum_constant<values_v<E>[I]>>> && ...);
 
@@ -927,7 +927,7 @@ namespace utils::enum {
                 }
             }
 
-        } // namespace utils::enum::detail
+        } // namespace utils::magic_enum::detail
 
         // Checks is magic_enum supported compiler.
     inline constexpr bool is_magic_enum_supported = detail::supported<void>::value;
@@ -966,7 +966,7 @@ namespace utils::enum {
     template <typename E>
     [[nodiscard]] constexpr auto enum_type_name() noexcept -> detail::enable_if_t<E, string_view> {
         constexpr string_view name = detail::type_name_v<std::decay_t<E>>;
-        static_assert(!name.empty(), "utils::enum::enum_type_name enum type does not have a name.");
+        static_assert(!name.empty(), "utils::magic_enum::enum_type_name enum type does not have a name.");
 
         return name;
         }
@@ -998,7 +998,7 @@ namespace utils::enum {
     template <typename E, std::size_t I>
     [[nodiscard]] constexpr auto enum_value() noexcept -> detail::enable_if_t<E, std::decay_t<E>> {
         using D = std::decay_t<E>;
-        static_assert(I < detail::count_v<D>, "utils::enum::enum_value out of range.");
+        static_assert(I < detail::count_v<D>, "utils::magic_enum::enum_value out of range.");
 
         return enum_value<D>(I);
         }
@@ -1050,7 +1050,7 @@ namespace utils::enum {
     template <auto V>
     [[nodiscard]] constexpr auto enum_index() noexcept -> detail::enable_if_t<decltype(V), std::size_t> {
         constexpr auto index = enum_index<std::decay_t<decltype(V)>>(V);
-        static_assert(index, "utils::enum::enum_index enum value does not have a index.");
+        static_assert(index, "utils::magic_enum::enum_index enum value does not have a index.");
 
         return *index;
         }
@@ -1060,7 +1060,7 @@ namespace utils::enum {
     template <auto V>
     [[nodiscard]] constexpr auto enum_name() noexcept -> detail::enable_if_t<decltype(V), string_view> {
         constexpr string_view name = detail::enum_name_v<std::decay_t<decltype(V)>, V>;
-        static_assert(!name.empty(), "utils::enum::enum_name enum value does not have a name.");
+        static_assert(!name.empty(), "utils::magic_enum::enum_name enum value does not have a name.");
 
         return name;
         }
@@ -1121,7 +1121,7 @@ namespace utils::enum {
         return detail::entries_v<std::decay_t<E>>;
         }
 
-    // Allows you to write utils::enum::enum_cast<foo>("bar", utils::enum::case_insensitive);
+    // Allows you to write utils::magic_enum::enum_cast<foo>("bar", utils::magic_enum::case_insensitive);
     inline constexpr auto case_insensitive = detail::case_insensitive{};
 
     // Obtains enum value from integer value.
@@ -1171,7 +1171,7 @@ namespace utils::enum {
     // Returns optional with enum value.
     template <typename E, typename BinaryPredicate = std::equal_to<>>
     [[nodiscard]] constexpr auto enum_cast(string_view value, [[maybe_unused]] BinaryPredicate&& p = {}) noexcept(detail::is_nothrow_invocable<BinaryPredicate>()) -> detail::enable_if_t<E, optional<std::decay_t<E>>, BinaryPredicate> {
-        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::enum::enum_cast requires bool(char, char) invocable predicate.");
+        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::magic_enum::enum_cast requires bool(char, char) invocable predicate.");
         using D = std::decay_t<E>;
         using U = underlying_type_t<D>;
 
@@ -1241,7 +1241,7 @@ namespace utils::enum {
     // Checks whether enum contains enumerator with such name.
     template <typename E, typename BinaryPredicate = std::equal_to<>>
     [[nodiscard]] constexpr auto enum_contains(string_view value, BinaryPredicate&& p = {}) noexcept(detail::is_nothrow_invocable<BinaryPredicate>()) -> detail::enable_if_t<E, bool, BinaryPredicate> {
-        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::enum::enum_contains requires bool(char, char) invocable predicate.");
+        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::magic_enum::enum_contains requires bool(char, char) invocable predicate.");
         using D = std::decay_t<E>;
 
         return static_cast<bool>(enum_cast<D>(value, std::forward<BinaryPredicate>(p)));
@@ -1269,7 +1269,7 @@ namespace utils::enum {
 
     template <typename E, typename Result = void, typename BinaryPredicate = std::equal_to<>, typename Lambda>
     constexpr auto enum_switch(Lambda&& lambda, string_view name, BinaryPredicate&& p = {}) -> detail::enable_if_t<E, Result, BinaryPredicate> {
-        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::enum::enum_switch requires bool(char, char) invocable predicate.");
+        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::magic_enum::enum_switch requires bool(char, char) invocable predicate.");
         using D = std::decay_t<E>;
 
         if (const auto v = enum_cast<D>(name, std::forward<BinaryPredicate>(p))) {
@@ -1280,7 +1280,7 @@ namespace utils::enum {
 
     template <typename E, typename Result, typename BinaryPredicate = std::equal_to<>, typename Lambda>
     constexpr auto enum_switch(Lambda&& lambda, string_view name, Result&& result, BinaryPredicate&& p = {}) -> detail::enable_if_t<E, Result, BinaryPredicate> {
-        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::enum::enum_switch requires bool(char, char) invocable predicate.");
+        static_assert(std::is_invocable_r_v<bool, BinaryPredicate, char, char>, "utils::magic_enum::enum_switch requires bool(char, char) invocable predicate.");
         using D = std::decay_t<E>;
 
         if (const auto v = enum_cast<D>(name, std::forward<BinaryPredicate>(p))) {
@@ -1312,7 +1312,7 @@ namespace utils::enum {
     template <typename E, typename Lambda>
     constexpr auto enum_for_each(Lambda&& lambda) {
         using D = std::decay_t<E>;
-        static_assert(std::is_enum_v<D>, "utils::enum::enum_for_each requires enum type.");
+        static_assert(std::is_enum_v<D>, "utils::magic_enum::enum_for_each requires enum type.");
 
         return detail::for_each<D>(std::forward<Lambda>(lambda), std::make_index_sequence<detail::count_v<D>>{});
         }
@@ -1340,7 +1340,7 @@ namespace utils::enum {
             return value ? (os << *value) : os;
             }
 
-        } // namespace utils::enum::ostream_operators
+        } // namespace utils::magic_enum::ostream_operators
 
     namespace istream_operators {
 
@@ -1359,14 +1359,14 @@ namespace utils::enum {
             return is;
             }
 
-        } // namespace utils::enum::istream_operators
+        } // namespace utils::magic_enum::istream_operators
 
     namespace iostream_operators {
 
         using namespace ostream_operators;
         using namespace istream_operators;
 
-        } // namespace utils::enum::iostream_operators
+        } // namespace utils::magic_enum::iostream_operators
 
     namespace bitwise_operators {
 
@@ -1405,9 +1405,9 @@ namespace utils::enum {
             return lhs = (lhs ^ rhs);
             }
 
-        } // namespace utils::enum::bitwise_operators
+        } // namespace utils::magic_enum::bitwise_operators
 
-    } // namespace utils::enum
+    } // namespace utils::magic_enum
 
 #if defined(__clang__)
 #  pragma clang diagnostic pop

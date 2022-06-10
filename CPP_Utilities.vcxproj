@@ -161,6 +161,7 @@
     <ClInclude Include="include\utils\cout_utilities.h" />
     <ClInclude Include="include\utils\custom_operators.h" />
     <ClInclude Include="include\utils\definitions.h" />
+    <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\extensions.h" />
     <ClInclude Include="include\utils\function_traits.h" />
     <ClInclude Include="include\utils\graphics\color.h" />
