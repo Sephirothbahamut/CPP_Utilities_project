@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <tuple>
 
@@ -22,8 +23,8 @@ namespace utils::containers
 				public:
 					handle_t() = default;
 					handle_t(id_pool_manual::value_type value) : value{value} {};
-					handle_t(const handle_t& copy) = delete;
-					handle_t& operator=(const handle_t& copy) = delete;
+					handle_t(const handle_t& copy) = default;
+					handle_t& operator=(const handle_t& copy) = default;
 					handle_t           (handle_t&& move) noexcept : value{move.value} { move.value = std::numeric_limits<id_pool_manual::value_type>::max(); }
 					handle_t& operator=(handle_t&& move) noexcept { value = move.value; move.value = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
 				private:
@@ -44,17 +45,16 @@ namespace utils::containers
 			template <typename ...Args>
 			handle_t emplace(Args&& ...args)
 				{
-				handle_t handle{id_pool.get()};
-				if (handle.value >= handle_to_container_index.size()) 
-					{
-					handle_to_container_index.push_back(inner_container.size());
-					}
-				else 
-					{
-					handle_to_container_index[handle.value] = inner_container.size();
-					}
-				container_index_to_handle.push_back(handle.value);
+				handle_t handle{create_new_handle()};
 				inner_container.emplace_back(std::forward<Args>(args)...);
+				return handle;
+				}
+
+			template <typename ...Args>
+			handle_t push(Args& ...args)
+				{
+				handle_t handle{create_new_handle()};
+				inner_container.push_back(args...);
 				return handle;
 				}
 	
@@ -109,6 +109,21 @@ namespace utils::containers
 			      auto crend()         noexcept { return inner_container.crend(); }
 
 		private:
+			handle_t create_new_handle() noexcept
+				{
+				handle_t handle{id_pool.get()};
+				if (handle.value >= handle_to_container_index.size())
+					{
+					handle_to_container_index.push_back(inner_container.size());
+					}
+				else
+					{
+					handle_to_container_index[handle.value] = inner_container.size();
+					}
+				container_index_to_handle.push_back(handle.value);
+				return handle;
+				}
+
 			inner_container_t inner_container;
 			id_pool_manual id_pool;
 			std::vector<id_pool_manual::value_type> handle_to_container_index;
