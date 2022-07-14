@@ -69,7 +69,7 @@ namespace utils::graphics
 
 				bool validate() const noexcept
 					{
-					return h == h.clamped()
+					return h == h.clamp()
 						&& s >= 0.f && s <= 1.f
 						&& v >= 0.f && v <= 1.f;
 					}
@@ -92,7 +92,7 @@ namespace utils::graphics
 
 				bool validate() const noexcept
 					{
-					return h == h.clamped()
+					return h == h.clamp()
 						&& s >= 0.f && s <= 1.f
 						&& l >= 0.f && l <= 1.f;
 					}
@@ -105,6 +105,10 @@ namespace utils::graphics
 			color(rgb rgb, uint8_t a = 255) noexcept : inner{rgb}, a{a} {}
 			color(hsv hsv, uint8_t a = 255) noexcept : inner{hsv}, a{a} {}
 			color(hsl hsl, uint8_t a = 255) noexcept : inner{hsl}, a{a} {}
+
+			color& operator=(rgb rgb) noexcept { inner = rgb; return *this; }
+			color& operator=(hsv hsv) noexcept { inner = hsv; return *this; }
+			color& operator=(hsl hsl) noexcept { inner = hsl; return *this; }
 
 			rgb   as_rgb() const noexcept { return inner; }
 			hsv   as_hsv() const noexcept { return inner; }
@@ -121,6 +125,7 @@ namespace utils::graphics
 			float   get_v    () const noexcept { return as_hsv().v; }
 			float   get_hsl_s() const noexcept { return as_hsl().s; }
 			float   get_l    () const noexcept { return as_hsl().l; }
+			float   get_fa   () const noexcept { return static_cast<float>(a) / 255.f; }
 			void set_r    (uint8_t r) noexcept { inner.r = r; }
 			void set_g    (uint8_t g) noexcept { inner.g = g; }
 			void set_b    (uint8_t b) noexcept { inner.b = b; }
@@ -129,15 +134,19 @@ namespace utils::graphics
 			void set_v    (float   v) noexcept { auto tmp{as_hsv()}; tmp.v = v; *this = tmp; }
 			void set_hsl_s(float   s) noexcept { auto tmp{as_hsl()}; tmp.s = s; *this = tmp; }
 			void set_l    (float   l) noexcept { auto tmp{as_hsl()}; tmp.l = l; *this = tmp; }
+			void set_fa   (float   a) noexcept { 
+				this->a = static_cast<uint8_t>(a * 255.f); 
+				}
 
-			__declspec(property(get = get_r,     put = set_r))     uint8_t r;
-			__declspec(property(get = get_g,     put = set_g))     uint8_t g;
-			__declspec(property(get = get_b,     put = set_b))     uint8_t b;
-			__declspec(property(get = get_h,     put = set_h))     deg     h;
+			__declspec(property(get = get_r    , put = set_r    )) uint8_t r;
+			__declspec(property(get = get_g    , put = set_g    )) uint8_t g;
+			__declspec(property(get = get_b    , put = set_b    )) uint8_t b;
+			__declspec(property(get = get_h    , put = set_h    )) deg     h;
 			__declspec(property(get = get_hsv_s, put = set_hsv_s)) float   hsv_s;
-			__declspec(property(get = get_v,     put = set_v))     float   v;
+			__declspec(property(get = get_v    , put = set_v    )) float   v;
 			__declspec(property(get = get_hsl_s, put = set_hsl_s)) float   hsl_s;
-			__declspec(property(get = get_l,     put = set_l))     float   l;
+			__declspec(property(get = get_l    , put = set_l    )) float   l;
+			__declspec(property(get = get_fa   , put = set_fa   )) float   float_a;
 
 			uint8_t a{255};
 

@@ -11,13 +11,14 @@ namespace utils::containers
 	/// <summary>
 	/// Alternative to map. Emplace operations return an handle which can be used to remove elements. It's meant to be iterated a lot more than modified, so it will have better iteration performance than a map (underlying vector).
 	/// </summary>
-	template <typename T>// , class Allocator = std::allocator<T >>
+	template <typename T, class Allocator = std::allocator<T>>
 	class handled_container
 		{
-		using inner_container_t = std::vector<T>;//, Allocator>;
+		using inner_container_t = std::vector<T, Allocator>;
 	
 		public:
-			class handle_t 
+			using handle_t = size_t;
+			/*class handle_t 
 				{
 				friend class handled_container<T>;//, Allocator>
 				public:
@@ -29,8 +30,8 @@ namespace utils::containers
 					handle_t& operator=(handle_t&& move) noexcept { value = move.value; move.value = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
 				private:
 					id_pool_manual::value_type value{std::numeric_limits<id_pool_manual::value_type>::max()};
-				};
-	
+				};*/
+
 			using value_type             = inner_container_t::value_type;
 			using size_type              = inner_container_t::size_type;
 			using reference              = inner_container_t::reference;
@@ -60,18 +61,18 @@ namespace utils::containers
 	
 			      T& operator[](handle_t& handle)       noexcept 
 				{
-				return inner_container[handle_to_container_index[handle.value]]; 
+				return inner_container[handle_to_container_index[handle]]; 
 				}
 			const T& operator[](handle_t& handle) const noexcept 
 				{
-				return inner_container[handle_to_container_index[handle.value]]; 
+				return inner_container[handle_to_container_index[handle]]; 
 				}
 			
 			void remove(handle_t& handle)
 				{
-				if (handle_to_container_index[handle.value] < (inner_container.size() - 1))
+				if (handle_to_container_index[handle] < (inner_container.size() - 1))
 					{
-					size_t to_remove_index{handle_to_container_index[handle.value]};
+					size_t to_remove_index{handle_to_container_index[handle]};
 					size_t other_moved_index{inner_container.size() - 1};
 
 					inner_container[to_remove_index] = std::move(inner_container[other_moved_index]);
@@ -82,10 +83,10 @@ namespace utils::containers
 				inner_container.pop_back();
 				container_index_to_handle.pop_back();
 
-				handle_to_container_index[handle.value] = std::numeric_limits<id_pool_manual::value_type>::max();
+				handle_to_container_index[handle] = std::numeric_limits<id_pool_manual::value_type>::max();
 
-				id_pool.release(handle.value);
-				handle.value = std::numeric_limits<id_pool_manual::value_type>::max();
+				id_pool.release(handle);
+				handle = std::numeric_limits<id_pool_manual::value_type>::max();
 				}
 	
 			size_t size() const noexcept { return inner_container.size(); }
@@ -112,21 +113,69 @@ namespace utils::containers
 			handle_t create_new_handle() noexcept
 				{
 				handle_t handle{id_pool.get()};
-				if (handle.value >= handle_to_container_index.size())
+				if (handle >= handle_to_container_index.size())
 					{
 					handle_to_container_index.push_back(inner_container.size());
 					}
 				else
 					{
-					handle_to_container_index[handle.value] = inner_container.size();
+					handle_to_container_index[handle] = inner_container.size();
 					}
-				container_index_to_handle.push_back(handle.value);
+				container_index_to_handle.push_back(handle);
 				return handle;
 				}
 
 			inner_container_t inner_container;
 			id_pool_manual id_pool;
 			std::vector<id_pool_manual::value_type> handle_to_container_index;
-			std::vector<size_t> container_index_to_handle;
+			std::vector<size_t/*, Allocator*/> container_index_to_handle;
 		};
+
+	}
+
+namespace utils::beta::containers
+	{
+	//template <typename T, class Allocator = std::allocator<T>>
+	//class handled_container
+	//	{
+	//	public:
+	//
+	//
+	//
+	//	private:
+	//		//TODO
+	//		void reserve(size_t new_capacity)
+	//			{
+	//			assert(new_capacity > capacity);
+	//			auto new_data{std::make_unique_for_oberwrite<slot_t[]>(new_capacity)};
+	//
+	//			size_t begin{0};
+	//			size_t end{first_free};
+	//
+	//			while (true)
+	//				{
+	//				for (; begin < end; begin++)
+	//					{
+	//					new_data[begin] = std::move(data[begin]);
+	//					}
+	//				if (end == capacity) { break; }
+	//				while (data[end].next_free == end + 1)
+	//					{
+	//					end++;
+	//					}
+	//				begin = end + 1;
+	//				end = data[end].next_free;
+	//				}
+	//			}
+	//
+	//		union slot_t
+	//			{
+	//			size_t next_free;
+	//			T value;
+	//			};
+	//
+	//		size_t first_free{0};
+	//		size_t capacity{0};
+	//		std::unique_ptr<slot_t[]> data{nullptr};
+	//	};
 	}
