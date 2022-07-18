@@ -25,20 +25,13 @@ namespace utils
 			value_type get() noexcept
 				{
 				if constexpr (utils::compilation::debug) { return get_except(); }
-
-				if (unused.size()) 
-					{
-					size_t ret = unused.back();
-					unused.pop_back();
-					return ret;
-					}
-				else { return count++; }
+				else { return get_inner(); }
 				}
 
 			value_type get_except()
 				{
 				if (empty()) { throw std::out_of_range{"All available ids have already been assigned"}; }
-				return get();
+				return get_inner();
 				}
 
 			void release(value_type id)
@@ -48,6 +41,18 @@ namespace utils
 				}
 
 		private:
+			value_type get_inner() noexcept
+				{
+				if (unused.size())
+					{
+					size_t ret = unused.back();
+					unused.pop_back();
+					return ret;
+					}
+				else { return count++; }
+				}
+
+
 			size_t count = min;
 			std::vector<size_t/*, Allocator*/> unused;
 		};
