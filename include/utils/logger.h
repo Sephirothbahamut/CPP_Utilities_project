@@ -149,6 +149,8 @@ namespace utils
 			void log(std::string&& string) noexcept { push(utils::message::log(std::move(string))); }
 			void dgn(std::string&& string) noexcept { push(utils::message::dgn(std::move(string))); }
 			void err(std::string&& string) noexcept { push(utils::message::err(std::move(string))); }
+			void wrn(std::string&& string) noexcept { push(utils::message::wrn(std::move(string))); }
+
 			//Push messages end
 
 			void close() noexcept
