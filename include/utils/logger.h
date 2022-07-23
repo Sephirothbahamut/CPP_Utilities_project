@@ -208,7 +208,11 @@ namespace utils
 		};
 	}
 
+#ifndef UTILS_NO_GLOBALS
+#ifndef UTILS_LOGGER_NO_GLOBALS
 namespace utils::globals
 	{
 	inline utils::logger<utils::message> logger;
 	}
+#endif
+#endif
