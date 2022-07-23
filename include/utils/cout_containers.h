@@ -34,7 +34,7 @@ namespace utils
 					}
 				os << ccu::value << container[container.size() - 1];
 				}
-			os << ccu::brace << "...]";
+			return os << ccu::brace << "...]";
 			}
 
 		template <typename T, size_t SIZE>
