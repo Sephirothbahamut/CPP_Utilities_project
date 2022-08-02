@@ -6,6 +6,7 @@
 #include <concepts>
 #include <string>
 
+#include "../concepts.h"
 #include "../compilation/debug.h"
 
 namespace utils::containers
@@ -13,33 +14,25 @@ namespace utils::containers
 	class buffer
 		{
 		public:
-
-			template <typename T>
+			template <concepts::trivially_copyable T>
 			void push(T value) noexcept
 				{
-				static_assert(std::is_trivially_copyable<T>::value);
 				std::byte* to_push = reinterpret_cast<std::byte*>(&value);
 				for (size_t i = 0; i < sizeof(T); i++) { data.push_back(to_push[i]); }
 				}
 
 			template <>
 			void push<std::string>(std::string value) noexcept
-				/*template <typename T>
-				void push<std::basic_string<T>>(T value) noexcept*/
 				{
 				size_t size = value.size();
 				std::byte* to_size = reinterpret_cast<std::byte*>(size);
 				for (size_t i = 0; i < sizeof(decltype(size)); i++) 
 					{ data.push_back(to_size[i]); }
-
-				/*std::byte* to_push = reinterpret_cast<std::byte*>(value.data());
-				for (size_t i = 0; i < sizeof(to_push); i++) { data.push_back(to_push[i]); }*/
 				}
 
-			template <typename T>
+			template <concepts::trivially_copyable T>
 			T get() utils_if_release(noexcept)
 				{
-				static_assert(std::is_trivially_copyable<T>());
 				utils_if_debug(check_bytes_sufficient<T>());
 
 				std::array<std::byte, sizeof(T)> pulled;
@@ -51,15 +44,14 @@ namespace utils::containers
 				return tmp;
 				}
 
-			template <typename T>
+			template <concepts::trivially_copyable T>
 			T& get_except()
 				{
-				static_assert(std::is_trivially_copyable<T>());
 				check_bytes_sufficient<T>();
 				return get<T>();
 				}
 
-			template <typename T>
+			template <concepts::trivially_copyable T>
 			bool has() const noexcept { return (data.size() >= sizeof(T)); }
 
 			bool empty() const noexcept { return data.empty(); }
@@ -69,6 +61,6 @@ namespace utils::containers
 			std::deque<std::byte> data;
 
 			template <typename T>
-			void check_bytes_sufficient() { if (has<T>()) { throw std::runtime_error{"The stream does not contain enough bytes to retrive type T"}; } }
+			void check_bytes_sufficient() { if (!has<T>()) { throw std::runtime_error{"The stream does not contain enough bytes to retrive type T"}; } }
 		};
 	}

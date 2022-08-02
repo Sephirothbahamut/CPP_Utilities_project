@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <memory>
 
+#include "memory.h"
 #include "compilation/debug.h"
 
 namespace utils

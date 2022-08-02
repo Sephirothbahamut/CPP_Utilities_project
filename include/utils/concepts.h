@@ -1,5 +1,6 @@
 #pragma once
 
+#include <type_traits>
 #include <concepts>
 
 namespace utils::concepts
@@ -11,4 +12,7 @@ namespace utils::concepts
 	concept any_of = (std::same_as<T, U> || ...);
 	template<typename T, typename ... U>
 	concept undecorated_any_of = (undecorated_same_as<T, U> || ...);
+
+	template <typename T>
+	concept trivially_copyable = requires(T) { std::is_trivially_copyable_v<T>; };
 	}
