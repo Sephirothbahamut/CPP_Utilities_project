@@ -195,6 +195,9 @@
     <ClInclude Include="include\utils\containers\flat_set.h">
       <Filter>Files\containers</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\virtual.h">
+      <Filter>Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
