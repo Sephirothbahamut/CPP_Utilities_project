@@ -152,6 +152,7 @@
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\concepts.h" />
     <ClInclude Include="include\utils\console_io.h" />
+    <ClInclude Include="include\utils\construction.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
