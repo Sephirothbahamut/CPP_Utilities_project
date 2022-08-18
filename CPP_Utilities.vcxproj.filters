@@ -198,7 +198,10 @@
     <ClInclude Include="include\utils\virtual.h">
       <Filter>Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\construction.h">
+    <ClInclude Include="include\utils\exception.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\utf.h">
       <Filter>Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -152,7 +152,7 @@
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\concepts.h" />
     <ClInclude Include="include\utils\console_io.h" />
-    <ClInclude Include="include\utils\construction.h" />
+    <ClInclude Include="include\utils\exception.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
@@ -196,6 +196,7 @@
     <ClInclude Include="include\utils\synchronization.h" />
     <ClInclude Include="include\utils\timer.h" />
     <ClInclude Include="include\utils\tracking.h" />
+    <ClInclude Include="include\utils\utf.h" />
     <ClInclude Include="include\utils\variadic.h" />
     <ClInclude Include="include\utils\variant.h" />
     <ClInclude Include="include\utils\virtual.h" />
