@@ -254,7 +254,7 @@ namespace utils::graphics
 		float h{this->h.value / 360.f};
 		float r, g, b;
 
-		unsigned i = h * 6.f;
+		unsigned i = static_cast<unsigned>(h * 6.f);
 		float f = h * 6.f - i;
 		float p = v * (1.f - s);
 		float q = v * (1.f - f * s);
