@@ -13,7 +13,16 @@ namespace utils
 		}
 
 	template <typename T>
-	inline T lerp(T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
+	inline T lerp        (T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
+
+	template <typename T>
+	inline T inverse_lerp(T a, T b, float t) { return (t - a) / (b - a); }
+
+	template <typename T>
+	inline T map(T from_min, T from_max, T to_min, T to_max, T value)
+		{
+		return lerp(to_min, to_max, inverse_lerp(from_min, from_max, value));
+		}
 
 	template <typename T, char iterations = 2>
 	inline T inv_sqrt(T x)

@@ -7,6 +7,7 @@
 #include <concepts>
 
 #include "../cout_utilities.h"
+#include "../math/math.h"
 #include "constants.h"
 
 

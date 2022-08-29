@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <vector>
 #include <array>
+#include "include/utils/graphics/color.h"
 
 #include "include/utils/containers/buffer.h"
 #include "include/utils/math/vec2.h"
