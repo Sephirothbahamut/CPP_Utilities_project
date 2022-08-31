@@ -10,6 +10,60 @@
 
 namespace utils::graphics
 	{
+	//namespace details
+	//	{
+	//	template <typename T, T min_value = std::numeric_limits<T>::min(), T max_value = std::numeric_limits<T>::max()>
+	//	struct base
+	//		{
+	//		inline static constexpr T min_value = min_value;
+	//		inline static constexpr T max_value = max_value;
+	//		};
+	//
+	//	template <typename T, T min_value = std::numeric_limits<T>::min(), T max_value = std::numeric_limits<T>::max()>
+	//	struct rgb : base<T, min_value, max_value>
+	//		{
+	//		T r{min_value};
+	//		T g{min_value};
+	//		T b{min_value};
+	//
+	//		template <typename T_oth, T_oth min_value_oth, T_oth max_value_oth>
+	//		operator rgb() 
+	//			{
+	//			return 
+	//				{
+	//				math::map<float>(min_value, max_value, min_value_oth, max_value_oth, r),
+	//				math::map<float>(min_value, max_value, min_value_oth, max_value_oth, g),
+	//				math::map<float>(min_value, max_value, min_value_oth, max_value_oth, b)
+	//				};
+	//			}
+	//		};
+	//
+	//	template <typename color_t, typename T, T min_value = std::numeric_limits<T>::min(), T max_value = std::numeric_limits<T>::max()>
+	//	struct a : color_t<T, min_value, max_value>
+	//		{
+	//		T a{T::min_value};
+	//
+	//		template <typename T_oth, T_oth min_value_oth, T_oth max_value_oth>
+	//		operator a<color_t<T_oth, min_value_oth, max_value_oth>>()
+	//			{
+	//			return
+	//				{
+	//				math::map<float>(min_value, max_value, min_value_oth, max_value_oth, r),
+	//				math::map<float>(min_value, max_value, min_value_oth, max_value_oth, g),
+	//				math::map<float>(min_value, max_value, min_value_oth, max_value_oth, b)
+	//				};
+	//			}
+	//		};
+	//	}
+	//
+	//template <typename T>
+	//struct rgb;
+	//
+	//template <>
+	//struct rgb<uint8_t> : details::rgb<uint8_t> {};
+	//template <>
+	//struct rgb<float>   : details::rgb<float, 0.f, 1.f> {};
+
 	class color
 		{
 		using deg = utils::math::angle::deg;
@@ -252,7 +306,7 @@ namespace utils::graphics
 		float h{this->h.value / 360.f};
 		float r, g, b;
 
-		unsigned i = h * 6.f;
+		unsigned i = static_cast<unsigned>(h * 6.f);
 		float f = h * 6.f - i;
 		float p = v * (1.f - s);
 		float q = v * (1.f - f * s);
