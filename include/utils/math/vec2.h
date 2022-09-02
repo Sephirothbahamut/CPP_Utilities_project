@@ -1,4 +1,103 @@
 #pragma once
+
+//#define utils_vec_old
+//#define utils_vec_concept_sfinae
+#define utils_vec_partial_specialization
+
+#include "vec.h"
+
+
+#ifndef utils_vec_old
+namespace utils::math
+	{
+	template <typename T> 
+	using vec2 = vec<T, 2>;
+
+	//fast typenames
+	using vec2i   = vec2<int>;
+	using vec2i8  = vec2<int8_t>;
+	using vec2i16 = vec2<int16_t>;
+	using vec2i32 = vec2<int32_t>;
+	using vec2i64 = vec2<int64_t>;
+
+	using vec2u   = vec2<unsigned>;
+	using vec2u8  = vec2<uint8_t>;
+	using vec2u16 = vec2<uint16_t>;
+	using vec2u32 = vec2<uint32_t>;
+	using vec2u64 = vec2<uint64_t>;
+
+	using vec2s   = vec2<size_t>;
+	using vec2f   = vec2<float>;
+	using vec2d   = vec2<double>;
+	template <typename T>
+	vec2<T> abs(const vec2<T> vec) { return {std::abs(vec.x), std::abs(vec.y)}; }
+
+#ifdef utils_vec_partial_specialization
+	namespace details
+		{
+		template<class derived_self_t, class T>
+		class vec_impl<derived_self_t, T, 2>
+			{
+			public:
+				vec_impl() = default;
+				vec_impl(T x, T y)                            noexcept { set_x(x); set_y(y); };
+				vec_impl(math::angle::deg angle, T magnitude) noexcept { set_x(angle.cos() * magnitude); set_y(angle.sin() * magnitude); } //TODO test
+				vec_impl(math::angle::rad angle, T magnitude) noexcept { set_x(angle.cos() * magnitude); set_y(angle.sin() * magnitude); } //TODO test
+				//template <float full_angle_value>
+				//vec(math::angle::base_angle<full_angle_value> angle) noexcept requires(size == 2) : x{angle.cos()}, y{angle.sin()} {} //TODO test
+				//template <typename other_t>
+				//vec2(vec2<other_t> other)           noexcept : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {} //TODO test
+				//vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
+
+
+				static derived_self_t rr()    noexcept { return {T{ 1}, T{ 0}}; }
+				static derived_self_t ll()    noexcept { return {T{-1}, T{ 0}}; }
+				static derived_self_t up()    noexcept { return {T{ 0}, T{-1}}; }
+				static derived_self_t dw()    noexcept { return {T{ 0}, T{ 1}}; }
+				static derived_self_t right() noexcept { return rr(); }
+				static derived_self_t left()  noexcept { return ll(); }
+				static derived_self_t down()  noexcept { return dw(); }
+				static derived_self_t zero()  noexcept { return {}; }
+
+					  T& get_x(              )       noexcept { return static_cast<      derived_self_t&>(*this)._data[0]; }
+				const T& get_x(              ) const noexcept { return static_cast<const derived_self_t&>(*this)._data[0]; }
+					  T& set_x(const T& value)       noexcept { return static_cast<      derived_self_t&>(*this)._data[0] = value; }
+
+				__declspec(property(get = get_x, put = set_x)) T x;
+
+					  T& get_y(              )       noexcept { return static_cast<      derived_self_t&>(*this)._data[1]; }
+				const T& get_y(              ) const noexcept { return static_cast<const derived_self_t&>(*this)._data[1]; }
+					  T& set_y(const T& value)       noexcept { return static_cast<      derived_self_t&>(*this)._data[1] = value; }
+
+				__declspec(property(get = get_y, put = set_y)) T y;
+
+				// CASTS
+				template <template<typename> class To, typename T_t>
+				inline To<T_t> vec_cast() { return {static_cast<T_t>(x), static_cast<T_t>(y)}; }
+
+				template <float full_angle_value = 360.f>
+				math::angle::base_angle<full_angle_value> angle() const noexcept { derived_self_t& self = static_cast<derived_self_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
+				
+
+				// VEC & ANGLE OPERATIONS
+				template <float full_angle_value> derived_self_t  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
+				template <float full_angle_value> derived_self_t  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
+				template <float full_angle_value> derived_self_t& operator+=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      derived_self_t&>(*this); return self = self + angle; }
+				template <float full_angle_value> derived_self_t& operator-=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      derived_self_t&>(*this); return self = self - angle; }
+				template <float full_angle_value> derived_self_t& operator= (const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      derived_self_t&>(*this); return self = {angle.cos() * self.magnitude(), angle.sin() * self.magnitude()}; }
+
+				// OTHER
+				derived_self_t perpendicular_right()            const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return { self.y, -self.x}; }
+				derived_self_t perpendicular_left()             const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return {-self.y,  self.x}; }
+				derived_self_t perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
+				derived_self_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+			};
+		}
+#endif utils_vec_partial_specialization
+	}
+#endif //!utils_vec_old
+#ifdef utils_vec_old
+#pragma once
 #include <ostream>
 #include <cmath>
 #include <numbers>
@@ -239,3 +338,5 @@ namespace utils
 		return {std::max(in.x, max.x), std::max(in.y, max.y)};
 		}
 	}
+
+#endif //utils_vec_old

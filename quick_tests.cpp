@@ -21,6 +21,14 @@ void f(T t) {};
 
 int main() 
 	{
+	namespace utm = utils::math;
+	utm::vec2f a;
+	utm::vec2f b;
+	utm::angle::deg alpha{10};
+	(a + b) + alpha;
+
+
+
 	utils::containers::handled_container<std::string> container;
 
 	auto handle_a{container.emplace("hello")};

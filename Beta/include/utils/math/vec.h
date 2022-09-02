@@ -22,6 +22,7 @@ namespace engine::core
 	class Vec
 		{
 		protected:
+			
 			std::array<T, S> arr;
 
 		public:

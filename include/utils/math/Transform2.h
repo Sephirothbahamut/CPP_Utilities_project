@@ -4,7 +4,7 @@
 #include "../custom_operators.h"
 #include "angle.h"
 
-#include "Vec2.h"
+#include "vec2.h"
 
 namespace utils::math
 	{
