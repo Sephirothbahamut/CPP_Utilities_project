@@ -7,10 +7,8 @@
 #include <algorithm>
 
 #include "../custom_operators.h"
-#include "math.h"
-#include "../containers/array.h"
 
-#include "angle.h"
+#include "../vec.h"
 
 #ifdef COUT_CONTAINERS
 #include "../cout_utilities.h"
@@ -63,9 +61,9 @@ namespace utils::math
 	template <size_t size> using vecd   = vec<double  , size>;
 
 	template <typename T, size_t size>
-	class vec 
+	class vec : utils::vec<T, size>
 #ifdef utils_vec_partial_specialization
-		: public details::vec_impl<vec<T, size>, T, size>
+		, public details::vec_impl<vec<T, size>, T, size>
 #endif //utils_vec_partial_specialization
 		{
 		protected:
@@ -206,36 +204,36 @@ namespace utils::math
 		};
 	
 	// OPERATORS
-	template <typename T, size_t size> vec<T, size>  operator-(const vec<T, size>& v) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = -v[i]; }; return ret; }
-
-	// VEC & SCALAR OPERATORS
-	template <typename T, size_t size> vec<T, size>  operator++(vec<T, size>& v) noexcept { return *this += T(1); }
-	template <typename T, size_t size> vec<T, size>  operator--(vec<T, size>& v) noexcept { return *this -= T(1); }
-
-	template <typename T, size_t size> vec<T, size>  operator+ (const vec<T, size>& v, const T n) noexcept { return {v.normalize() * (v.magnitude() + n)}; }
-	template <typename T, size_t size> vec<T, size>  operator- (const vec<T, size>& v, const T n) noexcept { return {v.normalize() * (v.magnitude() - n)}; }
-	template <typename T, size_t size> vec<T, size>  operator* (const vec<T, size>& v, const T n) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * n; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator/ (const vec<T, size>& v, const T n) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / n; }; return ret; }
-
-	template <typename T, size_t size> vec<T, size>& operator+=(      vec<T, size>& v, const T n) noexcept { return v = v + n; }
-	template <typename T, size_t size> vec<T, size>& operator-=(      vec<T, size>& v, const T n) noexcept { return v = v - n; }
-	template <typename T, size_t size> vec<T, size>& operator*=(      vec<T, size>& v, const T n) noexcept { return v = v * n; }
-	template <typename T, size_t size> vec<T, size>& operator/=(      vec<T, size>& v, const T n) noexcept { return v = v / n; }
-
-	// VEC & VEC OPERATORS
-	//TODO vec&vec operators when other has a different size
-	template <typename T, size_t size> vec<T, size>  operator+ (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] + oth[i]; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator- (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] - oth[i]; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator* (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * oth[i]; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator/ (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / oth[i]; }; return ret; }
-
-	template <typename T, size_t size> vec<T, size>& operator+=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v + oth; }
-	template <typename T, size_t size> vec<T, size>& operator-=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v - oth; }
-	template <typename T, size_t size> vec<T, size>& operator*=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v * oth; }
-	template <typename T, size_t size> vec<T, size>& operator/=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v / oth; }
-	
-	template <typename T, size_t size> bool          operator==(const vec<T, size>& v, const vec<T, size>& oth) noexcept { for (size_t i{0}; i < size; i++) { if (v[i] != oth[i]) { return false; } }; return true; }
-	template <typename T, size_t size> bool          operator!=(const vec<T, size>& v, const vec<T, size>& oth) noexcept { return !(*this == oth); }
+//	template <typename T, size_t size> vec<T, size>  operator-(const vec<T, size>& v) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = -v[i]; }; return ret; }
+//
+//	// VEC & SCALAR OPERATORS
+//	template <typename T, size_t size> vec<T, size>  operator++(vec<T, size>& v) noexcept { return *this += T(1); }
+//	template <typename T, size_t size> vec<T, size>  operator--(vec<T, size>& v) noexcept { return *this -= T(1); }
+//
+//	template <typename T, size_t size> vec<T, size>  operator+ (const vec<T, size>& v, const T n) noexcept { return {v.normalize() * (v.magnitude() + n)}; }
+//	template <typename T, size_t size> vec<T, size>  operator- (const vec<T, size>& v, const T n) noexcept { return {v.normalize() * (v.magnitude() - n)}; }
+//	template <typename T, size_t size> vec<T, size>  operator* (const vec<T, size>& v, const T n) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * n; }; return ret; }
+//	template <typename T, size_t size> vec<T, size>  operator/ (const vec<T, size>& v, const T n) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / n; }; return ret; }
+//
+//	template <typename T, size_t size> vec<T, size>& operator+=(      vec<T, size>& v, const T n) noexcept { return v = v + n; }
+//	template <typename T, size_t size> vec<T, size>& operator-=(      vec<T, size>& v, const T n) noexcept { return v = v - n; }
+//	template <typename T, size_t size> vec<T, size>& operator*=(      vec<T, size>& v, const T n) noexcept { return v = v * n; }
+//	template <typename T, size_t size> vec<T, size>& operator/=(      vec<T, size>& v, const T n) noexcept { return v = v / n; }
+//
+//	// VEC & VEC OPERATORS
+//	//TODO vec&vec operators when other has a different size
+//	template <typename T, size_t size> vec<T, size>  operator+ (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] + oth[i]; }; return ret; }
+//	template <typename T, size_t size> vec<T, size>  operator- (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] - oth[i]; }; return ret; }
+//	template <typename T, size_t size> vec<T, size>  operator* (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * oth[i]; }; return ret; }
+//	template <typename T, size_t size> vec<T, size>  operator/ (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / oth[i]; }; return ret; }
+//
+//	template <typename T, size_t size> vec<T, size>& operator+=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v + oth; }
+//	template <typename T, size_t size> vec<T, size>& operator-=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v - oth; }
+//	template <typename T, size_t size> vec<T, size>& operator*=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v * oth; }
+//	template <typename T, size_t size> vec<T, size>& operator/=(      vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v / oth; }
+//	
+//	template <typename T, size_t size> bool          operator==(const vec<T, size>& v, const vec<T, size>& oth) noexcept { for (size_t i{0}; i < size; i++) { if (v[i] != oth[i]) { return false; } }; return true; }
+//	template <typename T, size_t size> bool          operator!=(const vec<T, size>& v, const vec<T, size>& oth) noexcept { return !(*this == oth); }
 
 #ifdef utils_vec_concept_sfinae
 	// VEC & ANGLE OPERATIONS

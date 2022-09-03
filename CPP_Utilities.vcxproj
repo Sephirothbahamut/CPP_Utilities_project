@@ -204,6 +204,7 @@
     <ClInclude Include="include\utils\utf.h" />
     <ClInclude Include="include\utils\variadic.h" />
     <ClInclude Include="include\utils\variant.h" />
+    <ClInclude Include="include\utils\vec.h" />
     <ClInclude Include="include\utils\virtual.h" />
     <ClInclude Include="include\utils\window.h" />
     <ClInclude Include="include\utils\wrapper.h" />

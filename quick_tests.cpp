@@ -7,10 +7,10 @@
 #include "include/utils/graphics/color.h"
 
 #include "include/utils/containers/buffer.h"
-#include "include/utils/math/vec2.h"
-#include "include/utils/math/geometry/segment.h"
-#include "include/utils/math/geometry/polygon.h"
-#include "include/utils/math/geometry/transformations.h"
+#include "include/utils/math/vec.h"
+//#include "include/utils/math/geometry/segment.h"
+//#include "include/utils/math/geometry/polygon.h"
+//#include "include/utils/math/geometry/transformations.h"
 
 #include "include/utils/index_range.h"
 
@@ -22,10 +22,10 @@ void f(T t) {};
 int main() 
 	{
 	namespace utm = utils::math;
-	utm::vec2f a;
-	utm::vec2f b;
-	utm::angle::deg alpha{10};
-	(a + b) + alpha;
+	utm::vec<float, 2> a;
+	utm::vec<float, 2> b;
+	//utm::angle::deg alpha{10};
+	(a + b);// +alpha;
 
 
 

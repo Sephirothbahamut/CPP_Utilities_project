@@ -12,7 +12,7 @@
 #include "../cout_utilities.h"
 #endif
 
-namespace utils::math
+namespace utils
 	{
 	template <typename T, size_t size> class vec;
 	}
@@ -29,7 +29,7 @@ namespace utils::cout
 	}
 #endif
 
-namespace utils::math
+namespace utils
 	{
 	template <template<typename> class To, typename T, class From>
 	inline static To<T> vec_cast(From from) { return {static_cast<T>(from.x), static_cast<T>(from.y)}; }
@@ -53,7 +53,7 @@ namespace utils::math
 			template <typename other_t, size_t other_size>
 			vec(vec<other_t, other_size> other)           noexcept { containers::array::copy(_data, other._data); } //TODO test
 
-			vec<T, size> abs()                   const noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = std::abs(_data[i]); } return ret; }
+			/*vec<T, size> abs()                   const noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = std::abs(_data[i]); } return ret; }
 			vec<T, size> min(vec<T, size> min)                   const noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = std::min(_data[i], min._data[i]); } return ret; }
 			vec<T, size> max(vec<T, size> max)                   const noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = std::max(_data[i], max._data[i]); } return ret; }
 			vec<T, size> clamp(vec<T, size> min, vec<T, size> max) const noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = std::clamp(_data[i], min._data[i], max._data[i]); } return ret; }
@@ -85,40 +85,40 @@ namespace utils::math
 				T theta = std::acos(dot) * t;
 				vec<T, size> relative_vec = (b - a * dot).normalized();
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
-				}
+				}*/
 		};
 
 	// OPERATORS
-	template <typename T, size_t size> vec<T, size>  operator-(const vec<T, size>& v) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = -v[i]; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator-(const vec_t& v) noexcept { vec_t ret; for (size_t i{0}; i < size; i++) { ret[i] = -v[i]; }; return ret; }
 
 	// VEC & SCALAR OPERATORS
-	template <typename T, size_t size> vec<T, size>  operator++(vec<T, size>& v) noexcept { return *this += T(1); }
-	template <typename T, size_t size> vec<T, size>  operator--(vec<T, size>& v) noexcept { return *this -= T(1); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator++(vec_t& v) noexcept { return *this += T(1); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator--(vec_t& v) noexcept { return *this -= T(1); }
 
-	template <typename T, size_t size> vec<T, size>  operator+ (const vec<T, size>& v, const T n) noexcept { return {v.normalize() * (v.magnitude() + n)}; }
-	template <typename T, size_t size> vec<T, size>  operator- (const vec<T, size>& v, const T n) noexcept { return {v.normalize() * (v.magnitude() - n)}; }
-	template <typename T, size_t size> vec<T, size>  operator* (const vec<T, size>& v, const T n) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * n; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator/ (const vec<T, size>& v, const T n) noexcept { vec<T, size> ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / n; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator+ (const vec_t& v, const T n) noexcept { vec_t ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] + n; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator- (const vec_t& v, const T n) noexcept { vec_t ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] - n; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator* (const vec_t& v, const T n) noexcept { vec_t ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * n; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator/ (const vec_t& v, const T n) noexcept { vec_t ret; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / n; }; return ret; }
 
-	template <typename T, size_t size> vec<T, size>& operator+=(vec<T, size>& v, const T n) noexcept { return v = v + n; }
-	template <typename T, size_t size> vec<T, size>& operator-=(vec<T, size>& v, const T n) noexcept { return v = v - n; }
-	template <typename T, size_t size> vec<T, size>& operator*=(vec<T, size>& v, const T n) noexcept { return v = v * n; }
-	template <typename T, size_t size> vec<T, size>& operator/=(vec<T, size>& v, const T n) noexcept { return v = v / n; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator+=(vec_t& v, const T n) noexcept { return v = v + n; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator-=(vec_t& v, const T n) noexcept { return v = v - n; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator*=(vec_t& v, const T n) noexcept { return v = v * n; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator/=(vec_t& v, const T n) noexcept { return v = v / n; }
 
 	// VEC & VEC OPERATORS
 	//TODO vec&vec operators when other has a different size
-	template <typename T, size_t size> vec<T, size>  operator+ (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] + oth[i]; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator- (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] - oth[i]; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator* (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * oth[i]; }; return ret; }
-	template <typename T, size_t size> vec<T, size>  operator/ (const vec<T, size>& v, const vec<T, size>& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / oth[i]; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator+ (const vec_t& v, const vec_t& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] + oth[i]; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator- (const vec_t& v, const vec_t& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] - oth[i]; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator* (const vec_t& v, const vec_t& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] * oth[i]; }; return ret; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t  operator/ (const vec_t& v, const vec_t& oth) noexcept { auto ret{v}; for (size_t i{0}; i < size; i++) { ret[i] = v[i] / oth[i]; }; return ret; }
 
-	template <typename T, size_t size> vec<T, size>& operator+=(vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v + oth; }
-	template <typename T, size_t size> vec<T, size>& operator-=(vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v - oth; }
-	template <typename T, size_t size> vec<T, size>& operator*=(vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v * oth; }
-	template <typename T, size_t size> vec<T, size>& operator/=(vec<T, size>& v, const vec<T, size>& oth) noexcept { return v = v / oth; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator+=(vec_t& v, const vec_t& oth) noexcept { return v = v + oth; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator-=(vec_t& v, const vec_t& oth) noexcept { return v = v - oth; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator*=(vec_t& v, const vec_t& oth) noexcept { return v = v * oth; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> vec_t& operator/=(vec_t& v, const vec_t& oth) noexcept { return v = v / oth; }
 
-	template <typename T, size_t size> bool          operator==(const vec<T, size>& v, const vec<T, size>& oth) noexcept { for (size_t i{0}; i < size; i++) { if (v[i] != oth[i]) { return false; } }; return true; }
-	template <typename T, size_t size> bool          operator!=(const vec<T, size>& v, const vec<T, size>& oth) noexcept { return !(*this == oth); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> bool          operator==(const vec_t& v, const vec_t& oth) noexcept { for (size_t i{0}; i < size; i++) { if (v[i] != oth[i]) { return false; } }; return true; }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t> bool          operator!=(const vec_t& v, const vec_t& oth) noexcept { return !(*this == oth); }
 
 	template <typename T, size_t size>
 	vec<T, size> abs(const vec<T, size> vec) noexcept { return vec.abs(); }
@@ -168,12 +168,12 @@ namespace utils::math
 	}
 namespace utils
 	{
-	template <typename T, size_t size>
-	inline math::vec<T, size> lerp(math::vec<T, size> a, math::vec<T, size> b, float t) { return math::vec<T, size>::lerp(a, b, t); }
-	template <typename T, size_t size>
-	inline math::vec<T, size> clamp(math::vec<T, size> in, math::vec<T, size> min, math::vec<T, size> max) { return in.clamp(min, max); }
-	template <typename T, size_t size>
-	inline math::vec<T, size> min(math::vec<T, size> in, math::vec<T, size> min) { return in.min(min); }
-	template <typename T, size_t size>
-	inline math::vec<T, size> max(math::vec<T, size> in, math::vec<T, size> max) { return in.max(max); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t>
+	inline vec_t lerp(vec_t a, vec_t b, float t) { return vec_t::lerp(a, b, t); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t>
+	inline vec_t clamp(vec_t in, vec_t min, vec_t max) { return in.clamp(min, max); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t>
+	inline vec_t min(vec_t in, vec_t min) { return in.min(min); }
+	template <typename T, size_t size, std::derived_from<vec<T, size>> vec_t>
+	inline vec_t max(vec_t in, vec_t max) { return in.max(max); }
 	}
