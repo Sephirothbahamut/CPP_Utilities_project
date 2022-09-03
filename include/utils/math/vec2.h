@@ -41,7 +41,7 @@ namespace utils::math
 				//vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
 
 				template <float full_angle_value = 360.f>
-				math::angle::base_angle<full_angle_value> angle() const noexcept { leaf_t& self = static_cast<leaf_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
+				math::angle::base_angle<full_angle_value> angle() const noexcept { const leaf_t& self = static_cast<const leaf_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
 				
 
 				// VEC & ANGLE OPERATIONS

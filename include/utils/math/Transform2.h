@@ -31,7 +31,7 @@ namespace utils::math
 			transform2& operator+=(const transform2& oth)       noexcept { return *this = *this + oth; }
 			transform2  operator- ()                      const noexcept
 				{
-				transform2 ret{ -translation, -rotation, 1.f / scaling };
+				transform2 ret{ -translation, -rotation, 1.f / scaling};
 				ret.translation = ((ret.translation * ret.scaling) + ret.rotation); //TODO not sure
 				return ret;
 				}

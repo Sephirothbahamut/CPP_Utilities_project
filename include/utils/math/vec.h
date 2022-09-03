@@ -37,11 +37,14 @@ namespace utils::math
 			template<class derived_self_t, class T, size_t size>
 			friend class details::vec_impl;
 
-			//using details::vec_impl<vec<T, size>, T, size>::vec_impl;
-
 		public:
 			using root_t = utils::vec<T, size, vec<T, size>>::root_t;
 			using leaf_t = vec<T, size>;
+
+			//using details::vec_impl<vec<T, size>, T, size>::vec_impl;
+			//using root_t::vec;
+			vec() = default;
+			vec(T a, T b) : root_t::vec{ a, b } {}
 
 			T magnitude2                () const noexcept { T ret{0}; for (const auto& element : root_t::_data) { ret += element * element; } return ret; }
 			T magnitude                 () const noexcept { return std::sqrt(magnitude2()); }
@@ -115,5 +118,22 @@ namespace utils::math
 			__declspec(property(get = get_w, put = set_w)) T w;
 			__declspec(property(get = get_w, put = set_w)) T a;
 			
+
 		};
+
 	}
+
+	namespace utils
+		{
+		template <typename T, size_t size>
+		inline math::vec<T, size> lerp(const math::vec<T, size>& a, const math::vec<T, size>& b, float t) { return math::vec<T, size>::lerp(a, b, t); }
+
+		template <typename T, size_t size>
+		inline math::vec<T, size> clamp(const math::vec<T, size>& in, const math::vec<T, size>& min, const math::vec<T, size>& max) { return in.clamp(min, max); }
+
+		template <typename T, size_t size>
+		inline math::vec<T, size> min(const math::vec<T, size>& in, const math::vec<T, size>& min) { return in.min(min); }
+
+		template <typename T, size_t size>
+		inline math::vec<T, size> max(const math::vec<T, size>& in, const math::vec<T, size>& max) { return in.max(max); }
+		}
