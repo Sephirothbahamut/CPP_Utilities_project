@@ -45,7 +45,6 @@ namespace utils
 			using leaf_t = LEAF_T;
 			using root_t = vec<T, size, leaf_t>;
 
-			//TODO constructors
 			vec() = default;
 
 			template<std::same_as<T> ...Ts>

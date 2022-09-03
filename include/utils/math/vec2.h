@@ -31,9 +31,9 @@ namespace utils::math
 			{
 			public:
 				vec_impl() = default;
-				vec_impl(T x, T y)                            noexcept { set_x(x); set_y(y); };
-				vec_impl(math::angle::deg angle, T magnitude) noexcept { set_x(angle.cos() * magnitude); set_y(angle.sin() * magnitude); } //TODO test
-				vec_impl(math::angle::rad angle, T magnitude) noexcept { set_x(angle.cos() * magnitude); set_y(angle.sin() * magnitude); } //TODO test
+				vec_impl(T x, T y)                            noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(x); self.set_y(y); };
+				vec_impl(math::angle::deg angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
+				vec_impl(math::angle::rad angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
 				//template <float full_angle_value>
 				//vec(math::angle::base_angle<full_angle_value> angle) noexcept requires(size == 2) : x{angle.cos()}, y{angle.sin()} {} //TODO test
 				//template <typename other_t>

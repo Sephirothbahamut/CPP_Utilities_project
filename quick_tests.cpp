@@ -27,7 +27,7 @@ int main()
 	{
 	using namespace utils::cout;
 	namespace utm = utils::math;
-	utm::vec<float, 2> a{};
+	utm::vec<float, 2> a{1.f,1.f};
 	utm::vec<float, 2> b{};
 	utm::angle::deg alpha{10}; 
 	std::cout << ((a + b) + alpha) << std::endl;

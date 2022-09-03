@@ -38,15 +38,10 @@ namespace utils::math
 			friend class details::vec_impl;
 
 		public:
-			using root_t = utils::vec<T, size, vec<T, size>>::root_t;
-			using leaf_t = vec<T, size>;
+			using details::vec_impl<vec<T, size>, T, size>::vec_impl;
+			using utils::vec<T, size, vec<T, size>>::vec;
 
-			//using details::vec_impl<vec<T, size>, T, size>::vec_impl;
-			//using root_t::vec;
-			vec() = default;
-			vec(T a, T b) : root_t::vec{ a, b } {}
-
-			T get_length2               () const noexcept { T ret{0}; for (const auto& element : root_t::_data) { ret += element * element; } return ret; }
+			T get_length2               () const noexcept { T ret{0}; for (const auto& element : utils::vec<T, size, vec<T, size>>::_data) { ret += element * element; } return ret; }
 			T get_length                () const noexcept { return std::sqrt(get_length2()); }
 
 			vec<T, size>& set_length    (T value) noexcept { *this = normalize() * value; return *this; }
