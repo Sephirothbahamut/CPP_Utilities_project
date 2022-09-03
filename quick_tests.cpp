@@ -7,7 +7,7 @@
 #include "include/utils/graphics/color.h"
 
 #include "include/utils/containers/buffer.h"
-#include "include/utils/math/vec.h"
+#include "include/utils/math/vec2.h"
 //#include "include/utils/math/geometry/segment.h"
 //#include "include/utils/math/geometry/polygon.h"
 //#include "include/utils/math/geometry/transformations.h"
@@ -16,18 +16,21 @@
 
 #include "include/utils/containers/handled_container.h"
 
+#include "include/utils/cout_utilities.h"
+#include "include/utils/cout_containers.h"
 template <std::forward_iterator T>
 void f(T t) {};
 
 int main() 
 	{
+	using namespace utils::cout;
 	namespace utm = utils::math;
-	utm::vec<float, 2> a;
-	utm::vec<float, 2> b;
-	//utm::angle::deg alpha{10};
-	(a + b);// +alpha;
+	utm::vec<float, 2> a{};
+	utm::vec<float, 2> b{};
+	utm::angle::deg alpha{10}; 
+	std::cout << ((a + b) + alpha) << std::endl;
 
-
+	a.angle();
 
 	utils::containers::handled_container<std::string> container;
 

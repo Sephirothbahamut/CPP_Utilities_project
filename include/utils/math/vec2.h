@@ -1,13 +1,7 @@
 #pragma once
 
-//#define utils_vec_old
-//#define utils_vec_concept_sfinae
-#define utils_vec_partial_specialization
-
 #include "vec.h"
-
-
-#ifndef utils_vec_old
+#include "angle.h"
 namespace utils::math
 	{
 	template <typename T> 
@@ -29,14 +23,11 @@ namespace utils::math
 	using vec2s   = vec2<size_t>;
 	using vec2f   = vec2<float>;
 	using vec2d   = vec2<double>;
-	template <typename T>
-	vec2<T> abs(const vec2<T> vec) { return {std::abs(vec.x), std::abs(vec.y)}; }
 
-#ifdef utils_vec_partial_specialization
 	namespace details
 		{
-		template<class derived_self_t, class T>
-		class vec_impl<derived_self_t, T, 2>
+		template<class leaf_t, class T>
+		class vec_impl<leaf_t, T, 2>
 			{
 			public:
 				vec_impl() = default;
@@ -49,294 +40,22 @@ namespace utils::math
 				//vec2(vec2<other_t> other)           noexcept : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {} //TODO test
 				//vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
 
-
-				static derived_self_t rr()    noexcept { return {T{ 1}, T{ 0}}; }
-				static derived_self_t ll()    noexcept { return {T{-1}, T{ 0}}; }
-				static derived_self_t up()    noexcept { return {T{ 0}, T{-1}}; }
-				static derived_self_t dw()    noexcept { return {T{ 0}, T{ 1}}; }
-				static derived_self_t right() noexcept { return rr(); }
-				static derived_self_t left()  noexcept { return ll(); }
-				static derived_self_t down()  noexcept { return dw(); }
-				static derived_self_t zero()  noexcept { return {}; }
-
-					  T& get_x(              )       noexcept { return static_cast<      derived_self_t&>(*this)._data[0]; }
-				const T& get_x(              ) const noexcept { return static_cast<const derived_self_t&>(*this)._data[0]; }
-					  T& set_x(const T& value)       noexcept { return static_cast<      derived_self_t&>(*this)._data[0] = value; }
-
-				__declspec(property(get = get_x, put = set_x)) T x;
-
-					  T& get_y(              )       noexcept { return static_cast<      derived_self_t&>(*this)._data[1]; }
-				const T& get_y(              ) const noexcept { return static_cast<const derived_self_t&>(*this)._data[1]; }
-					  T& set_y(const T& value)       noexcept { return static_cast<      derived_self_t&>(*this)._data[1] = value; }
-
-				__declspec(property(get = get_y, put = set_y)) T y;
-
-				// CASTS
-				template <template<typename> class To, typename T_t>
-				inline To<T_t> vec_cast() { return {static_cast<T_t>(x), static_cast<T_t>(y)}; }
-
 				template <float full_angle_value = 360.f>
-				math::angle::base_angle<full_angle_value> angle() const noexcept { derived_self_t& self = static_cast<derived_self_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
+				math::angle::base_angle<full_angle_value> angle() const noexcept { leaf_t& self = static_cast<leaf_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
 				
 
 				// VEC & ANGLE OPERATIONS
-				template <float full_angle_value> derived_self_t  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-				template <float full_angle_value> derived_self_t  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-				template <float full_angle_value> derived_self_t& operator+=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      derived_self_t&>(*this); return self = self + angle; }
-				template <float full_angle_value> derived_self_t& operator-=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      derived_self_t&>(*this); return self = self - angle; }
-				template <float full_angle_value> derived_self_t& operator= (const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      derived_self_t&>(*this); return self = {angle.cos() * self.magnitude(), angle.sin() * self.magnitude()}; }
+				template <float full_angle_value> leaf_t  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
+				template <float full_angle_value> leaf_t  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
+				template <float full_angle_value> leaf_t& operator+=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self + angle; }
+				template <float full_angle_value> leaf_t& operator-=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self - angle; }
+				template <float full_angle_value> leaf_t& operator= (const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = {angle.cos() * self.magnitude(), angle.sin() * self.magnitude()}; }
 
 				// OTHER
-				derived_self_t perpendicular_right()            const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return { self.y, -self.x}; }
-				derived_self_t perpendicular_left()             const noexcept { const auto& self = static_cast<const derived_self_t&>(*this); return {-self.y,  self.x}; }
-				derived_self_t perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
-				derived_self_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+				leaf_t perpendicular_right()            const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return { self.y, -self.x}; }
+				leaf_t perpendicular_left()             const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {-self.y,  self.x}; }
+				leaf_t perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
+				leaf_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 			};
 		}
-#endif utils_vec_partial_specialization
 	}
-#endif //!utils_vec_old
-#ifdef utils_vec_old
-#pragma once
-#include <ostream>
-#include <cmath>
-#include <numbers>
-#include <algorithm>
-
-#include "../custom_operators.h"
-#include "math.h"
-
-#include "angle.h"
-
-#ifdef COUT_CONTAINERS
-#include "../cout_utilities.h"
-#endif
-
-namespace utils::math
-	{
-	template <typename T> class vec2;
-	}
-
-#ifdef COUT_CONTAINERS
-namespace utils::cout
-	{
-	template <typename T>
-	inline std::ostream& operator<<(std::ostream& os, const utils::math::vec2<T>& vec) noexcept
-		{
-		namespace ccu = cout::support;
-		return os << ccu::type << "vec2" << ccu::brace << "(" << ccu::value << vec.x << ccu::separ << ", " << ccu::value << vec.y << ccu::brace << ")";
-		}
-	}
-#endif
-
-namespace utils::math
-	{
-	template <template<typename> class To, typename T, template<typename> class From, typename F>
-	inline static To<T> vec_cast(From<F> from) { return {static_cast<T>(from.x), static_cast<T>(from.y)}; }
-
-	//fast typenames
-	using vec2i   = vec2<int>;
-	using vec2i8  = vec2<int8_t>;
-	using vec2i16 = vec2<int16_t>;
-	using vec2i32 = vec2<int32_t>;
-	using vec2i64 = vec2<int64_t>;
-
-	using vec2u   = vec2<unsigned>;
-	using vec2u8  = vec2<uint8_t>;
-	using vec2u16 = vec2<uint16_t>;
-	using vec2u32 = vec2<uint32_t>;
-	using vec2u64 = vec2<uint64_t>;
-
-	using vec2s = vec2<size_t>;
-	using vec2f = vec2<float>;
-	using vec2d = vec2<double>;
-
-	template <typename T>
-	class vec2
-		{
-		public:
-			vec2()                              noexcept = default;
-			vec2(T x, T y)                      noexcept : x{x}, y{y} {};
-			vec2(math::angle::deg angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
-			vec2(math::angle::rad angle, T magnitude) noexcept : x{angle.cos() * magnitude}, y{angle.sin() * magnitude} {} //TODO test
-			template <float full_angle_value>
-			vec2(math::angle::base_angle<full_angle_value> angle) noexcept : x{angle.cos()}, y{angle.sin()} {} //TODO test
-			template <typename other_t>
-			vec2(vec2<other_t> other)           noexcept : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {} //TODO test
-			vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
-
-
-			static vec2<T> rr()    noexcept { return {T{ 1}, T{ 0}}; }
-			static vec2<T> ll()    noexcept { return {T{-1}, T{ 0}}; }
-			static vec2<T> up()    noexcept { return {T{ 0}, T{-1}}; }
-			static vec2<T> dw()    noexcept { return {T{ 0}, T{ 1}}; }
-			static vec2<T> right() noexcept { return rr(); }
-			static vec2<T> left()  noexcept { return ll(); }
-			static vec2<T> down()  noexcept { return dw(); }
-			static vec2<T> zero()  noexcept { return {}; }
-
-			T x = 0, y = 0;
-
-			T magnitude2()            const noexcept { return x * x + y * y; }
-			T magnitude ()            const noexcept { return std::sqrt(magnitude2()); }
-			vec2<T>  normalize()      const noexcept { return magnitude() ? *this / magnitude() : *this; }
-			vec2<T>& normalize_self()       noexcept { return *this = normalize(); }
-
-			// CASTS
-			template <template<typename> class To, typename T_t>
-			inline To<T_t> vec_cast() { return {static_cast<T_t>(x), static_cast<T_t>(y)}; }
-
-			template <float full_angle_value = 360.f>
-			math::angle::base_angle<full_angle_value> angle() const noexcept { return math::angle::base_angle<full_angle_value>::atan2(y, x); }
-
-			template <typename other_t>
-			operator vec2<other_t>() const noexcept { return {static_cast<other_t>(x), static_cast<other_t>(y)}; }
-
-			// OPERATORS
-			vec2<T>  operator-() const noexcept { return {-x, -y}; }
-
-			// VEC & SCALAR OPERATORS
-			vec2<T>  operator++() noexcept { return *this += T(1); }
-			vec2<T>  operator--() noexcept { return *this -= T(1); }
-
-			vec2<T>  operator+ (const T n) const noexcept { return {normalize() * (magnitude() + n)}; }
-			vec2<T>  operator- (const T n) const noexcept { return {normalize() * (magnitude() - n)}; }
-			vec2<T>  operator* (const T n) const noexcept { return {x * n, y * n}; }
-			vec2<T>  operator/ (const T n) const noexcept { return {x / n, y / n}; }
-
-			vec2<T>& operator+=(const T n)       noexcept { return *this = *this + n; }
-			vec2<T>& operator-=(const T n)       noexcept { return *this = *this - n; }
-			vec2<T>& operator*=(const T n)       noexcept { return *this = *this * n; }
-			vec2<T>& operator/=(const T n)       noexcept { return *this = *this / n; }
-			vec2<T>& operator= (const T n)       noexcept { *this = normalize() * n; return *this; }
-
-			// VEC & ANGLE OPERATIONS
-			template <float full_angle_value> vec2<T>  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-			template <float full_angle_value> vec2<T>  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { return {x * angle.cos() - y * angle.sin(), x * angle.sin() + y * angle.cos()}; }
-			template <float full_angle_value> vec2<T>& operator+=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept { return *this = *this + angle; }
-			template <float full_angle_value> vec2<T>& operator-=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept { return *this = *this - angle; }
-			template <float full_angle_value> vec2<T>& operator= (const utils::math::angle::base_angle<full_angle_value> angle)       noexcept { return *this ={angle.cos() * magnitude(), angle.sin() * magnitude()}; }
-
-			// VEC & VEC OPERATORS
-			vec2<T>  operator+ (const vec2<T>& oth) const noexcept { return {x + oth.x, y + oth.y}; }
-			vec2<T>  operator- (const vec2<T>& oth) const noexcept { return {x - oth.x, y - oth.y}; }
-			vec2<T>  operator* (const vec2<T>& oth) const noexcept { return {x * oth.x, y * oth.y}; }
-			vec2<T>  operator/ (const vec2<T>& oth) const noexcept { return {x / oth.x, y / oth.y}; }
-
-			vec2<T>& operator+=(const vec2<T>& oth)       noexcept { return *this = *this + oth; }
-			vec2<T>& operator-=(const vec2<T>& oth)       noexcept { return *this = *this - oth; }
-			vec2<T>& operator*=(const vec2<T>& oth)       noexcept { return *this = *this * oth; }
-			vec2<T>& operator/=(const vec2<T>& oth)       noexcept { return *this = *this / oth; }
-
-			bool     operator==(const vec2<T>& oth) const noexcept { return x == oth.x && y == oth.y; }
-			bool     operator!=(const vec2<T>& oth) const noexcept { return !(*this == oth); }
-
-			static T dot(const vec2<T>& a, const vec2<T>& b) noexcept { return a.x * b.x + a.y * b.y; }
-			static T distance2(const vec2<T>& a, const vec2<T>& b) noexcept
-				{
-				T dx = a.x - b.x;
-				T dy = a.y - b.y;
-				return dx * dx + dy * dy;
-				}
-			static T distance(const vec2<T>& a, const vec2<T>& b) noexcept { return std::sqrt(distance2(a, b)); }
-
-			// OTHER
-			vec2<T> perpendicular_right()            const noexcept { return { y, -x}; }
-			vec2<T> perpendicular_left()             const noexcept { return {-y,  x}; }
-			vec2<T> perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
-			vec2<T> perpendicular_counterclockwise() const noexcept { return perpendicular_left(); }
-
-			static vec2<T> lerp(const vec2<T>& a, const vec2<T>& b, T t) noexcept
-				{
-				return {utils::lerp(a.x, b.x, t), utils::lerp(a.y, b.y, t)};
-				}
-			static vec2<T> slerp_fast(const vec2<T>& a, const vec2<T>& b, T t) noexcept
-				{
-				return vec2{utils::lerp(a.x, b.x, t), utils::lerp(a.y, b.y, t)}.normalize()
-					* (utils::lerp(a.magnitude(), b.magnitude(), t));
-				}
-			static vec2<T> tlerp_fast(const vec2<T>& a, const vec2<T>& b, T t) noexcept
-				{
-				return vec2{utils::lerp(a.x, b.x, t), utils::lerp(a.y, b.y, t)}.normalize()
-					* std::sqrt(utils::lerp(a.magnitude2(), b.magnitude2(), t));
-				}
-			static vec2<T> slerp(const vec2<T>& a, const vec2<T>& b, T t) noexcept
-				{
-				T dot = std::clamp(vec2::dot(a, b), -1.0f, 1.0f);
-				T theta = std::acos(dot) * t;
-				vec2<T> relative_vec = (b - a * dot).normalized();
-				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
-				}
-		};
-	
-	template <typename T>
-	vec2<T> abs(const vec2<T> vec) { return {std::abs(vec.x), std::abs(vec.y)}; }
-
-	namespace operators
-		{
-		inline constexpr struct _dot
-			{
-			template <typename T>
-			class _inner;
-
-			template <typename T>
-			inline friend _inner<T> operator<(vec2<T> lhs, _dot proxy) noexcept { return {lhs}; }
-
-			template <typename T>
-			class _inner
-				{
-				public:
-					T operator>(vec2<T> rhs) const noexcept { return vec2<T>::dot(lhs, rhs); }
-					_inner(vec2<T> lhs) noexcept : lhs{lhs} {}
-				private:
-					vec2<T> lhs;
-				};
-
-			} dot;
-
-		inline constexpr struct _cross
-			{
-			template <typename T>
-			class _inner;
-
-			template <typename T>
-			inline friend _inner<T> operator<(vec2<T> lhs, _cross proxy) noexcept { return {lhs}; }
-
-			template <typename T>
-			class _inner
-				{
-				public:
-					vec2<T> operator>(vec2<T> rhs) const noexcept { return lhs * rhs; }
-					_inner(vec2<T> lhs) noexcept : lhs{lhs} {}
-				private:
-					vec2<T> lhs;
-				};
-
-			} cross;
-		}
-	}
-namespace utils
-	{
-	template <typename T>
-	inline math::vec2<T> lerp(math::vec2<T> a, math::vec2<T> b, float t)
-		{
-		return {math::vec2<T>::lerp(a, b, t)};
-		}
-	template <typename T>
-	inline math::vec2<T> clamp(math::vec2<T> in, math::vec2<T> min, math::vec2<T> max)
-		{
-		return {std::clamp(in.x, min.x, max.x), std::clamp(in.y, min.y, max.y)};
-		}
-	template <typename T>
-	inline math::vec2<T> min(math::vec2<T> in, math::vec2<T> min)
-		{
-		return {std::min(in.x, min.x), std::min(in.y, min.y)};
-		}
-	template <typename T>
-	inline math::vec2<T> max(math::vec2<T> in, math::vec2<T> max)
-		{
-		return {std::max(in.x, max.x), std::max(in.y, max.y)};
-		}
-	}
-
-#endif //utils_vec_old

@@ -5,8 +5,38 @@
 #include <cmath>
 #include <concepts>
 #include "../math/angle.h"
+#include "../vec.h"
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+
+namespace utils::beta::graphics
+	{
+	template <typename T, size_t size, typename leaf_t>
+	class color : public utils::vec < T, size, color<T, size>
+		{
+		};
+
+	template <typename T>
+	class rgb : public color<T, 3, rgb<T>>
+		{
+		};
+	template <typename T>
+	class rgba : public color<T, 4, rgba<T>>
+		{
+		};
+	template <typename T>
+	class hsv : public color<T, 3, hsv<T>>
+		{
+		};
+	template <typename T>
+	class hsva : public color<T, 4, hsva<T>>
+		{
+		};
+	//...
+	};
+
+
+
 
 namespace utils::graphics
 	{

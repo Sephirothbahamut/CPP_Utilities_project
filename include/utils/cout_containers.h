@@ -42,7 +42,7 @@ namespace utils
 			{
 			namespace ccu = cout::support;
 			os << ccu::type << "std::array" << ccu::brace << "[";
-			if constexpr (SIZE)
+			if constexpr (static_cast<bool>(SIZE))
 				{
 				for (size_t i = 0; i < SIZE - 1; i++)
 					{
