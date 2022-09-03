@@ -43,7 +43,6 @@ namespace utils::math
 				template <float full_angle_value = 360.f>
 				math::angle::base_angle<full_angle_value> angle() const noexcept { const leaf_t& self = static_cast<const leaf_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
 				
-
 				// VEC & ANGLE OPERATIONS
 				template <float full_angle_value> leaf_t  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
 				template <float full_angle_value> leaf_t  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }

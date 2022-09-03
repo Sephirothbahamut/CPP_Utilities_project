@@ -76,8 +76,8 @@ namespace utils
 			leaf_t  operator++()       noexcept { return static_cast<leaf_t&>(*this) += T(1); }
 			leaf_t  operator--()       noexcept { return static_cast<leaf_t&>(*this) -= T(1); }
 
-			leaf_t  operator+ (const T n) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = static_cast<const leaf_t&>(*this)[i] + n; }; return ret; }
-			leaf_t  operator- (const T n) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = static_cast<const leaf_t&>(*this)[i] - n; }; return ret; }
+			//leaf_t  operator+ (const T n) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = static_cast<const leaf_t&>(*this)[i] + n; }; return ret; }
+			//leaf_t  operator- (const T n) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = static_cast<const leaf_t&>(*this)[i] - n; }; return ret; }
 			leaf_t  operator* (const T n) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = static_cast<const leaf_t&>(*this)[i] * n; }; return ret; }
 			leaf_t  operator/ (const T n) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = static_cast<const leaf_t&>(*this)[i] / n; }; return ret; }
 

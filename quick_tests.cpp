@@ -10,9 +10,9 @@
 //#include "include/utils/math/vec.h"
 #include "include/utils/math/vec2.h"
 #include "include/utils/math/Transform2.h"
-//#include "include/utils/math/geometry/segment.h"
-//#include "include/utils/math/geometry/polygon.h"
-//#include "include/utils/math/geometry/transformations.h"
+#include "include/utils/math/geometry/segment.h"
+#include "include/utils/math/geometry/polygon.h"
+#include "include/utils/math/geometry/transformations.h"
 
 #include "include/utils/index_range.h"
 

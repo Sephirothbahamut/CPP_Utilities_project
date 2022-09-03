@@ -46,25 +46,26 @@ namespace utils::math
 			vec() = default;
 			vec(T a, T b) : root_t::vec{ a, b } {}
 
-			T magnitude2                () const noexcept { T ret{0}; for (const auto& element : root_t::_data) { ret += element * element; } return ret; }
-			T magnitude                 () const noexcept { return std::sqrt(magnitude2()); }
-			vec<T, size> normalize      () const noexcept { return magnitude() ? *this / magnitude() : *this; }
+			T get_length2               () const noexcept { T ret{0}; for (const auto& element : root_t::_data) { ret += element * element; } return ret; }
+			T get_length                () const noexcept { return std::sqrt(get_length2()); }
 
+			vec<T, size>& set_length    (T value) noexcept { *this = normalize() * value; return *this; }
+
+			__declspec(property(get = get_length, put = set_length)) T length;
+
+			vec<T, size>  normalize     () const noexcept { return get_length() ? *this / get_length() : *this; }
 			vec<T, size>& normalize_self()       noexcept { return *this = normalize(); }
 
 			static T distance2(const vec<T, size>& a, const vec<T, size>& b) noexcept { T ret{0}; for (size_t i{0}; i < size; i++) { ret += a[i] - b[i]; } return ret; }
 			static T distance (const vec<T, size>& a, const vec<T, size>& b) noexcept { return std::sqrt(distance2(a, b)); }
 
-			vec<T, size>& operator= (const T n) noexcept { *this = normalize() * n; return *this; }
-			
-			
 			static vec<T, size> slerp_fast(const vec<T, size>& a, const vec<T, size>& b, T t) noexcept
 				{
-				return lerp(a, b).normalize() * (utils::lerp(a.magnitude(), b.magnitude(), t));
+				return lerp(a, b).normalize() * (utils::lerp(a.get_length(), b.get_length(), t));
 				}
 			static vec<T, size> tlerp_fast(const vec<T, size>& a, const vec<T, size>& b, T t) noexcept
 				{
-				return lerp(a, b).normalize() * std::sqrt(utils::lerp(a.magnitude2(), b.magnitude2(), t));
+				return lerp(a, b).normalize() * std::sqrt(utils::lerp(a.get_length2(), b.get_length2(), t));
 				}
 			static vec<T, size> slerp(const vec<T, size>& a, const vec<T, size>& b, T t) noexcept //TODO test
 				{
