@@ -2,6 +2,7 @@
 
 #include "vec.h"
 #include "angle.h"
+
 namespace utils::math
 	{
 	template <typename T> 
@@ -30,8 +31,8 @@ namespace utils::math
 		class vec_impl<leaf_t, T, 2>
 			{
 			public:
-				vec_impl() = default;
-				vec_impl(T x, T y)                            noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(x); self.set_y(y); };
+				vec_impl() = default; //TODO we should be able to remove this?
+				vec_impl(T x, T y)                            noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(x); self.set_y(y); }; //TODO we should be able to remove this?
 				vec_impl(math::angle::deg angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
 				vec_impl(math::angle::rad angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
 				//template <float full_angle_value>

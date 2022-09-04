@@ -88,7 +88,7 @@ namespace utils::math
 
 			      T& get_x(              )       noexcept requires(size >= 1) { return this->_data[0]; }
 			const T& get_x(              ) const noexcept requires(size >= 1) { return this->_data[0]; }
-				  T& set_x(const T& value)       noexcept requires(size >= 1) { return this->_data[0] = value; }
+			      T& set_x(const T& value)       noexcept requires(size >= 1) { return this->_data[0] = value; }
 				  
 			__declspec(property(get = get_x, put = set_x)) T x;
 			__declspec(property(get = get_x, put = set_x)) T r;

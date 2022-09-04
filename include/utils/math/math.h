@@ -3,29 +3,31 @@
 #include <type_traits>
 #include <concepts>
 
+#include "../cuda.h"
+
 namespace utils
 	{
 	template <typename T>
-	inline bool will_overflow_mult(T a, T b)
+	UTILS_CUDA_EXPOSE inline bool will_overflow_mult(T a, T b)
 		{
 		T x = a * b;
 		return (a != 0 && x / a != b);
 		}
 
 	template <typename T>
-	inline T lerp        (T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
+	UTILS_CUDA_EXPOSE inline T lerp        (T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
 
 	template <typename T>
-	inline T inverse_lerp(T a, T b, float t) { return (t - a) / (b - a); }
+	UTILS_CUDA_EXPOSE inline T inverse_lerp(T a, T b, float t) { return (t - a) / (b - a); }
 
 	template <typename T>
-	inline T map(T from_min, T from_max, T to_min, T to_max, T value)
+	UTILS_CUDA_EXPOSE inline T map(T from_min, T from_max, T to_min, T to_max, T value)
 		{
 		return lerp(to_min, to_max, inverse_lerp(from_min, from_max, value));
 		}
 
 	template <typename T, char iterations = 2>
-	inline T inv_sqrt(T x)
+	UTILS_CUDA_EXPOSE inline T inv_sqrt(T x)
 		{//https://stackoverflow.com/questions/11644441/fast-inverse-square-root-on-x64/11644533
 		static_assert(std::is_floating_point<T>::value, "T must be floating point");
 		static_assert(iterations == 1 || iterations == 2, "itarations must equal 1 or 2");
@@ -45,8 +47,8 @@ namespace utils
 	//template <typename T>
 	//inline void swap(T& a, T& b) { std::swap(a, b); }
 	template <std::integral T>
-	inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
+	UTILS_CUDA_EXPOSE inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
 
 	template <typename T>
-	inline T clamp(const T& in, const T& min, const T& max) { return std::clamp(in, min, max); }
+	UTILS_CUDA_EXPOSE inline T clamp(const T& in, const T& min, const T& max) { return std::clamp(in, min, max); }
 	}

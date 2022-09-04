@@ -155,6 +155,7 @@
     <ClInclude Include="include\utils\concepts.h" />
     <ClInclude Include="include\utils\console_io.h" />
     <ClInclude Include="include\utils\containers\array.h" />
+    <ClInclude Include="include\utils\cuda.h" />
     <ClInclude Include="include\utils\exception.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />

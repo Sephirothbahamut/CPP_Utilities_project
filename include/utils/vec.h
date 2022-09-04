@@ -57,14 +57,14 @@ namespace utils
 			std::array<T, size> _data;
 
 			//TODO add AT functions and call AT in [] in debug mode
-			T& operator[](size_t index)       noexcept { return _data[index]; }
+			      T& operator[](size_t index)       noexcept { return _data[index]; }
 			const T& operator[](size_t index) const noexcept { return _data[index]; }
 
 #pragma region operators
 #pragma region on root
-			bool          operator==(const root_t& oth) const noexcept { for (size_t i{ 0 }; i < size; i++) { if (_data[i] != oth[i]) { return false; } }; return true; }
-			bool          operator!=(const root_t& oth) const noexcept { return !(*this == oth); }
-			static T dot(const root_t& a, const root_t& b) noexcept { T ret{ 0 }; for (size_t i{ 0 }; i < size; i++) { ret += a[i] * b[i]; } return ret; }
+			 bool operator==(const root_t& oth) const noexcept { for (size_t i{ 0 }; i < size; i++) { if (_data[i] != oth[i]) { return false; } }; return true; }
+			 bool operator!=(const root_t& oth) const noexcept { return !(*this == oth); }
+			 static T dot(const root_t& a, const root_t& b) noexcept { T ret{ 0 }; for (size_t i{ 0 }; i < size; i++) { ret += a[i] * b[i]; } return ret; }
 
 #pragma endregion on root
 #pragma region on leaf
@@ -101,14 +101,14 @@ namespace utils
 #pragma endregion on leaf
 #pragma endregion operators
 
-			leaf_t  abs() const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::abs(_data[i]); } return ret; }
-			leaf_t  min(leaf_t min) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::min(_data[i], min._data[i]); } return ret; }
-			leaf_t  max(leaf_t max) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::max(_data[i], max._data[i]); } return ret; }
-			leaf_t  clamp(leaf_t min, leaf_t max) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::clamp(_data[i], min._data[i], max._data[i]); } return ret; }
+			leaf_t  abs       (                      ) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::abs  (_data[i]                            ); } return ret; }
+			leaf_t  min       (leaf_t min            ) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::min  (_data[i], min._data[i]              ); } return ret; }
+			leaf_t  max       (leaf_t max            ) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::max  (_data[i], max._data[i]              ); } return ret; }
+			leaf_t  clamp     (leaf_t min, leaf_t max) const noexcept { leaf_t ret; for (size_t i{ 0 }; i < size; i++) { ret[i] = std::clamp(_data[i], min._data[i], max._data[i]); } return ret; }
 
-			leaf_t& abs_self()       noexcept { return static_cast<leaf_t&>(*this) = abs(); }
-			leaf_t& min_self(leaf_t min)       noexcept { return static_cast<leaf_t&>(*this) = this->min(min); }
-			leaf_t& max_self(leaf_t max)       noexcept { return static_cast<leaf_t&>(*this) = this->max(max); }
+			leaf_t& abs_self  (                      )       noexcept { return static_cast<leaf_t&>(*this) = abs(); }
+			leaf_t& min_self  (leaf_t min            )       noexcept { return static_cast<leaf_t&>(*this) = this->min(min); }
+			leaf_t& max_self  (leaf_t max            )       noexcept { return static_cast<leaf_t&>(*this) = this->max(max); }
 			leaf_t& clamp_self(leaf_t min, leaf_t max)       noexcept { return static_cast<leaf_t&>(*this) = clamp(min, max); }
 
 
