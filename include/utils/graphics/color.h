@@ -11,6 +11,14 @@
 
 namespace utils::beta::graphics::colors
 	{
+	namespace details 
+		{
+		template <typename T>
+		struct alpha_field { T a; };
+
+		struct empty {};
+		}
+
 	enum base
 		{
 		black , white, 
@@ -69,14 +77,15 @@ namespace utils::beta::graphics::colors
 		hsv<T, (size >= 4), MAX_VALUE, MAX_VALUE> hsv() const noexcept requires(size >= 3);
 		};
 
+
 	template <std::floating_point T, bool has_alpha, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max()), T max_angle_value = MAX_VALUE>
-	struct hsv
+	struct hsv : std::conditional_t<has_alpha, details::alpha_field<T>, details::empty>
 		{
 		inline static constexpr T max_value = MAX_VALUE;
 
 		hsv() = default;
-		hsv(T h, T s, T v, T a) requires( has_alpha) : h{h}, sva_data{s, v, a} {}
-		hsv(T h, T s, T v     ) requires(!has_alpha) : h{h}, sva_data{s, v   } {}
+		hsv(T h, T s, T v, T a) requires( has_alpha) : h{h}, s{s}, v{v}, details::alpha_field<T>{a} {}
+		hsv(T h, T s, T v     )                      : h{h}, s{s}, v{v}                             {}
 
 		hsv(base base, T components_multiplier = max_value, T alpha = max_value)
 			{
@@ -97,32 +106,18 @@ namespace utils::beta::graphics::colors
 
 			s = max_value; //TODO calc
 			v = max_value; //TODO calc
-			if constexpr (has_alpha) { a = alpha; }
+			if constexpr (has_alpha) { details::alpha_field<T>::a = alpha; }
 			}
 
 #pragma region fields
 		utils::math::angle::base_angle<T, max_angle_value> h;
-		std::array<T, (has_alpha ? 3 : 2)> sva_data;
-		
-		      T& get_s(              )       noexcept { return sva_data[1]; }
-		const T& get_s(              ) const noexcept { return sva_data[1]; }
-		      T& set_s(const T& value)       noexcept { return sva_data[1] = value; }
+		T s;
+		T v;
 
-		__declspec(property(get = get_s, put = set_s)) T s;
+		int  get_a(         ) const noexcept requires(has_alpha) { return details::alpha_field<T>::a        ; }
+		void set_a(int value)       noexcept requires(has_alpha) {        details::alpha_field<T>::a = value; }
 
-		      T& get_v(              )       noexcept { return sva_data[2]; }
-		const T& get_v(              ) const noexcept { return sva_data[2]; }
-		      T& set_v(const T& value)       noexcept { return sva_data[2] = value; }
-
-		__declspec(property(get = get_v, put = set_v)) T v;
-
-		      T& get_a(              )       noexcept requires(has_alpha) { return sva_data[3]; }
-		const T& get_a(              ) const noexcept requires(has_alpha) { return sva_data[3]; }
-		      T& set_a(const T& value)       noexcept requires(has_alpha) { return sva_data[3] = value; }
-
-		__declspec(property(get = get_a, put = set_a)) T a;
-
-		__declspec(property(get = get_h, put = set_h)) T h_angle;
+		__declspec(property(get = get_a, put = set_a)) int a;
 #pragma endregion fields
 
 		rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> rgb() const noexcept;

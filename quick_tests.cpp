@@ -30,8 +30,9 @@ int main()
 	namespace utm = utils::math;
 	utm::vec<float, 2> a{1.f,1.f};
 	utm::vec<float, 2> b{};
-	utm::angle::deg alpha{10}; 
+	utm::angle::deg alpha{10};
 	utils::beta::graphics::colors::rgb<float, 4> ca, cb;
+	utils::beta::graphics::colors::hsv<float, true> cc{1, 2, 3}, cd{1, 2, 3, 4};
 	ca + cb;
 
 	std::cout << ((a + b) + alpha) << std::endl;

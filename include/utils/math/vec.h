@@ -73,10 +73,10 @@ namespace utils::math
 #pragma region factories
 			static vec<T, 2> zero()     noexcept requires(size >= 1) { return {}; }
 
-			static vec<T, 2> rr()       noexcept requires(size >= 1) { return {T{ 1}, T{ 0}}; }
-			static vec<T, 2> ll()       noexcept requires(size >= 1) { return {T{-1}, T{ 0}}; }
-			static vec<T, 2> right()    noexcept requires(size >= 1) { return rr(); }
-			static vec<T, 2> left()     noexcept requires(size >= 1) { return ll(); }
+			static vec<T, 2> rr   ()     noexcept requires(size >= 1) { return {T{ 1}, T{ 0}}; }
+			static vec<T, 2> ll   ()     noexcept requires(size >= 1) { return {T{-1}, T{ 0}}; }
+			static vec<T, 2> right()     noexcept requires(size >= 1) { return rr(); }
+			static vec<T, 2> left ()     noexcept requires(size >= 1) { return ll(); }
 
 			static vec<T, 2> up()       noexcept requires(size >= 2) { return {T{ 0}, T{-1}}; }
 			static vec<T, 2> dw()       noexcept requires(size >= 2) { return {T{ 0}, T{ 1}}; }
