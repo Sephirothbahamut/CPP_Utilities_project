@@ -13,32 +13,33 @@
 
 namespace utils::math::angle
 	{
-	template <float full_angle_value = 1.f>
+	template <std::floating_point T = float, T full_angle_value = 1.f>
 	class base_angle
 		{
 		public:
-			inline static constexpr float full_angle = full_angle_value;
-			inline static constexpr float half_angle = full_angle / 2.f;
+			using value_type = T;
+			inline static constexpr value_type full_angle = full_angle_value;
+			inline static constexpr value_type half_angle = full_angle / value_type{2};
 
-			float value{ 0.f };
+			value_type value{ 0.f };
 
 			base_angle() = default;
-			base_angle(float value) : value{ value } {}
+			base_angle(value_type value) : value{ value } {}
 			
-			template <float other_full_angle>
-			base_angle(const base_angle<other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
+			template <value_type other_full_angle>
+			base_angle(const base_angle<value_type, other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
 			template <>
-			base_angle<full_angle_value>(const base_angle<full_angle_value>& src) : value{src.value} {}
+			base_angle<value_type, full_angle_value>(const base_angle<value_type, full_angle_value>& src) : value{src.value} {}
 
-			template <float other_full_angle>
-			operator base_angle<other_full_angle>() const noexcept { return { (value / full_angle) * other_full_angle }; }
+			template <value_type other_full_angle>
+			operator base_angle<value_type, other_full_angle>() const noexcept { return { (value / full_angle) * other_full_angle }; }
 
 			base_angle clamp() const noexcept
 				{
 				if constexpr (full_angle == 1.f) { return {value - std::floor(value)}; }
 				else
 					{
-					float new_value{ std::fmod(value, full_angle) };
+					value_type new_value{ std::fmod(value, full_angle) };
 					if (new_value < 0) { new_value += full_angle; }
 					return { new_value };
 					}
@@ -46,10 +47,10 @@ namespace utils::math::angle
 			base_angle& clamp_self()       noexcept { *this = this->clamped(); return *this; }
 
 			// Shouldn't be needed because...
-			//template <float other_full_angle> base_angle  operator+ (const base_angle<other_full_angle> oth) const noexcept { return {value + static_cast<base_angle<full_angle>>(oth).value}; }
-			//template <float other_full_angle> base_angle  operator- (const base_angle<other_full_angle> oth) const noexcept { return {value - static_cast<base_angle<full_angle>>(oth).value}; }
-			//template <float other_full_angle> base_angle& operator+=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this + oth; }
-			//template <float other_full_angle> base_angle& operator-=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this - oth; }
+			//template <value_type other_full_angle> base_angle  operator+ (const base_angle<other_full_angle> oth) const noexcept { return {value + static_cast<base_angle<full_angle>>(oth).value}; }
+			//template <value_type other_full_angle> base_angle  operator- (const base_angle<other_full_angle> oth) const noexcept { return {value - static_cast<base_angle<full_angle>>(oth).value}; }
+			//template <value_type other_full_angle> base_angle& operator+=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this + oth; }
+			//template <value_type other_full_angle> base_angle& operator-=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this - oth; }
 
 			// ...other should automatically cast here
 			//base_angle  operator+ (const base_angle oth) const noexcept { return { value + oth.value }; }
@@ -61,65 +62,75 @@ namespace utils::math::angle
 			//bool operator!=(const base_angle oth) const noexcept { return !(*this == oth); }
 
 			// ...except it doesn't automatically cast, so here we go...
-			template <float other_full_angle> base_angle  operator+ (const base_angle<other_full_angle> oth) const noexcept { return {value + static_cast<base_angle<full_angle>>(oth).value}; }
-			template <float other_full_angle> base_angle  operator- (const base_angle<other_full_angle> oth) const noexcept { return {value - static_cast<base_angle<full_angle>>(oth).value}; }
-			template <float other_full_angle> base_angle& operator+=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this + oth; }
-			template <float other_full_angle> base_angle& operator-=(const base_angle<other_full_angle> oth)       noexcept { return *this = *this - oth; }
+			template <value_type other_full_angle> base_angle  operator+ (const base_angle<value_type, other_full_angle> oth) const noexcept { return {value + static_cast<base_angle<value_type, full_angle>>(oth).value}; }
+			template <value_type other_full_angle> base_angle  operator- (const base_angle<value_type, other_full_angle> oth) const noexcept { return {value - static_cast<base_angle<value_type, full_angle>>(oth).value}; }
+			template <value_type other_full_angle> base_angle& operator+=(const base_angle<value_type, other_full_angle> oth)       noexcept { return *this = *this + oth; }
+			template <value_type other_full_angle> base_angle& operator-=(const base_angle<value_type, other_full_angle> oth)       noexcept { return *this = *this - oth; }
 
-			template <float other_full_angle> bool operator==(const base_angle<other_full_angle> oth) const noexcept { return clamp().value == static_cast<base_angle<full_angle>>(oth).clamp().value; }
-			template <float other_full_angle> bool operator!=(const base_angle<other_full_angle> oth) const noexcept { return !(*this == oth); }
+			template <value_type other_full_angle> bool operator==(const base_angle<value_type, other_full_angle> oth) const noexcept { return clamp().value == static_cast<base_angle<value_type, full_angle>>(oth).clamp().value; }
+			template <value_type other_full_angle> bool operator!=(const base_angle<value_type, other_full_angle> oth) const noexcept { return !(*this == oth); }
 
-			base_angle  operator* (float oth) const noexcept { return { value * oth }; }
-			base_angle  operator/ (float oth) const noexcept { return { value / oth }; }
-			base_angle& operator*=(float oth)       noexcept { return *this = *this * oth; }
-			base_angle& operator/=(float oth)       noexcept { return *this = *this / oth; }
+			base_angle  operator* (value_type oth) const noexcept { return { value * oth }; }
+			base_angle  operator/ (value_type oth) const noexcept { return { value / oth }; }
+			base_angle& operator*=(value_type oth)       noexcept { return *this = *this * oth; }
+			base_angle& operator/=(value_type oth)       noexcept { return *this = *this / oth; }
 
 			base_angle  operator-()const noexcept { return base_angle{ value + half_angle }.clamp(); }
 
-			float normalize_in_range(base_angle min, base_angle max) const noexcept
+			value_type normalize_in_range(base_angle min, base_angle max) const noexcept
 				{
 				min.clamp();
 				max.clamp();
-				float next_max{ min.value <= max.value ? max.value : max.value + full_angle };
-				float min_to_this{ (min.value <= value ? value : value + full_angle) - min.value };
-				float min_to_max{ next_max - min.value };
+				value_type next_max{ min.value <= max.value ? max.value : max.value + full_angle };
+				value_type min_to_this{ (min.value <= value ? value : value + full_angle) - min.value };
+				value_type min_to_max{ next_max - min.value };
 				if (min_to_this < min_to_max) { return min_to_this / min_to_max; }
 
 				base_angle halfway{ (next_max + min.value) * .5f };
 				base_angle opposite{ -halfway };
-				float next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
+				value_type next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
 				if (next_opposite < next_max) { next_opposite += full_angle; }
 
-				float min_to_opposite{ next_opposite - min.value };
+				value_type min_to_opposite{ next_opposite - min.value };
 				return min_to_this < min_to_opposite ? min_to_this / min_to_max : (min_to_this - full_angle) / min_to_max;
 				}
 
 	#pragma region Trigonometry
-			constexpr float sin() const noexcept { return std::sin(rad_value()); }
-			constexpr float cos() const noexcept { return std::cos(rad_value()); }
-			constexpr float tan() const noexcept { return std::tan(rad_value()); }
-			inline static constexpr base_angle asin (float n)          noexcept { return { base_angle<2.f * constants::PIf>{std::asin(n)} }; }
-			inline static constexpr base_angle acos (float n)          noexcept { return { base_angle<2.f * constants::PIf>{std::acos(n)} }; }
-			inline static constexpr base_angle atan (float n)          noexcept { return { base_angle<2.f * constants::PIf>{std::atan(n)} }; }
-			inline static constexpr base_angle atan2(float a, float b) noexcept { return { base_angle<2.f * constants::PIf>{std::atan2(a, b)} }; }
+			constexpr value_type sin() const noexcept { return std::sin(rad_value()); }
+			constexpr value_type cos() const noexcept { return std::cos(rad_value()); }
+			constexpr value_type tan() const noexcept { return std::tan(rad_value()); }
+			inline static constexpr base_angle asin (value_type n)               noexcept { return { base_angle<value_type, value_type{2} * constants::PIf>{std::asin(n)} }; }
+			inline static constexpr base_angle acos (value_type n)               noexcept { return { base_angle<value_type, value_type{2} * constants::PIf>{std::acos(n)} }; }
+			inline static constexpr base_angle atan (value_type n)               noexcept { return { base_angle<value_type, value_type{2} * constants::PIf>{std::atan(n)} }; }
+			inline static constexpr base_angle atan2(value_type a, value_type b) noexcept { return { base_angle<value_type, value_type{2} * constants::PIf>{std::atan2(a, b)} }; }
 	#pragma endregion Trigonometry
 
 		private:
-			constexpr float rad_value() const noexcept { return static_cast<base_angle<2.f * constants::PIf>>(*this).value; }
+			constexpr value_type rad_value() const noexcept { return static_cast<base_angle<value_type, 2.f * constants::PIf>>(*this).value; }
 		};
 
-	using deg = base_angle<360.f>;
-	using rad = base_angle<2.f * constants::PIf>;
+	namespace concepts
+		{
+		template <typename T>
+		concept is_angle = std::same_as<T, base_angle<typename T::value_type, T::full_angle>>;
+		}
+
+	using degf = base_angle<float , 360.f>;
+	using radf = base_angle<float , 2.f * constants::PIf>;
+	using degd = base_angle<double, 360. >;
+	using radd = base_angle<double, 2.  * constants::PId>;
+	using deg = degf;
+	using rad = radf;
 
 	namespace trigonometry
 		{
-		inline float sin(const rad a) noexcept { return a.sin(); }
-		inline float cos(const rad a) noexcept { return a.cos(); }
-		inline float tan(const rad a) noexcept { return a.tan(); }
-		inline rad   asin (float n)          noexcept { return rad::asin (n); }
-		inline rad   acos (float n)          noexcept { return rad::acos (n); }
-		inline rad   atan (float n)          noexcept { return rad::atan (n); }
-		inline rad   atan2(float a, float b) noexcept { return rad::atan2(a, b); }
+		template <concepts::is_angle       T> inline float  sin  (const T& a      ) noexcept { return a.sin        (    ); }
+		template <concepts::is_angle       T> inline float  cos  (const T& a      ) noexcept { return a.cos        (    ); }
+		template <concepts::is_angle       T> inline float  tan  (const T& a      ) noexcept { return a.tan        (    ); }
+		template <std     ::floating_point T> inline base_angle<T, 2.f * constants::PIf> asin (float n         ) noexcept { return rad<T>::asin (n   ); }
+		template <std     ::floating_point T> inline base_angle<T, 2.f * constants::PIf> acos (float n         ) noexcept { return rad<T>::acos (n   ); }
+		template <std     ::floating_point T> inline base_angle<T, 2.f * constants::PIf> atan (float n         ) noexcept { return rad<T>::atan (n   ); }
+		template <std     ::floating_point T> inline base_angle<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return rad<T>::atan2(a, b); }
 		}
 
 	namespace literals
@@ -135,35 +146,38 @@ namespace utils::math::angle
 
 namespace utils
 	{
-	template <float full_angle_value = 1.f>
-	inline math::angle::base_angle<full_angle_value> lerp(math::angle::base_angle<full_angle_value> a, math::angle::base_angle<full_angle_value> b, float t)
+	//template <float full_angle_value = 1.f>
+	//inline math::angle::base_angle<full_angle_value> lerp(math::angle::base_angle<full_angle_value> a, math::angle::base_angle<full_angle_value> b, float t)
+	//	{
+	//	return { utils::lerp(a.value, b.value, t) };
+	//	}
+	template <utils::math::angle::concepts::is_angle angle_t, utils::math::angle::concepts::is_angle min_t, utils::math::angle::concepts::is_angle max_t>
+	inline angle_t clamp(angle_t in, min_t min_in, max_t max_in)
 		{
-		return { utils::lerp(a.value, b.value, t) };
-		}
-	template <float full_angle_value = 1.f>
-	inline math::angle::base_angle<full_angle_value> clamp(math::angle::base_angle<full_angle_value> in, math::angle::base_angle<full_angle_value> min, math::angle::base_angle<full_angle_value> max)
-		{
-		min = min.clamp();
-		max = max.clamp();
-		float next_max    {min.value <= max.value ? max.value : max.value + full_angle_value};
-		float min_to_this{(min.value <= in .value ? in .value : in .value + full_angle_value) - min.value};
-		float min_to_max{next_max - min.value};
+		const angle_t min{min_in.clamp()};
+		const angle_t max{max_in.clamp()};
+
+		using value_type = angle_t::value_type;
+
+		value_type next_max   { min.value <= max.value ? max.value : max.value + angle_t::full_angle             };
+		value_type min_to_this{(min.value <= in .value ? in.value  : in .value + angle_t::full_angle) - min.value};
+		value_type min_to_max {next_max - min.value};
 		if (min_to_this < min_to_max) { return in; }
 
-		math::angle::base_angle<full_angle_value> halfway{(next_max + min.value) * .5f};
-		math::angle::base_angle<full_angle_value> opposite{-halfway};
-		float next_opposite{next_max < opposite.value ? opposite.value : opposite.value + full_angle_value};
-		if (next_opposite < next_max) { next_opposite += full_angle_value; }
+		angle_t halfway{(next_max + min.value) * value_type{.5}};
+		angle_t opposite{-halfway};
+		value_type next_opposite{next_max < opposite.value ? opposite.value : opposite.value + angle_t::full_angle};
+		if (next_opposite < next_max) { next_opposite += angle_t::full_angle; }
 
-		float min_to_opposite{next_opposite - min.value};
+		value_type min_to_opposite{next_opposite - min.value};
 		return min_to_this < min_to_opposite ? max : min;
 		}
 	}
 
 namespace utils::cout
 	{
-	template <float full_angle>
-	inline std::ostream& operator<<(std::ostream& os, const math::angle::base_angle<full_angle>& angle)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << static_cast<math::angle::deg>(angle).value << ccu::type << "°"; }
+	template <utils::math::angle::concepts::is_angle angle_t>
+	inline std::ostream& operator<<(std::ostream& os, const angle_t& angle)   noexcept { namespace ccu = utils::cout::support; return os << ccu::value << static_cast<math::angle::deg>(angle).value << ccu::type << "°"; }
 	}
 
 // Older

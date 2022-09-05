@@ -41,15 +41,15 @@ namespace utils::math
 				//vec2(vec2<other_t> other)           noexcept : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {} //TODO test
 				//vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
 
-				template <float full_angle_value = 360.f>
-				math::angle::base_angle<full_angle_value> angle() const noexcept { const leaf_t& self = static_cast<const leaf_t&>(*this); return math::angle::base_angle<full_angle_value>::atan2(self.y, self.x); }
+				template <typename T = float, T full_angle_value = 360.f>
+				math::angle::base_angle<T, full_angle_value> angle() const noexcept { const leaf_t& self = static_cast<const leaf_t&>(*this); return math::angle::base_angle<T, full_angle_value>::atan2(self.y, self.x); }
 				
 				// VEC & ANGLE OPERATIONS
-				template <float full_angle_value> leaf_t  operator+ (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
-				template <float full_angle_value> leaf_t  operator- (const utils::math::angle::base_angle<full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
-				template <float full_angle_value> leaf_t& operator+=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self + angle; }
-				template <float full_angle_value> leaf_t& operator-=(const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self - angle; }
-				template <float full_angle_value> leaf_t& operator= (const utils::math::angle::base_angle<full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = {angle.cos() * self.magnitude(), angle.sin() * self.magnitude()}; }
+				template <typename T, T full_angle_value> leaf_t  operator+ (const utils::math::angle::base_angle<T, full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
+				template <typename T, T full_angle_value> leaf_t  operator- (const utils::math::angle::base_angle<T, full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
+				template <typename T, T full_angle_value> leaf_t& operator+=(const utils::math::angle::base_angle<T, full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self + angle; }
+				template <typename T, T full_angle_value> leaf_t& operator-=(const utils::math::angle::base_angle<T, full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self - angle; }
+				template <typename T, T full_angle_value> leaf_t& operator= (const utils::math::angle::base_angle<T, full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = {angle.cos() * self.magnitude(), angle.sin() * self.magnitude()}; }
 
 				// OTHER
 				leaf_t perpendicular_right()            const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return { self.y, -self.x}; }

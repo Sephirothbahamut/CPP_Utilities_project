@@ -70,6 +70,7 @@ namespace utils::math
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 				}
 
+#pragma region factories
 			static vec<T, 2> zero()     noexcept requires(size >= 1) { return {}; }
 
 			static vec<T, 2> rr()       noexcept requires(size >= 1) { return {T{ 1}, T{ 0}}; }
@@ -86,28 +87,31 @@ namespace utils::math
 			static vec<T, 2> forward()  noexcept requires(size >= 3) { return fw(); }
 			static vec<T, 2> backward() noexcept requires(size >= 3) { return bw(); }
 
-			      T& get_x(              )       noexcept requires(size >= 1) { return this->_data[0]; }
-			const T& get_x(              ) const noexcept requires(size >= 1) { return this->_data[0]; }
-			      T& set_x(const T& value)       noexcept requires(size >= 1) { return this->_data[0] = value; }
+#pragma region factories
+#pragma region fields
+			      T& get_x(              )       noexcept requires(size >= 1) { return (*this)[0]; }
+			const T& get_x(              ) const noexcept requires(size >= 1) { return (*this)[0]; }
+			      T& set_x(const T& value)       noexcept requires(size >= 1) { return (*this)[0] = value; }
 				  
 			__declspec(property(get = get_x, put = set_x)) T x;
 
-			      T& get_y(              )       noexcept requires(size >= 2) { return this->_data[1]; }
-			const T& get_y(              ) const noexcept requires(size >= 2) { return this->_data[1]; }
-			      T& set_y(const T& value)       noexcept requires(size >= 2) { return this->_data[1] = value; }
+			      T& get_y(              )       noexcept requires(size >= 2) { return (*this)[1]; }
+			const T& get_y(              ) const noexcept requires(size >= 2) { return (*this)[1]; }
+			      T& set_y(const T& value)       noexcept requires(size >= 2) { return (*this)[1] = value; }
 
 			__declspec(property(get = get_y, put = set_y)) T y;
 
-			      T& get_z(              )       noexcept requires(size >= 3) { return this->_data[2]; }
-			const T& get_z(              ) const noexcept requires(size >= 3) { return this->_data[2]; }
-			      T& set_z(const T& value)       noexcept requires(size >= 3) { return this->_data[2] = value; }
+			      T& get_z(              )       noexcept requires(size >= 3) { return (*this)[2]; }
+			const T& get_z(              ) const noexcept requires(size >= 3) { return (*this)[2]; }
+			      T& set_z(const T& value)       noexcept requires(size >= 3) { return (*this)[2] = value; }
 
 			__declspec(property(get = get_z, put = set_z)) T z;
 
-			      T& get_w(              )       noexcept requires(size >= 4) { return this->_data[3]; }
-			const T& get_w(              ) const noexcept requires(size >= 4) { return this->_data[3]; }
-			      T& set_w(const T& value)       noexcept requires(size >= 4) { return this->_data[3] = value; }
+			      T& get_w(              )       noexcept requires(size >= 4) { return (*this)[3]; }
+			const T& get_w(              ) const noexcept requires(size >= 4) { return (*this)[3]; }
+			      T& set_w(const T& value)       noexcept requires(size >= 4) { return (*this)[3] = value; }
 
 			__declspec(property(get = get_w, put = set_w)) T w;
+#pragma endregion fields
 		};
 	}

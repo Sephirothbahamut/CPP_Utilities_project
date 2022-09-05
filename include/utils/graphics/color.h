@@ -9,35 +9,182 @@
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 
-namespace utils::beta::graphics
+namespace utils::beta::graphics::colors
 	{
-	template <typename T, size_t size, typename leaf_t>
-	class color : public utils::vec <T, size, leaf_t>
+	enum base
 		{
-		using utils::vec<T, size, leaf_t>::vec;
+		black , white, 
+		red   , green, blue   , 
+		yellow, cyan , magenta, 
 		};
 
-	template <typename T>
-	class rgb : public color<T, 3, rgb<T>>
+	template <typename            T, size_t size, T MAX_VALUE>
+		requires(size >= 1 && size <= 4)
+	class rgb;
+
+	template <std::floating_point T, bool has_alpha, T MAX_VALUE, T max_angle_value>
+	struct hsv;
+
+	template <typename T, size_t size, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max())>
+		requires(size >= 1 && size <= 4)
+	class rgb : public utils::vec<T, size>
 		{
-		using color<T, 3, rgb<T>>::color;
+		inline static constexpr T max_value = MAX_VALUE;
+
+		using utils::vec<T, size>::vec;
+		rgb(base base, T components_multiplier = max_value, T alpha = max_value)
+			{
+			if constexpr (size >= 1) { r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta); }
+			if constexpr (size >= 2) { r = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan   ); }
+			if constexpr (size >= 3) { r = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan   ); }
+			if constexpr (size >= 4) { a = alpha; }
+			}
+
+#pragma region fields
+		      T& get_r(              )       noexcept requires(size >= 1) { return (*this)[0]; }
+		const T& get_r(              ) const noexcept requires(size >= 1) { return (*this)[0]; }
+		      T& set_r(const T& value)       noexcept requires(size >= 1) { return (*this)[0] = value; }
+
+		__declspec(property(get = get_r, put = set_r)) T r;
+
+		      T& get_g(              )       noexcept requires(size >= 2) { return (*this)[1]; }
+		const T& get_g(              ) const noexcept requires(size >= 2) { return (*this)[1]; }
+		      T& set_g(const T& value)       noexcept requires(size >= 2) { return (*this)[1] = value; }
+
+		__declspec(property(get = get_g, put = set_g)) T g;
+
+		      T& get_b(              )       noexcept requires(size >= 3) { return (*this)[2]; }
+		const T& get_b(              ) const noexcept requires(size >= 3) { return (*this)[2]; }
+		      T& set_b(const T& value)       noexcept requires(size >= 3) { return (*this)[2] = value; }
+
+		__declspec(property(get = get_b, put = set_b)) T b;
+
+		      T& get_a(              )       noexcept requires(size >= 4) { return (*this)[3]; }
+		const T& get_a(              ) const noexcept requires(size >= 4) { return (*this)[3]; }
+		      T& set_a(const T& value)       noexcept requires(size >= 4) { return (*this)[3] = value; }
+
+		__declspec(property(get = get_a, put = set_a)) T a;
+#pragma endregion fields
+
+		hsv<T, (size >= 4), MAX_VALUE, MAX_VALUE> hsv() const noexcept requires(size >= 3);
 		};
-	template <typename T>
-	class rgba : public color<T, 4, rgba<T>>
+
+	template <std::floating_point T, bool has_alpha, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max()), T max_angle_value = MAX_VALUE>
+	struct hsv
 		{
-		using color<T, 4, rgba<T>>::color;
+		inline static constexpr T max_value = MAX_VALUE;
+
+		hsv() = default;
+		hsv(T h, T s, T v, T a) requires( has_alpha) : h{h}, sva_data{s, v, a} {}
+		hsv(T h, T s, T v     ) requires(!has_alpha) : h{h}, sva_data{s, v   } {}
+
+		hsv(base base, T components_multiplier = max_value, T alpha = max_value)
+			{
+			utils::math::angle::deg angle;
+			using namespace utils::math::angle::literals;
+			switch (base)
+				{
+				case base::black  : angle =   0_deg; break;
+				case base::white  : angle =   0_deg; break;
+				case base::red    : angle =   0_deg; break;
+				case base::green  : angle = 120_deg; break;
+				case base::blue   : angle = 240_deg; break;
+				case base::yellow : angle =  60_deg; break;
+				case base::cyan   : angle = 180_deg; break;
+				case base::magenta: angle = 300_deg; break;
+				}
+			h = components_multiplier * (base == base::white || base == base::red || base == base::yellow || base == base::magenta); 
+
+			s = max_value; //TODO calc
+			v = max_value; //TODO calc
+			if constexpr (has_alpha) { a = alpha; }
+			}
+
+#pragma region fields
+		utils::math::angle::base_angle<T, max_angle_value> h;
+		std::array<T, (has_alpha ? 3 : 2)> sva_data;
+		
+		      T& get_s(              )       noexcept { return sva_data[1]; }
+		const T& get_s(              ) const noexcept { return sva_data[1]; }
+		      T& set_s(const T& value)       noexcept { return sva_data[1] = value; }
+
+		__declspec(property(get = get_s, put = set_s)) T s;
+
+		      T& get_v(              )       noexcept { return sva_data[2]; }
+		const T& get_v(              ) const noexcept { return sva_data[2]; }
+		      T& set_v(const T& value)       noexcept { return sva_data[2] = value; }
+
+		__declspec(property(get = get_v, put = set_v)) T v;
+
+		      T& get_a(              )       noexcept requires(has_alpha) { return sva_data[3]; }
+		const T& get_a(              ) const noexcept requires(has_alpha) { return sva_data[3]; }
+		      T& set_a(const T& value)       noexcept requires(has_alpha) { return sva_data[3] = value; }
+
+		__declspec(property(get = get_a, put = set_a)) T a;
+
+		__declspec(property(get = get_h, put = set_h)) T h_angle;
+#pragma endregion fields
+
+		rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> rgb() const noexcept;
 		};
-	template <typename T>
-	class hsv : public color<T, 3, hsv<T>>
+
+	//TODO test
+	template <typename T, size_t size, T MAX_VALUE> requires(size >= 1 && size <= 4)
+	hsv<T, (size >= 4), MAX_VALUE, MAX_VALUE> rgb<T, size, MAX_VALUE>::hsv() const noexcept requires(size >= 3)
 		{
-		using color<T, 3, hsv<T>>::color;
-		};
-	template <typename T>
-	class hsva : public color<T, 4, hsva<T>>
+		float f_r{this->r / MAX_VALUE};
+		float f_g{this->g / MAX_VALUE};
+		float f_b{this->b / MAX_VALUE};
+		float max = std::max(std::max(f_r, f_g), f_b), min = std::min(std::min(f_r, f_g), f_b);
+		float f_h, f_s, f_v = max;
+
+		float d = max - min;
+		f_s = max == 0 ? 0 : d / max;
+
+		if (max == min)
+			{
+			f_h = 0; // achromatic
+			}
+		else
+			{
+			/**/   if (max == f_r) { f_h = (f_g - f_b) / d + (f_g < f_b ? 6.f : 0.f); }
+			else   if (max == f_g) { f_h = (f_b - f_r) / d + 2.f; }
+			else /*if (max == b)*/ { f_h = (f_r - f_g) / d + 4.f; }
+			f_h /= 6.f;
+			}
+
+		if constexpr (size == 3) { return {f_h, f_s, f_v}; }
+		if constexpr (size >= 4) { return {f_h, f_s, f_v, a}; }
+		}
+
+	//TODO test
+	template <std::floating_point T, bool has_alpha, T MAX_VALUE, T max_angle_value>
+	rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> hsv<T, has_alpha, MAX_VALUE, max_angle_value>::rgb() const noexcept
 		{
-		using color<T, 4, hsva<T>>::color;
-		};
-	//...
+		float h{this->h.value / 360.f};
+		float r, g, b;
+
+		unsigned i = static_cast<unsigned>(h * 6.f);
+		float f = h * 6.f - i;
+		float p = v * (1.f - s);
+		float q = v * (1.f - f * s);
+		float t = v * (1.f - (1.f - f) * s);
+
+		switch (i % 6)
+			{
+			case 0: r = v, g = t, b = p; break;
+			case 1: r = q, g = v, b = p; break;
+			case 2: r = p, g = v, b = t; break;
+			case 3: r = p, g = q, b = v; break;
+			case 4: r = t, g = p, b = v; break;
+			case 5: r = v, g = p, b = q; break;
+			default: //Actually unreachable, but the compiler doesn't realize that 0 <= i < 6, so it thinks r, g and b aren't always initialized
+				r = 0, g = 0, b = 0;
+			}
+
+		if constexpr (!has_alpha) { return {r, g, b}; }
+		if constexpr ( has_alpha) { return {r, g, b, a}; }
+		}
 	};
 
 

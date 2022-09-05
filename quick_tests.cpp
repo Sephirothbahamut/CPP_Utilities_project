@@ -7,8 +7,8 @@
 #include "include/utils/graphics/color.h"
 
 #include "include/utils/containers/buffer.h"
-//#include "include/utils/math/vec.h"
-//#include "include/utils/math/vec2.h"
+#include "include/utils/math/vec.h"
+#include "include/utils/math/vec2.h"
 //#include "include/utils/math/Transform2.h"
 //#include "include/utils/math/geometry/segment.h"
 //#include "include/utils/math/geometry/polygon.h"
@@ -21,7 +21,6 @@
 #include "include/utils/cout_utilities.h"
 #include "include/utils/cout_containers.h"
 
-#include "vectest.h"
 template <std::forward_iterator T>
 void f(T t) {};
 
@@ -32,7 +31,7 @@ int main()
 	utm::vec<float, 2> a{1.f,1.f};
 	utm::vec<float, 2> b{};
 	utm::angle::deg alpha{10}; 
-	utils::beta::graphics::rgba<float> ca, cb;
+	utils::beta::graphics::colors::rgb<float, 4> ca, cb;
 	ca + cb;
 
 	std::cout << ((a + b) + alpha) << std::endl;
