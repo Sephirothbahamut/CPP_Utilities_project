@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../cout_utilities.h"
-#include "../custom_operators.h"
 #include "angle.h"
 
 #include "vec2.h"
@@ -58,8 +57,8 @@ namespace utils
 	inline math::transform2 lerp(math::transform2 a, math::transform2 b, float t) noexcept
 	{
 		return {	utils::lerp(a.translation, b.translation, t),
-					utils::lerp(a.rotation, b.rotation, t),
-					utils::lerp(a.scaling, b.scaling, t) };
+					utils::lerp(a.rotation   , b.rotation   , t),
+					utils::lerp(a.scaling    , b.scaling    , t) };
 	}
 }
 
@@ -69,10 +68,15 @@ namespace utils::cout
 	inline std::ostream& operator<<(std::ostream& os, const utils::math::transform2& transform) noexcept
 		{
 		namespace ccu = cout::support;
-		return os << ccu::type << "Transform" << ccu::brace << "("
-			<< ccu::type << "translation: " << ccu::value << transform.translation << ccu::separ << ", "
-			<< ccu::type << "rotation: " << ccu::value << transform.rotation << ccu::separ << ", "
-			<< ccu::type << "scaling: " << ccu::value << transform.scaling << ccu::brace << ")";
+		return os 
+			<< ccu::type  << "Transform"     
+			<< ccu::brace << "("
+			<< ccu::type  << "translation: " << ccu::value << transform.translation 
+			<< ccu::separ << ", "
+			<< ccu::type  << "rotation: "    << ccu::value << transform.rotation    
+			<< ccu::separ << ", "
+			<< ccu::type  << "scaling: "     << ccu::value << transform.scaling     
+			<< ccu::brace << ")";
 		}
 	}
 #endif

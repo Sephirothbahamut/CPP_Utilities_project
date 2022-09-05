@@ -66,7 +66,7 @@ namespace utils::math::geometry
 				// We find projection of point p onto the line. 
 				// It falls where t = [(p-a) . (b-a)] / |b-a|^2
 				// We clamp t from [0,1] to handle points outside the segment vw.
-				const float t = std::max(0.f, std::min(1.f, vec2f::dot(point - a, b - a) / l2));
+				const float t = std::max(0.f, std::min(1.f, ((point - a) <utils::operators::dot> (b - a)) / l2));
 				const vec2f projection = a + (b - a) * t;  // Projection falls on the segment
 				return vec2f::distance(point, projection);
 				}

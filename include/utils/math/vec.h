@@ -31,7 +31,7 @@ namespace utils::math
 
 	template <typename T, size_t size>
 	class vec : 
-		public utils::vec<T, size, vec<T, size>>,
+		public utils::vec<T, size>,
 		public details::vec_impl<vec<T, size>, T, size>
 		{
 			template<class derived_self_t, class T, size_t size>
@@ -39,9 +39,9 @@ namespace utils::math
 
 		public:
 			using details::vec_impl<vec<T, size>, T, size>::vec_impl;
-			using utils::vec<T, size, vec<T, size>>::vec;
+			using utils::vec<T, size>::vec;
 
-			T get_length2               () const noexcept { T ret{0}; for (const auto& element : utils::vec<T, size, vec<T, size>>::_data) { ret += element * element; } return ret; }
+			T get_length2               () const noexcept { T ret{0}; for (const auto& element : utils::vec<T, size>::_data) { ret += element * element; } return ret; }
 			T get_length                () const noexcept { return std::sqrt(get_length2()); }
 
 			vec<T, size>& set_length    (T value) noexcept { *this = normalize() * value; return *this; }
@@ -91,45 +91,23 @@ namespace utils::math
 			      T& set_x(const T& value)       noexcept requires(size >= 1) { return this->_data[0] = value; }
 				  
 			__declspec(property(get = get_x, put = set_x)) T x;
-			__declspec(property(get = get_x, put = set_x)) T r;
 
 			      T& get_y(              )       noexcept requires(size >= 2) { return this->_data[1]; }
 			const T& get_y(              ) const noexcept requires(size >= 2) { return this->_data[1]; }
 			      T& set_y(const T& value)       noexcept requires(size >= 2) { return this->_data[1] = value; }
 
 			__declspec(property(get = get_y, put = set_y)) T y;
-			__declspec(property(get = get_y, put = set_y)) T g;
 
 			      T& get_z(              )       noexcept requires(size >= 3) { return this->_data[2]; }
 			const T& get_z(              ) const noexcept requires(size >= 3) { return this->_data[2]; }
 			      T& set_z(const T& value)       noexcept requires(size >= 3) { return this->_data[2] = value; }
 
 			__declspec(property(get = get_z, put = set_z)) T z;
-			__declspec(property(get = get_z, put = set_z)) T b;
 
 			      T& get_w(              )       noexcept requires(size >= 4) { return this->_data[3]; }
 			const T& get_w(              ) const noexcept requires(size >= 4) { return this->_data[3]; }
 			      T& set_w(const T& value)       noexcept requires(size >= 4) { return this->_data[3] = value; }
 
 			__declspec(property(get = get_w, put = set_w)) T w;
-			__declspec(property(get = get_w, put = set_w)) T a;
-			
-
 		};
-
 	}
-
-	namespace utils
-		{
-		template <typename T, size_t size>
-		inline math::vec<T, size> lerp(const math::vec<T, size>& a, const math::vec<T, size>& b, float t) { return math::vec<T, size>::lerp(a, b, t); }
-
-		template <typename T, size_t size>
-		inline math::vec<T, size> clamp(const math::vec<T, size>& in, const math::vec<T, size>& min, const math::vec<T, size>& max) { return in.clamp(min, max); }
-
-		template <typename T, size_t size>
-		inline math::vec<T, size> min(const math::vec<T, size>& in, const math::vec<T, size>& min) { return in.min(min); }
-
-		template <typename T, size_t size>
-		inline math::vec<T, size> max(const math::vec<T, size>& in, const math::vec<T, size>& max) { return in.max(max); }
-		}

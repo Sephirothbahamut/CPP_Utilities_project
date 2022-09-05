@@ -14,20 +14,20 @@ namespace utils
 		return (a != 0 && x / a != b);
 		}
 
-	template <typename T>
-	UTILS_CUDA_EXPOSE inline T lerp        (T a, T b, float t) { return (a * (1.f - t)) + (b * t); }
+	template <typename T, typename oth_t>
+	inline T lerp(T a, oth_t b, float t) { return (a * (1.f - t)) + (b * t); }
 
 	template <typename T>
-	UTILS_CUDA_EXPOSE inline T inverse_lerp(T a, T b, float t) { return (t - a) / (b - a); }
+	inline T inverse_lerp(T a, T b, float t) { return (t - a) / (b - a); }
 
 	template <typename T>
-	UTILS_CUDA_EXPOSE inline T map(T from_min, T from_max, T to_min, T to_max, T value)
+	inline T map(T from_min, T from_max, T to_min, T to_max, T value)
 		{
 		return lerp(to_min, to_max, inverse_lerp(from_min, from_max, value));
 		}
 
 	template <typename T, char iterations = 2>
-	UTILS_CUDA_EXPOSE inline T inv_sqrt(T x)
+	inline T inv_sqrt(T x)
 		{//https://stackoverflow.com/questions/11644441/fast-inverse-square-root-on-x64/11644533
 		static_assert(std::is_floating_point<T>::value, "T must be floating point");
 		static_assert(iterations == 1 || iterations == 2, "itarations must equal 1 or 2");
@@ -46,9 +46,16 @@ namespace utils
 	//TODO understand why it doesn't compile because it tries to instantiate the template with "utils::message**" ???
 	//template <typename T>
 	//inline void swap(T& a, T& b) { std::swap(a, b); }
-	template <std::integral T>
-	UTILS_CUDA_EXPOSE inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
 
-	template <typename T>
-	UTILS_CUDA_EXPOSE inline T clamp(const T& in, const T& min, const T& max) { return std::clamp(in, min, max); }
+	template <std::integral T>
+	inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
+
+	template <typename T, typename min_t, typename max_t>
+	inline T clamp(const T& in, const min_t& min, const max_t& max) { return std::clamp(in, min, max); }
+
+	template <typename T, typename oth_t>
+	inline T min(const T& a, const oth_t& b) { return std::min(a, b); }
+
+	template <typename T, typename oth_t>
+	inline T max(const T& a, const oth_t& b) { return std::max(a, b); }
 	}
