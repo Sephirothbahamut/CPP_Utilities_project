@@ -77,8 +77,8 @@ namespace utils
 #pragma region on leaf
 
 #pragma region operators
-	template <concepts::vec vec_t> bool operator==(const vec_t& a, const vec_t& b) noexcept { for (size_t i{0}; i < vec_t::size; i++) { if (a[i] != b[i]) { return false; } }; return true; }
-	template <concepts::vec vec_t> bool operator!=(const vec_t& a, const vec_t& b) noexcept { return !(a == b); }
+	template <concepts::vec vec_t, concepts::vec_compatible<vec_t> oth_t> bool operator==(const vec_t& a, const oth_t& b) noexcept { for (size_t i{0}; i < vec_t::size; i++) { if (a[i] != b[i]) { return false; } }; return true; }
+	template <concepts::vec vec_t, concepts::vec_compatible<vec_t> oth_t> bool operator!=(const vec_t& a, const oth_t& b) noexcept { return !(a == b); }
 
 	
 	// OPERATORS

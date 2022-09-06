@@ -28,24 +28,34 @@ namespace utils::beta::graphics::colors
 
 	template <typename            T, size_t size, T MAX_VALUE>
 		requires(size >= 1 && size <= 4)
-	class rgb;
+	struct rgb;
 
 	template <std::floating_point T, bool has_alpha, T MAX_VALUE, T max_angle_value>
 	struct hsv;
 
+
 	template <typename T, size_t size, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max())>
 		requires(size >= 1 && size <= 4)
-	class rgb : public utils::vec<T, size>
+	struct rgb : utils::vec<T, size>
 		{
 		inline static constexpr T max_value = MAX_VALUE;
 
 		using utils::vec<T, size>::vec;
-		rgb(base base, T components_multiplier = max_value, T alpha = max_value)
+		rgb(base base, T components_multiplier = max_value, T alpha = max_value) requires(size >= 4) //:
+			//rgb(base, components_multiplier) //it calls itself :(
 			{
+			//TODO find out how to call the other constructor instead of replicating the same coda, thanks :)
 			if constexpr (size >= 1) { r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta); }
 			if constexpr (size >= 2) { r = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan   ); }
 			if constexpr (size >= 3) { r = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan   ); }
 			if constexpr (size >= 4) { a = alpha; }
+			}
+
+		rgb(base base, T components_multiplier = max_value)
+			{
+			if constexpr (size >= 1) { r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta); }
+			if constexpr (size >= 2) { r = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan   ); }
+			if constexpr (size >= 3) { r = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan   ); }
 			}
 
 #pragma region fields
@@ -77,7 +87,6 @@ namespace utils::beta::graphics::colors
 		hsv<T, (size >= 4), MAX_VALUE, MAX_VALUE> hsv() const noexcept requires(size >= 3);
 		};
 
-
 	template <std::floating_point T, bool has_alpha, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max()), T max_angle_value = MAX_VALUE>
 	struct hsv : std::conditional_t<has_alpha, details::alpha_field<T>, details::empty>
 		{
@@ -102,10 +111,10 @@ namespace utils::beta::graphics::colors
 				case base::cyan   : angle = 180_deg; break;
 				case base::magenta: angle = 300_deg; break;
 				}
-			h = components_multiplier * (base == base::white || base == base::red || base == base::yellow || base == base::magenta); 
+			h = {angle};
 
-			s = max_value; //TODO calc
-			v = max_value; //TODO calc
+			s = max_value; //TODO make correct calculation
+			v = max_value; //TODO make correct calculation
 			if constexpr (has_alpha) { details::alpha_field<T>::a = alpha; }
 			}
 
@@ -114,10 +123,10 @@ namespace utils::beta::graphics::colors
 		T s;
 		T v;
 
-		int  get_a(         ) const noexcept requires(has_alpha) { return details::alpha_field<T>::a        ; }
-		void set_a(int value)       noexcept requires(has_alpha) {        details::alpha_field<T>::a = value; }
+		//int  get_a(         ) const noexcept requires(has_alpha) { return details::alpha_field<T>::a        ; }
+		//void set_a(int value)       noexcept requires(has_alpha) {        details::alpha_field<T>::a = value; }
 
-		__declspec(property(get = get_a, put = set_a)) int a;
+		//__declspec(property(get = get_a, put = set_a)) int a;
 #pragma endregion fields
 
 		rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> rgb() const noexcept;
@@ -178,7 +187,7 @@ namespace utils::beta::graphics::colors
 			}
 
 		if constexpr (!has_alpha) { return {r, g, b}; }
-		if constexpr ( has_alpha) { return {r, g, b, a}; }
+		if constexpr ( has_alpha) { return {r, g, b, details::alpha_field<T>::a}; }
 		}
 	};
 
