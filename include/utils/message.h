@@ -4,7 +4,10 @@
 #include <string_view>
 #include <iomanip>
 
-#include "cout_utilities.h"
+#include "console/colour.h"
+
+//TODO output readable date-time +GMT delta instead of timestamp
+//Ideally: yyyy/mm/dd hh:mm:ss:millis
 
 namespace utils
 	{
@@ -52,16 +55,16 @@ namespace utils
 					default: return "[This error code should be impossible to get]";
 					}
 				}
-			utils::cout::color out_type_color() const noexcept
+			utils::console::colour::foreground_t out_type_color() const noexcept
 				{
 				switch (type)
 					{
-					case message::msg_t::log: return utils::cout::color::white;
-					case message::msg_t::dgn: return utils::cout::color::magenta;
-					case message::msg_t::inf: return utils::cout::color::cyan;
-					case message::msg_t::wrn: return utils::cout::color::yellow;
-					case message::msg_t::err: return utils::cout::color::red;
-					default: return utils::cout::color::red;
+					case message::msg_t::log: return utils::console::colour::foreground::white;
+					case message::msg_t::dgn: return utils::console::colour::foreground::magenta;
+					case message::msg_t::inf: return utils::console::colour::foreground::cyan;
+					case message::msg_t::wrn: return utils::console::colour::foreground::yellow;
+					case message::msg_t::err: return utils::console::colour::foreground::red;
+					default: return utils::console::colour::foreground::red;
 					}
 				}
 
@@ -88,18 +91,21 @@ namespace utils
 
 			friend std::ostream& operator<<(std::ostream& os, const message& m)
 				{
+				using namespace utils::output;
+
 				if constexpr (message_output_style == message_output_style_t::on_line)
 					{
+
 					size_t beg = 0;
 					size_t end = m.string.find_first_of('\n', beg);
 					if (end == std::string::npos) { end = m.string.length(); }
 
 					//First line
-					os << utils::cout::color::dw << std::setw(18) << m.time.time_since_epoch().count() << ' ';
+					os << utils::console::colour::foreground::dark_white << std::setw(18) << m.time.time_since_epoch().count() << ' ';
 
 					os << m.out_type_color() << m.out_type();
 
-					os << utils::cout::color::dw << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+					os << utils::console::colour::foreground::dark_white << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
 
 					//Other lines
 					while (true)
@@ -113,7 +119,7 @@ namespace utils
 							}
 
 						os << std::setw(24) << m.out_type_color() << '|';
-						os << utils::cout::color::dw << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+						os << utils::console::colour::foreground::dark_white << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
 						}
 
 					return os;
@@ -128,7 +134,7 @@ namespace utils
 					os << "_________________________________\n";
 					os << m.out_type_color() << ' ' << std::left << std::setw(12) << m.out_type_verbose() << ' ' << std::right << std::setw(18) << m.time.time_since_epoch().count() << '\n';
 					//First line
-					os << utils::cout::color::dw << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+					os << utils::console::colour::foreground::dark_white << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
 
 					//Other lines
 					while (true)

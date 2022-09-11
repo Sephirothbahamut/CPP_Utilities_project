@@ -33,8 +33,7 @@ namespace utils::beta::graphics::colors
 	template <std::floating_point T, bool has_alpha, T MAX_VALUE, T max_angle_value>
 	struct hsv;
 
-
-	template <typename T, size_t size, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max())>
+	template <typename T = float, size_t size = 3, T MAX_VALUE = (std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max())>
 		requires(size >= 1 && size <= 4)
 	struct rgb : utils::vec<T, size>
 		{
@@ -87,7 +86,7 @@ namespace utils::beta::graphics::colors
 		hsv<T, (size >= 4), MAX_VALUE, MAX_VALUE> hsv() const noexcept requires(size >= 3);
 		};
 
-	template <std::floating_point T, bool has_alpha, T MAX_VALUE = (std::floating_point<T> ? T{1.} : std::numeric_limits<T>::max()), T max_angle_value = MAX_VALUE>
+	template <std::floating_point T, bool has_alpha, T MAX_VALUE = (std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()), T max_angle_value = MAX_VALUE>
 	struct hsv : std::conditional_t<has_alpha, details::alpha_field<T>, details::empty>
 		{
 		inline static constexpr T max_value = MAX_VALUE;
@@ -122,11 +121,6 @@ namespace utils::beta::graphics::colors
 		utils::math::angle::base_angle<T, max_angle_value> h;
 		T s;
 		T v;
-
-		//int  get_a(         ) const noexcept requires(has_alpha) { return details::alpha_field<T>::a        ; }
-		//void set_a(int value)       noexcept requires(has_alpha) {        details::alpha_field<T>::a = value; }
-
-		//__declspec(property(get = get_a, put = set_a)) int a;
 #pragma endregion fields
 
 		rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> rgb() const noexcept;
@@ -189,6 +183,17 @@ namespace utils::beta::graphics::colors
 		if constexpr (!has_alpha) { return {r, g, b}; }
 		if constexpr ( has_alpha) { return {r, g, b, details::alpha_field<T>::a}; }
 		}
+
+	
+	
+	using rgb_f  = rgb<float  , 3>;
+	using rgb_d  = rgb<double , 3>;
+	using rgb_u  = rgb<uint8_t, 3>;
+	//using rgb  = rgb<float, 3>; //default 
+	using rgba_f = rgb<float  , 4>;
+	using rgba_d = rgb<double , 4>;
+	using rgba_u = rgb<uint8_t, 4>;
+	using rgba   = rgb<float  , 4>;
 	};
 
 

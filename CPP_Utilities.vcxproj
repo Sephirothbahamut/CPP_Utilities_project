@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{ac785f10-7256-4ebd-b983-cea9dfbb0207}</ProjectGuid>
+    <ProjectGuid>{06c2dc60-4110-4d28-9660-f00e841288f8}</ProjectGuid>
     <RootNamespace>CPPUtilities</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -70,26 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,7 +90,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,7 +105,6 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,9 +120,6 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,31 +129,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\utils\algorithm\containers.h" />
-    <ClInclude Include="include\utils\algorithm\join.h" />
     <ClInclude Include="include\utils\compilation\debug.h" />
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\concepts.h" />
-    <ClInclude Include="include\utils\console_io.h" />
-    <ClInclude Include="include\utils\containers\array.h" />
-    <ClInclude Include="include\utils\cuda.h" />
-    <ClInclude Include="include\utils\exception.h" />
+    <ClInclude Include="include\utils\console\io.h" />
+    <ClInclude Include="include\utils\console\colour.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
+    <ClInclude Include="include\utils\containers\flat_set.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
-    <ClInclude Include="include\utils\containers\multitype_container.h" />
-    <ClInclude Include="include\utils\containers\polymorphic_container.h" />
-    <ClInclude Include="include\utils\containers\flat_set.h" />
-    <ClInclude Include="include\utils\cout_containers.h" />
-    <ClInclude Include="include\utils\cout_utilities.h" />
-    <ClInclude Include="include\utils\custom_operators.h" />
-    <ClInclude Include="include\utils\definitions.h" />
+    <ClInclude Include="include\utils\containers\matrix_dyn.h" />
+    <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
     <ClInclude Include="include\utils\enum.h" />
-    <ClInclude Include="include\utils\extensions.h" />
-    <ClInclude Include="include\utils\function_traits.h" />
-    <ClInclude Include="include\utils\graphics\color.h" />
+    <ClInclude Include="include\utils\graphics\colour.h" />
     <ClInclude Include="include\utils\id_pool.h" />
-    <ClInclude Include="include\utils\index_range.h" />
     <ClInclude Include="include\utils\logger.h" />
     <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\average.h" />
@@ -182,34 +152,27 @@
     <ClInclude Include="include\utils\math\geometry\circle.h" />
     <ClInclude Include="include\utils\math\geometry\continuous_interactions.h" />
     <ClInclude Include="include\utils\math\geometry\continuous_point.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions.h" />
     <ClInclude Include="include\utils\math\geometry\point.h" />
     <ClInclude Include="include\utils\math\geometry\polygon.h" />
     <ClInclude Include="include\utils\math\geometry\segment.h" />
-    <ClInclude Include="include\utils\math\geometry\interactions.h" />
     <ClInclude Include="include\utils\math\geometry\shapes.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_continuous.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_discrete.h" />
     <ClInclude Include="include\utils\math\geometry\transformations.h" />
+    <ClInclude Include="include\utils\math\identity_numbers.h" />
     <ClInclude Include="include\utils\math\math.h" />
-    <ClInclude Include="include\utils\math\transform2.h" />
     <ClInclude Include="include\utils\math\vec.h" />
     <ClInclude Include="include\utils\math\vec2.h" />
     <ClInclude Include="include\utils\math\vec3.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
-    <ClInclude Include="include\utils\polymorphic_value.h" />
+    <ClInclude Include="include\utils\output\std_containers.h" />
     <ClInclude Include="include\utils\string.h" />
-    <ClInclude Include="include\utils\synchronization.h" />
-    <ClInclude Include="include\utils\timer.h" />
     <ClInclude Include="include\utils\tracking.h" />
-    <ClInclude Include="include\utils\utf.h" />
     <ClInclude Include="include\utils\variadic.h" />
     <ClInclude Include="include\utils\variant.h" />
-    <ClInclude Include="include\utils\vec.h" />
-    <ClInclude Include="include\utils\virtual.h" />
-    <ClInclude Include="include\utils\window.h" />
     <ClInclude Include="include\utils\wrapper.h" />
-    <ClInclude Include="private\SetWindowCompositionAttribute.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp" />

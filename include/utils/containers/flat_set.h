@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 
+//TODO actual flat set
+//TODO output operator
+
 namespace utils::containers
 	{
 	/// <summary>

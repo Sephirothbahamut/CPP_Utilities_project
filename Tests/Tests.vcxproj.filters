@@ -13,39 +13,22 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\containers">
+      <UniqueIdentifier>{5df40238-89c0-4bed-a76d-5869a87cec9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{1494fd28-d13b-41a2-b7db-07901725b3fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_tracking.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="containers\memberwise_operators.cpp">
+      <Filter>Source Files\containers</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="containers\memberwise_operators_array.cpp">
+      <Filter>Source Files\containers</Filter>
     </ClCompile>
-    <ClCompile Include="test_angle.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="math\vec.cpp">
+      <Filter>Source Files\math</Filter>
     </ClCompile>
-    <ClCompile Include="test_deferred.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test_id_pool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test_indices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test_multitype_container.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

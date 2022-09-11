@@ -1,6 +1,8 @@
 #pragma once
 #include <memory> //addressof
 
+//TODO alternative diamond wrapper with virtual omheritance to not pass stuff to construct the root from everywhere
+
 namespace utils
 	{
 	template <typename T>

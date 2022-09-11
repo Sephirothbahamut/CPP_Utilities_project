@@ -4,6 +4,9 @@
 #include <concepts>
 // Reference https://easings.net/
 
+//TODO write test cases
+
+
 namespace utils::math::easing
 	{
 	namespace _

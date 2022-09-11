@@ -1,0 +1,37 @@
+std includes
+utils includes
+
+namespace utils
+    namespace [domain]                 //math, containers, graphics, ...
+        (opt) namespace [subdomain...] //math::angle, math::geometry, graphics::color, ...
+        
+            (opt) class definition     //only if using aliases or ostream operator are defined
+            (opt) ostream operator
+            (opt) using aliases
+            class declaration
+            
+            //should I have these here (begin)
+            (opt) namespace concepts   //if needed by operators or to specialize math stuff
+                class concept
+                
+            (opt) namespace operators
+                standard operators     //+, *, ...       | don't require "using namespace"
+                user-defined operators //<dot>, <cross>  | require       "using namespace"
+            //should I have these here (end)
+    
+    //or should I have these here (begin)
+    (opt) namespace concepts::[domain]::[subdomain]   //if needed by operators or to specialize math stuff
+        class concept
+        
+    (opt) namespace operators::[domain]::[subdomain]
+        standard operators     //+, *, ...       | don't require "using namespace"
+        user-defined operators //<dot>, <cross>  | require       "using namespace"
+    //or should I have these here (end)
+                
+    (opt) namespace math               //if one or more operations need to be specialized
+        lerp                           //with the concept defined above instead of typename
+        min                            //with the concept defined above instead of typename
+        max                            //with the concept defined above instead of typename
+        clamp                          //with the concept defined above instead of typename
+        ...
+        

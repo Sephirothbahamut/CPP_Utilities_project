@@ -5,9 +5,11 @@
 #include "../compilation/debug.h"
 #include "../id_pool.h"
 
+//TODO see below smarter handled container
+//TODO write test cases
+
 namespace utils::containers
 	{
-	//TODO allocators pain
 	/// <summary>
 	/// Alternative to map. Emplace operations return an handle which can be used to remove elements. It's meant to be iterated a lot more than modified, so it will have better iteration performance than a map (underlying vector).
 	/// </summary>
@@ -135,6 +137,7 @@ namespace utils::containers
 
 namespace utils::beta::containers
 	{
+	//ctrl+f discord the following message "then with object_pool + unique_identifier_generator_and_recycler = handled_container"
 	//template <typename T, class Allocator = std::allocator<T>>
 	//class handled_container
 	//	{

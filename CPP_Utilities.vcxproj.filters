@@ -5,74 +5,44 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Files\containers">
-      <UniqueIdentifier>{971bbe1d-6218-433f-8e31-a35ee9a022c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\math">
-      <UniqueIdentifier>{bb64e2ba-6e4a-46e2-bf52-75dcd63c1e94}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\algorithm">
-      <UniqueIdentifier>{46d13cc9-4a98-44b4-af27-31ab5477cec6}</UniqueIdentifier>
+      <UniqueIdentifier>{14fda5b3-7e80-4148-bdc3-599502fc01fb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Files\compilation">
-      <UniqueIdentifier>{12c89e0f-43ef-4304-a8b5-4d4daa8a6723}</UniqueIdentifier>
+      <UniqueIdentifier>{e3365c61-f688-4e19-b2cc-5646264d74d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\console">
+      <UniqueIdentifier>{0f9ff369-2642-46ad-86d7-c31e1375a012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\containers">
+      <UniqueIdentifier>{fca3cf14-c1e3-424c-9697-ee8f2f85cab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\output">
+      <UniqueIdentifier>{d4632c88-329e-431a-a065-6263af4d1628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\math">
+      <UniqueIdentifier>{2b48f215-9162-4760-a577-bf15c8e1e403}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\details">
+      <UniqueIdentifier>{a4c6619d-f6a2-431b-9217-8523b8125c16}</UniqueIdentifier>
     </Filter>
     <Filter Include="Files\graphics">
-      <UniqueIdentifier>{191ce12c-9a9a-4768-a301-d4c75da0aa1a}</UniqueIdentifier>
+      <UniqueIdentifier>{b3f67c0a-6ee7-4b09-af2c-49c239bd3ff0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Files\math\geometry">
-      <UniqueIdentifier>{79610ac4-bf12-4770-b969-df21470748d7}</UniqueIdentifier>
+      <UniqueIdentifier>{b522fefe-7c38-4bd8-aa57-1c7fdf7948a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\utils\cout_containers.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\cout_utilities.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\definitions.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\logger.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\memory.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\variadic.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\constants.h">
-      <Filter>Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\math.h">
-      <Filter>Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\message.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\algorithm\containers.h">
-      <Filter>Files\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\polymorphic_value.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\tracking.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\wrapper.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\console_io.h">
+    <ClInclude Include="include\utils\concepts.h">
       <Filter>Files</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\compilation\debug.h">
@@ -81,44 +51,53 @@
     <ClInclude Include="include\utils\compilation\OS.h">
       <Filter>Files\compilation</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\timer.h">
-      <Filter>Files</Filter>
+    <ClInclude Include="include\utils\console\io.h">
+      <Filter>Files\console</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\transform2.h">
+    <ClInclude Include="include\utils\console\colour.h">
+      <Filter>Files\console</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\output\std_containers.h">
+      <Filter>Files\output</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\identity_numbers.h">
+      <Filter>Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\memberwise_operators_array.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\math.h">
+      <Filter>Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\vec.h">
       <Filter>Files\math</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\vec2.h">
       <Filter>Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\buffer.h">
-      <Filter>Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\id_pool.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\extensions.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\synchronization.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\window.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="private\SetWindowCompositionAttribute.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\matrix.h">
-      <Filter>Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\average.h">
+    <ClInclude Include="include\utils\math\vec3.h">
       <Filter>Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\algorithm\join.h">
-      <Filter>Files\algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\easings.h">
+    <ClInclude Include="include\utils\math\angle.h">
       <Filter>Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\constants.h">
+      <Filter>Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\graphics\colour.h">
+      <Filter>Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\continuous_interactions.h">
+      <Filter>Files\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\continuous_point.h">
+      <Filter>Files\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions.h">
+      <Filter>Files\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\point.h">
+      <Filter>Files\math\geometry</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\geometry\polygon.h">
       <Filter>Files\math\geometry</Filter>
@@ -126,20 +105,17 @@
     <ClInclude Include="include\utils\math\geometry\segment.h">
       <Filter>Files\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions.h">
+    <ClInclude Include="include\utils\math\geometry\shapes.h">
       <Filter>Files\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\index_range.h">
-      <Filter>Files</Filter>
+    <ClInclude Include="include\utils\math\geometry\shapes_continuous.h">
+      <Filter>Files\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\graphics\color.h">
-      <Filter>Files\graphics</Filter>
+    <ClInclude Include="include\utils\math\geometry\shapes_discrete.h">
+      <Filter>Files\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\custom_operators.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\function_traits.h">
-      <Filter>Files</Filter>
+    <ClInclude Include="include\utils\math\geometry\transformations.h">
+      <Filter>Files\math\geometry</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\geometry\aabb.h">
       <Filter>Files\math\geometry</Filter>
@@ -147,77 +123,56 @@
     <ClInclude Include="include\utils\math\geometry\circle.h">
       <Filter>Files\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\transformations.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multitype_container.h">
-      <Filter>Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\polymorphic_container.h">
-      <Filter>Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\variant.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\concepts.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\continuous_point.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\continuous_interactions.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\point.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\angle.h">
+    <ClInclude Include="include\utils\math\average.h">
       <Filter>Files\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes_discrete.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes_continuous.h">
-      <Filter>Files\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\string.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\handled_container.h">
-      <Filter>Files\containers</Filter>
+    <ClInclude Include="include\utils\math\easings.h">
+      <Filter>Files\math</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\enum.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\memory.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\message.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\logger.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\id_pool.h">
       <Filter>Files</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\containers\flat_set.h">
       <Filter>Files\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\virtual.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\exception.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\utf.h">
-      <Filter>Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\vec3.h">
-      <Filter>Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\vec.h">
-      <Filter>Files\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\array.h">
+    <ClInclude Include="include\utils\containers\handled_container.h">
       <Filter>Files\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\vec.h">
+    <ClInclude Include="include\utils\containers\buffer.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\string.h">
       <Filter>Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\cuda.h">
+    <ClInclude Include="include\utils\tracking.h">
       <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\wrapper.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\variadic.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\variant.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\matrix.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\matrix_dyn.h">
+      <Filter>Files\containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

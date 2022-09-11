@@ -2,6 +2,8 @@
 
 #include <variant>
 
+//TODO evaluate if worth keeping
+
 namespace utils
 	{
 	// https://stackoverflow.com/questions/63482070/how-can-i-code-something-like-a-switch-for-stdvariant

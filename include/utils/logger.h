@@ -7,6 +7,8 @@
 
 #include "message.h"
 
+//TODO check multithreading with calm
+
 namespace utils
 	{
 	//TODO check codereview stackexchange and apply changes

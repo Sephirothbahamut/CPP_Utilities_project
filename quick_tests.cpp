@@ -1,61 +1,70 @@
+﻿#include <iostream>
+#include "include/utils/console/colour.h"
 
-#include <iostream>
-#include <string>
-#include <stdexcept>
-#include <vector>
-#include <array>
-#include "include/utils/graphics/color.h"
-
-#include "include/utils/containers/buffer.h"
+#include "include/utils/containers/memberwise_operators_array.h"
 #include "include/utils/math/vec.h"
-#include "include/utils/math/vec2.h"
-//#include "include/utils/math/Transform2.h"
-//#include "include/utils/math/geometry/segment.h"
-//#include "include/utils/math/geometry/polygon.h"
-//#include "include/utils/math/geometry/transformations.h"
+#include "include/utils/output/std_containers.h"
+#include "include/utils/math/angle.h"
+#include "include/utils/graphics/colour.h"
 
-#include "include/utils/index_range.h"
+#include "include/utils/containers/matrix.h"
+#include "include/utils/logger.h"
 
-#include "include/utils/containers/handled_container.h"
-
-#include "include/utils/cout_utilities.h"
-#include "include/utils/cout_containers.h"
-
-template <std::forward_iterator T>
-void f(T t) {};
-
-int main() 
+int main()
 	{
-	using namespace utils::cout;
-	namespace utm = utils::math;
-	utm::vec<float, 2> a{1.f,1.f};
-	utm::vec<float, 2> b{};
-	utm::angle::deg alpha{10};
-	utils::beta::graphics::colors::rgb<float, 4> ca, cb;
-	utils::beta::graphics::colors::hsv<float, true> cc{1, 2, 3}, cd{1, 2, 3, 4};
-	ca + cb;
+	using namespace utils::output;
+	std::cout 
+		<< utils::console::colour::foreground::blue       
+		<< utils::console::colour::background::dark_white 
+		<< "Hello" 
+		<< utils::console::colour::background::white
+		<< " "
+		<< utils::console::colour::foreground::white
+		<< utils::console::colour::background::yellow
+		<< "world"
+		<< utils::console::colour::foreground::white
+		<< utils::console::colour::background::green
+		<< "!"
+		<< utils::console::color::restore_defaults;
 
-	std::cout << ((a + b) + alpha) << std::endl;
-	-a;
-	a.angle();
+	utils::math::vec<float, 4> a{5.f, 5.f, 5.f, 5.f};
+	utils::math::vec<float, 3> b{0.f, 1.f, 2.f};
 
-	//utils::containers::handled_container<std::string> container;
-	//
-	//auto handle_a{container.emplace("hello")};
-	//auto handle_b{container.emplace(" ")};
-	//auto handle_c{container.emplace("world")};
-	//
-	//for (const auto& element : container) { std::cout << element; } std::cout << std::endl;
-	//
-	//container.remove(handle_b);
-	//
-	//for (const auto& element : container) { std::cout << element; } std::cout << std::endl;
-	//
-	//handle_b = container.emplace("!");
-	//
-	//for (const auto& element : container) { std::cout << element; } std::cout << std::endl;
-	//
-	//container.remove(handle_c);
-	//
-	//for (const auto& element : container) { std::cout << element; } std::cout << std::endl;
+	a + 3.f;
+	b + a;
+	a + b;
+	using namespace utils::output;
+	std::cout << a << "\n";
+
+	using namespace utils::math::angle::literals;
+	auto deg{90_deg};
+	auto rad{90_rad};
+	auto sensicalrad{90_radpi};
+
+	utils::math::angle::base<float, 1.f> other{.5};
+	std::cout << deg << ", " << rad << ", " << sensicalrad << ", " << other << "\n";
+
+	utils::graphics::colour::rgb_u colour_a{utils::graphics::colour::base::blue};
+	utils::graphics::colour::rgb_u colour_b{utils::graphics::colour::base::cyan   , 128, 100};
+	utils::graphics::colour::rgb_u colour_c{utils::graphics::colour::base::yellow , 200};
+	utils::graphics::colour::rgb_u colour_d{utils::graphics::colour::base::magenta, 127};
+
+	std::cout
+		<< colour_a << "\n"
+		<< colour_b << "\n"
+		<< colour_c << "\n"
+		<< colour_d << "\n";
+
+	utils::containers::mat2x2f mat2x2f{1};
+	utils::containers::mat3x3f mat3x3f;
+	utils::containers::mat4x4f mat4x4f;
+	mat2x2f += mat2x2f;
+	std::cout << mat2x2f << "\n" << mat4x4f << "\n";
+
+
+	utils::globals::logger.err("hi");
+	utils::globals::logger.wrn("how");
+	utils::globals::logger.log("are");
+	utils::globals::logger.dgn("you");
+	utils::globals::logger.inf("?");
 	}

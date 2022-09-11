@@ -9,6 +9,9 @@
 #include "../concepts.h"
 #include "../compilation/debug.h"
 
+//TODO check and write test cases
+//TODO output operator
+
 namespace utils::containers
 	{
 	class buffer

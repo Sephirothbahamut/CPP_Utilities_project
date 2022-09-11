@@ -6,6 +6,9 @@
 #include "wrapper.h"
 #include "compilation/debug.h"
 
+//TODO create dynamic pointer only once the object starts being tracked
+//TODO alternative with diamond wrapper once the todo in wrapper.h is done
+
 namespace utils
 	{
 	class trackable;

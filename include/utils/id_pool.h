@@ -8,6 +8,8 @@
 #include "memory.h"
 #include "compilation/debug.h"
 
+//TODO allocators support
+
 namespace utils
 	{
 	//template <class Allocator = std::allocator<size_t>>

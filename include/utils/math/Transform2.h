@@ -1,9 +1,12 @@
 #pragma once
 
-#include "../cout_utilities.h"
+#include "../console/colour.h"
+#include "math.h"
 #include "angle.h"
 
 #include "vec2.h"
+
+//TODO write test cases
 
 namespace utils::math
 	{
@@ -12,9 +15,7 @@ namespace utils::math
 		private:
 
 		public:
-			//transform2() = default;
-			//transform2(vec2f translation = {}, utils::math::angle::deg rotation = {}, float scaling = {1.f}) noexcept : translation(translation), rotation(rotation), scaling(scaling) {}
-			constexpr static transform2 zero() noexcept { return {{}, {}, 0.f}; }
+			static transform2 zero() noexcept { return {{}, {}, 0.f}; }
 
 			vec2f translation{};
 			utils::math::angle::rad	rotation{};
@@ -46,37 +47,41 @@ namespace utils::math
 			transform2& compose  (const transform2& oth)        noexcept { return *this += oth; }//TODO fix, adding elements is not compose :(
 			transform2  inverse()                         const noexcept { return  -(*this); }
 			transform2& invert ()                               noexcept { return --(*this); }
-
-			
 		};
 
 	}
 
-namespace utils
-{
-	inline math::transform2 lerp(math::transform2 a, math::transform2 b, float t) noexcept
+namespace utils::math
 	{
-		return {	utils::lerp(a.translation, b.translation, t),
-					utils::lerp(a.rotation   , b.rotation   , t),
-					utils::lerp(a.scaling    , b.scaling    , t) };
-	}
-}
-
-#ifdef COUT_CONTAINERS
-namespace utils::cout
-	{
-	inline std::ostream& operator<<(std::ostream& os, const utils::math::transform2& transform) noexcept
+	inline transform2 lerp(transform2 a, transform2 b, float t) noexcept
 		{
-		namespace ccu = cout::support;
-		return os 
-			<< ccu::type  << "Transform"     
-			<< ccu::brace << "("
-			<< ccu::type  << "translation: " << ccu::value << transform.translation 
-			<< ccu::separ << ", "
-			<< ccu::type  << "rotation: "    << ccu::value << transform.rotation    
-			<< ccu::separ << ", "
-			<< ccu::type  << "scaling: "     << ccu::value << transform.scaling     
-			<< ccu::brace << ")";
+		return
+			{
+			.translation{utils::math::lerp(a.translation, b.translation, t)},
+			.rotation   {utils::math::lerp(a.rotation   , b.rotation   , t)},
+			.scaling    {utils::math::lerp(a.scaling    , b.scaling    , t)}
+			};
 		}
 	}
-#endif
+namespace utils::output
+	{
+	namespace typeless
+		{
+		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::transform2& container)
+			{
+			namespace ucc = utils::console::colour;
+			return os << ucc::brace << "(" 
+				<< ucc::type << "translation: " << container.translation << ucc::separ << ", " 
+				<< ucc::type << "rotation: "    << container.rotation    << ucc::separ << ", "
+				<< ucc::type << "scaling: "     << ucc::value << container.scaling 
+				<< ucc::brace << ")";
+			}
+		}
+
+	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::transform2& container)
+		{
+		namespace ucc = utils::console::colour;
+		os << ucc::type << "transform2";
+		return utils::output::typeless::operator<<(os, container);
+		}
+	}

@@ -3,7 +3,10 @@
 
 // https://stackoverflow.com/questions/22999487/update-the-average-of-a-continuous-sequence-of-numbers-in-constant-time/53618572?noredirect=1#comment123527741_53618572
 
-namespace utils
+//TODO write test cases
+
+
+namespace utils::math
 	{
 	template <typename T>
 	class cumulative_average

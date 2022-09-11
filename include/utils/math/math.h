@@ -3,12 +3,10 @@
 #include <type_traits>
 #include <concepts>
 
-#include "../cuda.h"
-
-namespace utils
+namespace utils::math
 	{
 	template <typename T>
-	UTILS_CUDA_EXPOSE inline bool will_overflow_mult(T a, T b)
+	inline bool will_overflow_mult(T a, T b)
 		{
 		T x = a * b;
 		return (a != 0 && x / a != b);
@@ -48,14 +46,14 @@ namespace utils
 	//inline void swap(T& a, T& b) { std::swap(a, b); }
 
 	template <std::integral T>
-	inline void swap(T& a, T& b) { a ^= b ^= a ^= b; }
+	constexpr void swap(T& a, T& b) { a ^= b ^= a ^= b; }
 
-	template <typename T, typename min_t, typename max_t>
-	inline T clamp(const T& in, const min_t& min, const max_t& max) { return std::clamp(in, min, max); }
+	template <typename T>
+	constexpr T clamp(const T& in, const T& min, const T& max) { return std::clamp(in, min, max); }
 
-	template <typename T, typename oth_t>
-	inline T min(const T& a, const oth_t& b) { return std::min(a, b); }
+	template <typename ...Ts>
+	constexpr auto min(const Ts& ...values) { return std::min({values...}); }
 
-	template <typename T, typename oth_t>
-	inline T max(const T& a, const oth_t& b) { return std::max(a, b); }
+	template <typename ...Ts>
+	constexpr auto max(const Ts& ...values) { return std::max({values...}); }
 	}
