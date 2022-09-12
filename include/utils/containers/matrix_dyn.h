@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <initializer_list>
 
+#include "memberwise_operators/par.h"
 #include "matrix_memory_layout.h"
 #include "../math/vec2.h"
 #include "../console/colour.h"
@@ -43,13 +44,17 @@ namespace utils::containers
 			using coords_type = utils::math::vec<size_type, 2>;
 			inline static constexpr matrix_memory memory_layout = MEMORY_LAYOUT;
 
-			matrix_dyn(size_type width, size_type height                                 ) : _width(width), _height(height), _arr(width * height               ) {}
-			matrix_dyn(size_type width, size_type height, const value_type& default_value) : _width(width), _height(height), _arr(width * height, default_value) {}
+			matrix_dyn(size_type width, size_type height                                 ) : _sizes{width , height}, _arr(_sizes.x * _sizes.y               ) {} //TODO remove
+			matrix_dyn(size_type width, size_type height, const value_type& default_value) : _sizes{width , height}, _arr(_sizes.x * _sizes.y, default_value) {} //TODO remove
+			matrix_dyn(coords_type size                                                  ) : _sizes{size.x, size.y}, _arr(_sizes.x * _sizes.y               ) {}
+			matrix_dyn(coords_type size                 , const value_type& default_value) : _sizes{size.x, size.y}, _arr(_sizes.x * _sizes.y, default_value) {}
+			matrix_dyn(coords_type size                 , inner_container_t&& values     ) : _sizes{size.x, size.y}, _arr(std::move(values)) {}
 			
-			const size_type width () const noexcept { return _width ; }
-			const size_type height() const noexcept { return _height; }
-			const size_type size  () const noexcept { return _width * _height  ; }
-			const bool      empty () const noexcept { return !size()      ; }
+			const size_type   width () const noexcept { return _sizes.x           ; }
+			const size_type   height() const noexcept { return _sizes.y           ; }
+			const size_type   size  () const noexcept { return _sizes.x * _sizes.y; }
+			const coords_type sizes () const noexcept { return _sizes             ; }
+			const bool        empty () const noexcept { return !size()            ; }
 
 			const_pointer data    () const noexcept { return _arr.data(); }
 			      pointer data    ()       noexcept { return _arr.data(); }
@@ -59,8 +64,8 @@ namespace utils::containers
 
 			size_type get_index(size_type x, size_type y) const noexcept
 				{
-				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * _width); }
-				else { return y + (x * _height); }
+				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * _sizes.x); }
+				else { return y + (x * _sizes.y); }
 				}
 			size_type   get_x     (size_type index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % width(); } else { return index / height(); } } //TODO test
 			size_type   get_y     (size_type index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / width(); } else { return index % height(); } } //TODO test
@@ -115,10 +120,8 @@ namespace utils::containers
 			//auto cols(std::initializer_list<size_t> indices )       { return indices | std::ranges::view::transform(to_col()); }
 
 		private:
-			size_type _width;
-			size_type _height;
+			coords_type _sizes;
 			std::vector<T, allocator_type> _arr;
-
 
 			//auto to_row() { return [this](size_t i) { return data | std::ranges::view::drop(i * col_count) | std::ranges::view::take(col_count); }; };
 			//auto to_col() { return [this](size_t i) { return data | std::ranges::view::drop(i) | std::ranges::view::stride(col_count); }; };
@@ -126,45 +129,159 @@ namespace utils::containers
 
 		
 	
-#pragma region operators
-	template <concepts::matrix_dyn matrix_t> bool operator==(const matrix_t& a, const matrix_t& b) noexcept { return a._arr == b._arr; }
-	template <concepts::matrix_dyn matrix_t> bool operator!=(const matrix_t& a, const matrix_t& b) noexcept { return !(a == b); }
-
+	//#pragma region operators
+	//	template <concepts::matrix_dyn matrix_t> bool operator==(const matrix_t& a, const matrix_t& b) noexcept { return a._arr == b._arr; }
+	//	template <concepts::matrix_dyn matrix_t> bool operator!=(const matrix_t& a, const matrix_t& b) noexcept { return !(a == b); }
+	//
+	//	
+	//	// OPERATORS
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& m) noexcept { matrix_t ret{m.sizes()}; for (size_t i{0}; i < m.size(); i++) { ret[i] = -m[i]; }; return ret; }
+	//	// 
+	//	// VEC & SCALAR OPERATORS
+	//
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator++(const matrix_t& m) noexcept { return (*this) += typename matrix_t::value_type{1}; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator--(const matrix_t& m) noexcept { return (*this) -= typename matrix_t::value_type{1}; }
+	//	
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] * b; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] / b; }; return ret; }
+	//	
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a + b; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a - b; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator*=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a * b; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a / b; }
+	//
+	//	// SCALAR & VEC OPERATORS
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret{b.sizes()}; for (size_t i{0}; i < b.size(); i++) { ret[i] = a - b[i]; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret{b.sizes()}; for (size_t i{0}; i < b.size(); i++) { ret[i] = a / b[i]; }; return ret; }
+	//
+	//	// VEC & VEC OPERATORS
+	//	//TODO differently sized b operand
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b[i]; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b[i]; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] * b[i]; }; return ret; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{a.sizes()}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] / b[i]; }; return ret; }
+	//	
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const matrix_t& b) noexcept { return a = a + b; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const matrix_t& b) noexcept { return a = a - b; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator*=(      matrix_t& a, const matrix_t& b) noexcept { return a = a * b; }
+	//	template <concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const matrix_t& b) noexcept { return a = a / b; }
+	//#pragma endregion operators
+	}
 	
+namespace utils::containers::memberwise_operators::seq
+	{	
 	// OPERATORS
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& m) noexcept { matrix_t ret; for (size_t i{ 0 }; i < m.size(); i++) { ret[i] = -m[i]; }; return ret; }
-// 
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& m) noexcept { return {m.sizes(), -m.get_vector()}; }
+	// 
 	// VEC & SCALAR OPERATORS
-
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator++(const matrix_t& m) noexcept { return (*this) += typename matrix_t::value_type{1}; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator--(const matrix_t& m) noexcept { return (*this) -= typename matrix_t::value_type{1}; }
-	
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] * b; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] / b; }; return ret; }
-	
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a + b; }
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a - b; }
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator*=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a * b; }
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a / b; }
-
+		
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator++(const matrix_t& m) noexcept { return (*this) += typename matrix_t::value_type{1}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator--(const matrix_t& m) noexcept { return (*this) -= typename matrix_t::value_type{1}; }
+		
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() + b}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() - b}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() * b}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() / b}; }
+		
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() += b; return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() -= b; return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator*=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() *= b; return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() /= b; return a; }
+		
 	// SCALAR & VEC OPERATORS
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a - b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a / b[i]; }; return ret; }
-
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator- (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { return {b.sizes(), a - b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator/ (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { return {b.sizes(), a / b.get_vector()}; }
+		
 	// VEC & VEC OPERATORS
 	//TODO differently sized b operand
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] * b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] / b[i]; }; return ret; }
-	
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const matrix_t& b) noexcept { return a = a + b; }
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const matrix_t& b) noexcept { return a = a - b; }
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator*=(      matrix_t& a, const matrix_t& b) noexcept { return a = a * b; }
-	template <concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const matrix_t& b) noexcept { return a = a / b; }
-#pragma endregion operators
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator+ (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() + b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator- (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() - b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator* (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() * b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator/ (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() / b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator+=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() += b.get_vector(); return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator-=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() -= b.get_vector(); return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator*=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() *= b.get_vector(); return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator/=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() /= b.get_vector(); return a; }
+	}
+
+namespace utils::containers::memberwise_operators::par
+	{	
+	// OPERATORS
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& m) noexcept { return {m.sizes(), -m.get_vector()}; }
+	// 
+	// VEC & SCALAR OPERATORS
+		
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator++(const matrix_t& m) noexcept { return (*this) += typename matrix_t::value_type{1}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator--(const matrix_t& m) noexcept { return (*this) -= typename matrix_t::value_type{1}; }
+		
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() + b}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() - b}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() * b}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { return {a.sizes(), a.get_vector() / b}; }
+		
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() += b; return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() -= b; return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator*=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() *= b; return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { a.get_vector() /= b; return a; }
+		
+	// SCALAR & VEC OPERATORS
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator- (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { return {b.sizes(), a - b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_t> matrix_t  operator/ (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { return {b.sizes(), a / b.get_vector()}; }
+		
+	// VEC & VEC OPERATORS
+	//TODO differently sized b operand
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator+ (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() + b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator- (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() - b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator* (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() * b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t  operator/ (const matrix_a_t& a, const matrix_b_t& b) noexcept { return {a.sizes(), a.get_vector() / b.get_vector()}; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator+=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() += b.get_vector(); return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator-=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() -= b.get_vector(); return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator*=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() *= b.get_vector(); return a; }
+	template <utils::containers::concepts::matrix_dyn matrix_a_t, utils::containers::concepts::matrix_dyn matrix_b_t> matrix_a_t& operator/=(      matrix_a_t& a, const matrix_b_t& b) noexcept { a.get_vector() /= b.get_vector(); return a; }
+	}
+
+namespace utils::math
+	{
+	template <utils::containers::concepts::matrix_dyn a_t>
+	a_t abs(const a_t& v) noexcept { a_t ret{v.sizes()}; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::abs(v[i]); } return ret; }
+
+	template <utils::containers::concepts::matrix_dyn a_t>
+	inline a_t lerp(const a_t& a, const a_t& b, float t)
+		{
+		a_t ret{a.sizes()};
+		for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = utils::math::lerp(a[i], b[i], t); } //TODO decomment
+		return ret;
+		}
+
+	template <utils::containers::concepts::matrix_dyn a_t>
+	inline a_t clamp(const a_t& in, const a_t& min, const a_t& max)
+		{
+		a_t ret{in.sizes()};
+		for (size_t i = 0; i < in.size(); i++)
+			{
+			ret[i] = utils::math::clamp(in[i], min[i], max[i]);
+			}
+		return ret;
+		}
+
+	template <utils::containers::concepts::matrix_dyn a_t>
+	inline a_t clamp(const a_t& in, const typename a_t::value_type& min, const typename a_t::value_type& max)
+		{
+		a_t ret{in.sizes()};
+		for (size_t i = 0; i < in.size(); i++)
+			{
+			ret[i] = utils::math::clamp(in[i], min, max);
+			}
+		return ret;
+		}
+
+	template <utils::containers::concepts::matrix_dyn a_t, utils::containers::concepts::matrix_dyn b_t>
+	inline a_t min(const a_t& a, const b_t& b) { return utils::containers::memberwise_operators::operation(a, b, [](const a_t::value_type& a, const b_t::value_type& b) { return utils::math::min(a, b); }); }
+
+	template <utils::containers::concepts::matrix_dyn a_t, utils::containers::concepts::matrix_dyn b_t>
+	inline a_t max(const a_t& a, const b_t& b) { return utils::containers::memberwise_operators::operation(a, b, [](const a_t::value_type& a, const b_t::value_type& b) { return utils::math::max(a, b); }); }
 	}
 
 namespace utils::output

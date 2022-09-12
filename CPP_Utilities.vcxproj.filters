@@ -180,6 +180,15 @@
     <ClInclude Include="include\utils\discard.h">
       <Filter>Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\containers\matrix_memory_layout.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\memberwise_operators.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\memberwise_operators_par.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

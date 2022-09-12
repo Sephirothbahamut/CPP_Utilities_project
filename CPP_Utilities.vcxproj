@@ -139,7 +139,10 @@
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\matrix_dyn.h" />
+    <ClInclude Include="include\utils\containers\matrix_memory_layout.h" />
+    <ClInclude Include="include\utils\containers\memberwise_operators.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
+    <ClInclude Include="include\utils\containers\memberwise_operators_par.h" />
     <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />
