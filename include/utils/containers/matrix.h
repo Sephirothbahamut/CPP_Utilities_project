@@ -5,14 +5,13 @@
 #include <ranges>
 #include <initializer_list>
 
+#include "matrix_memory_layout.h"
 #include "../math/vec2.h"
 
 //TODO write test cases
 
 namespace utils::containers
 	{
-	enum matrix_memory { width_first, height_first };
-
 	template <typename T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
 	class matrix;
 	

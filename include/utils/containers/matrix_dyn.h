@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <initializer_list>
 
+#include "matrix_memory_layout.h"
 #include "../math/vec2.h"
 #include "../console/colour.h"
 
@@ -12,8 +13,6 @@
 
 namespace utils::containers
 	{
-	enum matrix_memory { width_first, height_first };
-
 	template <typename T, matrix_memory MEMORY_LAYOUT, class ALLOCATOR_TYPE>
 	class matrix_dyn;
 	
@@ -41,15 +40,15 @@ namespace utils::containers
 			using const_reverse_iterator = inner_container_t::const_reverse_iterator;
 
 			using allocator_type = ALLOCATOR_TYPE;
-			using memory_layout = MEMORY_LAYOUT;
 			using coords_type = utils::math::vec<size_type, 2>;
+			inline static constexpr matrix_memory memory_layout = MEMORY_LAYOUT;
 
 			matrix_dyn(size_type width, size_type height                                 ) : _width(width), _height(height), _arr(width * height               ) {}
 			matrix_dyn(size_type width, size_type height, const value_type& default_value) : _width(width), _height(height), _arr(width * height, default_value) {}
 			
 			const size_type width () const noexcept { return _width ; }
 			const size_type height() const noexcept { return _height; }
-			const size_type size  () const noexcept { return _size  ; }
+			const size_type size  () const noexcept { return _width * _height  ; }
 			const bool      empty () const noexcept { return !size()      ; }
 
 			const_pointer data    () const noexcept { return _arr.data(); }
@@ -60,11 +59,11 @@ namespace utils::containers
 
 			size_type get_index(size_type x, size_type y) const noexcept
 				{
-				if constexpr (MEMORY == matrix_memory::width_first) { return x + (y * _width); }
+				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * _width); }
 				else { return y + (x * _height); }
 				}
-			size_type   get_x     (size_type index) const noexcept { if constexpr (MEMORY == matrix_memory::width_first) { return index % width(); } else { return index / height(); } } //TODO test
-			size_type   get_y     (size_type index) const noexcept { if constexpr (MEMORY == matrix_memory::width_first) { return index / width(); } else { return index % height(); } } //TODO test
+			size_type   get_x     (size_type index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % width(); } else { return index / height(); } } //TODO test
+			size_type   get_y     (size_type index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / width(); } else { return index % height(); } } //TODO test
 			coords_type get_coords(size_type index) const noexcept { return {get_x(index), get_y(index)}; }
 			
 			const_reference operator[](size_type i)              const noexcept { return _arr[i                            ]; }
@@ -73,8 +72,8 @@ namespace utils::containers
 			      reference operator[](coords_type coords)             noexcept { return _arr[get_index(coords.x, coords.y)]; }
 			const_reference at        (size_type i)              const          { if (i >= size()                            ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[](i     ); }
 			      reference at        (size_type i)                             { if (i >= size()                            ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[](i     ); }
-			const_reference at        (size_type x, size_type y) const          { if (x >= static_width || y >= static_height) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-			      reference at        (size_type x, size_type y)                { if (x >= static_width || y >= static_height) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+			const_reference at        (size_type x, size_type y) const          { if (x >= width()      || y >= height()     ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+			      reference at        (size_type x, size_type y)                { if (x >= width()      || y >= height()     ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
 			const_reference at        (coords_type coords)       const          { return at(coords.x, coords.y); }
 			      reference at        (coords_type coords)                      { return at(coords.x, coords.y); }
 
@@ -102,29 +101,33 @@ namespace utils::containers
 			      auto crend  ()       noexcept { return _arr.crend  (); }
 
 			//TODO test rows and cols
-			auto rows(                                      ) const { return std::ranges::view::ints(0    , static_height) | std::ranges::view::transform(to_row()); }
-			auto rows(                                      )       { return std::ranges::view::ints(0    , static_height) | std::ranges::view::transform(to_row()); }
-			auto cols(                                      ) const { return std::ranges::view::ints(0    , static_width ) | std::ranges::view::transform(to_col()); }
-			auto cols(                                      )       { return std::ranges::view::ints(0    , static_width ) | std::ranges::view::transform(to_col()); }
-			auto rows(size_t start, size_t end              ) const { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_row()); }
-			auto rows(size_t start, size_t end              )       { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_row()); }
-			auto cols(size_t start, size_t end              ) const { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_col()); }
-			auto cols(size_t start, size_t end              )       { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_col()); }
-			auto rows(std::initializer_list<size_t> indices ) const { return indices | std::ranges::view::transform(to_row()); }
-			auto rows(std::initializer_list<size_t> indices )       { return indices | std::ranges::view::transform(to_row()); }
-			auto cols(std::initializer_list<size_t> indices ) const { return indices | std::ranges::view::transform(to_col()); }
-			auto cols(std::initializer_list<size_t> indices )       { return indices | std::ranges::view::transform(to_col()); }
+			//auto rows(                                      ) const { return std::ranges::view::ints(0    , height()     ) | std::ranges::view::transform(to_row()); }
+			//auto rows(                                      )       { return std::ranges::view::ints(0    , height()     ) | std::ranges::view::transform(to_row()); }
+			//auto cols(                                      ) const { return std::ranges::view::ints(0    , width ()     ) | std::ranges::view::transform(to_col()); }
+			//auto cols(                                      )       { return std::ranges::view::ints(0    , width ()     ) | std::ranges::view::transform(to_col()); }
+			//auto rows(size_t start, size_t end              ) const { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_row()); }
+			//auto rows(size_t start, size_t end              )       { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_row()); }
+			//auto cols(size_t start, size_t end              ) const { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_col()); }
+			//auto cols(size_t start, size_t end              )       { return std::ranges::view::ints(start, end          ) | std::ranges::view::transform(to_col()); }
+			//auto rows(std::initializer_list<size_t> indices ) const { return indices | std::ranges::view::transform(to_row()); }
+			//auto rows(std::initializer_list<size_t> indices )       { return indices | std::ranges::view::transform(to_row()); }
+			//auto cols(std::initializer_list<size_t> indices ) const { return indices | std::ranges::view::transform(to_col()); }
+			//auto cols(std::initializer_list<size_t> indices )       { return indices | std::ranges::view::transform(to_col()); }
 
 		private:
 			size_type _width;
 			size_type _height;
-			std::vector<T, Allocator> _arr;
+			std::vector<T, allocator_type> _arr;
+
+
+			//auto to_row() { return [this](size_t i) { return data | std::ranges::view::drop(i * col_count) | std::ranges::view::take(col_count); }; };
+			//auto to_col() { return [this](size_t i) { return data | std::ranges::view::drop(i) | std::ranges::view::stride(col_count); }; };
 		};
 
 		
-
+	
 #pragma region operators
-	template <concepts::matrix_dyn matrix_t> bool operator==(const matrix_t& a, const matrix_t& b) noexcept { for (size_t i{0}; i < m.size(); i++) { if (a[i] != b[i]) { return false; } }; return true; }
+	template <concepts::matrix_dyn matrix_t> bool operator==(const matrix_t& a, const matrix_t& b) noexcept { return a._arr == b._arr; }
 	template <concepts::matrix_dyn matrix_t> bool operator!=(const matrix_t& a, const matrix_t& b) noexcept { return !(a == b); }
 
 	
@@ -136,10 +139,10 @@ namespace utils::containers
 	template <concepts::matrix_dyn matrix_t> matrix_t  operator++(const matrix_t& m) noexcept { return (*this) += typename matrix_t::value_type{1}; }
 	template <concepts::matrix_dyn matrix_t> matrix_t  operator--(const matrix_t& m) noexcept { return (*this) -= typename matrix_t::value_type{1}; }
 	
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] + b; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] - b; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] * b; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] / b; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] * b; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const typename matrix_t::value_type& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] / b; }; return ret; }
 	
 	template <concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a + b; }
 	template <concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a - b; }
@@ -147,14 +150,15 @@ namespace utils::containers
 	template <concepts::matrix_dyn matrix_t> matrix_t& operator/=(      matrix_t& a, const typename matrix_t::value_type& b) noexcept { return a = a / b; }
 
 	// SCALAR & VEC OPERATORS
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret; for (size_t i{0}; i < m.size(); i++) { ret[i] = a - b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret; for (size_t i{0}; i < m.size(); i++) { ret[i] = a / b[i]; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a - b[i]; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const typename matrix_t::value_type& a, const matrix_t& b) noexcept { matrix_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a / b[i]; }; return ret; }
 
 	// VEC & VEC OPERATORS
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] + b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] - b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] * b[i]; }; return ret; }
-	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < m.size(); i++) { ret[i] = a[i] / b[i]; }; return ret; }
+	//TODO differently sized b operand
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator+ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b[i]; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator- (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b[i]; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator* (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] * b[i]; }; return ret; }
+	template <concepts::matrix_dyn matrix_t> matrix_t  operator/ (const matrix_t& a, const matrix_t& b) noexcept { matrix_t ret{}; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] / b[i]; }; return ret; }
 	
 	template <concepts::matrix_dyn matrix_t> matrix_t& operator+=(      matrix_t& a, const matrix_t& b) noexcept { return a = a + b; }
 	template <concepts::matrix_dyn matrix_t> matrix_t& operator-=(      matrix_t& a, const matrix_t& b) noexcept { return a = a - b; }

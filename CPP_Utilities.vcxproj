@@ -140,6 +140,7 @@
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\matrix_dyn.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
+    <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />
     <ClInclude Include="include\utils\id_pool.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="include\utils\math\geometry\transformations.h" />
     <ClInclude Include="include\utils\math\identity_numbers.h" />
     <ClInclude Include="include\utils\math\math.h" />
+    <ClInclude Include="include\utils\math\transform2.h" />
     <ClInclude Include="include\utils\math\vec.h" />
     <ClInclude Include="include\utils\math\vec2.h" />
     <ClInclude Include="include\utils\math\vec3.h" />
