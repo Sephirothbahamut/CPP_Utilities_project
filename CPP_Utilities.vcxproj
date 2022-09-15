@@ -141,9 +141,10 @@
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\matrix_dyn.h" />
     <ClInclude Include="include\utils\containers\matrix_memory_layout.h" />
-    <ClInclude Include="include\utils\containers\memberwise_operators.h" />
+    <ClInclude Include="include\utils\containers\memberwise_operators\concepts.h" />
+    <ClInclude Include="include\utils\containers\memberwise_operators\par.h" />
+    <ClInclude Include="include\utils\containers\memberwise_operators\seq.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
-    <ClInclude Include="include\utils\containers\memberwise_operators_par.h" />
     <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />
@@ -173,11 +174,13 @@
     <ClInclude Include="include\utils\math\vec3.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
+    <ClInclude Include="include\utils\try_opt.h" />
     <ClInclude Include="include\utils\output\std_containers.h" />
     <ClInclude Include="include\utils\string.h" />
     <ClInclude Include="include\utils\tracking.h" />
     <ClInclude Include="include\utils\variadic.h" />
     <ClInclude Include="include\utils\variant.h" />
+    <ClInclude Include="include\utils\virtual.h" />
     <ClInclude Include="include\utils\wrapper.h" />
   </ItemGroup>
   <ItemGroup>
