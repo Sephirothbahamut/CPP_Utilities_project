@@ -52,6 +52,39 @@ namespace utils::containers::memberwise_operators::seq
 		return a;
 		}
 		
+	//TODO concept lambda F should have the following signature:
+	// (const value_type&, const value_type&)->value_type
+	template <concepts::stdvecarr a_t, typename F>
+	constexpr a_t operation(const a_t& a, const typename a_t::value_type& b, F f) noexcept
+		requires std::convertible_to<decltype(f(a[0], b)), typename a_t::value_type>
+		{
+		a_t ret;
+		if constexpr (concepts::stdvec<a_t>) { ret.resize(a.size()); }
+
+		std::for_each(ret.begin(), ret.end(), [&](a_t::value_type& ret_value)
+			{
+			auto index{static_cast<size_t>(&ret_value - ret.data())};
+			ret_value = f(a[index], b);
+			});
+
+		return ret;
+		}
+
+	//TODO concept lambda F should have the following signature:
+	// (value_type&, const value_type&)->value_type&
+	template <concepts::stdvecarr a_t, typename F>
+	constexpr a_t& operation_self_assign(a_t& a, const typename a_t::value_type& b, F f) noexcept
+		requires std::convertible_to<decltype(f(a[0], b)), typename a_t::value_type>
+		{
+		std::for_each(a.begin(), a.end(), [&](a_t::value_type& a_value)
+			{
+			auto index{static_cast<size_t>(&a_value - a.data())};
+			f(a_value, b);
+			});
+
+		return a;
+		}
+		
 #pragma region operators
 	template <concepts::stdvecarr a_t> a_t  operator- (const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < v.size(); i++) { ret[i] = -v[i]; }; return ret; }
 

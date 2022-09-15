@@ -2,8 +2,8 @@
 #include "include/utils/console/colour.h"
 
 #include "include/utils/containers/memberwise_operators_array.h"
-#include "include/utils/containers/memberwise_operators.h"
-#include "include/utils/containers/memberwise_operators_par.h"
+#include "include/utils/containers/memberwise_operators/seq.h"
+#include "include/utils/containers/memberwise_operators/par.h"
 #include "include/utils/math/vec.h"
 #include "include/utils/output/std_containers.h"
 #include "include/utils/math/angle.h"
@@ -36,9 +36,9 @@ int main()
 	b + a;
 	a + b;
 
-	using namespace utils::containers::memberwise_operators;
-	std::array<float, 2> stdarr_a;
-	std::array<float, 2> stdarr_out{1.f - stdarr_a + -stdarr_a};
+	using namespace utils::containers::memberwise_operators::seq;
+	std::vector<float> stdarr_a;
+	std::vector<float> stdarr_out{1.f - stdarr_a + -stdarr_a};
 
 
 	using namespace utils::output;

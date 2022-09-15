@@ -162,6 +162,8 @@
   <ItemGroup>
     <ClCompile Include="containers\memberwise_operators.cpp" />
     <ClCompile Include="containers\memberwise_operators_array.cpp" />
+    <ClCompile Include="containers\test_multitype_container.cpp" />
+    <ClCompile Include="containers\test_polymorphic_access_container.cpp" />
     <ClCompile Include="math\vec.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

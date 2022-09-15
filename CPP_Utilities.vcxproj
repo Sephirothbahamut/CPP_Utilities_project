@@ -145,6 +145,9 @@
     <ClInclude Include="include\utils\containers\memberwise_operators\par.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators\seq.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
+    <ClInclude Include="include\utils\containers\multitype_container.h" />
+    <ClInclude Include="include\utils\containers\polymorphic_access_container.h" />
+    <ClInclude Include="include\utils\containers\polymorphic_container.h" />
     <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="include\utils\math\vec3.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
+    <ClInclude Include="include\utils\polymorphic_value.h" />
     <ClInclude Include="include\utils\try_opt.h" />
     <ClInclude Include="include\utils\output\std_containers.h" />
     <ClInclude Include="include\utils\string.h" />
