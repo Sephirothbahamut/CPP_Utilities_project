@@ -1,19 +1,17 @@
 #pragma once
-#include <vector>
 
-//TODO actual flat set
-//TODO output operator
+#include "flat_set.h"
+
 //TODO INSERTION CHECK
-namespace utils::containers
+//TODO finish this
+/*namespace utils::containers
 	{
-	/// <summary>
-	/// The purpose of this class is to offer a set that is faster at iterating, sacrificing insertion speed. Only worth using for extremely low numbers. For large but not too large numbers, a flat set will be more viable
-	/// </summary>
-	template <typename T, class Allocator = std::allocator<T>>
-	class tiny_set
+	template <typename Key, typename T, class Allocator = std::allocator<std::pair<Key, T>>>
+	class tiny_map
 		{
 		protected:
-			using inner_container_t = std::vector<T, Allocator>;
+			using inner_container_t = std::vector<std::pair<Key, T>, Allocator>;
+			using pair_t = std::pair<Key, T>;
 
 		public:
 			using value_type             = inner_container_t::value_type;
@@ -33,11 +31,11 @@ namespace utils::containers
 				return inner_container.emplace_back(std::forward<Args>(args)...);
 				}
 
-			template <typename ...Args>
-			void insert(Args& ...args)
-				{
-				inner_container.push_back(args...);
-				}
+			//template <typename ...Args>
+			//void insert(Args& ...args)
+			//	{
+			//	inner_container.push_back(args...);
+			//	}
 
 			      iterator find(const T& search)       noexcept { return std::find( begin(),  end(), search); }
 			const_iterator find(const T& search) const noexcept { return std::find(cbegin(), cend(), search); }
@@ -67,29 +65,4 @@ namespace utils::containers
 		protected:
 			inner_container_t inner_container;
 		};
-	
-
-	template <typename T, class Allocator = std::allocator<T>>
-	class flat_set : public tiny_set<T, Allocator>
-		{
-		using parent_t          = tiny_set<T, Allocator>;
-		using inner_container_t = parent_t::inner_container_t;
-
-		public:
-			using value_type             = parent_t::value_type;
-			using size_type              = parent_t::size_type;
-			using reference              = parent_t::reference;
-			using const_reference        = parent_t::const_reference;
-			using pointer                = parent_t::pointer;
-			using const_pointer          = parent_t::const_pointer;
-			using iterator               = parent_t::iterator;
-			using const_iterator         = parent_t::const_iterator;
-			using reverse_iterator       = parent_t::reverse_iterator;
-			using const_reverse_iterator = parent_t::const_reverse_iterator;
-
-			//TODO actual flat set (sorted insert, binary search, binary search to remove)
-		private:
-			inner_container_t vec;
-		};
-	
-	}
+	}*/
