@@ -6,7 +6,7 @@
 #include <concepts>
 #include "../variadic.h"
 
-namespace utils
+namespace utils::containers
 	{
 	template<template<typename> typename Container_type, typename T>
 	struct container_emplace_helper

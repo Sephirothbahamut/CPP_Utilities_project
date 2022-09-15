@@ -3,7 +3,7 @@
 #include "../polymorphic_value.h"
 #include "../variadic.h"
 
-namespace utils
+namespace utils::containers
 	{
 	//TODO ensure that all Types inherit from Base_type
 	//TODO test cases

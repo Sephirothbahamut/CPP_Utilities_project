@@ -6,9 +6,8 @@
 #include "../variadic.h"
 #include "multitype_container.h"
 
-namespace utils
+namespace utils::containers
 	{
-
 	template <template<class> class Container_type, typename ...Types>
 	class polymorphic_access_container : public multitype_container <Container_type, Types...>
 		{

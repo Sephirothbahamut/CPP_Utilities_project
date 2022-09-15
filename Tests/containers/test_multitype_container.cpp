@@ -30,7 +30,7 @@ namespace Tests
 
 			TEST_METHOD(emplacement_vector)
 				{
-				utils::multitype_container<std::vector, int, pippo, pluto> a;
+				utils::containers::multitype_container<std::vector, int, pippo, pluto> a;
 
 				a.emplace<pippo>(5.f);
 				a.emplace<pluto>('c');
@@ -42,7 +42,7 @@ namespace Tests
 				}
 			TEST_METHOD(emplacement_deque)
 				{
-				utils::multitype_container<std::deque, int, pippo, pluto> b;
+				utils::containers::multitype_container<std::deque, int, pippo, pluto> b;
 
 				b.emplace<pippo>(5.f);
 				b.emplace<pluto>('c');
@@ -55,7 +55,7 @@ namespace Tests
 				}
 			TEST_METHOD(emplacement_set)
 				{
-				utils::multitype_container<std::list, int, pippo, pluto> c;
+				utils::containers::multitype_container<std::list, int, pippo, pluto> c;
 				c.emplace<pippo>(5.f);
 				c.emplace<pluto>('c');
 				c.emplace<int>(3);
