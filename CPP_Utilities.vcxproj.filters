@@ -40,6 +40,9 @@
     <Filter Include="Files\math\geometry">
       <UniqueIdentifier>{b522fefe-7c38-4bd8-aa57-1c7fdf7948a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\containers\memberwise_operators">
+      <UniqueIdentifier>{7fa32045-637e-406d-b6e8-bee55ec114ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -183,11 +186,20 @@
     <ClInclude Include="include\utils\containers\matrix_memory_layout.h">
       <Filter>Files\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\memberwise_operators.h">
-      <Filter>Files\containers</Filter>
+    <ClInclude Include="include\utils\containers\memberwise_operators\seq.h">
+      <Filter>Files\containers\memberwise_operators</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\memberwise_operators_par.h">
-      <Filter>Files\containers</Filter>
+    <ClInclude Include="include\utils\containers\memberwise_operators\par.h">
+      <Filter>Files\containers\memberwise_operators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\memberwise_operators\concepts.h">
+      <Filter>Files\containers\memberwise_operators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\virtual.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\try_opt.h">
+      <Filter>Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
