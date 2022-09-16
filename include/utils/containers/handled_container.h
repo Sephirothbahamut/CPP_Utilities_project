@@ -16,8 +16,9 @@ namespace utils::containers
 	template <typename T, class Allocator = std::allocator<T>>
 	class handled_container
 		{
-		using inner_container_t = std::vector<T, Allocator>;
-	
+		protected:
+			using inner_container_t = std::vector<T, Allocator>;
+
 		public:
 			using handle_t = size_t;
 			/*class handle_t 
@@ -48,17 +49,15 @@ namespace utils::containers
 			template <typename ...Args>
 			handle_t emplace(Args&& ...args)
 				{
-				handle_t handle{create_new_handle()};
 				inner_container.emplace_back(std::forward<Args>(args)...);
-				return handle;
+				return create_new_handle();
 				}
 
 			template <typename ...Args>
 			handle_t push(Args& ...args)
 				{
-				handle_t handle{create_new_handle()};
 				inner_container.push_back(args...);
-				return handle;
+				return create_new_handle();
 				}
 	
 			      T& operator[](handle_t& handle)       noexcept 
@@ -111,7 +110,7 @@ namespace utils::containers
 			const auto crend()   const noexcept { return inner_container.crend(); }
 			      auto crend()         noexcept { return inner_container.crend(); }
 
-		private:
+		protected:
 			handle_t create_new_handle() noexcept
 				{
 				handle_t handle{id_pool.get()};
