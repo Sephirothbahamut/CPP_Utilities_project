@@ -37,14 +37,14 @@ namespace utils::console::colour
 		static constexpr foreground_t dark_magenta{base::magenta, true };
 		static constexpr foreground_t dark_cyan   {base::cyan   , true };
 		static constexpr foreground_t dark_white  {base::white  , true };
-		static constexpr foreground_t bright_black   = black  ;
-		static constexpr foreground_t bright_red     = red    ;
-		static constexpr foreground_t bright_green   = green  ;
-		static constexpr foreground_t bright_yellow  = yellow ;
-		static constexpr foreground_t bright_blue    = blue   ;
-		static constexpr foreground_t bright_magenta = magenta;
-		static constexpr foreground_t bright_cyan    = cyan   ;
-		static constexpr foreground_t bright_white   = white  ;
+		static constexpr foreground_t bright_black     = black  ;
+		static constexpr foreground_t bright_red       = red    ;
+		static constexpr foreground_t bright_green     = green  ;
+		static constexpr foreground_t bright_yellow    = yellow ;
+		static constexpr foreground_t bright_blue      = blue   ;
+		static constexpr foreground_t bright_magenta   = magenta;
+		static constexpr foreground_t bright_cyan      = cyan   ;
+		static constexpr foreground_t bright_white     = white  ;
 		}
 	namespace background
 		{
@@ -64,14 +64,14 @@ namespace utils::console::colour
 		inline constexpr background_t dark_magenta{base::magenta, true };
 		inline constexpr background_t dark_cyan   {base::cyan   , true };
 		inline constexpr background_t dark_white  {base::white  , true };
-		inline constexpr background_t bright_black   = black  ;
-		inline constexpr background_t bright_red     = red    ;
-		inline constexpr background_t bright_green   = green  ;
-		inline constexpr background_t bright_yellow  = yellow ;
-		inline constexpr background_t bright_blue    = blue   ;
-		inline constexpr background_t bright_magenta = magenta;
-		inline constexpr background_t bright_cyan    = cyan   ;
-		inline constexpr background_t bright_white   = white  ;
+		inline constexpr background_t bright_black     = black  ;
+		inline constexpr background_t bright_red       = red    ;
+		inline constexpr background_t bright_green     = green  ;
+		inline constexpr background_t bright_yellow    = yellow ;
+		inline constexpr background_t bright_blue      = blue   ;
+		inline constexpr background_t bright_magenta   = magenta;
+		inline constexpr background_t bright_cyan      = cyan   ;
+		inline constexpr background_t bright_white     = white  ;
 		}
 
 	inline constexpr auto brace{foreground::bright_black}; 
@@ -87,8 +87,9 @@ namespace utils::console
 
 namespace utils::output
 	{
-	inline constexpr std::ostream& operator<< (std::ostream& stream, const utils::console::colour::foreground_t& colour) noexcept
+	inline std::ostream& operator<< (std::ostream& stream, const utils::console::colour::foreground_t& colour) noexcept
 		{
+		if (stream.rdbuf() != std::cout.rdbuf()) { return stream; }
 		switch (colour.base)
 			{
 			case utils::console::colour::base::black  : return stream << "\x1B[" << (colour.dark ? "30" : "90") << "m";
@@ -102,8 +103,9 @@ namespace utils::output
 			}
 		return stream;
 		}
-	inline constexpr std::ostream& operator<< (std::ostream& stream, const utils::console::colour::background_t& colour) noexcept
+	inline std::ostream& operator<< (std::ostream& stream, const utils::console::colour::background_t& colour) noexcept
 		{
+		if (stream.rdbuf() != std::cout.rdbuf()) { return stream; }
 		switch (colour.base)
 			{
 			case utils::console::colour::base::black  : return stream << "\x1B[" << (colour.dark ? "40" : "100") << "m";
@@ -119,6 +121,7 @@ namespace utils::output
 		}
 	inline std::ostream& operator<< (std::ostream& stream, const utils::console::colour::restore_defaults_t&) noexcept
 		{
+		if (stream.rdbuf() != std::cout.rdbuf()) { return stream; }
 		return stream << "\033[0m";
 		}
 	}

@@ -177,6 +177,8 @@ namespace utils
 			std::mutex queue_free;
 			std::condition_variable work_available;
 
+			inline static std::mutex console_access;
+
 
 			void writer() noexcept
 				{
@@ -200,7 +202,12 @@ namespace utils
 					{
 					value_type& message = queue_write.front();
 
-					std::cout << message << std::endl;
+					if (true)
+						{
+						std::unique_lock lock{ console_access };
+						std::cout << message << std::endl;
+						}
+					
 					file << message << std::endl;
 
 					queue_write.pop();
