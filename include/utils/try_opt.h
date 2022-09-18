@@ -5,6 +5,7 @@
 #include <functional>
 #include <type_traits>
 
+//TODO test cases
 //TODO make interface and names better
 
 namespace utils::attempt
