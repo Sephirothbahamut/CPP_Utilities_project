@@ -16,7 +16,7 @@ namespace utils::attempt
 		{
 		if constexpr (std::same_as<decltype(f()), void>)
 			{
-			try { f() }
+			try { f(); }
 			catch (...) {}
 			}
 		else
