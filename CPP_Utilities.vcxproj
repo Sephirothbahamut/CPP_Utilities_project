@@ -134,6 +134,7 @@
     <ClInclude Include="include\utils\concepts.h" />
     <ClInclude Include="include\utils\console\io.h" />
     <ClInclude Include="include\utils\console\colour.h" />
+    <ClInclude Include="include\utils\construct.h" />
     <ClInclude Include="include\utils\containers\buffer.h" />
     <ClInclude Include="include\utils\containers\flat_set.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />

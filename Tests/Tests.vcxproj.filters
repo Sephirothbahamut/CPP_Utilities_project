@@ -36,5 +36,8 @@
     <ClCompile Include="containers\test_polymorphic_access_container.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
+    <ClCompile Include="containers\handled_container.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

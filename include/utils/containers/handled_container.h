@@ -50,14 +50,14 @@ namespace utils::containers
 			handle_t emplace(Args&& ...args)
 				{
 				inner_container.emplace_back(std::forward<Args>(args)...);
-				return create_new_handle();
+				return create_new_handle(inner_container.size() - 1);
 				}
 
 			template <typename ...Args>
 			handle_t push(Args& ...args)
 				{
 				inner_container.push_back(args...);
-				return create_new_handle();
+				return create_new_handle(inner_container.size() - 1);
 				}
 	
 			      T& operator[](handle_t& handle)       noexcept 
@@ -111,16 +111,16 @@ namespace utils::containers
 			      auto crend()         noexcept { return inner_container.crend(); }
 
 		protected:
-			handle_t create_new_handle() noexcept
+			handle_t create_new_handle(size_t new_element_index) noexcept
 				{
 				handle_t handle{id_pool.get()};
 				if (handle >= handle_to_container_index.size())
 					{
-					handle_to_container_index.push_back(inner_container.size());
+					handle_to_container_index.push_back(new_element_index);
 					}
 				else
 					{
-					handle_to_container_index[handle] = inner_container.size();
+					handle_to_container_index[handle] = new_element_index;
 					}
 				container_index_to_handle.push_back(handle);
 				return handle;

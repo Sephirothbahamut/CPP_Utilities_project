@@ -12,6 +12,7 @@
 #include "include/utils/containers/matrix.h"
 #include "include/utils/logger.h"
 
+#include "include/utils/containers/handled_container.h"
 int main()
 	{
 	using namespace utils::output;
@@ -75,4 +76,15 @@ int main()
 	utils::globals::logger.log("are");
 	utils::globals::logger.dgn("you");
 	utils::globals::logger.inf("?");
+
+	utils::containers::handled_container<int> handled;
+
+	auto handle_0{handled.emplace(0)};
+	auto handle_1{handled.emplace(1)};
+	auto handle_2{handled.emplace(2)};
+
+	handled.remove(handle_1);
+
+	auto handle_3{handled.emplace(3)};
+
 	}
