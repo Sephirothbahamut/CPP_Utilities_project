@@ -139,6 +139,9 @@
     <ClInclude Include="include\utils\containers\flat_set.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\flat_map.h" />
+    <ClInclude Include="include\utils\containers\hive\next.h" />
+    <ClInclude Include="include\utils\containers\hive\pool.h" />
+    <ClInclude Include="include\utils\containers\hive\skipfield.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\matrix_dyn.h" />
     <ClInclude Include="include\utils\containers\matrix_memory_layout.h" />
@@ -146,9 +149,12 @@
     <ClInclude Include="include\utils\containers\memberwise_operators\par.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators\seq.h" />
     <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
+    <ClInclude Include="include\utils\containers\multihandled.h" />
+    <ClInclude Include="include\utils\containers\multihandled_default.h" />
     <ClInclude Include="include\utils\containers\multitype_container.h" />
     <ClInclude Include="include\utils\containers\polymorphic_access_container.h" />
     <ClInclude Include="include\utils\containers\polymorphic_container.h" />
+    <ClInclude Include="include\utils\containers\storage_for.h" />
     <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />

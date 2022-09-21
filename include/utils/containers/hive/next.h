@@ -2,17 +2,17 @@
 #include <vector>
 #include <array>
 
-#include "../compilation/debug.h"
-#include "../memory.h"
-#include "../id_pool.h"
+#include "../../compilation/debug.h"
+#include "../../memory.h"
+#include "../../id_pool.h"
 
 //TODO test, allocator
 
-namespace utils::containers
+namespace utils::containers::hive
 	{
 
 	template <typename T, size_t inner_size, float growth_factor = 1.2f>
-	class hive
+	class next
 		{
 		private:
 			union slot_t { T element; size_t next_free; };

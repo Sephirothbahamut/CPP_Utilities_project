@@ -43,6 +43,9 @@
     <Filter Include="Files\containers\memberwise_operators">
       <UniqueIdentifier>{7fa32045-637e-406d-b6e8-bee55ec114ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\containers\hive">
+      <UniqueIdentifier>{554a512e-fd5c-4fb1-a9ef-8fc722a43ab0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -218,6 +221,24 @@
     </ClInclude>
     <ClInclude Include="include\utils\construct.h">
       <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\storage_for.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multihandled.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multihandled_default.h">
+      <Filter>Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\hive\next.h">
+      <Filter>Files\containers\hive</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\hive\pool.h">
+      <Filter>Files\containers\hive</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\hive\skipfield.h">
+      <Filter>Files\containers\hive</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

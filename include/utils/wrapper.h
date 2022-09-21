@@ -1,5 +1,8 @@
 #pragma once
+
 #include <memory> //addressof
+#include <utility>
+#include <cstddef>
 
 //TODO alternative diamond wrapper with virtual omheritance to not pass stuff to construct the root from everywhere
 
@@ -24,17 +27,17 @@ namespace utils
 			value_type element;
 			
 			//Compatible interface with pointers and optional
-			      reference operator*()        noexcept { return element; }
-			const_reference operator*()  const noexcept { return element; }
+			constexpr       reference operator*()        noexcept { return element; }
+			constexpr const_reference operator*()  const noexcept { return element; }
 
-			      pointer   operator->()       noexcept { return std::addressof(element); }
-			const_pointer   operator->() const noexcept { return std::addressof(element); }
-									    
-			      reference value()            noexcept { return element; }
-			const_reference value()      const noexcept { return element; }
-									     
-			      pointer   get()              noexcept { return std::addressof(element); }
-			const_pointer   get()        const noexcept { return std::addressof(element); }
+			constexpr       pointer   operator->()       noexcept { return std::addressof(element); }
+			constexpr const_pointer   operator->() const noexcept { return std::addressof(element); }
+
+			constexpr       reference value()            noexcept { return element; }
+			constexpr const_reference value()      const noexcept { return element; }
+
+			constexpr       pointer   get()              noexcept { return std::addressof(element); }
+			constexpr const_pointer   get()        const noexcept { return std::addressof(element); }
 
 		protected:
 		};

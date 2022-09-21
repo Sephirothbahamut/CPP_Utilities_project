@@ -13,13 +13,14 @@
 #include "include/utils/logger.h"
 
 #include "include/utils/containers/handled_container.h"
-int main()
+#include "include/utils/containers/multihandled.h"
+void old_test()
 	{
 	using namespace utils::output;
-	std::cout 
-		<< utils::console::colour::foreground::blue       
-		<< utils::console::colour::background::dark_white 
-		<< "Hello" 
+	std::cout
+		<< utils::console::colour::foreground::blue
+		<< utils::console::colour::background::dark_white
+		<< "Hello"
 		<< utils::console::colour::background::white
 		<< " "
 		<< utils::console::colour::foreground::white
@@ -30,8 +31,8 @@ int main()
 		<< "!"
 		<< utils::console::color::restore_defaults;
 
-	utils::math::vec<float, 4> a{5.f, 5.f, 5.f, 5.f};
-	utils::math::vec<float, 3> b{0.f, 1.f, 2.f};
+	utils::math::vec<float, 4> a{ 5.f, 5.f, 5.f, 5.f };
+	utils::math::vec<float, 3> b{ 0.f, 1.f, 2.f };
 
 	a + 3.f;
 	b + a;
@@ -39,24 +40,24 @@ int main()
 
 	using namespace utils::containers::memberwise_operators::seq;
 	std::vector<float> stdarr_a;
-	std::vector<float> stdarr_out{1.f - stdarr_a + -stdarr_a};
+	std::vector<float> stdarr_out{ 1.f - stdarr_a + -stdarr_a };
 
 
 	using namespace utils::output;
 	std::cout << a << "\n";
 
 	using namespace utils::math::angle::literals;
-	auto deg{90_deg};
-	auto rad{90_rad};
-	auto sensicalrad{90_radpi};
+	auto deg{ 90_deg };
+	auto rad{ 90_rad };
+	auto sensicalrad{ 90_radpi };
 
-	utils::math::angle::base<float, 1.f> other{.5};
+	utils::math::angle::base<float, 1.f> other{ .5 };
 	std::cout << deg << ", " << rad << ", " << sensicalrad << ", " << other << "\n";
 
-	utils::graphics::colour::rgb_u colour_a{utils::graphics::colour::base::blue};
-	utils::graphics::colour::rgb_u colour_b{utils::graphics::colour::base::cyan   , 128, 100};
-	utils::graphics::colour::rgb_u colour_c{utils::graphics::colour::base::yellow , 200};
-	utils::graphics::colour::rgb_u colour_d{utils::graphics::colour::base::magenta, 127};
+	utils::graphics::colour::rgb_u colour_a{ utils::graphics::colour::base::blue };
+	utils::graphics::colour::rgb_u colour_b{ utils::graphics::colour::base::cyan   , 128, 100 };
+	utils::graphics::colour::rgb_u colour_c{ utils::graphics::colour::base::yellow , 200 };
+	utils::graphics::colour::rgb_u colour_d{ utils::graphics::colour::base::magenta, 127 };
 
 	std::cout
 		<< colour_a << "\n"
@@ -64,7 +65,7 @@ int main()
 		<< colour_c << "\n"
 		<< colour_d << "\n";
 
-	utils::containers::mat2x2f mat2x2f{1};
+	utils::containers::mat2x2f mat2x2f{ 1 };
 	utils::containers::mat3x3f mat3x3f;
 	utils::containers::mat4x4f mat4x4f;
 	mat2x2f += mat2x2f;
@@ -79,12 +80,25 @@ int main()
 
 	utils::containers::handled_container<int> handled;
 
-	auto handle_0{handled.emplace(0)};
-	auto handle_1{handled.emplace(1)};
-	auto handle_2{handled.emplace(2)};
+	auto handle_0{ handled.emplace(0) };
+	auto handle_1{ handled.emplace(1) };
+	auto handle_2{ handled.emplace(2) };
 
 	handled.remove(handle_1);
 
-	auto handle_3{handled.emplace(3)};
+	auto handle_3{ handled.emplace(3) };
 
+	}
+
+int main()
+	{
+	utils::containers::multihandled<int> a;
+
+	auto handle_1a{ a.emplace(1) };
+	auto handle_2a{ a.emplace(2) };
+	auto handle_3a{ a.emplace(3) };
+
+	auto handle_1b{ a.splice(handle_1a) };
+	a.remap(handle_1b, handle_2a);
+	auto handle_1b1{ handle_1b };
 	}

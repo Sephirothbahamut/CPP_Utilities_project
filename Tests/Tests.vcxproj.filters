@@ -30,13 +30,16 @@
     <ClCompile Include="math\vec.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
-    <ClCompile Include="containers\test_multitype_container.cpp">
+    <ClCompile Include="containers\multitype_container.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
-    <ClCompile Include="containers\test_polymorphic_access_container.cpp">
+    <ClCompile Include="containers\polymorphic_access_container.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
     <ClCompile Include="containers\handled_container.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="containers\multihandled.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
   </ItemGroup>
