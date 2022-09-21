@@ -20,8 +20,8 @@ namespace utils::containers
 			using inner_container_t = std::vector<T, Allocator>;
 
 		public:
-			using handle_t = size_t;
-			/*class handle_t 
+			//using handle_t = size_t;
+			class handle_t 
 				{
 				friend class handled_container<T>;//, Allocator>
 				public:
@@ -33,7 +33,7 @@ namespace utils::containers
 					handle_t& operator=(handle_t&& move) noexcept { value = move.value; move.value = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
 				private:
 					id_pool_manual::value_type value{std::numeric_limits<id_pool_manual::value_type>::max()};
-				};*/
+				};
 
 			using value_type             = inner_container_t::value_type;
 			using size_type              = inner_container_t::size_type;
@@ -62,18 +62,18 @@ namespace utils::containers
 	
 			      T& operator[](handle_t& handle)       noexcept 
 				{
-				return inner_container[handle_to_container_index[handle]]; 
+				return inner_container[handle_to_container_index[handle.value]]; 
 				}
 			const T& operator[](handle_t& handle) const noexcept 
 				{
-				return inner_container[handle_to_container_index[handle]]; 
+				return inner_container[handle_to_container_index[handle.value]];
 				}
 			
 			void remove(handle_t& handle)
 				{
-				if (handle_to_container_index[handle] < (inner_container.size() - 1))
+				if (handle_to_container_index[handle.value] < (inner_container.size() - 1))
 					{
-					size_t to_remove_index{handle_to_container_index[handle]};
+					size_t to_remove_index{handle_to_container_index[handle.value]};
 					size_t other_moved_index{inner_container.size() - 1};
 
 					inner_container[to_remove_index] = std::move(inner_container[other_moved_index]);
@@ -84,9 +84,9 @@ namespace utils::containers
 				inner_container.pop_back();
 				container_index_to_handle.pop_back();
 
-				handle_to_container_index[handle] = std::numeric_limits<id_pool_manual::value_type>::max();
+				handle_to_container_index[handle.value] = std::numeric_limits<id_pool_manual::value_type>::max();
 
-				id_pool.release(handle);
+				id_pool.release(handle.value);
 				handle = std::numeric_limits<id_pool_manual::value_type>::max();
 				}
 	
@@ -114,15 +114,15 @@ namespace utils::containers
 			handle_t create_new_handle(size_t new_element_index) noexcept
 				{
 				handle_t handle{id_pool.get()};
-				if (handle >= handle_to_container_index.size())
+				if (handle.value >= handle_to_container_index.size())
 					{
 					handle_to_container_index.push_back(new_element_index);
 					}
 				else
 					{
-					handle_to_container_index[handle] = new_element_index;
+					handle_to_container_index[handle.value] = new_element_index;
 					}
-				container_index_to_handle.push_back(handle);
+				container_index_to_handle.push_back(handle.value);
 				return handle;
 				}
 
