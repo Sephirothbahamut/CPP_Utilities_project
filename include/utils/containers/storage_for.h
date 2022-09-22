@@ -49,4 +49,5 @@ namespace utils::containers
 		private:
 			alignas(T) std::byte _data[sizeof(T)];
 		};
+	
 	}

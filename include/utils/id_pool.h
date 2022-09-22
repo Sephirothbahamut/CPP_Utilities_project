@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 #include <limits>
 #include <stdexcept>
 #include <memory>

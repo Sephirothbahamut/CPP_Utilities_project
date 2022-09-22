@@ -42,5 +42,8 @@
     <ClCompile Include="containers\multihandled.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
+    <ClCompile Include="containers\hive\next.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

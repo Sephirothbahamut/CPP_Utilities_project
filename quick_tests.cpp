@@ -90,14 +90,35 @@ void old_test()
 
 	}
 
+#include "include/utils/containers/hive/next.h"
+struct disney
+	{
+	inline static size_t count{0};
+	std::array<int, 32> trash;
+	int v;
+	disney(int v) : v{v} 
+		{
+		count++; 
+		for (size_t i = 0; i < trash.size(); i++)
+			{
+			trash[i] = 999;
+			}
+		}
+	~disney() { count--; }
+	};
+
 int main()
 	{
-	utils::containers::multihandled<int> a;
+	//Assert::AreEqual(0, a[handle_0].v);
+	//Assert::AreEqual(1, a[handle_1].v);
+	//ssert::AreEqual(2, a[handle_2].v);
 
+	utils::containers::multihandled<int> a;
+	
 	auto handle_1a{ a.emplace(1) };
 	auto handle_2a{ a.emplace(2) };
 	auto handle_3a{ a.emplace(3) };
-
+	
 	auto handle_1b{ a.splice(handle_1a) };
 	a.remap(handle_1b, handle_2a);
 	auto handle_1b1{ handle_1b };

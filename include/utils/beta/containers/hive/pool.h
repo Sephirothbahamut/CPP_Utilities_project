@@ -2,10 +2,10 @@
 #include <vector>
 #include <array>
 
-#include "../../compilation/debug.h"
-#include "../../memory.h"
-#include "../../id_pool.h"
-#include "../storage_for.h" 
+#include "../../../compilation/debug.h"
+#include "../../../memory.h"
+#include "../../../id_pool.h"
+#include "../../../containers/storage_for.h" 
 
 //std::hive aka skipfield_hive
 //   more memory
@@ -31,7 +31,7 @@ namespace utils::containers::hive
 	class pool
 		{
 		public:
-			using handle_t        = utils::id_pool_manual::value_type ;
+			using handle_t        = utils::id_pool_manual::value_type;
 
 			using value_type      = T;
 			using size_type       = size_t;
@@ -39,6 +39,12 @@ namespace utils::containers::hive
 			using const_reference = const T&;
 			using pointer         = T*;
 			using const_pointer   = const T*;
+
+			~pool()
+				{
+				//TODO
+				//sort id_pool unused indices, iterate inner_container from 0 to id_pool.count and call destructor for elements in non-unused indices
+				}
 
 			template <typename ...Args>
 			handle_t emplace(Args&& ...args)

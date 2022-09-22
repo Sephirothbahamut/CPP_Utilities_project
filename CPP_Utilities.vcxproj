@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\utils\beta\containers\hive\pool.h" />
     <ClInclude Include="include\utils\compilation\debug.h" />
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\concepts.h" />
@@ -140,7 +141,6 @@
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\flat_map.h" />
     <ClInclude Include="include\utils\containers\hive\next.h" />
-    <ClInclude Include="include\utils\containers\hive\pool.h" />
     <ClInclude Include="include\utils\containers\hive\skipfield.h" />
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\matrix_dyn.h" />
