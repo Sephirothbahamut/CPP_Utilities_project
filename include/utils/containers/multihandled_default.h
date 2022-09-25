@@ -22,14 +22,20 @@ namespace utils::containers
 
 			template <typename ...Args>
 			multihandled_default(Args&&... args) :
-				default_handle{emplace(std::forward<Args>(args)...}
+				default_handle{ parent_container_t::emplace(std::forward<Args>(args)...)}
 				{}
 
 			void remove(handle_t& handle)
 				{
-				parent_container_t::remove_and_remap(handle, default_handle);
+				if(get_inner_index(handle) != get_inner_index(default_handle))
+					parent_container_t::remove_and_remap(handle, default_handle);
 				}
 
+			handle_t get_default()
+				{
+				return parent_container_t::splice(default_handle);
+				}
+			
 		private:
 			handle_t default_handle;
 		};

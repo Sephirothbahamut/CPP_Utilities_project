@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <array>
+#include <cmath>
 
 #include "../storage_for.h"
 #include "../../compilation/debug.h"
@@ -11,7 +12,6 @@
 //TODO research union's alignment vs storage_for?
 namespace utils::containers::hive
 	{
-
 	template <typename T, size_t inner_size = 8, float growth_factor = 1.2f>
 	class next
 		{
@@ -65,8 +65,8 @@ namespace utils::containers::hive
 				{
 				if (first_free >= capacity())
 					{
-					if (inner_container.empty()) { grow(1); }
-					else { grow(inner_container.size() * growth_factor); }
+					if (inner_container.empty()) { grow_to(1); }
+					else { grow_to(std::ceil(inner_container.size() * growth_factor)); }
 					}
 
 				auto index{first_free};
@@ -87,7 +87,7 @@ namespace utils::containers::hive
 				return index;
 				}
 
-			void remove(size_t index)
+			void erase(size_t index)
 				{
 				auto& my_slot{inner_get(index)};
 				my_slot.element.~T();
@@ -126,7 +126,7 @@ namespace utils::containers::hive
 
 			size_t next_free(size_t current) const noexcept { return inner_get(current).next_free; }
 
-			void grow(size_t new_arrays_count)
+			void grow_to(size_t new_arrays_count)
 				{
 				for (size_t i = inner_container.size(); i < new_arrays_count; i++)
 					{

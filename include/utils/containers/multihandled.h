@@ -43,8 +43,8 @@ namespace utils::containers
 						mapping_index = copy.mapping_index;
 						if (is_valid()) { container_ptr->mapping_to_container_index[mapping_index].count++; }
 						}
-					handle_t           (handle_t&& move) noexcept : mapping_index { move.mapping_index } { move.mapping_index = std::numeric_limits<id_pool_manual::value_type>::max(); }
-					handle_t& operator=(handle_t&& move) noexcept { mapping_index = move.mapping_index;    move.mapping_index = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
+					handle_t           (handle_t&& move) noexcept : container_ptr{ std::move(move.container_ptr) }, mapping_index { move.mapping_index } { move.mapping_index = std::numeric_limits<id_pool_manual::value_type>::max(); }
+					handle_t& operator=(handle_t&& move) noexcept { container_ptr = move.container_ptr;             mapping_index = move.mapping_index;    move.mapping_index = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
 
 					~handle_t() 
 						{
@@ -52,12 +52,12 @@ namespace utils::containers
 							{
 							auto& count = container_ptr->mapping_to_container_index[mapping_index].count;
 							count--;
-							//if the handle in the container isn't used externally anymore and the resources has been removed
+							//if the handle in the container isn't used externally anymore and the resources has been erased
 							if (count == 0)
 								{
 								if (container_ptr->mapping_to_container_index[mapping_index].container_index != std::numeric_limits<id_pool_manual::value_type>::max())
 									{
-									container_ptr->remove_if_last(*this);
+									container_ptr->erase_if_last(*this);
 									}
 
 								//release the inner handle
@@ -78,8 +78,8 @@ namespace utils::containers
 					constexpr       pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
 					constexpr const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
-					handle_t undergo_mythosis(                  ) const noexcept { return container_ptr->undergo_mythosis(*this    ); }
-					void     remap           (const handle_t& to)       noexcept {        container_ptr->remap           (*this, to); }
+					handle_t splice(                  )    const noexcept { return container_ptr->splice(*this    ); }
+					void     remap (const handle_t& to)          noexcept {        container_ptr->remap (*this, to); }
 
 				private:
 					bool is_valid() const noexcept
@@ -120,11 +120,11 @@ namespace utils::containers
 				return inner_container[mapping_to_container_index[handle.mapping_index].container_index];
 				}
 
-			void remove(handle_t& handle)
+			void erase(handle_t& handle)
 				{
 				auto container_index_being_removed{mapping_to_container_index[handle.mapping_index].container_index};
 
-				inner_container.remove(container_index_being_removed);
+				inner_container.erase(container_index_being_removed);
 
 				for (auto& mapping : mapping_to_container_index)
 					{
@@ -134,17 +134,17 @@ namespace utils::containers
 						}
 					}
 				}
-			void remove_and_remap(handle_t& handle, const handle_t& to)
+			void erase_and_remap(handle_t& handle, const handle_t& to)
 				{
 				auto container_index_being_removed{mapping_to_container_index[handle.mapping_index].container_index};
 
-				inner_container.remove(container_index_being_removed);
+				inner_container.erase(container_index_being_removed);
 
 				for (auto& mapping : mapping_to_container_index)
 					{
 					if (mapping.container_index == container_index_being_removed)
 						{
-						mapping.container_index = mapping_to_container_index[handle.mapping_index].container_index;
+						mapping.container_index = mapping_to_container_index[to.mapping_index].container_index;
 						}
 					}
 				}
@@ -179,7 +179,7 @@ namespace utils::containers
 				return mapping_index;
 				}
 
-			void remove_if_last(handle_t& handle)
+			void erase_if_last(handle_t& handle)
 				{
 				auto container_index_being_removed{mapping_to_container_index[handle.mapping_index].container_index};
 
@@ -191,7 +191,12 @@ namespace utils::containers
 						}
 					}
 
-				inner_container.remove(container_index_being_removed);
+				inner_container.erase(container_index_being_removed);
+				}
+
+			size_t get_inner_index(const handle_t& handle)
+				{
+				return mapping_to_container_index[handle.mapping_index].container_index;
 				}
 
 			inner_container_t inner_container;
