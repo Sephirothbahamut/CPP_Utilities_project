@@ -66,7 +66,7 @@ namespace utils::containers::hive
 				if (first_free >= capacity())
 					{
 					if (inner_container.empty()) { grow_to(1); }
-					else { grow_to(std::ceil(inner_container.size() * growth_factor)); }
+					else { grow_to(static_cast<size_t>(std::ceil(inner_container.size() * growth_factor))); }
 					}
 
 				auto index{first_free};

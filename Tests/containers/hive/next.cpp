@@ -74,7 +74,7 @@ namespace Tests
 				auto handle_2{a.emplace(2)};
 				Assert::AreEqual(size_t{3}, disney::count);
 			
-				a.remove(handle_1);
+				a.erase(handle_1);
 				Assert::AreEqual(size_t{2}, disney::count);
 			
 				auto handle_3{a.emplace(3)};
