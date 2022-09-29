@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="containers\handled_container.cpp" />
     <ClCompile Include="containers\hive\next.cpp" />
+    <ClCompile Include="containers\linked_vector.cpp" />
     <ClCompile Include="containers\memberwise_operators.cpp" />
     <ClCompile Include="containers\memberwise_operators_array.cpp" />
     <ClCompile Include="containers\multihandled.cpp" />

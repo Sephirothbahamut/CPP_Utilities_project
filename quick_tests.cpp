@@ -14,6 +14,10 @@
 
 #include "include/utils/containers/handled_container.h"
 #include "include/utils/containers/multihandled.h"
+
+#include "include/utils/containers/hive/next.h"
+#include "include/utils/beta/containers/linked_vector/linked_vector.h"
+
 void old_test()
 	{
 	using namespace utils::output;
@@ -90,36 +94,59 @@ void old_test()
 
 	}
 
-#include "include/utils/containers/hive/next.h"
 struct disney
 	{
 	inline static size_t count{0};
-	std::array<int, 32> trash;
+	//std::array<int, 32> trash;
 	int v;
 	disney(int v) : v{v} 
 		{
 		count++; 
-		for (size_t i = 0; i < trash.size(); i++)
-			{
-			trash[i] = 999;
-			}
+		//for (size_t i = 0; i < trash.size(); i++)
+		//	{
+		//	trash[i] = 999;
+		//	}
 		}
-	~disney() { count--; }
+	~disney() 
+		{
+		count--; 
+		}
 	};
 
+
+#include<deque>
 int main()
 	{
-	//Assert::AreEqual(0, a[handle_0].v);
-	//Assert::AreEqual(1, a[handle_1].v);
-	//ssert::AreEqual(2, a[handle_2].v);
+	if(true)
+		{
+		utils::beta::containers::linked_vector<disney> a;
 
-	utils::containers::multihandled<int> a;
-	
-	auto handle_1a{ a.emplace(1) };
-	auto handle_2a{ a.emplace(2) };
-	auto handle_3a{ a.emplace(3) };
-	
-	auto handle_1b{ a.splice(handle_1a) };
-	a.remap(handle_1b, handle_2a);
-	auto handle_1b1{ handle_1b };
+		auto& obj_0{ a.emplace(0) };
+		auto& obj_1{ a.emplace(1) };
+		auto& obj_2{ a.emplace(2) };
+
+		auto obj_0_ptr {&obj_0};
+		auto obj_1_ptr {&obj_1};
+		auto obj_2_ptr {&obj_2};
+
+		int x;
+
+		auto it{ a.begin() };
+		x = it->v;
+		it++;
+		x = it->v;
+		it++;
+		x = it->v;
+		it--;
+		x = it->v;
+		it--;
+		x = it->v;
+
+		it += 3;
+		auto end{a.end()};
+		auto begin{ a.begin() };
+		it -= 3;
+
+		auto& disney_count{ disney::count };
+		}
 	}
