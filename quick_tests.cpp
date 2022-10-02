@@ -16,7 +16,7 @@
 #include "include/utils/containers/multihandled.h"
 
 #include "include/utils/containers/hive/next.h"
-#include "include/utils/beta/containers/linked_vector/linked_vector.h"
+#include "include/utils/beta/containers/linked_vector.h"
 
 void old_test()
 	{
@@ -119,15 +119,15 @@ int main()
 	{
 	if(true)
 		{
-		utils::beta::containers::linked_vector<disney> a;
+		const utils::beta::containers::linked_vector<disney> a;
 
-		auto& obj_0{ a.emplace(0) };
-		auto& obj_1{ a.emplace(1) };
-		auto& obj_2{ a.emplace(2) };
-
-		auto obj_0_ptr {&obj_0};
-		auto obj_1_ptr {&obj_1};
-		auto obj_2_ptr {&obj_2};
+		//auto& obj_0{ a.emplace(0) };
+		//auto& obj_1{ a.emplace(1) };
+		//auto& obj_2{ a.emplace(2) };
+		//
+		//auto obj_0_ptr {&obj_0};
+		//auto obj_1_ptr {&obj_1};
+		//auto obj_2_ptr {&obj_2};
 
 		int x;
 

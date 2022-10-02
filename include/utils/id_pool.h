@@ -13,12 +13,10 @@
 
 namespace utils
 	{
-	//template <class Allocator = std::allocator<size_t>>
 	class id_pool_manual
 		{
 		public:
 			using value_type = size_t;
-
 			inline static constexpr value_type min{std::numeric_limits<value_type>::min()};
 			inline static constexpr value_type max{std::numeric_limits<value_type>::max()};
 
@@ -58,18 +56,36 @@ namespace utils
 
 
 			size_t count = min;
-			std::vector<size_t/*, Allocator*/> unused;
+			std::vector<size_t> unused;
 		};
 
-	//template <class Allocator>
-	class id_t;
-
-	//template <class Allocator = std::allocator<size_t>>
 	class id_pool
 		{
 		public:
 			using value_type = size_t;
-			//template <class Allocator>
+			
+			class id_t
+				{
+				public:
+					id_t(id_pool& pool) : pool{&pool}, _value{pool.get()} {}
+					id_t(const id_t& copy) = delete;
+					id_t& operator=(const id_t& copy) = delete;
+					id_t(id_t&& move) noexcept : pool{move.pool}, _value{move._value} { move._value = std::numeric_limits<id_pool::value_type>::max(); }
+					id_t& operator=(id_t&& move) noexcept { release(); pool = move.pool; _value = move._value; move._value = std::numeric_limits<id_pool::value_type>::max(); }
+					~id_t() { release(); }
+
+					operator id_pool::value_type() const noexcept { return _value; }
+					id_pool::value_type value() const noexcept { return _value; }
+
+				private:
+					void release() const noexcept
+						{
+						if (_value != std::numeric_limits<size_t>::max()) { pool->release(_value); }
+						}
+
+					utils::observer_ptr<id_pool> pool;
+					id_pool::value_type _value;
+				};
 			friend class id_t;
 
 			inline static constexpr value_type min{std::numeric_limits<value_type>::min()};
@@ -82,7 +98,7 @@ namespace utils
 
 		private:
 			value_type count = min;
-			std::vector<value_type/*, Allocator*/> unused;
+			std::vector<value_type> unused;
 
 			value_type get() noexcept
 				{
@@ -107,29 +123,5 @@ namespace utils
 				{
 				unused.push_back(id);
 				}
-		};
-
-	//template <class Allocator = std::allocator<size_t>>
-	class id_t
-		{
-		public:
-			id_t(id_pool/*<Allocator>*/& pool) : pool{&pool}, _value{pool.get()} {}
-			id_t(const id_t& copy) = delete;
-			id_t& operator=(const id_t& copy) = delete;
-			id_t(id_t&& move) noexcept : pool{move.pool}, _value{move._value} { move._value = std::numeric_limits<id_pool::value_type>::max(); }
-			id_t& operator=(id_t&& move) noexcept { release(); pool = move.pool; _value = move._value; move._value = std::numeric_limits<id_pool::value_type>::max(); }
-			~id_t() { release(); }
-
-			operator id_pool/*<Allocator>*/::value_type() const noexcept { return _value; }
-			id_pool/*<Allocator>*/::value_type value() const noexcept { return _value; }
-
-		private:
-			void release() const noexcept
-				{
-				if (_value != std::numeric_limits<size_t>::max()) { pool->release(_value); }
-				}
-
-			utils::observer_ptr<id_pool/*<Allocator>*/> pool;
-			id_pool/*<Allocator>*/::value_type _value;
 		};
 	}

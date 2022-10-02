@@ -55,18 +55,22 @@ namespace utils
 		protected:
 			std::ofstream file;
 
-			utils::containers::self_consuming_queue<T> message_queue
+			utils::containers::self_consuming_queue<T> message_queue{[this](std::vector<T>& to_load) -> void { consume(to_load); }};
+			
+			void consume(std::vector<T>& to_load)
 				{
-				[this](std::vector<T>& to_load) -> void
+				if constexpr (std::same_as<T, utils::message>)
 					{
-					for (auto& message : to_load)
-						{
-						std::cout << message << std::endl;
-						file << message << std::endl;
-						}
+					//TODO reimplement get_timestamp in some way for the sorting
+					std::sort(to_load.begin(), to_load.end(), [](const utils::message& a, const utils::message& b) { return a.get_timestamp().time_since_epoch().count() < b.get_timestamp().time_since_epoch().count(); });
 					}
-				};
 
+				for (auto& message : to_load)
+					{
+					std::cout << message << std::endl;
+					file << message << std::endl;
+					}
+				}
 		};
 	}
 

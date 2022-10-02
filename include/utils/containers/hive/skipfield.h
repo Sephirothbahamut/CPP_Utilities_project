@@ -1,6 +1,7 @@
 
 // Source: https://github.com/mattreecebentley/plf_colony
 // The namespace and class name have been changed.
+// For ulterior changes ctrl+f the following string: "//Barnack changes"
 
 // Copyright (c) 2022, Matthew Bentley (mattreecebentley@gmail.com) www.plflib.org
 
@@ -122,6 +123,7 @@ namespace utils::containers::hive
 		typedef std::conditional_t<(sizeof(element_type) > 10), uint_least16_t, uint_least8_t> skipfield_type;
 
 		public:
+
 			// Standard container typedefs:
 			typedef element_type value_type;
 			typedef typename std::aligned_storage<sizeof(element_type), (sizeof(element_type) >= (sizeof(skipfield_type) * 2) || alignof(element_type) >= (sizeof(skipfield_type) * 2)) ? alignof(element_type) : (sizeof(skipfield_type) * 2)>::type aligned_element_type; // align element to be at-least 2*skipfield_type width in order to support free list indexes in erased element memory space
@@ -146,6 +148,7 @@ namespace utils::containers::hive
 			friend reverse_iterator;
 			friend const_reverse_iterator;
 
+			using handle_t = iterator; //Barnack changes
 
 
 		private:

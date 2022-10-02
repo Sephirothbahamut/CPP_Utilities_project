@@ -105,7 +105,7 @@ namespace utils::beta::containers
 			using iterator_category = std::contiguous_iterator_tag;
 			using difference_type   = ptrdiff_t;
 
-			const_iterator(pointer ptr) : ptr(ptr) { }
+			const_iterator(const pointer ptr) : ptr(ptr) { }
 
 			self_type  operator+ (difference_type rhs) const noexcept { return ptr + rhs; }
 			self_type  operator- (difference_type rhs) const noexcept { return ptr - rhs; }
@@ -127,7 +127,7 @@ namespace utils::beta::containers
 			bool operator==(const self_type& rhs) const noexcept { return ptr == rhs.ptr; }
 			bool operator!=(const self_type& rhs) const noexcept { return ptr != rhs.ptr; }
 		private:
-			pointer ptr;
+			const pointer ptr;
 		};
 
 	template<typename T, size_t inner_size>
@@ -179,7 +179,7 @@ namespace utils::beta::containers
 			using iterator_category = std::contiguous_iterator_tag;
 			using difference_type   = ptrdiff_t ;
 
-			const_reverse_iterator(pointer ptr) : ptr(ptr) { }
+			const_reverse_iterator(const pointer ptr) : ptr(ptr) { }
 
 			self_type  operator+ (difference_type rhs) const noexcept { return ptr - rhs; }
 			self_type  operator- (difference_type rhs) const noexcept { return ptr + rhs; }
@@ -201,7 +201,7 @@ namespace utils::beta::containers
 			bool operator==(const self_type& rhs) const noexcept { return ptr == rhs.ptr; }
 			bool operator!=(const self_type& rhs) const noexcept { return ptr != rhs.ptr; }
 		private:
-			pointer ptr;
+			const pointer ptr;
 		};
 
 

@@ -47,9 +47,6 @@
     <Filter Include="Beta\containers\hive">
       <UniqueIdentifier>{a6d5cc8d-35eb-449d-8021-c27a17b95748}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\containers\linked_vector">
-      <UniqueIdentifier>{9bb891f8-f4fa-4b00-b296-d4e066fd516d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -250,11 +247,14 @@
     <ClInclude Include="include\utils\containers\self_consuming_queue.h">
       <Filter>Utils\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\linked_vector\linked_vector.h">
-      <Filter>Beta\containers\linked_vector</Filter>
+    <ClInclude Include="include\utils\beta\containers\linked_vector.h">
+      <Filter>Beta\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\linked_vector\segment.h">
-      <Filter>Beta\containers\linked_vector</Filter>
+    <ClInclude Include="include\utils\beta\containers\segment.h">
+      <Filter>Beta\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\containers\segmented_vector.h">
+      <Filter>Beta\containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

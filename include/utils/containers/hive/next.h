@@ -26,6 +26,31 @@ namespace utils::containers::hive
 				};
 		
 		public:
+			using value_type             = T;
+			using size_type              = size_t;
+			using reference              = T&;
+			using const_reference        = const T&;
+			using pointer                = T*;
+			using const_pointer          = const T*;
+			//using iterator               = inner_container_t::iterator;
+			//using const_iterator         = inner_container_t::const_iterator;
+			//using reverse_iterator       = inner_container_t::reverse_iterator;
+			//using const_reverse_iterator = inner_container_t::const_reverse_iterator;
+
+			using handle_t = size_t;
+
+			struct iterator //TODO
+				{
+				using iterator_type   = std::forward_iterator_tag;
+				using difference_type = size_t;
+				using value_type      = T;
+				using reference       = T&;
+				using const_reference = const T&;
+				using pointer         = T*;
+				using const_pointer   = const T*;
+				};
+
+
 			next() = default;
 
 			//TODO implement
@@ -34,16 +59,6 @@ namespace utils::containers::hive
 			//TONOTDO do not implement
 			next(const next& copy) = delete;
 			next& operator=(const next& copy) = delete;
-
-
-			using handle_t        = utils::id_pool_manual::value_type;
-
-			using value_type      = T;
-			using size_type       = size_t;
-			using reference       = T&;
-			using const_reference = const T&;
-			using pointer         = T*;
-			using const_pointer   = const T*;
 
 			~next()
 				{
@@ -61,7 +76,7 @@ namespace utils::containers::hive
 				}
 
 			template <typename ...Args>
-			size_t emplace(Args&& ...args)
+			handle_t emplace(Args&& ...args)
 				{
 				if (first_free >= capacity())
 					{
@@ -87,7 +102,7 @@ namespace utils::containers::hive
 				return index;
 				}
 
-			void erase(size_t index)
+			void erase(handle_t index)
 				{
 				auto& my_slot{inner_get(index)};
 				my_slot.element.~T();

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "../../../memory.h"
+#include "../../memory.h"
 #include "segment.h"
 
 // TODO allocator, iterators
@@ -43,12 +43,9 @@ namespace utils::beta::containers
 			inline T& front() { return first_segment->arr[0]; }
 			inline T& back() { return last_segment->arr[last_segment->size - 1];  }
 
-			inline bool empty() const { return first_segment = 0;  }
+			inline bool empty() const { return first_segment == nullptr;  }
 			inline void clear()
 				{
-
-				auto& disney_count{ T::count };
-
 				if (segment_ptr_t segment_ptr = first_segment)
 					{
 					while (segment_ptr != last_segment)
@@ -85,26 +82,31 @@ namespace utils::beta::containers
 				return *new_t;
 				}
 
-
-			//TODO for segmented vector
-			//void reserve(size_t capacity)
-			//	{
-			//
-			//	}
-			//
-			//void shrink_to_fit()
-			//	{
-			//
-			//	}
-			//
-			//void resize(size_t new_size)
-			//	{
-			//
-			//	}
-
-			void erase()
+			iterator erase(const_iterator begin, const_iterator end)
 				{
-					//TODO
+				segment_ptr_t current_segment = first_segment;
+				while (begin.segment_ptr->begin() != current_segment->begin()) { current_segment = current_segment->next_segment(); }
+				
+				
+				}
+
+			inline void move_storage(T* dest, T* from, size_t n)
+				{
+				// Implying we are doing this within the capacity/size of the container
+				if (dest < from)
+					{
+					T* _dest = dest, * _from = from;
+					for (size_t i = 0; i < n; i++)
+						*_dest++ = std::move(*_from++);
+					}
+				else if (dest > from)
+					{
+					T* _dest = dest + n - 1, * _from = from + n - 1;
+					for (size_t i = n; i > 0; i--)
+						*_dest-- = std::move(*_from--);
+					}
+				else
+					return;
 				}
 				
 			const_iterator         begin () const { return {first_segment->begin()                     , first_segment}; }
@@ -117,6 +119,9 @@ namespace utils::beta::containers
 				return {last_segment ->begin() + last_segment->size, last_segment }; 
 				}
 
+			size_t capacity() { return _segments_count * inner_size; }
+			size_t size() { return capacity() - (inner_size - end()->segment_ptr.size); }
+
 		protected:
 			segment_ptr_t  first_segment {nullptr};
 			segment_ptr_t  last_segment  {nullptr};
@@ -124,8 +129,8 @@ namespace utils::beta::containers
 			size_t              _segments_count{0};
 			segment_allocator_t segment_allocator ;
 
-			inline const segment_ptr_t get_first() const { return first_segment; }
-			inline       segment_ptr_t get_first()       { return first_segment; }
+			//inline const segment_ptr_t get_first() const { return first_segment; }
+			//inline       segment_ptr_t get_first()       { return first_segment; }
 
 			pointer get_free_slot()
 				{
@@ -168,6 +173,8 @@ namespace utils::beta::containers
 		template<typename T, size_t inner_size, typename Allocator>
 		struct linked_vector<T, inner_size, Allocator>::iterator
 			{
+			template<typename, size_t, typename> friend class linked_vector;
+
 			public:
 				using self_type = iterator;
 				using value_type = T;
@@ -272,6 +279,7 @@ namespace utils::beta::containers
 		template<typename T, size_t inner_size, typename Allocator>
 		struct linked_vector<T, inner_size, Allocator>::const_iterator
 			{
+			template<typename, size_t, typename> friend class linked_vector;
 			public:
 				using self_type         = const_iterator;
 				using value_type        = T;
@@ -280,7 +288,7 @@ namespace utils::beta::containers
 				using iterator_category = std::random_access_iterator_tag;
 				using difference_type   = ptrdiff_t ;
 
-				const_iterator(segment_t::const_iterator segment_iterator, segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
+				const_iterator(segment_t::const_iterator segment_iterator, const segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
 
 
 				self_type  operator+ (difference_type rhs)
@@ -352,8 +360,8 @@ namespace utils::beta::containers
 
 				self_type& operator--(int) { operator--(); return *this; }
 
-				const reference operator* () const { return *segment_iterator; }
-				const pointer   operator->() const { return  segment_iterator; }
+				const_reference operator* () const { return *segment_iterator; }
+				const_pointer   operator->() const { return  segment_iterator.operator->(); }
 				bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
 				bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
 			private:

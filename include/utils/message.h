@@ -25,13 +25,13 @@ namespace utils
 			message(message&& move) = default;
 			message& operator=(message&& move) = default;
 
-			static message log(std::string&& string = "") noexcept { return {msg_t::log, std::move(string), std::chrono::system_clock::now()}; }
-			static message dgn(std::string&& string = "") noexcept { return {msg_t::dgn, std::move(string), std::chrono::system_clock::now()}; }
-			static message inf(std::string&& string = "") noexcept { return {msg_t::inf, std::move(string), std::chrono::system_clock::now()}; }
-			static message wrn(std::string&& string = "") noexcept { return {msg_t::wrn, std::move(string), std::chrono::system_clock::now()}; }
-			static message err(std::string&& string = "") noexcept { return {msg_t::err, std::move(string), std::chrono::system_clock::now()}; }
+			inline static message log(std::string&& string = "") noexcept { return {msg_t::log, std::move(string), std::chrono::system_clock::now()}; }
+			inline static message dgn(std::string&& string = "") noexcept { return {msg_t::dgn, std::move(string), std::chrono::system_clock::now()}; }
+			inline static message inf(std::string&& string = "") noexcept { return {msg_t::inf, std::move(string), std::chrono::system_clock::now()}; }
+			inline static message wrn(std::string&& string = "") noexcept { return {msg_t::wrn, std::move(string), std::chrono::system_clock::now()}; }
+			inline static message err(std::string&& string = "") noexcept { return {msg_t::err, std::move(string), std::chrono::system_clock::now()}; }
 
-			const char* out_type() const noexcept
+			inline const char* out_type() const noexcept
 				{
 				switch (type)
 					{
@@ -43,7 +43,7 @@ namespace utils
 					default: return "[This error code should be impossible to get]";
 					}
 				}
-			const char* out_type_verbose() const noexcept
+			inline const char* out_type_verbose() const noexcept
 				{
 				switch (type)
 					{
@@ -55,7 +55,7 @@ namespace utils
 					default: return "[This error code should be impossible to get]";
 					}
 				}
-			utils::console::colour::foreground_t out_type_color() const noexcept
+			inline utils::console::colour::foreground_t out_type_color() const noexcept
 				{
 				switch (type)
 					{
@@ -68,14 +68,16 @@ namespace utils
 					}
 				}
 
+			inline std::chrono::time_point<std::chrono::system_clock> get_timestamp() const noexcept { return time; }
+
 		private:
-			message(msg_t type, std::string&& string, std::chrono::time_point<std::chrono::system_clock> time) noexcept
+			inline message(msg_t type, std::string&& string, std::chrono::time_point<std::chrono::system_clock> time) noexcept
 				: type{type}, string{string}, time{time}
 				{}
-			message(msg_t type, std::string&& string) noexcept
+			inline message(msg_t type, std::string&& string) noexcept
 				: type{type}, string{string}, time{std::chrono::system_clock::now()}
 				{}
-			message(std::string&& string) noexcept
+			inline message(std::string&& string) noexcept
 				: type{msg_t::log}, string{string}, time{std::chrono::system_clock::now()}
 				{}
 
@@ -83,13 +85,13 @@ namespace utils
 			std::string string{};
 			std::chrono::time_point<std::chrono::system_clock> time;
 
-			static std::string filter_last_newline(const std::string& string) noexcept
+			inline static std::string filter_last_newline(const std::string& string) noexcept
 				{
 				if (string.length() > 0 && string[string.length() - 1] == '\n') { return string.substr(0, string.length() - 1); }
 				else { return string; }
 				}
 
-			friend std::ostream& operator<<(std::ostream& os, const message& m)
+			inline friend std::ostream& operator<<(std::ostream& os, const message& m)
 				{
 				using namespace utils::output;
 

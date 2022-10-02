@@ -3,14 +3,14 @@
 #include <list>
 #include <algorithm>
 #include <sstream> 
-#include "../../include/utils/beta/containers/linked_vector/linked_vector.h"
+#include "../../include/utils/beta/containers/linked_vector.h"
 
 #include "CppUnitTest.h"
 
 struct disney
 	{
 	inline static size_t count{ 0 };
-	int v;
+	int v { 0 };
 	disney() {}
 	disney(int v) : v{ v } { count++; }
 	~disney() { count--; }
@@ -24,19 +24,19 @@ namespace Microsoft
 		{
 		namespace CppUnitTestFramework
 			{
-			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney>::iterator> (const class utils::beta::containers::linked_vector<disney>::iterator& t)
+			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney>::iterator> (const struct utils::beta::containers::linked_vector<disney>::iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney, 2>::iterator>(const class utils::beta::containers::linked_vector<disney, 2>::iterator& t)
+			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney, 2>::iterator>(const struct utils::beta::containers::linked_vector<disney, 2>::iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney, 5>::iterator>(const class utils::beta::containers::linked_vector<disney, 5>::iterator& t)
+			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney, 5>::iterator>(const struct utils::beta::containers::linked_vector<disney, 5>::iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
