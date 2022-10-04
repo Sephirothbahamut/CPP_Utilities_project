@@ -119,19 +119,14 @@ int main()
 	{
 	if(true)
 		{
-		const utils::beta::containers::linked_vector<disney> a;
+		utils::beta::containers::linked_vector<disney, 2> a;
 
-		//auto& obj_0{ a.emplace(0) };
-		//auto& obj_1{ a.emplace(1) };
-		//auto& obj_2{ a.emplace(2) };
-		//
-		//auto obj_0_ptr {&obj_0};
-		//auto obj_1_ptr {&obj_1};
-		//auto obj_2_ptr {&obj_2};
+		auto& obj_0{ a.emplace(0) };
+		auto& obj_1{ a.emplace(1) };
+		auto& obj_2{ a.emplace(2) };
 
+		auto it{ a.rbegin() };
 		int x;
-
-		auto it{ a.begin() };
 		x = it->v;
 		it++;
 		x = it->v;
@@ -141,10 +136,12 @@ int main()
 		x = it->v;
 		it--;
 		x = it->v;
-
+		
+		auto re{ a.rend() };
+		auto* ptr{ &*a.begin() };
 		it += 3;
-		auto end{a.end()};
-		auto begin{ a.begin() };
+
+		auto rb{ a.rbegin() };
 		it -= 3;
 
 		auto& disney_count{ disney::count };

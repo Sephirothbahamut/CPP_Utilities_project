@@ -1,18 +1,30 @@
 #pragma once
 #include <memory>
+#include <utility>
+#include <type_traits>
+#include <vector>
 
 #include "../../memory.h"
 #include "segment.h"
 
-// TODO allocator, iterators
 namespace utils::beta::containers
 	{
+	namespace details
+		{
+		template<typename T, size_t inner_size, typename Allocator>
+		struct linked_vector_iterator;
+		}
+
 	template <typename T, size_t inner_size = 8, typename Allocator = std::allocator<T>>
 	class linked_vector
 		{
+		friend struct details::linked_vector_iterator        <      T, inner_size, Allocator>;
+		friend struct details::linked_vector_iterator        <const T, inner_size, Allocator>;
+		friend struct details::linked_vector_reverse_iterator<      T, inner_size, Allocator>;
+		friend struct details::linked_vector_reverse_iterator<const T, inner_size, Allocator>;
+
 		private:
 			using segment_t = segment<T, inner_size>;
-			
 			using segment_ptr_t = utils::observer_ptr<segment_t>;
 			using segment_allocator_t = typename std::allocator_traits<Allocator>::template rebind_alloc<segment_t>;
 
@@ -23,17 +35,18 @@ namespace utils::beta::containers
 			using pointer         = segment_t::pointer;
 			using const_pointer   = segment_t::const_pointer;
 
-			struct iterator;
-			struct const_iterator;
-			struct reverse_iterator;
-			struct const_reverse_iterator;
+			using iterator               = details::linked_vector_iterator        <      T, inner_size, Allocator>;
+			using const_iterator         = details::linked_vector_iterator        <const T, inner_size, Allocator>;
+			using reverse_iterator       = details::linked_vector_reverse_iterator<      T, inner_size, Allocator>;
+			using const_reverse_iterator = details::linked_vector_reverse_iterator<const T, inner_size, Allocator>;
 
 			linked_vector() {}
 			linked_vector(const Allocator& allocator) : segment_allocator{allocator} {}
 
 			~linked_vector() { clear(); }
 
-			inline size_t size() const
+			inline size_t capacity() const noexcept { return _segments_count * inner_size; }
+			inline size_t size()     const noexcept
 				{
 				if (segment_ptr_t segment = last_segment){ return (segments_count() - 1) * inner_size + segment->size; }
 				return 0;
@@ -41,7 +54,7 @@ namespace utils::beta::containers
 			inline size_t segments_count() const { return _segments_count; }
 
 			inline T& front() { return first_segment->arr[0]; }
-			inline T& back() { return last_segment->arr[last_segment->size - 1];  }
+			inline T& back()  { return last_segment ->arr[last_segment->size - 1];  }
 
 			inline bool empty() const { return first_segment == nullptr;  }
 			inline void clear()
@@ -82,12 +95,39 @@ namespace utils::beta::containers
 				return *new_t;
 				}
 
-			iterator erase(const_iterator begin, const_iterator end)
+			iterator erase(const_iterator erase_from, const_iterator erase_to)
 				{
-				segment_ptr_t current_segment = first_segment;
-				while (begin.segment_ptr->begin() != current_segment->begin()) { current_segment = current_segment->next_segment(); }
+				iterator erasing_it{ erase_from };
+				iterator move_from { erase_to + 1 };
 				
+				while (move_from != end())
+					{
+					*erasing_it = std::move(*move_from);
+					erasing_it++;
+					move_from++;
+					}
 				
+				iterator new_end{ erasing_it };
+				
+				while (erasing_it != end())
+					{
+					erasing_it->~T();
+					erasing_it++;
+					}
+				
+				//update size
+				auto new_last_segment_ptr{ new_end.segment_ptr };
+				
+				while (new_last_segment_ptr != last_segment)
+					{
+					auto delete_segment_ptr{ last_segment };
+					last_segment = last_segment->prev;
+					std::allocator_traits<segment_allocator_t>::deallocate(segment_allocator, delete_segment_ptr, 1);
+					}
+				new_last_segment_ptr->size = new_end.segment_iterator - new_last_segment_ptr->begin();
+				new_last_segment_ptr->next = nullptr;
+				
+				return { erase_from };
 				}
 
 			inline void move_storage(T* dest, T* from, size_t n)
@@ -109,18 +149,22 @@ namespace utils::beta::containers
 					return;
 				}
 				
-			const_iterator         begin () const { return {first_segment->begin()                     , first_segment}; }
-			iterator               begin ()       { return {first_segment->begin()                     , first_segment}; }
+			const_iterator         cbegin () const { if (first_segment) { return { first_segment->cbegin ()                                    , first_segment }; } else { return {}; } }
+			const_iterator         begin  () const { if (first_segment) { return { first_segment->cbegin ()                                    , first_segment }; } else { return {}; } }
+			iterator               begin  ()       { if (first_segment) { return { first_segment->begin  ()                                    , first_segment }; } else { return {}; } }
 
-			const_iterator         end   () const { return {last_segment ->begin() + last_segment->size, last_segment }; }
-			iterator               end   ()       { 
-				auto x{ last_segment->begin() };
-				auto y{ last_segment->begin() + last_segment->size };
-				return {last_segment ->begin() + last_segment->size, last_segment }; 
-				}
 
-			size_t capacity() { return _segments_count * inner_size; }
-			size_t size() { return capacity() - (inner_size - end()->segment_ptr.size); }
+ 			const_iterator         cend   () const { if (first_segment) { return { last_segment ->cbegin () +  last_segment->size              , last_segment  }; } else { return {}; } }
+			const_iterator         end    () const { if (first_segment) { return { last_segment ->cbegin () +  last_segment->size              , last_segment  }; } else { return {}; } }
+			iterator               end    ()       { if (first_segment) { return { last_segment ->begin  () +  last_segment->size              , last_segment  }; } else { return {}; } }
+
+			const_reverse_iterator crbegin() const { if (first_segment) { return { last_segment ->crbegin() + (inner_size - last_segment->size), last_segment  }; } else { return {}; } }
+			const_reverse_iterator rbegin () const { if (first_segment) { return { last_segment ->crbegin() + (inner_size - last_segment->size), last_segment  }; } else { return {}; } }
+			reverse_iterator       rbegin ()       { if (first_segment) { return { last_segment ->rbegin () + (inner_size - last_segment->size), last_segment  }; } else { return {}; } }
+
+			const_reverse_iterator crend  () const { if (first_segment) { return { first_segment->crend  ()                                    , first_segment }; } else { return {}; } }
+			const_reverse_iterator rend   () const { if (first_segment) { return { first_segment->crend  ()                                    , first_segment }; } else { return {}; } }
+			reverse_iterator       rend   ()       { if (first_segment) { return { first_segment->rend   ()                                    , first_segment }; } else { return {}; } }
 
 		protected:
 			segment_ptr_t  first_segment {nullptr};
@@ -129,8 +173,11 @@ namespace utils::beta::containers
 			size_t              _segments_count{0};
 			segment_allocator_t segment_allocator ;
 
-			//inline const segment_ptr_t get_first() const { return first_segment; }
-			//inline       segment_ptr_t get_first()       { return first_segment; }
+			inline const segment_ptr_t get_first() const { return first_segment; }
+			inline       segment_ptr_t get_first()       { return first_segment; }
+
+			inline const segment_ptr_t get_last () const { return last_segment ; }
+			inline       segment_ptr_t get_last ()       { return last_segment ; }
 
 			pointer get_free_slot()
 				{
@@ -150,6 +197,8 @@ namespace utils::beta::containers
 				{
 				segment_ptr_t new_segment{ std::allocator_traits<segment_allocator_t>::allocate(segment_allocator, 1) };
 				new_segment->size = 0;
+				new_segment->prev = nullptr;
+				new_segment->next = nullptr;
 
 				first_segment = new_segment;
 				last_segment = new_segment;
@@ -163,209 +212,407 @@ namespace utils::beta::containers
 				last_segment->next = new_segment;
 				new_segment->size = 0;
 				new_segment->prev = last_segment;
+				new_segment->next = nullptr;
 				last_segment = new_segment;
 
 				return new_segment;
 				}
 			
+			static size_t distance(segment_ptr_t leftmost, segment_ptr_t rightmost)
+				{
+				segment_ptr_t curr_segment_ptr{ rightmost };
+				size_t segment_distance{ 0 };
+
+				while (curr_segment_ptr != leftmost)
+					{
+					curr_segment_ptr = curr_segment_ptr->prev;
+					segment_distance++;
+					}
+
+				return segment_distance;
+				}
 		};
 
-		template<typename T, size_t inner_size, typename Allocator>
-		struct linked_vector<T, inner_size, Allocator>::iterator
+		
+		namespace details
 			{
-			template<typename, size_t, typename> friend class linked_vector;
+			template<typename T, size_t inner_size, typename Allocator>
+			struct linked_vector_iterator
+				{
+				template <typename T, size_t inner_size, typename Allocator>
+				friend class linked_vector;
+				template <typename T, size_t inner_size, typename Allocator>
+				friend struct linked_vector_iterator;
+				
+				using segment_iterator_t = segment_iterator<T, inner_size>;
+				using segment_ptr_t      = linked_vector   <std::remove_cv_t<T>, inner_size, Allocator>::segment_ptr_t;
 
-			public:
-				using self_type = iterator;
-				using value_type = T;
-				using reference = T&;
-				using pointer = T*;
-				using iterator_category = std::random_access_iterator_tag;
-				using difference_type = ptrdiff_t;
+				public:
+					using self_type         = linked_vector_iterator<T, inner_size, Allocator>;
+					using value_type        = T  ;
+					using reference         = value_type& ;
+					using const_reference   = const reference;
+					using pointer           = value_type* ;
+					using const_pointer     = const pointer;
+					using iterator_category = std::random_access_iterator_tag;
+					using difference_type   = ptrdiff_t ;
 
-				//TODO fix operator ++, add const noexcept where needed
-				iterator(segment_t::iterator segment_iterator, segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
+					linked_vector_iterator() : segment_iterator{ nullptr }, segment_ptr{ nullptr } { }
+					linked_vector_iterator(segment_iterator_t segment_iterator, const segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
 
-				self_type  operator+ (difference_type rhs) 
-					{
-					auto ret{ *this };
+					template<typename rhs_T>
+						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+					linked_vector_iterator(const linked_vector_iterator<rhs_T, inner_size, Allocator>& other) : segment_iterator{ other.segment_iterator }, segment_ptr{ other.segment_ptr } {}
+
+					template<typename rhs_T>
+						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+					self_type& operator=(const linked_vector_iterator<rhs_T, inner_size, Allocator>& other)
+						{
+						segment_iterator = other.segment_iterator;
+						segment_ptr      = other.segment_ptr;
+						return *this;
+						}
+
+					self_type  operator+ (difference_type rhs)
+						{
+						auto ret{ *this };
+
+
+						auto to_end{ segment_ptr->end() - segment_iterator };
+						if (rhs < to_end)
+							{
+							ret.segment_iterator += rhs;
+							return ret;
+							}
+
+						auto leftover{ rhs - to_end };
+
+						while(true)
+							{
+							if (!ret.segment_ptr->next) { return { ret.segment_ptr->end(), ret.segment_ptr }; }
+
+							ret.segment_ptr = ret.segment_ptr->next;
+							if (leftover < inner_size) { break; }
+							
+							leftover -= inner_size;
+							}
+
+						ret.segment_iterator = ret.segment_ptr->begin() + leftover;
+
+						return ret;
+						}
+					self_type  operator- (difference_type rhs)
+						{
+						auto ret{ *this };
+
+						auto to_begin{ segment_iterator - segment_ptr->begin() };
+						if (rhs <= to_begin)
+							{
+							ret.segment_iterator -= rhs;
+							return ret;
+							}
+
+						auto leftover{ rhs - to_begin };
+						ret.segment_ptr = ret.segment_ptr->prev;
+
+						while (leftover > inner_size)
+							{
+							ret.segment_ptr = ret.segment_ptr->prev;
+							leftover -= inner_size;
+							}
+
+						ret.segment_iterator = ret.segment_ptr->end() - leftover;
+
+						return ret;
+						}
+
+					template<typename rhs_T>
+						requires std::same_as <std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+					difference_type operator- (const linked_vector_iterator<rhs_T, inner_size, Allocator>& rhs) const noexcept 
+						{ 
+						if (segment_ptr == rhs.segment_ptr)
+							{
+							return segment_iterator - rhs.segment_iterator;
+							}
+
+						auto a{ this->segment_ptr };
+						auto b{ rhs  .segment_ptr };
+
+						size_t iterations{ 1 };
+						while(a->prev)
+							{
+							a = a->prev;
+
+							if (a == rhs.segment_ptr)
+								{
+								difference_type a_to_begin{ this->segment_iterator   - this->segment_ptr->begin() };
+								difference_type b_to_end  { rhs  .segment_ptr->end() - rhs  .segment_iterator     };
+								return  static_cast<difference_type>(a_to_begin + iterations + b_to_end);
+								}
+							iterations++;
+							}
+							
+						iterations = 1;
+						while (b->prev)
+							{
+							b = b->prev;
+
+							if (b == this->segment_ptr)
+								{
+								difference_type a_to_end  { this->segment_ptr->end() - this->segment_iterator};
+								difference_type b_to_begin{ rhs  .segment_iterator   - rhs.segment_ptr->begin()  };
+								return -static_cast<difference_type>(a_to_end + iterations + b_to_begin);
+								}
+							iterations++;
+							}
+						return {}; // this should not happen!
+						}
+
+					self_type& operator+=(difference_type rhs) { *this = *this + rhs; return *this; }
+					self_type& operator-=(difference_type rhs) { *this = *this - rhs; return *this; }
+
+					self_type operator++()
+						{
+						auto ret{ *this };
+						operator+=(1);
+						return ret;
+						}
+
+					self_type& operator++(int) { operator++(); return *this; }
+
+					self_type  operator--()
+						{
+						auto ret{ *this };
+						operator-=(1);
+						return ret;
+						}
+
+					self_type& operator--(int) { operator--(); return *this; }
 					
-					auto to_end{ segment_ptr->end() - segment_iterator };
-					if (rhs < to_end)
+					const_reference operator* () const noexcept                             { return *segment_iterator; }
+					reference       operator* ()       noexcept requires(!std::is_const<T>) { return *segment_iterator; }
+					const_pointer   operator->() const noexcept                             { return  segment_iterator.operator->(); }
+					pointer         operator->()       noexcept requires(!std::is_const<T>) { return  segment_iterator.operator->(); }
+					bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
+					bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
+					bool operator< (const self_type& rhs) const noexcept 
+						{ 
+						if (segment_ptr == rhs.segment_ptr) { return segment_iterator < rhs.segment_iterator; }
+
+						segment_ptr_t this_backward{ segment_ptr }, rhs_backward{ rhs.segment_ptr };
+						while (true)
+							{
+							this_backward = this_backward->prev;
+							rhs_backward  = rhs_backward ->prev;
+							if (!this_backward) { return true  ;}
+							if (!rhs_backward ) { return false ;}
+							}
+						}
+					bool operator> (const self_type& rhs) const noexcept
 						{
-						ret.segment_iterator += rhs;
-						return ret;
+						if (segment_ptr == rhs.segment_ptr) { return segment_iterator > rhs.segment_iterator; }
+
+						segment_ptr_t this_backward{ segment_ptr }, rhs_backward{ rhs.segment_ptr };
+						while (true)
+							{
+							this_backward = this_backward->prev;
+							rhs_backward  = rhs_backward ->prev;
+							if (!this_backward) { return false ;}
+							if (!rhs_backward ) { return true  ;}
+							}
+						}
+				private:
+					segment_iterator_t segment_iterator;
+					segment_ptr_t      segment_ptr;
+				};
+
+			template<typename T, size_t inner_size, typename Allocator>
+			struct linked_vector_reverse_iterator
+				{
+				template <typename T, size_t inner_size, typename Allocator>
+				friend class linked_vector;
+				template <typename T, size_t inner_size, typename Allocator>
+				friend struct linked_vector_reverse_iterator;
+				
+				using segment_iterator_t = segment_reverse_iterator<T, inner_size>;
+				using segment_ptr_t      = linked_vector   <std::remove_cv_t<T>, inner_size, Allocator>::segment_ptr_t;
+
+				public:
+					using self_type         = linked_vector_reverse_iterator<T, inner_size, Allocator>;
+					using value_type        = T  ;
+					using reference         = value_type& ;
+					using const_reference   = const reference;
+					using pointer           = value_type* ;
+					using const_pointer     = const pointer;
+					using iterator_category = std::random_access_iterator_tag;
+					using difference_type   = ptrdiff_t ;
+
+					linked_vector_reverse_iterator() : segment_iterator{ nullptr }, segment_ptr{ nullptr } { }
+					linked_vector_reverse_iterator(segment_iterator_t segment_iterator, const segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
+
+					template<typename rhs_T>
+						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+					linked_vector_reverse_iterator(const linked_vector_reverse_iterator<rhs_T, inner_size, Allocator>& other) : segment_iterator{ other.segment_iterator }, segment_ptr{ other.segment_ptr } {}
+
+					template<typename rhs_T>
+						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+					self_type& operator=(const linked_vector_reverse_iterator<rhs_T, inner_size, Allocator>& other)
+						{
+						segment_iterator = other.segment_iterator;
+						segment_ptr      = other.segment_ptr;
+						return *this;
 						}
 
-					auto leftover{ rhs - to_end };
-					ret.segment_ptr = ret.segment_ptr->next;
-
-					while (leftover >= inner_size)
+					self_type  operator+ (difference_type rhs)
 						{
+						auto ret{ *this };
+
+						auto to_end{ segment_ptr->rend() - segment_iterator };
+						if (rhs < to_end)
+							{
+							ret.segment_iterator += rhs;
+							return ret;
+							}
+
+						auto leftover{ rhs - to_end };
+
+						while (true)
+							{
+							if (!ret.segment_ptr->prev) { return { ret.segment_ptr->rend(), ret.segment_ptr }; }
+
+							ret.segment_ptr = ret.segment_ptr->prev;
+							if (leftover < inner_size) { break; }
+
+							leftover -= inner_size;
+							}
+
+						ret.segment_iterator = ret.segment_ptr->rbegin() + leftover;
+
+						return ret;
+						}
+					self_type  operator- (difference_type rhs)
+						{
+						auto ret{ *this };
+
+						auto to_begin{ segment_iterator - segment_ptr->rbegin() };
+						if (rhs <= to_begin)
+							{
+							ret.segment_iterator -= rhs;
+							return ret;
+							}
+
+						auto leftover{ rhs - to_begin };
 						ret.segment_ptr = ret.segment_ptr->next;
-						leftover -= inner_size;
-						}
 
-					ret.segment_iterator = ret.segment_ptr->begin() + leftover;
+						while (leftover > inner_size)
+							{
+							ret.segment_ptr = ret.segment_ptr->next;
+							leftover -= inner_size;
+							}
 
-					return ret;
-					}
-				self_type  operator- (difference_type rhs) 
-					{
-					auto ret{ *this };
+						ret.segment_iterator = ret.segment_ptr->rend() - leftover;
 
-					auto to_begin{ segment_iterator - segment_ptr->begin() };
-					if (rhs <= to_begin)
-						{
-						ret.segment_iterator -= rhs;
 						return ret;
 						}
 
-					auto leftover{ rhs - to_begin };
-					ret.segment_ptr = ret.segment_ptr->prev;
+					template<typename rhs_T>
+						requires std::same_as <std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+					difference_type operator- (const linked_vector_reverse_iterator<rhs_T, inner_size, Allocator>& rhs) const noexcept 
+						{ 
+						if (segment_ptr == rhs.segment_ptr)
+							{
+							return segment_iterator - rhs.segment_iterator;
+							}
 
-					while (leftover > inner_size)
-						{
-						ret.segment_ptr = ret.segment_ptr->prev;
-						leftover -= inner_size;
+						auto a{ this->segment_ptr };
+						auto b{ rhs  .segment_ptr };
+
+						size_t iterations{ 1 };
+						while(a->next)
+							{
+							a = a->next;
+
+							if (a == rhs.segment_ptr)
+								{
+								difference_type a_to_begin{ this->segment_iterator   - this->segment_ptr->rbegin() };
+								difference_type b_to_end  { rhs  .segment_ptr->rend() - rhs  .segment_iterator     };
+								return  static_cast<difference_type>(a_to_begin + iterations + b_to_end);
+								}
+							iterations++;
+							}
+							
+						iterations = 1;
+						while (b->next)
+							{
+							b = b->next;
+
+							if (b == this->segment_ptr)
+								{
+								difference_type a_to_end  { this->segment_ptr->rend() - this->segment_iterator};
+								difference_type b_to_begin{ rhs  .segment_iterator   - rhs.segment_ptr->rbegin()  };
+								return -static_cast<difference_type>(a_to_end + iterations + b_to_begin);
+								}
+							iterations++;
+							}
+						return {}; // this should not happen!
 						}
 
-					ret.segment_iterator = ret.segment_ptr->end() - leftover;
+					self_type& operator+=(difference_type rhs) { *this = *this + rhs; return *this; }
+					self_type& operator-=(difference_type rhs) { *this = *this - rhs; return *this; }
 
-					return ret;
-					}
-				self_type& operator+=(difference_type rhs) { *this = *this + rhs; return *this; }
-				self_type& operator-=(difference_type rhs) { *this = *this - rhs; return *this; }
-
-				self_type operator++()
-					{
-					auto ret{ *this };
-					ret.segment_iterator++;
-					if (ret.segment_iterator == ret.segment_ptr->end())
+					self_type operator++()
 						{
-						ret.segment_iterator = ret.segment_ptr->next->begin();
-						ret.segment_ptr = ret.segment_ptr->next;
-						}
-					return ret;
-					}
-
-				self_type& operator++(int) { *this = operator++(); return *this; }
-
-				self_type operator--()
-					{
-					auto ret{ *this };
-					if (ret.segment_iterator == ret.segment_ptr->begin())
-						{
-						ret.segment_iterator = ret.segment_ptr->prev->end() - 1;
-						ret.segment_ptr = ret.segment_ptr->prev;
-						}
-					else { ret.segment_iterator--; }
-					return ret;
-					}
-
-				self_type& operator--(int) { *this = operator--(); return *this; }
-
-				const_reference operator* () const { return *segment_iterator; }
-				      reference operator* ()       { return *segment_iterator; }
-				const_pointer   operator->() const { return  segment_iterator.operator->(); }
-				      pointer   operator->()       { return  segment_iterator.operator->(); }
-				bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
-				bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
-			private:
-				segment_ptr_t segment_ptr;
-				segment_t::iterator segment_iterator;
-			};
-
-		template<typename T, size_t inner_size, typename Allocator>
-		struct linked_vector<T, inner_size, Allocator>::const_iterator
-			{
-			template<typename, size_t, typename> friend class linked_vector;
-			public:
-				using self_type         = const_iterator;
-				using value_type        = T;
-				using reference         = T&;
-				using pointer           = T*;
-				using iterator_category = std::random_access_iterator_tag;
-				using difference_type   = ptrdiff_t ;
-
-				const_iterator(segment_t::const_iterator segment_iterator, const segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
-
-
-				self_type  operator+ (difference_type rhs)
-					{
-					auto ret{ *this };
-
-					auto to_end{ segment_ptr->end() - segment_iterator };
-					if (rhs < to_end)
-						{
-						ret.segment_iterator += rhs;
+						auto ret{ *this };
+						operator+=(1);
 						return ret;
 						}
 
-					auto leftover{ rhs - to_end };
-					ret.segment_ptr = ret.segment_ptr->next;
+					self_type& operator++(int) { operator++(); return *this; }
 
-					while (leftover >= inner_size)
+					self_type  operator--()
 						{
-						ret.segment_ptr = ret.segment_ptr->next;
-						leftover -= inner_size;
-						}
-
-					ret.segment_iterator = ret.segment_ptr->begin() + leftover;
-
-					return ret;
-					}
-				self_type  operator- (difference_type rhs)
-					{
-					auto ret{ *this };
-
-					auto to_begin{ segment_iterator - segment_ptr->begin() };
-					if (rhs <= to_begin)
-						{
-						ret.segment_iterator -= rhs;
+						auto ret{ *this };
+						operator-=(1);
 						return ret;
 						}
 
-					auto leftover{ rhs - to_begin };
-					ret.segment_ptr = ret.segment_ptr->prev;
+					self_type& operator--(int) { operator--(); return *this; }
+					
+					const_reference operator* () const noexcept                             { return *segment_iterator; }
+					reference       operator* ()       noexcept requires(!std::is_const<T>) { return *segment_iterator; }
+					const_pointer   operator->() const noexcept                             { return  segment_iterator.operator->(); }
+					pointer         operator->()       noexcept requires(!std::is_const<T>) { return  segment_iterator.operator->(); }
+					bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
+					bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
+					bool operator< (const self_type& rhs) const noexcept 
+						{ 
+						if (segment_ptr == rhs.segment_ptr) { return segment_iterator < rhs.segment_iterator; }
 
-					while (leftover > inner_size)
-						{
-						ret.segment_ptr = ret.segment_ptr->prev;
-						leftover -= inner_size;
+						segment_ptr_t this_backward{ segment_ptr }, rhs_backward{ rhs.segment_ptr };
+						while (true)
+							{
+							this_backward = this_backward->next;
+							rhs_backward  = rhs_backward ->next;
+							if (!this_backward) { return true  ;}
+							if (!rhs_backward ) { return false ;}
+							}
 						}
+					bool operator> (const self_type& rhs) const noexcept
+						{
+						if (segment_ptr == rhs.segment_ptr) { return segment_iterator > rhs.segment_iterator; }
 
-					ret.segment_iterator = ret.segment_ptr->end() - leftover;
-
-					return ret;
-					}
-				self_type& operator+=(difference_type rhs) { *this = *this + rhs; return *this; }
-				self_type& operator-=(difference_type rhs) { *this = *this - rhs; return *this; }
-
-				self_type& operator++()
-					{
-					auto ret{ *this };
-					operator+=(1);
-					return ret;
-					}
-
-				self_type& operator++(int) { operator++(); return *this; }
-
-				self_type& operator--()
-					{
-					auto ret{ *this };
-					operator-=(1);
-					return ret;
-					}
-
-				self_type& operator--(int) { operator--(); return *this; }
-
-				const_reference operator* () const { return *segment_iterator; }
-				const_pointer   operator->() const { return  segment_iterator.operator->(); }
-				bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
-				bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
-			private:
-				segment_ptr_t segment_ptr;
-				segment_t::const_iterator segment_iterator;
-			};
+						segment_ptr_t this_backward{ segment_ptr }, rhs_backward{ rhs.segment_ptr };
+						while (true)
+							{
+							this_backward = this_backward->next;
+							rhs_backward  = rhs_backward ->next;
+							if (!this_backward) { return false ;}
+							if (!rhs_backward ) { return true  ;}
+							}
+						}
+				private:
+					segment_iterator_t segment_iterator;
+					segment_ptr_t      segment_ptr;
+				};
+			}
 	}

@@ -42,6 +42,24 @@ namespace Microsoft
 				s << &(*t);
 				return s.str();
 				}
+			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney>::reverse_iterator>(const struct utils::beta::containers::linked_vector<disney>::reverse_iterator& t)
+				{
+				std::wstringstream s;
+				s << &(*t);
+				return s.str();
+				}
+			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney, 2>::reverse_iterator>(const struct utils::beta::containers::linked_vector<disney, 2>::reverse_iterator& t)
+				{
+				std::wstringstream s;
+				s << &(*t);
+				return s.str();
+				}
+			template<> static std::wstring ToString<utils::beta::containers::linked_vector<disney, 5>::reverse_iterator>(const struct utils::beta::containers::linked_vector<disney, 5>::reverse_iterator& t)
+				{
+				std::wstringstream s;
+				s << &(*t);
+				return s.str();
+				}
 			}
 		}
 	}
@@ -119,6 +137,31 @@ namespace Tests
 				Assert::AreEqual(size_t{ 0 }, disney::count);
 				}
 
+			TEST_METHOD(erase)
+				{
+				disney::reset();
+				utils::beta::containers::linked_vector<disney, 2> a;
+
+				auto& obj_0{ a.emplace(0) };
+				auto& obj_1{ a.emplace(1) };//
+				auto& obj_2{ a.emplace(2) };
+				auto& obj_3{ a.emplace(3) };
+				auto& obj_4{ a.emplace(4) };//
+				auto& obj_5{ a.emplace(5) };
+				auto& obj_6{ a.emplace(6) };
+				auto& obj_7{ a.emplace(7) };
+				
+				auto it{ a.begin() };
+				auto erase_start{ it + 1 };
+				auto erase_end  { it + 4 };
+				a.erase(erase_start, erase_end);
+				
+				Assert::AreEqual(0, (it + 0)->v);
+				Assert::AreEqual(5, (it + 1)->v);
+				Assert::AreEqual(6, (it + 2)->v);
+				Assert::AreEqual(7, (it + 3)->v);
+				}
+
 			TEST_METHOD(iterator_single_segment)
 				{
 				disney::reset();
@@ -145,6 +188,13 @@ namespace Tests
 
 				it -= 3;
 				Assert::AreEqual(a.begin(), it);
+
+				int i{ 0 };
+				for (const auto& element : a)
+					{
+					Assert::AreEqual(i, element.v);
+					i++;
+					}
 				}
 
 			TEST_METHOD(iterator)
@@ -173,6 +223,13 @@ namespace Tests
 				
 				it -= 3;
 				Assert::AreEqual(a.begin(), it);
+
+				int i{ 0 };
+				for (const auto& element : a)
+					{
+					Assert::AreEqual(i, element.v);
+					i++;
+					}
 				}
 
 			TEST_METHOD(iterator_extra)
@@ -206,6 +263,75 @@ namespace Tests
 
 				it -= 8;
 				Assert::AreEqual(a.begin(), it);
+
+				int i{ 0 };
+				for (const auto& element : a)
+					{
+					Assert::AreEqual(i, element.v);
+					i++;
+					}
+				}
+			TEST_METHOD(riterator)
+				{
+				disney::reset();
+
+				utils::beta::containers::linked_vector<disney, 2> a;
+
+				auto& obj_0{ a.emplace(2) };
+				auto& obj_1{ a.emplace(1) };
+				auto& obj_2{ a.emplace(0) };
+
+				auto it{ a.rbegin() };
+				Assert::AreEqual(0, it->v);
+				it++;
+				Assert::AreEqual(1, it->v);
+				it++;
+				Assert::AreEqual(2, it->v);
+				it--;
+				Assert::AreEqual(1, it->v);
+				it--;
+				Assert::AreEqual(0, it->v);
+
+				it += 3;
+				Assert::AreEqual(a.rend(), it);
+
+				it -= 3;
+				Assert::AreEqual(a.rbegin(), it);
+
+				}
+
+			TEST_METHOD(riterator_extra)
+				{
+				disney::reset();
+
+				utils::beta::containers::linked_vector<disney, 5> a;
+
+				auto& obj_0{ a.emplace(7) };
+				auto& obj_1{ a.emplace(6) };
+				auto& obj_2{ a.emplace(5) };
+				auto& obj_3{ a.emplace(4) };
+				auto& obj_4{ a.emplace(3) };
+				auto& obj_5{ a.emplace(2) };
+				auto& obj_6{ a.emplace(1) };
+				auto& obj_7{ a.emplace(0) };
+
+				auto it{ a.rbegin() };
+				Assert::AreEqual(0, it->v);
+				it++;
+				Assert::AreEqual(1, it->v);
+				it += 4;
+				Assert::AreEqual(5, it->v);
+				it--;
+				Assert::AreEqual(4, it->v);
+				it -= 2;
+				Assert::AreEqual(2, it->v);
+
+				it += 6;
+				Assert::AreEqual(a.rend(), it);
+
+				it -= 8;
+				Assert::AreEqual(a.rbegin(), it);
+
 				}
 		};
 	}
