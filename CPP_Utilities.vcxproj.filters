@@ -250,9 +250,6 @@
     <ClInclude Include="include\utils\beta\containers\linked_vector.h">
       <Filter>Beta\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\segment.h">
-      <Filter>Beta\containers</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\beta\containers\segmented_vector.h">
       <Filter>Beta\containers</Filter>
     </ClInclude>

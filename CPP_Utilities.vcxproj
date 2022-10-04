@@ -131,7 +131,6 @@
   <ItemGroup>
     <ClInclude Include="include\utils\beta\containers\hive\pool.h" />
     <ClInclude Include="include\utils\beta\containers\linked_vector.h" />
-    <ClInclude Include="include\utils\beta\containers\segment.h" />
     <ClInclude Include="include\utils\beta\containers\segmented_vector.h" />
     <ClInclude Include="include\utils\compilation\debug.h" />
     <ClInclude Include="include\utils\compilation\OS.h" />
