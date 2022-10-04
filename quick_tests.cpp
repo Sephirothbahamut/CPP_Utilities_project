@@ -17,6 +17,7 @@
 
 #include "include/utils/containers/hive/next.h"
 #include "include/utils/beta/containers/linked_vector.h"
+#include "include/utils/beta/containers/segmented_vector.h"
 
 void old_test()
 	{

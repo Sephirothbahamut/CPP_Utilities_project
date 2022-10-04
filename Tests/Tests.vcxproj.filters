@@ -48,5 +48,8 @@
     <ClCompile Include="containers\linked_vector.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
+    <ClCompile Include="containers\segmented_vector.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

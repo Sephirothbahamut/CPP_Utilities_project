@@ -168,6 +168,7 @@
     <ClCompile Include="containers\multihandled.cpp" />
     <ClCompile Include="containers\multitype_container.cpp" />
     <ClCompile Include="containers\polymorphic_access_container.cpp" />
+    <ClCompile Include="containers\segmented_vector.cpp" />
     <ClCompile Include="math\vec.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

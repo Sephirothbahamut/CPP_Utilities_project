@@ -347,12 +347,16 @@ namespace utils::beta::containers
 
 					self_type& operator--(int) { operator--(); return *this; }
 					
-					const_reference operator* () const noexcept                             { return *segment_iterator; }
+					const_reference operator* () const noexcept                                  { return *segment_iterator; }
 					reference       operator* ()       noexcept requires(!std::is_const<iter_T>) { return *segment_iterator; }
-					const_pointer   operator->() const noexcept                             { return  segment_iterator.operator->(); }
+					const_pointer   operator->() const noexcept                                  { return  segment_iterator.operator->(); }
 					pointer         operator->()       noexcept requires(!std::is_const<iter_T>) { return  segment_iterator.operator->(); }
-					bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
-					bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
+					bool operator==(const self_type& rhs) const noexcept 
+						{
+						if (!segment_ptr || !rhs.segment_ptr) { return segment_ptr == rhs.segment_ptr; }
+						return segment_iterator == rhs.segment_iterator; 
+						}
+					bool operator!=(const self_type& rhs) const noexcept { return !(segment_iterator == rhs.segment_iterator); }
 					bool operator< (const self_type& rhs) const noexcept 
 						{ 
 						if (segment_ptr == rhs.segment_ptr) { return segment_iterator < rhs.segment_iterator; }
@@ -535,12 +539,16 @@ namespace utils::beta::containers
 
 					self_type& operator--(int) { operator--(); return *this; }
 					
-					const_reference operator* () const noexcept                             { return *segment_iterator; }
+					const_reference operator* () const noexcept                                  { return *segment_iterator; }
 					reference       operator* ()       noexcept requires(!std::is_const<iter_T>) { return *segment_iterator; }
-					const_pointer   operator->() const noexcept                             { return  segment_iterator.operator->(); }
+					const_pointer   operator->() const noexcept                                  { return  segment_iterator.operator->(); }
 					pointer         operator->()       noexcept requires(!std::is_const<iter_T>) { return  segment_iterator.operator->(); }
-					bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
-					bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
+					bool operator==(const self_type& rhs) const noexcept
+						{
+						if (!segment_ptr || !rhs.segment_ptr) { return segment_ptr == rhs.segment_ptr; }
+						return segment_iterator == rhs.segment_iterator;
+						}
+					bool operator!=(const self_type& rhs) const noexcept { return !(segment_iterator == rhs.segment_iterator); }
 					bool operator< (const self_type& rhs) const noexcept 
 						{ 
 						if (segment_ptr == rhs.segment_ptr) { return segment_iterator < rhs.segment_iterator; }
@@ -596,7 +604,6 @@ namespace utils::beta::containers
 				if (segment_ptr_t segment = last_segment){ return (segments_count() - 1) * inner_size + segment->size; }
 				return 0;
 				}
-			inline size_t segments_count() const { return _segments_count; }
 
 			inline T& front() { return first_segment->arr[0]; }
 			inline T& back()  { return last_segment ->arr[last_segment->size - 1];  }
@@ -698,6 +705,8 @@ namespace utils::beta::containers
 
 			size_t              _segments_count{0};
 			segment_allocator_t segment_allocator ;
+
+			inline size_t segments_count() const { return _segments_count; }
 
 			inline const segment_ptr_t get_first() const { return first_segment; }
 			inline       segment_ptr_t get_first()       { return first_segment; }
