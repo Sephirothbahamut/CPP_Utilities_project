@@ -30,18 +30,18 @@ namespace utils::beta::containers
 
 				private:
 #pragma region iterators
-					template <typename T>
+					template <typename iter_T>
 					struct base_iterator
 						{
-						template <typename T>
+						template <typename iter_T>
 						friend struct linked_vector::base_iterator;
-						template <typename T>
+						template <typename iter_T>
 						friend struct base_iterator;
-						friend struct linked_vector;
+						friend class linked_vector;
 
 						public:
-							using self_type         = base_iterator<T>;
-							using value_type        = T  ;
+							using self_type         = base_iterator<iter_T>;
+							using value_type        = iter_T  ;
 							using reference         = value_type& ;
 							using const_reference   = const reference;
 							using pointer           = value_type* ;
@@ -52,11 +52,11 @@ namespace utils::beta::containers
 							base_iterator(pointer ptr) : ptr(ptr) { }
 
 							template<typename rhs_T>
-								requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
-							base_iterator(const base_iterator<rhs_T>& other) : ptr(const_cast<std::remove_cv_t<T>*>(other.ptr)) {} //Needed by linked vector's erase. Cause the parameters must be const iterators for some reason :|
+								requires std::same_as < T, std::remove_cv_t<rhs_T>>
+							base_iterator(const base_iterator<rhs_T>& other) : ptr(const_cast<T*>(other.ptr)) {} //Needed by linked vector's erase. Cause the parameters must be const iterators for some reason :|
 
 							template<typename rhs_T>
-								requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+								requires std::same_as < T, std::remove_cv_t<rhs_T>>
 							self_type& operator=(const base_iterator<rhs_T>& other)
 								{
 								ptr = other.ptr;
@@ -67,7 +67,7 @@ namespace utils::beta::containers
 							self_type  operator- (difference_type rhs) const noexcept { return ptr - rhs; }
 
 							template<typename rhs_T>
-								requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+								requires std::same_as < T, std::remove_cv_t<rhs_T>>
 							difference_type operator- (const base_iterator<rhs_T>& rhs) const noexcept { return ptr - rhs.ptr; }
 
 							self_type& operator+=(difference_type rhs) noexcept { *this = *this + rhs; return *this; }
@@ -79,9 +79,9 @@ namespace utils::beta::containers
 							self_type& operator--(int) noexcept { ptr--; return *this; }
 
 							const_reference operator* () const noexcept                             { return *ptr; }
-								  reference operator* ()       noexcept requires(!std::is_const<T>) { return *ptr; }
+								  reference operator* ()       noexcept requires(!std::is_const<iter_T>) { return *ptr; }
 							const_pointer   operator->() const noexcept                             { return  ptr; }
-								  pointer   operator->()       noexcept requires(!std::is_const<T>) { return  ptr; }
+								  pointer   operator->()       noexcept requires(!std::is_const<iter_T>) { return  ptr; }
 			
 							auto operator<=>(const self_type& rhs) const noexcept { return ptr <=> rhs.ptr; }
 							bool operator== (const self_type& rhs) const noexcept { return ptr ==  rhs.ptr; }
@@ -90,18 +90,18 @@ namespace utils::beta::containers
 							pointer ptr;
 						};
 					
-					template<typename T>
+					template<typename iter_T>
 					struct base_reverse_iterator
 						{
-						template <typename T>
+						template <typename iter_T>
 						friend struct linked_vector::base_reverse_iterator;
-						template <typename T>
+						template <typename iter_T>
 						friend struct base_reverse_iterator;
 						friend class linked_vector;
 
 						public:
-							using self_type         = base_reverse_iterator<T>;
-							using value_type        = T  ;
+							using self_type         = base_reverse_iterator<iter_T>;
+							using value_type        = iter_T  ;
 							using reference         = value_type& ;
 							using const_reference   = const reference;
 							using pointer           = value_type* ;
@@ -112,11 +112,11 @@ namespace utils::beta::containers
 							base_reverse_iterator(pointer ptr) : ptr(ptr) { }
 
 							template<typename rhs_T>
-								requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
-							base_reverse_iterator(const base_reverse_iterator<rhs_T>& other) : ptr(const_cast<std::remove_cv_t<T>*>(other.ptr)) {} //Needed by linked vector's erase. Cause the parameters must be const iterators for some reason :|
+								requires std::same_as < T, std::remove_cv_t<rhs_T>>
+							base_reverse_iterator(const base_reverse_iterator<rhs_T>& other) : ptr(const_cast<T*>(other.ptr)) {} //Needed by linked vector's erase. Cause the parameters must be const iterators for some reason :|
 
 							template<typename rhs_T>
-								requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+								requires std::same_as < T, std::remove_cv_t<rhs_T>>
 							self_type& operator=(const base_reverse_iterator<rhs_T>& other)
 								{
 								ptr = other.ptr;
@@ -127,7 +127,7 @@ namespace utils::beta::containers
 							self_type  operator- (difference_type rhs) const noexcept { return ptr + rhs; }
 				
 							template<typename rhs_T>
-								requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+								requires std::same_as < T, std::remove_cv_t<rhs_T>>
 							difference_type operator- (const base_reverse_iterator<rhs_T>& rhs) const noexcept { return rhs.ptr - ptr; }
 
 							self_type& operator+=(difference_type rhs) noexcept { *this = *this + rhs; return *this; }
@@ -139,9 +139,9 @@ namespace utils::beta::containers
 							self_type& operator--(int) noexcept { *this = ptr++; return *this; }
 
 							const_reference operator* () const noexcept                             { return *ptr; }
-								  reference operator* ()       noexcept requires(!std::is_const<T>) { return *ptr; }
+								  reference operator* ()       noexcept requires(!std::is_const<iter_T>) { return *ptr; }
 							const_pointer   operator->() const noexcept                             { return  ptr; }
-								  pointer   operator->()       noexcept requires(!std::is_const<T>) { return  ptr; }
+								  pointer   operator->()       noexcept requires(!std::is_const<iter_T>) { return  ptr; }
 
 							bool operator==(const self_type& rhs) const noexcept { return ptr == rhs.ptr; }
 							bool operator!=(const self_type& rhs) const noexcept { return ptr != rhs.ptr; }
@@ -196,19 +196,19 @@ namespace utils::beta::containers
 
 #pragma region iterators
 
-			template<typename T>
+			template<typename iter_T>
 			struct base_iterator
 				{
 				friend class linked_vector;
-				template <typename T>
+				template <typename iter_T>
 				friend struct linked_vector::base_iterator;
 				
-				using segment_iterator_t = segment_t::base_iterator<T>;
-				using segment_ptr_t      = linked_vector   <std::remove_cv_t<T>, inner_size, Allocator>::segment_ptr_t;
+				using segment_iterator_t = linked_vector   <T, inner_size, Allocator>::segment_t::base_iterator<iter_T>;
+				using segment_ptr_t      = linked_vector   <T, inner_size, Allocator>::segment_ptr_t;
 
 				public:
-					using self_type         = base_iterator<T>;
-					using value_type        = T  ;
+					using self_type         = base_iterator<iter_T>;
+					using value_type        = iter_T  ;
 					using reference         = value_type& ;
 					using const_reference   = const reference;
 					using pointer           = value_type* ;
@@ -220,11 +220,11 @@ namespace utils::beta::containers
 					base_iterator(segment_iterator_t segment_iterator, const segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
 
 					template<typename rhs_T>
-						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+						requires std::same_as < T, std::remove_cv_t<rhs_T>>
 					base_iterator(const base_iterator<rhs_T>& other) : segment_iterator{ other.segment_iterator }, segment_ptr{ other.segment_ptr } {}
 
 					template<typename rhs_T>
-						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+						requires std::same_as < T, std::remove_cv_t<rhs_T>>
 					self_type& operator=(const base_iterator<rhs_T>& other)
 						{
 						segment_iterator = other.segment_iterator;
@@ -285,7 +285,7 @@ namespace utils::beta::containers
 						}
 
 					template<typename rhs_T>
-						requires std::same_as <std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+						requires std::same_as <T, std::remove_cv_t<rhs_T>>
 					difference_type operator- (const base_iterator<rhs_T>& rhs) const noexcept
 						{ 
 						if (segment_ptr == rhs.segment_ptr)
@@ -348,9 +348,9 @@ namespace utils::beta::containers
 					self_type& operator--(int) { operator--(); return *this; }
 					
 					const_reference operator* () const noexcept                             { return *segment_iterator; }
-					reference       operator* ()       noexcept requires(!std::is_const<T>) { return *segment_iterator; }
+					reference       operator* ()       noexcept requires(!std::is_const<iter_T>) { return *segment_iterator; }
 					const_pointer   operator->() const noexcept                             { return  segment_iterator.operator->(); }
-					pointer         operator->()       noexcept requires(!std::is_const<T>) { return  segment_iterator.operator->(); }
+					pointer         operator->()       noexcept requires(!std::is_const<iter_T>) { return  segment_iterator.operator->(); }
 					bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
 					bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
 					bool operator< (const self_type& rhs) const noexcept 
@@ -384,19 +384,19 @@ namespace utils::beta::containers
 					segment_ptr_t      segment_ptr;
 				};
 
-			template<typename T>
+			template<typename iter_T>
 			struct base_reverse_iterator
 				{
 				friend class linked_vector;
-				template <typename T>
+				template <typename iter_T>
 				friend struct linked_vector::base_reverse_iterator;
 				
-				using segment_iterator_t = segment_t::base_reverse_iterator<T>;
-				using segment_ptr_t      = linked_vector   <std::remove_cv_t<T>, inner_size, Allocator>::segment_ptr_t;
+				using segment_iterator_t = linked_vector   <T, inner_size, Allocator>::segment_t::base_reverse_iterator<iter_T>;
+				using segment_ptr_t      = linked_vector   <T, inner_size, Allocator>::segment_ptr_t;
 
 				public:
-					using self_type         = base_reverse_iterator<T>;
-					using value_type        = T  ;
+					using self_type         = base_reverse_iterator<iter_T>;
+					using value_type        = iter_T  ;
 					using reference         = value_type& ;
 					using const_reference   = const reference;
 					using pointer           = value_type* ;
@@ -408,11 +408,11 @@ namespace utils::beta::containers
 					base_reverse_iterator(segment_iterator_t segment_iterator, const segment_ptr_t segment_ptr) : segment_iterator{ segment_iterator }, segment_ptr{ segment_ptr } { }
 
 					template<typename rhs_T>
-						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+						requires std::same_as < T, std::remove_cv_t<rhs_T>>
 					base_reverse_iterator(const base_reverse_iterator<rhs_T>& other) : segment_iterator{ other.segment_iterator }, segment_ptr{ other.segment_ptr } {}
 
 					template<typename rhs_T>
-						requires std::same_as < std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+						requires std::same_as < T, std::remove_cv_t<rhs_T>>
 					self_type& operator=(const base_reverse_iterator<rhs_T>& other)
 						{
 						segment_iterator = other.segment_iterator;
@@ -473,7 +473,7 @@ namespace utils::beta::containers
 						}
 
 					template<typename rhs_T>
-						requires std::same_as <std::remove_cv_t<T>, std::remove_cv_t<rhs_T>>
+						requires std::same_as <T, std::remove_cv_t<rhs_T>>
 					difference_type operator- (const base_reverse_iterator<rhs_T>& rhs) const noexcept
 						{ 
 						if (segment_ptr == rhs.segment_ptr)
@@ -536,9 +536,9 @@ namespace utils::beta::containers
 					self_type& operator--(int) { operator--(); return *this; }
 					
 					const_reference operator* () const noexcept                             { return *segment_iterator; }
-					reference       operator* ()       noexcept requires(!std::is_const<T>) { return *segment_iterator; }
+					reference       operator* ()       noexcept requires(!std::is_const<iter_T>) { return *segment_iterator; }
 					const_pointer   operator->() const noexcept                             { return  segment_iterator.operator->(); }
-					pointer         operator->()       noexcept requires(!std::is_const<T>) { return  segment_iterator.operator->(); }
+					pointer         operator->()       noexcept requires(!std::is_const<iter_T>) { return  segment_iterator.operator->(); }
 					bool operator==(const self_type& rhs) const noexcept { return segment_iterator == rhs.segment_iterator; }
 					bool operator!=(const self_type& rhs) const noexcept { return segment_iterator != rhs.segment_iterator; }
 					bool operator< (const self_type& rhs) const noexcept 
@@ -673,25 +673,6 @@ namespace utils::beta::containers
 				new_last_segment_ptr->next = nullptr;
 				
 				return { erase_from };
-				}
-
-			inline void move_storage(T* dest, T* from, size_t n)
-				{
-				// Implying we are doing this within the capacity/size of the container
-				if (dest < from)
-					{
-					T* _dest = dest, * _from = from;
-					for (size_t i = 0; i < n; i++)
-						*_dest++ = std::move(*_from++);
-					}
-				else if (dest > from)
-					{
-					T* _dest = dest + n - 1, * _from = from + n - 1;
-					for (size_t i = n; i > 0; i--)
-						*_dest-- = std::move(*_from--);
-					}
-				else
-					return;
 				}
 				
 			const_iterator         cbegin () const { if (first_segment) { return { first_segment->cbegin ()                                    , first_segment }; } else { return {}; } }
