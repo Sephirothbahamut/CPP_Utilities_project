@@ -160,6 +160,7 @@ namespace Tests
 				Assert::AreEqual(5, (it + 1)->v);
 				Assert::AreEqual(6, (it + 2)->v);
 				Assert::AreEqual(7, (it + 3)->v);
+				Assert::AreEqual(size_t{ 4 }, disney::count);
 				}
 
 			TEST_METHOD(iterator_single_segment)

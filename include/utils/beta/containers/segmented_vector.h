@@ -20,24 +20,7 @@ namespace utils::beta::containers
 			struct base_reverse_iterator;
 
 #pragma region segment 
-			class segment_t
-				{
-				friend class segmented_vector;
-				template<typename T>
-				friend struct segmented_vector::base_iterator;
-				template<typename T>
-				friend struct segmented_vector::base_reverse_iterator;
-
-				public:
-					using value_type      =       T ;
-					using pointer         =       T*;
-					using const_pointer   = const T*;
-					using reference       =       T&;
-					using const_reference = const T&;
-
-				private:
-					std::array<T, inner_size> arr;
-				};
+			using segment_t = std::array<T, inner_size> ;
 #pragma endregion segment
 
 			using segment_ptr_t = utils::observer_ptr<segment_t>;
@@ -52,7 +35,7 @@ namespace utils::beta::containers
 				template <typename iter_T>
 				friend struct segmented_vector::base_iterator;
 
-				using segment_ptr_t      = segmented_vector   <T, inner_size, Allocator>::segment_ptr_t;
+				//using segment_ptr_t      = segmented_vector   <T, inner_size, Allocator>::segment_ptr_t;
 
 				public:
 					using self_type         = base_iterator<iter_T>;
@@ -65,11 +48,11 @@ namespace utils::beta::containers
 					using difference_type   = ptrdiff_t ;
 
 					base_iterator() : container_ptr{nullptr} {}
-					base_iterator(size_t index, segmented_vector& container, pointer element_ptr) : index{index}, container_ptr{*container}, element_ptr{element_ptr} { }
+					base_iterator(size_t index, segmented_vector& container, pointer element_ptr) : index{ index }, container_ptr{ &container }, element_ptr{ element_ptr } { }
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
-					base_iterator(const base_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{other.element_ptr} {}
+					base_iterator(const base_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{const_cast<pointer>(other.element_ptr)} {}
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
@@ -93,8 +76,8 @@ namespace utils::beta::containers
 						{
 						auto ret{*this};
 
-						rhs.index -= rhs;
-						rhs.element_ptr = rhs.container_ptr->address_at(rhs.index);
+						ret.index -= rhs;
+						ret.element_ptr = ret.container_ptr->address_at(ret.index);
 						return ret;
 						}
 
@@ -135,7 +118,7 @@ namespace utils::beta::containers
 
 				private:
 					size_t            index;
-					segmented_vector* container_ptr; 
+					segmented_vector* container_ptr;
 					pointer           element_ptr;
 				};
 
@@ -146,7 +129,7 @@ namespace utils::beta::containers
 				template <typename iter_T>
 				friend struct segmented_vector::base_reverse_iterator;
 				
-				using segment_ptr_t      = segmented_vector   <T, inner_size, Allocator>::segment_ptr_t;
+				//using segment_ptr_t      = segmented_vector   <T, inner_size, Allocator>::segment_ptr_t;
 
 				public:
 					using self_type         = base_reverse_iterator<iter_T>;
@@ -159,11 +142,11 @@ namespace utils::beta::containers
 					using difference_type   = ptrdiff_t ;
 
 					base_reverse_iterator() : container_ptr{nullptr} {}
-					base_reverse_iterator(ptrdiff_t index, segmented_vector& container, pointer element_ptr) : index{index}, container_ptr{*container}, element_ptr{element_ptr} { }
+					base_reverse_iterator(ptrdiff_t index, segmented_vector& container, pointer element_ptr) : index{index}, container_ptr{&container}, element_ptr{element_ptr} { }
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
-					base_reverse_iterator(const base_reverse_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{other.element_ptr} {}
+					base_reverse_iterator(const base_reverse_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{ const_cast<pointer>(other.element_ptr) } {}
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
@@ -261,7 +244,7 @@ namespace utils::beta::containers
 
 			inline void clear()
 				{
-				const auto segments_it{segments.begin()};
+				auto segments_it{segments.begin()};
 				for (; segments_it != segments.end() - 1; segments_it++)
 					{
 					(*segments_it)->~segment_t(); //call destructor so individual elements within the array are destroyed automatically
@@ -323,43 +306,53 @@ namespace utils::beta::containers
 					std::allocator_traits<segment_allocator_t>::deallocate(segment_allocator, segments[i], 1);
 					}
 				segments.resize(new_last_segment_index + 1);
+				_size -= erase_to - erase_from;
 
 				return { erase_from };
 				}
 				
-			const_iterator         cbegin () const { return {                                                         0, this, address_at(0)         }; }
-			const_iterator         begin  () const { return {                                                         0, this, address_at(0)         }; }
-			iterator               begin  ()       { return {                                                         0, this, address_at(0)         }; }
+			const_iterator         cbegin () const { return {                                                         0, *this, address_at(static_cast<size_t>(0))            }; }
+			const_iterator         begin  () const { return {                                                         0, *this, address_at(static_cast<size_t>(0))            }; }
+			iterator               begin  ()       { return {                                                         0, *this, address_at(static_cast<size_t>(0))            }; }
 
- 			const_iterator         cend   () const { return {size()                                                    , this, nullptr               }; }
-			const_iterator         end    () const { return {size()                                                    , this, nullptr               }; }
-			iterator               end    ()       { return {size()                                                    , this, nullptr               }; }
-													 
-			const_reverse_iterator crbegin() const { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), this, address_at(size() - 1)}; }
-			const_reverse_iterator rbegin () const { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), this, address_at(size() - 1)}; }
-			reverse_iterator       rbegin ()       { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), this, address_at(size() - 1)}; }
-			const_reverse_iterator crend  () const { return {static_cast<ptrdiff_t>(                                -1), this, nullptr               }; }
-			const_reverse_iterator rend   () const { return {static_cast<ptrdiff_t>(                                -1), this, nullptr               }; }
-			reverse_iterator       rend   ()       { return {static_cast<ptrdiff_t>(                                -1), this, nullptr               }; }
+ 			const_iterator         cend   () const { return {size()                                                    , *this, nullptr                                       }; }
+			const_iterator         end    () const { return {size()                                                    , *this, nullptr                                       }; }
+			iterator               end    ()       { return {size()                                                    , *this, nullptr                                       }; }
 
-			
+			const_reverse_iterator crbegin() const { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), *this, address_at(static_cast<ptrdiff_t>(size() - 1))}; }
+			const_reverse_iterator rbegin () const { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), *this, address_at(static_cast<ptrdiff_t>(size() - 1))}; }
+			reverse_iterator       rbegin ()       { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), *this, address_at(static_cast<ptrdiff_t>(size() - 1))}; }
+
+			const_reverse_iterator crend  () const { return {static_cast<ptrdiff_t>(                                -1), *this, nullptr                                       }; }
+			const_reverse_iterator rend   () const { return {static_cast<ptrdiff_t>(                                -1), *this, nullptr                                       }; }
+			reverse_iterator       rend   ()       { return {static_cast<ptrdiff_t>(                                -1), *this, nullptr                                       }; }
+
+			const T& operator[](const size_t index) const noexcept
+				{
+				return segments[segment_index_containing_my_index(index)][my_index_to_segment_index(index)];
+				}
+
+			      T& operator[](const size_t index)       noexcept
+				{
+				return segments[segment_index_containing_my_index(index)][my_index_to_segment_index(index)];
+				}
 
 		protected:
 			size_t _size{0};
-			std::vector<utils::observer_ptr<segment_ptr_t>> segments;
+			std::vector<utils::observer_ptr<segment_t>> segments;
 			
 			segment_allocator_t segment_allocator ;
 
 			pointer get_free_slot()
 				{
 				segment_t& segment{grow_if_full()};
-				return segment.arr.data() + (size() % inner_size);
+				return segment.data() + (size() % inner_size);
 				}
 
 			segment_t& grow_if_full()
 				{
 				if (size() == capacity()) { grow(); }
-				return *segments.rbegin();
+				return **segments.rbegin();
 				}
 
 			void grow()
@@ -388,25 +381,25 @@ namespace utils::beta::containers
 				{
 				size_t segment_index{segment_index_containing_my_index(index)};
 				if (segment_index >= segments.size()) { return nullptr; }
-				else { return (*segments[segment_index])[my_index_to_segment_index(index)]; }
+				else { return &(*segments[segment_index])[my_index_to_segment_index(index)]; }
 				}
 			const_pointer address_at(size_t index) const noexcept
 				{
 				size_t segment_index{segment_index_containing_my_index(index)};
 				if (segment_index >= segments.size()) { return nullptr; }
-				else { return (*segments[segment_index])[my_index_to_segment_index(index)]; }
+				else { return &(*segments[segment_index])[my_index_to_segment_index(index)]; }
 				}
 			pointer address_at(ptrdiff_t  index) noexcept
 				{
 				size_t segment_index{segment_index_containing_my_index(index)};
 				if (segment_index >= segments.size() || segment_index < 0) { return nullptr; }
-				else { return (*segments[segment_index])[my_index_to_segment_index(index)]; }
+				else { return &(*segments[segment_index])[my_index_to_segment_index(index)]; }
 				}
 			const_pointer address_at(ptrdiff_t  index) const noexcept
 				{
 				size_t segment_index{segment_index_containing_my_index(index)};
 				if (segment_index >= segments.size() || segment_index < 0) { return nullptr; }
-				else { return (*segments[segment_index])[my_index_to_segment_index(index)]; }
+				else { return &(*segments[segment_index])[my_index_to_segment_index(index)]; }
 				}
 
 			static size_t distance(segment_ptr_t leftmost, segment_ptr_t rightmost)
