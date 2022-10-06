@@ -68,17 +68,17 @@ namespace utils::containers
 							}
 						}
 
-					constexpr       reference operator* ()       noexcept { return inner_iterator.operator* (); }
-					constexpr const_reference operator* () const noexcept { return inner_iterator.operator* (); }
+					constexpr       reference operator* ()       noexcept { return container_ptr->operator[](*this); }
+					constexpr const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
 
-					constexpr       pointer   operator->()       noexcept { return inner_iterator.operator->(); }
-					constexpr const_pointer   operator->() const noexcept { return inner_iterator.operator->(); }
+					constexpr       pointer   operator->()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					constexpr const_pointer   operator->() const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
-					constexpr       reference value     ()       noexcept { return inner_iterator.operator* (); }
-					constexpr const_reference value     () const noexcept { return inner_iterator.operator* (); }
+					constexpr       reference value     ()       noexcept { return container_ptr->operator[](*this); }
+					constexpr const_reference value     () const noexcept { return container_ptr->operator[](*this); }
 
-					constexpr       pointer   get       ()       noexcept { return inner_iterator.operator->(); }
-					constexpr const_pointer   get       () const noexcept { return inner_iterator.operator->(); }
+					constexpr       pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					constexpr const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
 					bool has_value() const noexcept { return is_valid() && content_exists(); }
 
@@ -87,17 +87,16 @@ namespace utils::containers
 
 				private:
 					bool is_valid      () const noexcept { return mapping_index != std::numeric_limits<size_t>::max(); }
-					bool content_exists() const noexcept { return inner_iterator != inner_iterator_t{}; }
+					bool content_exists() const noexcept { return container_ptr->mapping_to_inner_iterator[mapping_index].inner_iterator != inner_iterator_t{}; }
 
-					handle_t(multihandled<T>& container, size_t mapping_index, inner_iterator_t inner_iterator) : 
-						container_ptr{&container}, mapping_index{mapping_index}, inner_iterator{inner_iterator}
+					handle_t(multihandled<T>& container, size_t mapping_index) : 
+						container_ptr{&container}, mapping_index{mapping_index}
 						{
 						container.mapping_to_inner_iterator[mapping_index].count++;
 						};
 
 					utils::observer_ptr<multihandled<T>> container_ptr;
 					id_pool_manual::value_type mapping_index{std::numeric_limits<id_pool_manual::value_type>::max()};
-					inner_iterator_t inner_iterator;
 				};
 			friend class handle_t;
 
@@ -113,14 +112,14 @@ namespace utils::containers
 				{
 				typename inner_container_t::iterator inner_iterator{ inner_container.emplace(std::forward<Args>(args)...) };
 				size_t mapping_index{create_new_mapping(inner_iterator)};
-				return {*this, mapping_index, inner_iterator};
+				return {*this, mapping_index };
 				}
 
-			      T& operator[](handle_t& handle)       noexcept 
+			      T& operator[](const handle_t& handle)       noexcept
 				{
 				return *mapping_to_inner_iterator[handle.mapping_index].inner_iterator;
 				}
-			const T& operator[](handle_t& handle) const noexcept 
+			const T& operator[](const handle_t& handle) const noexcept 
 				{
 				return *mapping_to_inner_iterator[handle.mapping_index].inner_iterator;
 				}
@@ -158,7 +157,7 @@ namespace utils::containers
 				{
 				auto source_iterator{ mapping_to_inner_iterator[source_handle.mapping_index].inner_iterator };
 				size_t mapping_index{ create_new_mapping(source_iterator) };
-				return { *this,  mapping_index, source_iterator};
+				return {*this,  mapping_index};
 				}
 
 			handle_t splice(const handle_t& source_handle) noexcept { return undergo_mythosis(source_handle); }
