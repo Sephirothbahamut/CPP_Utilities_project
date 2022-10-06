@@ -46,9 +46,9 @@ namespace Tests
 				auto handle_2{a.emplace(2)};
 				Assert::AreEqual(size_t{3}, disney::count);
 
-				Assert::AreEqual(0, a[handle_0].v);
-				Assert::AreEqual(1, a[handle_1].v);
-				Assert::AreEqual(2, a[handle_2].v);
+				Assert::AreEqual(0, handle_0->v);
+				Assert::AreEqual(1, handle_1->v);
+				Assert::AreEqual(2, handle_2->v);
 				}
 			TEST_METHOD(destructor)
 				{
@@ -78,7 +78,7 @@ namespace Tests
 				Assert::AreEqual(size_t{2}, disney::count);
 			
 				auto handle_3{a.emplace(3)};
-				Assert::AreEqual(3, a[handle_3].v);
+				Assert::AreEqual(3, handle_3->v);
 				Assert::AreEqual(size_t{3}, disney::count);
 				}
 		};

@@ -166,6 +166,7 @@
     <ClCompile Include="containers\memberwise_operators.cpp" />
     <ClCompile Include="containers\memberwise_operators_array.cpp" />
     <ClCompile Include="containers\multihandled.cpp" />
+    <ClCompile Include="containers\multihandled_default.cpp" />
     <ClCompile Include="containers\multitype_container.cpp" />
     <ClCompile Include="containers\polymorphic_access_container.cpp" />
     <ClCompile Include="containers\segmented_vector.cpp" />

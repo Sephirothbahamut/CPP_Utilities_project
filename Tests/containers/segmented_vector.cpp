@@ -3,7 +3,7 @@
 #include <list>
 #include <algorithm>
 #include <sstream> 
-#include "../../include/utils/beta/containers/segmented_vector.h"
+#include "../../include/utils/containers/segmented_vector.h"
 
 #include "CppUnitTest.h"
 
@@ -24,37 +24,37 @@ namespace Microsoft
 		{
 		namespace CppUnitTestFramework
 			{
-			template<> static std::wstring ToString<utils::beta::containers::segmented_vector<disney>::iterator> (const struct utils::beta::containers::segmented_vector<disney>::iterator& t)
+			template<> static std::wstring ToString<utils::containers::segmented_vector<disney>::iterator> (const struct utils::containers::segmented_vector<disney>::iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::segmented_vector<disney, 2>::iterator>(const struct utils::beta::containers::segmented_vector<disney, 2>::iterator& t)
+			template<> static std::wstring ToString<utils::containers::segmented_vector<disney, 2>::iterator>(const struct utils::containers::segmented_vector<disney, 2>::iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::segmented_vector<disney, 5>::iterator>(const struct utils::beta::containers::segmented_vector<disney, 5>::iterator& t)
+			template<> static std::wstring ToString<utils::containers::segmented_vector<disney, 5>::iterator>(const struct utils::containers::segmented_vector<disney, 5>::iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::segmented_vector<disney>::reverse_iterator>(const struct utils::beta::containers::segmented_vector<disney>::reverse_iterator& t)
+			template<> static std::wstring ToString<utils::containers::segmented_vector<disney>::reverse_iterator>(const struct utils::containers::segmented_vector<disney>::reverse_iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::segmented_vector<disney, 2>::reverse_iterator>(const struct utils::beta::containers::segmented_vector<disney, 2>::reverse_iterator& t)
+			template<> static std::wstring ToString<utils::containers::segmented_vector<disney, 2>::reverse_iterator>(const struct utils::containers::segmented_vector<disney, 2>::reverse_iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
 				return s.str();
 				}
-			template<> static std::wstring ToString<utils::beta::containers::segmented_vector<disney, 5>::reverse_iterator>(const struct utils::beta::containers::segmented_vector<disney, 5>::reverse_iterator& t)
+			template<> static std::wstring ToString<utils::containers::segmented_vector<disney, 5>::reverse_iterator>(const struct utils::containers::segmented_vector<disney, 5>::reverse_iterator& t)
 				{
 				std::wstringstream s;
 				s << &(*t);
@@ -76,7 +76,7 @@ namespace Tests
 			TEST_METHOD(emplace_single_segment)
 				{
 				disney::reset();
-				utils::beta::containers::segmented_vector<disney> a;
+				utils::containers::segmented_vector<disney> a;
 
 				auto obj_0{ a.emplace(0) };
 				Assert::AreEqual(size_t{ 1 }, disney::count);
@@ -93,7 +93,7 @@ namespace Tests
 			TEST_METHOD(emplace)
 				{
 				disney::reset();
-				utils::beta::containers::segmented_vector<disney, 2> a;
+				utils::containers::segmented_vector<disney, 2> a;
 
 				auto obj_0{ a.emplace(0) };
 				Assert::AreEqual(size_t{ 1 }, disney::count);
@@ -112,7 +112,7 @@ namespace Tests
 				disney::reset();
 				if (true)
 					{
-					utils::beta::containers::segmented_vector<disney> a;
+					utils::containers::segmented_vector<disney> a;
 				
 					auto& obj_0{ a.emplace(0) };
 					auto& obj_1{ a.emplace(1) };
@@ -127,7 +127,7 @@ namespace Tests
 				disney::reset();
 				if (true)
 					{
-					utils::beta::containers::segmented_vector<disney, 2> a;
+					utils::containers::segmented_vector<disney, 2> a;
 
 					auto& obj_0{ a.emplace(0) };
 					auto& obj_1{ a.emplace(1) };
@@ -140,7 +140,7 @@ namespace Tests
 			TEST_METHOD(erase)
 				{
 				disney::reset();
-				utils::beta::containers::segmented_vector<disney, 2> a;
+				utils::containers::segmented_vector<disney, 2> a;
 
 				auto& obj_0{ a.emplace(0) };
 				auto& obj_1{ a.emplace(1) };//
@@ -167,7 +167,7 @@ namespace Tests
 				{
 				disney::reset();
 
-				utils::beta::containers::segmented_vector<disney> a;
+				utils::containers::segmented_vector<disney> a;
 
 				auto& obj_0{ a.emplace(0) };
 				auto& obj_1{ a.emplace(1) };
@@ -202,7 +202,7 @@ namespace Tests
 				{
 				disney::reset();
 				
-				utils::beta::containers::segmented_vector<disney, 2> a;
+				utils::containers::segmented_vector<disney, 2> a;
 				
 				auto& obj_0{ a.emplace(0) };
 				auto& obj_1{ a.emplace(1) };
@@ -237,7 +237,7 @@ namespace Tests
 				{
 				disney::reset();
 
-				utils::beta::containers::segmented_vector<disney, 5> a;
+				utils::containers::segmented_vector<disney, 5> a;
 
 				auto& obj_0{ a.emplace(0) };
 				auto& obj_1{ a.emplace(1) };
@@ -276,7 +276,7 @@ namespace Tests
 				{
 				disney::reset();
 
-				utils::beta::containers::segmented_vector<disney, 2> a;
+				utils::containers::segmented_vector<disney, 2> a;
 
 				auto& obj_0{ a.emplace(2) };
 				auto& obj_1{ a.emplace(1) };
@@ -305,7 +305,7 @@ namespace Tests
 				{
 				disney::reset();
 
-				utils::beta::containers::segmented_vector<disney, 5> a;
+				utils::containers::segmented_vector<disney, 5> a;
 
 				auto& obj_0{ a.emplace(7) };
 				auto& obj_1{ a.emplace(6) };

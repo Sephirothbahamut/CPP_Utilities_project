@@ -2,7 +2,7 @@
 #include <deque>
 #include <list>
 #include <algorithm>
-#include "../../include/utils/containers/multihandled.h"
+#include "../../include/utils/containers/multihandled_default.h"
 
 #include "CppUnitTest.h"
 
@@ -26,18 +26,18 @@ struct pluto : disney { pluto(char  param) {} void there() const {} };
 
 namespace Tests
 	{
-	TEST_CLASS(multihandled)
+	TEST_CLASS(multihandled_default)
 		{
 		public:
 
 			TEST_METHOD(assignment)
 				{
-				utils::containers::multihandled<int> a;
+				utils::containers::multihandled_default<int> a;
 
 				auto handle_1a{ a.emplace(1) };
 				auto handle_2a{ a.emplace(2) };
 				auto handle_3a{ a.emplace(3) };
-				
+
 				auto handle_1b{ a.splice(handle_1a) };
 
 				Assert::AreEqual(1, a[handle_1a]);
@@ -47,7 +47,7 @@ namespace Tests
 				}
 			TEST_METHOD(remap)
 				{
-				utils::containers::multihandled<int> a;
+				utils::containers::multihandled_default<int> a;
 
 				auto handle_1a{ a.emplace(1) };
 				auto handle_2a{ a.emplace(2) };

@@ -20,11 +20,13 @@ namespace utils::containers
 		{
 		protected:
 			using inner_container_t = hive::next<T, inner_size>;
+			using inner_iterator_t  = inner_container_t::iterator;
 
 		public:
 			class handle_t 
 				{
 				friend class multihandled<T>;
+
 				public:
 					using value_type      = T;
 					using reference       = value_type&;
@@ -34,14 +36,14 @@ namespace utils::containers
 
 					handle_t(const handle_t& copy) : container_ptr{copy.container_ptr}, mapping_index{copy.mapping_index}
 						{
-						if (is_valid()) { container_ptr->mapping_to_container_index[mapping_index].count++; }
+						if (is_valid()) { container_ptr->mapping_to_inner_iterator[mapping_index].count++; }
 						}
 					handle_t& operator=(const handle_t& copy)
 						{
-						if (is_valid()) { container_ptr->mapping_to_container_index[mapping_index].count--; }
+						if (is_valid()) { container_ptr->mapping_to_inner_iterator[mapping_index].count--; }
 						container_ptr = copy.container_ptr;
 						mapping_index = copy.mapping_index;
-						if (is_valid()) { container_ptr->mapping_to_container_index[mapping_index].count++; }
+						if (is_valid()) { container_ptr->mapping_to_inner_iterator[mapping_index].count++; }
 						}
 					handle_t           (handle_t&& move) noexcept : container_ptr{ std::move(move.container_ptr) }, mapping_index { move.mapping_index } { move.mapping_index = std::numeric_limits<id_pool_manual::value_type>::max(); }
 					handle_t& operator=(handle_t&& move) noexcept { container_ptr = move.container_ptr;             mapping_index = move.mapping_index;    move.mapping_index = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
@@ -50,12 +52,12 @@ namespace utils::containers
 						{
 						if (is_valid()) 
 							{
-							auto& count = container_ptr->mapping_to_container_index[mapping_index].count;
+							auto& count = container_ptr->mapping_to_inner_iterator[mapping_index].count;
 							count--;
 							//if the handle in the container isn't used externally anymore and the resources has been erased
 							if (count == 0)
 								{
-								if (container_ptr->mapping_to_container_index[mapping_index].container_index != std::numeric_limits<id_pool_manual::value_type>::max())
+								if (content_exists())
 									{
 									container_ptr->erase_if_last(*this);
 									}
@@ -66,33 +68,36 @@ namespace utils::containers
 							}
 						}
 
-					constexpr       reference operator* ()       noexcept { return container_ptr->operator[](*this); }
-					constexpr const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
+					constexpr       reference operator* ()       noexcept { return inner_iterator.operator* (); }
+					constexpr const_reference operator* () const noexcept { return inner_iterator.operator* (); }
 
-					constexpr       pointer   operator->()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
-					constexpr const_pointer   operator->() const noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					constexpr       pointer   operator->()       noexcept { return inner_iterator.operator->(); }
+					constexpr const_pointer   operator->() const noexcept { return inner_iterator.operator->(); }
 
-					constexpr       reference value     ()       noexcept { return container_ptr->operator[](*this); }
-					constexpr const_reference value     () const noexcept { return container_ptr->operator[](*this); }
+					constexpr       reference value     ()       noexcept { return inner_iterator.operator* (); }
+					constexpr const_reference value     () const noexcept { return inner_iterator.operator* (); }
 
-					constexpr       pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
-					constexpr const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					constexpr       pointer   get       ()       noexcept { return inner_iterator.operator->(); }
+					constexpr const_pointer   get       () const noexcept { return inner_iterator.operator->(); }
+
+					bool has_value() const noexcept { return is_valid() && content_exists(); }
 
 					handle_t splice(                  )    const noexcept { return container_ptr->splice(*this    ); }
 					void     remap (const handle_t& to)          noexcept {        container_ptr->remap (*this, to); }
 
 				private:
-					bool is_valid() const noexcept
+					bool is_valid      () const noexcept { return mapping_index != std::numeric_limits<size_t>::max(); }
+					bool content_exists() const noexcept { return inner_iterator != inner_iterator_t{}; }
+
+					handle_t(multihandled<T>& container, size_t mapping_index, inner_iterator_t inner_iterator) : 
+						container_ptr{&container}, mapping_index{mapping_index}, inner_iterator{inner_iterator}
 						{
-						return mapping_index != std::numeric_limits<size_t>::max();
-						}
-					handle_t(multihandled<T>& container, size_t mapping_index) : container_ptr{&container}, mapping_index{mapping_index} 
-						{
-						container.mapping_to_container_index[mapping_index].count++;
+						container.mapping_to_inner_iterator[mapping_index].count++;
 						};
 
 					utils::observer_ptr<multihandled<T>> container_ptr;
 					id_pool_manual::value_type mapping_index{std::numeric_limits<id_pool_manual::value_type>::max()};
+					inner_iterator_t inner_iterator;
 				};
 			friend class handle_t;
 
@@ -106,86 +111,86 @@ namespace utils::containers
 			template <typename ...Args>
 			handle_t emplace(Args&& ...args)
 				{
-				typename inner_container_t::handle_t inner_handle{ inner_container.emplace(std::forward<Args>(args)...) };
-				size_t mapping_index{create_new_mapping(inner_handle)};
-				return {*this, mapping_index};
+				typename inner_container_t::iterator inner_iterator{ inner_container.emplace(std::forward<Args>(args)...) };
+				size_t mapping_index{create_new_mapping(inner_iterator)};
+				return {*this, mapping_index, inner_iterator};
 				}
 
 			      T& operator[](handle_t& handle)       noexcept 
 				{
-				return inner_container[mapping_to_container_index[handle.mapping_index].container_index]; 
+				return *mapping_to_inner_iterator[handle.mapping_index].inner_iterator;
 				}
 			const T& operator[](handle_t& handle) const noexcept 
 				{
-				return inner_container[mapping_to_container_index[handle.mapping_index].container_index];
+				return *mapping_to_inner_iterator[handle.mapping_index].inner_iterator;
 				}
 
 			void erase(handle_t& handle)
 				{
-				auto container_index_being_removed{mapping_to_container_index[handle.mapping_index].container_index};
+				auto container_iterator_being_removed{ mapping_to_inner_iterator[handle.mapping_index].inner_iterator };
 
-				inner_container.erase(container_index_being_removed);
+				inner_container.erase(container_iterator_being_removed);
 
-				for (auto& mapping : mapping_to_container_index)
+				for (auto& mapping : mapping_to_inner_iterator)
 					{
-					if (mapping.container_index == container_index_being_removed)
+					if (mapping.inner_iterator == container_iterator_being_removed)
 						{
-						mapping.container_index = std::numeric_limits<id_pool_manual::value_type>::max();
+						mapping.inner_iterator = {};
 						}
 					}
 				}
 			void erase_and_remap(handle_t& handle, const handle_t& to)
 				{
-				auto container_index_being_removed{mapping_to_container_index[handle.mapping_index].container_index};
+				auto container_index_being_removed{mapping_to_inner_iterator[handle.mapping_index].inner_iterator};
 
 				inner_container.erase(container_index_being_removed);
 
-				for (auto& mapping : mapping_to_container_index)
+				for (auto& mapping : mapping_to_inner_iterator)
 					{
-					if (mapping.container_index == container_index_being_removed)
+					if (mapping.inner_iterator == container_index_being_removed)
 						{
-						mapping.container_index = mapping_to_container_index[to.mapping_index].container_index;
+						mapping.inner_iterator = mapping_to_inner_iterator[to.mapping_index].inner_iterator;
 						}
 					}
 				}
 	
 			handle_t undergo_mythosis(const handle_t& source_handle) noexcept
 				{
-				auto source_index{ mapping_to_container_index[source_handle.mapping_index].container_index };
-				size_t mapping_index{ create_new_mapping(source_index) };
-				return { *this,  mapping_index };
+				auto source_iterator{ mapping_to_inner_iterator[source_handle.mapping_index].inner_iterator };
+				size_t mapping_index{ create_new_mapping(source_iterator) };
+				return { *this,  mapping_index, source_iterator};
 				}
 
 			handle_t splice(const handle_t& source_handle) noexcept { return undergo_mythosis(source_handle); }
 
 			void remap(handle_t& handle_to_remap, const handle_t& handle_toward_target) noexcept
 				{
-				auto source_index{ mapping_to_container_index[handle_toward_target.mapping_index].container_index };
-				mapping_to_container_index[handle_to_remap.mapping_index].container_index = source_index;
+				auto source_iterator{ mapping_to_inner_iterator[handle_toward_target.mapping_index].inner_iterator };
+				mapping_to_inner_iterator[handle_to_remap.mapping_index].inner_iterator = source_iterator;
 				}
 
 		protected:
-			size_t create_new_mapping(size_t element_index) noexcept
+			size_t create_new_mapping(inner_iterator_t element_index) noexcept
 				{
 				size_t mapping_index{id_pool.get()};
-				if (mapping_index >= mapping_to_container_index.size())
+				if (mapping_index >= mapping_to_inner_iterator.size())
 					{
-					mapping_to_container_index.emplace_back(element_index);
+					mapping_to_inner_iterator.emplace_back(element_index);
 					}
 				else
 					{
-					mapping_to_container_index[mapping_index] = {element_index};
+					mapping_to_inner_iterator[mapping_index] = {element_index};
 					}
 				return mapping_index;
 				}
 
 			void erase_if_last(handle_t& handle)
 				{
-				auto container_index_being_removed{mapping_to_container_index[handle.mapping_index].container_index};
+				auto container_index_being_removed{ mapping_to_inner_iterator[handle.mapping_index].inner_iterator };
 
-				for (auto& mapping : mapping_to_container_index)
+				for (auto& mapping : mapping_to_inner_iterator)
 					{
-					if (mapping.container_index == container_index_being_removed)
+					if (mapping.inner_iterator == container_index_being_removed)
 						{
 						return;
 						}
@@ -194,16 +199,16 @@ namespace utils::containers
 				inner_container.erase(container_index_being_removed);
 				}
 
-			size_t get_inner_index(const handle_t& handle)
+			inner_iterator_t get_inner_iterator(const handle_t& handle)
 				{
-				return mapping_to_container_index[handle.mapping_index].container_index;
+				return mapping_to_inner_iterator[handle.mapping_index].inner_iterator;
 				}
 
 			inner_container_t inner_container;
 			id_pool_manual id_pool;
 
-			struct handle_mapping_data { inner_container_t::handle_t container_index; size_t count{0}; };
-			std::vector<handle_mapping_data> mapping_to_container_index;
+			struct handle_mapping_data { inner_iterator_t inner_iterator; size_t count{0}; };
+			std::vector<handle_mapping_data> mapping_to_inner_iterator;
 		};
 
 	template <typename T, size_t inner_size = 8>

@@ -247,11 +247,11 @@
     <ClInclude Include="include\utils\containers\self_consuming_queue.h">
       <Filter>Utils\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\linked_vector.h">
-      <Filter>Beta\containers</Filter>
+    <ClInclude Include="include\utils\containers\linked_vector.h">
+      <Filter>Utils\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\segmented_vector.h">
-      <Filter>Beta\containers</Filter>
+    <ClInclude Include="include\utils\containers\segmented_vector.h">
+      <Filter>Utils\containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,9 @@
     <Filter Include="Source Files\math">
       <UniqueIdentifier>{1494fd28-d13b-41a2-b7db-07901725b3fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\containers\hive">
+      <UniqueIdentifier>{43250c53-233b-4eb5-b66c-f1e7178b9b26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="containers\memberwise_operators.cpp">
@@ -42,14 +45,17 @@
     <ClCompile Include="containers\multihandled.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
-    <ClCompile Include="containers\hive\next.cpp">
-      <Filter>Source Files\containers</Filter>
-    </ClCompile>
     <ClCompile Include="containers\linked_vector.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
     <ClCompile Include="containers\segmented_vector.cpp">
       <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="containers\multihandled_default.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="containers\hive\next.cpp">
+      <Filter>Source Files\containers\hive</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

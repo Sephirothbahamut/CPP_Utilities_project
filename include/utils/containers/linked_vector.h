@@ -4,19 +4,19 @@
 #include <type_traits>
 #include <vector>
 
-#include "../../memory.h"
+#include "../memory.h"
 #include <array>
 
-namespace utils::beta::containers
+namespace utils::containers
 	{
 	template <typename T, size_t inner_size = 8, typename Allocator = std::allocator<T>>
 	class linked_vector
 		{
 
 		private:
-			template<typename T>
+			template<typename iter_t>
 			struct base_iterator;
-			template<typename T>
+			template<typename iter_t>
 			struct base_reverse_iterator;
 
 #pragma region segment 

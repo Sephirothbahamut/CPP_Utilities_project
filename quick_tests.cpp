@@ -10,15 +10,15 @@
 #include "include/utils/graphics/colour.h"
 
 #include "include/utils/containers/matrix.h"
-#include "include/utils/logger.h"
+//#include "include/utils/logger.h"
 
 #include "include/utils/containers/handled_container.h"
 #include "include/utils/containers/multihandled.h"
 
 #include "include/utils/containers/hive/next.h"
-#include "include/utils/beta/containers/linked_vector.h"
-#include "include/utils/beta/containers/segmented_vector.h"
-
+#include "include/utils/containers/linked_vector.h"
+#include "include/utils/containers/segmented_vector.h"
+/*
 void old_test()
 	{
 	using namespace utils::output;
@@ -94,7 +94,7 @@ void old_test()
 	auto handle_3{ handled.emplace(3) };
 
 	}
-
+	*/
 struct disney
 	{
 	inline static size_t count{0};
@@ -120,30 +120,26 @@ int main()
 	{
 	if(true)
 		{
-		utils::beta::containers::linked_vector<disney, 2> a;
+		utils::containers::hive::next<disney, 2> a;
 
-		auto& obj_0{ a.emplace(0) };
-		auto& obj_1{ a.emplace(1) };
-		auto& obj_2{ a.emplace(2) };
+		auto obj_0{ a.emplace(0) };
+		auto obj_1{ a.emplace(1) };
+		auto obj_2{ a.emplace(2) };
 
-		auto it{ a.rbegin() };
-		int x;
-		x = it->v;
-		it++;
-		x = it->v;
-		it++;
-		x = it->v;
-		it--;
-		x = it->v;
-		it--;
-		x = it->v;
+		a.erase(obj_1);
+		a.erase(obj_0);
+
+		auto obj_3{ a.emplace(3) };
+		auto obj_4{ a.emplace(4) };
+		auto obj_5{ a.emplace(5) };
+
+		a.erase(obj_3);
+
+		auto obj_6{ a.emplace(6) };
+		auto obj_7{ a.emplace(7) };
+		auto obj_8{ a.emplace(8) };
 		
-		auto re{ a.rend() };
-		auto* ptr{ &*a.begin() };
-		it += 3;
-
-		auto rb{ a.rbegin() };
-		it -= 3;
+		a.erase(obj_4);
 
 		auto& disney_count{ disney::count };
 		}
