@@ -25,9 +25,9 @@ namespace utils::containers
 				default_handle{ parent_container_t::emplace(std::forward<Args>(args)...)}
 				{}
 
-			void reset(handle_t& handle)
+			void reset_handle(handle_t& handle)
 				{
-				if (get_inner_iterator(handle) != get_inner_iterator(default_handle))
+				if (parent_container_t::get_inner_iterator(handle) != parent_container_t::get_inner_iterator(default_handle))
 					{
 					parent_container_t::erase_and_remap(handle, default_handle);
 					}

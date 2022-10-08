@@ -160,11 +160,11 @@ namespace utils::containers::hive
 #pragma endregion iterators
 
 		public:
-			using value_type      = segment_t::value_type;
-			using reference       = segment_t::reference;
-			using const_reference = segment_t::const_reference;
-			using pointer         = segment_t::pointer;
-			using const_pointer   = segment_t::const_pointer;
+			using value_type      = T;
+			using reference       = T&;
+			using const_reference = const reference;
+			using pointer         = T*;
+			using const_pointer   = const pointer;
 
 			using size_type       = size_t;
 
