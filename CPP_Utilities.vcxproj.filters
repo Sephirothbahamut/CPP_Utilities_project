@@ -47,6 +47,9 @@
     <Filter Include="Beta\containers\hive">
       <UniqueIdentifier>{a6d5cc8d-35eb-449d-8021-c27a17b95748}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\containers\multithreading">
+      <UniqueIdentifier>{aee5b14c-b39c-4407-8266-0366b7f38944}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -241,17 +244,32 @@
     <ClInclude Include="include\utils\beta\containers\hive\pool.h">
       <Filter>Beta\containers\hive</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\containers\producer_consumer_queue.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\self_consuming_queue.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\containers\linked_vector.h">
       <Filter>Utils\containers</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\containers\segmented_vector.h">
       <Filter>Utils\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\multiqueue_consumer.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\consumable_queue.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\self_consuming_queue.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\producer_consumer_queue.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\consumption_delegating_queue.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\operations_flags.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\flags.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

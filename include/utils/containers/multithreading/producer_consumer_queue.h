@@ -3,7 +3,7 @@
 #include <mutex>
 #include <vector>
 
-namespace utils::containers
+namespace utils::containers::multithreading
 	{
 	template <typename T>
 	class producer_consumer_queue
@@ -34,6 +34,7 @@ namespace utils::containers
 			std::vector<T>& swap_and_get()
 				{
 				std::unique_lock lock{ queues_access_mutex };
+				consumer_data.clear();
 				std::swap(producer_data, consumer_data);
 				return consumer_data;
 				}

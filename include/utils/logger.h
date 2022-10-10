@@ -7,7 +7,7 @@
 #include <concepts>
 
 #include "message.h"
-#include "containers/self_consuming_queue.h"
+#include "containers/multithreading/self_consuming_queue.h"
 
 namespace utils
 	{
@@ -20,10 +20,10 @@ namespace utils
 
 			logger(const std::string& file_name = "log.txt") : file {file_name} {}
 
-			logger(const logger& copy) = delete;			// don't copy threads please, thank you
-			logger& operator=(const logger& copy) = delete;	// don't copy threads please, thank you
-			logger(logger&& move) noexcept = default;	//could make those (running is already a flag for the instance being alive or not) but I'm lazy
-			logger& operator=(logger&& move) = default;	//could make those (running is already a flag for the instance being alive or not) but I'm lazy
+			logger           (const logger&  copy)          = delete ; // don't copy threads please, thank you
+			logger& operator=(const logger&  copy)          = delete ; // don't copy threads please, thank you
+			logger           (      logger&& move) noexcept = default; //could make those (running is already a flag for the instance being alive or not) but I'm lazy
+			logger& operator=(      logger&& move) noexcept = default; //could make those (running is already a flag for the instance being alive or not) but I'm lazy
 
 			//Push messages begin
 			void operator<<(const value_type& message) noexcept { push(message); }
@@ -55,22 +55,22 @@ namespace utils
 		protected:
 			std::ofstream file;
 
-			utils::containers::self_consuming_queue<T> message_queue{[this](std::vector<T>& to_load) -> void { consume(to_load); }};
-			
-			void consume(std::vector<T>& to_load)
+			utils::containers::multithreading::self_consuming_queue<T, utils::containers::multithreading::operation_flag_bits::current | utils::containers::multithreading::operation_flag_bits::pre> message_queue
 				{
-				if constexpr (std::same_as<T, utils::message>)
+				[this](T& element) -> void
 					{
-					//TODO reimplement get_timestamp in some way for the sorting
-					std::sort(to_load.begin(), to_load.end(), [](const utils::message& a, const utils::message& b) { return a.get_timestamp().time_since_epoch().count() < b.get_timestamp().time_since_epoch().count(); });
-					}
-
-				for (auto& message : to_load)
+					std::cout << element << std::endl;
+					file << element << std::endl;
+					},
+				[this](std::vector<T>& elements)
 					{
-					std::cout << message << std::endl;
-					file << message << std::endl;
+					if constexpr (std::same_as<T, utils::message>)
+						{
+						//TODO reimplement get_timestamp in some way for the sorting
+						//std::sort(elements.begin(), elements.end(), [](const utils::message& a, const utils::message& b) { return a.get_timestamp().time_since_epoch().count() < b.get_timestamp().time_since_epoch().count(); });
+						}
 					}
-				}
+				};
 		};
 	}
 

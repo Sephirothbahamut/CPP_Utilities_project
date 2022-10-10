@@ -10,7 +10,7 @@
 #include "include/utils/graphics/colour.h"
 
 #include "include/utils/containers/matrix.h"
-//#include "include/utils/logger.h"
+#include "include/utils/logger.h"
 
 #include "include/utils/containers/handled_container.h"
 #include "include/utils/containers/multihandled.h"
@@ -18,8 +18,10 @@
 #include "include/utils/containers/hive/next.h"
 #include "include/utils/containers/linked_vector.h"
 #include "include/utils/containers/segmented_vector.h"
-/*
-void old_test()
+
+#include "include/utils/containers/multithreading/multiqueue_consumer.h"
+
+void main()
 	{
 	using namespace utils::output;
 	std::cout
@@ -93,54 +95,20 @@ void old_test()
 
 	auto handle_3{ handled.emplace(3) };
 
-	}
-	*/
-struct disney
-	{
-	inline static size_t count{0};
-	//std::array<int, 32> trash;
-	int v;
-	disney(int v) : v{v} 
+
+	utils::containers::multithreading::consumption_delegating_queue<int  > queue_a{[](int  & i) { std::cout << "int   " << i << std::endl; }};
+	utils::containers::multithreading::consumption_delegating_queue<float> queue_b{[](float& c) { std::cout << "float " << c << std::endl; }};
+
+	utils::containers::multithreading::multiqueue_consumer consumer{[]() {}, []() {}};
+	consumer.bind(queue_a);
+	consumer.bind(queue_b);
+
+	for (size_t i = 0; true; i++)
 		{
-		count++; 
-		//for (size_t i = 0; i < trash.size(); i++)
-		//	{
-		//	trash[i] = 999;
-		//	}
-		}
-	~disney() 
-		{
-		count--; 
-		}
-	};
+		queue_a.push(i);
+		queue_b.push('a' + i);
 
-
-#include<deque>
-int main()
-	{
-	if(true)
-		{
-		utils::containers::hive::next<disney, 2> a;
-
-		auto obj_0{ a.emplace(0) };
-		auto obj_1{ a.emplace(1) };
-		auto obj_2{ a.emplace(2) };
-
-		a.erase(obj_1);
-		a.erase(obj_0);
-
-		auto obj_3{ a.emplace(3) };
-		auto obj_4{ a.emplace(4) };
-		auto obj_5{ a.emplace(5) };
-
-		a.erase(obj_3);
-
-		auto obj_6{ a.emplace(6) };
-		auto obj_7{ a.emplace(7) };
-		auto obj_8{ a.emplace(8) };
-		
-		a.erase(obj_4);
-
-		auto& disney_count{ disney::count };
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(.0001s);
 		}
 	}
