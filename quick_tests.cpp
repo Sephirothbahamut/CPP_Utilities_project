@@ -99,7 +99,8 @@ void main()
 	utils::containers::multithreading::consumption_delegating_queue<int  > queue_a{[](int  & i) { std::cout << "int   " << i << std::endl; }};
 	utils::containers::multithreading::consumption_delegating_queue<float> queue_b{[](float& c) { std::cout << "float " << c << std::endl; }};
 
-	utils::containers::multithreading::multiqueue_consumer consumer{[]() {}, []() {}};
+	//utils::containers::multithreading::multiqueue_consumer consumer<int, utils::containers::multithreading::operation_flag_bits::pre>{[]() {}, []() {}};
+	utils::containers::multithreading::multiqueue_consumer consumer{ []() { std::cout << "pre " << std::endl; }, []() { std::cout << "post " << std::endl; } };
 	consumer.bind(queue_a);
 	consumer.bind(queue_b);
 
@@ -109,6 +110,6 @@ void main()
 		queue_b.push('a' + i);
 
 		using namespace std::chrono_literals;
-		std::this_thread::sleep_for(.0001s);
+		std::this_thread::sleep_for(.1s);
 		}
 	}

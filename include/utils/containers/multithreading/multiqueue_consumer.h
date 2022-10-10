@@ -5,6 +5,7 @@
 #include <condition_variable>
 
 #include "consumption_delegating_queue.h"
+#include "operations_flags.h"
 
 namespace utils::containers::multithreading
 	{
@@ -16,6 +17,7 @@ namespace utils::containers::multithreading
 		template <typename T, flags<operation_flag_bits> operations>
 		friend class consumption_delegating_queue;
 		
+
 		struct queue_actions_t
 			{
 			std::function<void()> swap_and_consume;
@@ -23,9 +25,13 @@ namespace utils::containers::multithreading
 			};
 
 		public:
-			multiqueue_consumer() : thread{&multiqueue_consumer::consumer, this} {}
-			multiqueue_consumer(std::function<void()> pre_consumption, std::function<void()> post_consumption) : pre_consumption{pre_consumption}, post_consumption{post_consumption}, thread{&multiqueue_consumer::consumer, this} {}
-
+			multiqueue_consumer() : thread{ &multiqueue_consumer::consumer, this } {}
+			
+			multiqueue_consumer(const std::function<void()>& pre_consumption, const std::function<void()>& post_consumption) : 
+				pre_consumption  { pre_consumption  },
+				post_consumption { post_consumption },
+				thread           { &multiqueue_consumer::consumer, this } {}
+			
 			~multiqueue_consumer() { inner_flush(); }
 
 			void flush()
@@ -35,8 +41,8 @@ namespace utils::containers::multithreading
 				thread = std::thread{&multiqueue_consumer::consumer, this};
 				}
 
-			template <typename T, flags<operation_flag_bits> operations>
-			void bind(consumption_delegating_queue<T, operations>& npcq)
+			template <typename T, flags<operation_flag_bits> npcq_operations>
+			void bind(consumption_delegating_queue<T, npcq_operations>& npcq)
 				{
 				std::unique_lock lock{mutex};
 				actions.emplace_back([&]() { npcq.swap_and_consume(); }, [&]() { npcq.consume_producer(); });
@@ -45,7 +51,10 @@ namespace utils::containers::multithreading
 
 
 		private:
-			//Please compiler, this method is NOT static. Wake up!
+			std::function<void()> pre_consumption {[](){}};
+			std::function<void()> post_consumption{[](){}};
+
+
 			void inner_flush()
 				{
 				running = false;
@@ -54,9 +63,6 @@ namespace utils::containers::multithreading
 
 				for (const auto& action : actions) { action.consume_producer(); }
 				}
-
-			std::function<void()> pre_consumption;
-			std::function<void()> post_consumption;
 
 			std::condition_variable work_available;
 			std::atomic_bool running{true};
@@ -71,7 +77,7 @@ namespace utils::containers::multithreading
 					std::unique_lock lock{mutex};
 					work_available.wait(lock);
 
-					pre_consumption();
+					pre_consumption ();
 					for (const auto& action : actions) { action.swap_and_consume(); }
 					post_consumption();
 					}
