@@ -55,7 +55,7 @@ namespace utils
 		protected:
 			std::ofstream file;
 
-			utils::containers::multithreading::self_consuming_queue<T, utils::containers::multithreading::operation_flag_bits::current | utils::containers::multithreading::operation_flag_bits::pre> message_queue
+			utils::containers::multithreading::self_consuming_queue<T, utils::containers::multithreading::operation_flag_bits::pre> message_queue
 				{
 				[this](T& element) -> void
 					{

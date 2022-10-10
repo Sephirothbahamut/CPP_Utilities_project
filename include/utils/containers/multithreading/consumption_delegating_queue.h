@@ -10,7 +10,7 @@ namespace utils::containers::multithreading
 	{
 	class multiqueue_consumer;
 
-	template <typename T, flags<operation_flag_bits> operations = flags<operation_flag_bits>{operation_flag_bits::current} >
+	template <typename T, flags<operation_flag_bits> operations = flags<operation_flag_bits>{operation_flag_bits::none} >
 	class consumption_delegating_queue : public consumable_queue<T, operations>
 		{
 		friend class multiqueue_consumer;
