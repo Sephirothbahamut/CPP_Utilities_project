@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include <algorithm>
 
 namespace utils
 	{
