@@ -162,6 +162,7 @@
     <ClInclude Include="include\utils\containers\polymorphic_access_container.h" />
     <ClInclude Include="include\utils\containers\polymorphic_container.h" />
     <ClInclude Include="include\utils\containers\segmented_vector.h" />
+    <ClInclude Include="include\utils\containers\std_hash.h" />
     <ClInclude Include="include\utils\containers\storage_for.h" />
     <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
