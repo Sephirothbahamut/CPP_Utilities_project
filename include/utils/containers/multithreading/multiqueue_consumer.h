@@ -61,7 +61,9 @@ namespace utils::containers::multithreading
 				work_available.notify_one();
 				thread.join();
 
+				pre_consumption();
 				for (const auto& action : actions) { action.consume_producer(); }
+				post_consumption();
 				}
 
 			std::condition_variable work_available;

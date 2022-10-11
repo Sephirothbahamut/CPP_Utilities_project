@@ -193,7 +193,7 @@ namespace utils::containers::hive
 					{
 					if (i != free)
 						{
-						auto& slot{*address_at(first_free)};
+						auto& slot{*address_at(i)};
 						slot.element.~T();
 						}
 					else { free = address_at(free)->next_free; }

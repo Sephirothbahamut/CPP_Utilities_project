@@ -18,7 +18,7 @@ namespace Microsoft
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-struct disney 
+struct disney // TODO do a better constructor to notice if destructors using disney really work :)
 	{
 	inline static size_t count{0};
 	int v;
