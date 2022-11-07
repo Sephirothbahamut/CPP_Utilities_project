@@ -8,23 +8,23 @@
 //TODO test cases
 //TODO make interface and names better
 
-namespace utils::attempt
+namespace utils
 	{
-	//TODO make optional and non-optional versions
-	template <class F>
-	auto catching(F&& f) -> std::conditional<std::same_as<decltype(f()), void>, void, std::optional<decltype(f())>>
+	template <class callable_t>
+	auto try_opt(callable_t&& callable) noexcept -> std::conditional<std::same_as<decltype(callable()), void>, void, std::optional<decltype(callable())>>
 		{
-		if constexpr (std::same_as<decltype(f()), void>)
+		if constexpr (std::same_as<decltype(callable()), void>)
 			{
-			try { f(); }
+			try         { callable(); }
 			catch (...) {}
 			}
 		else
 			{
-			try { return f(); }
+			try         { return callable(); }
 			catch (...) { return std::nullopt; }
 			}
 		}
+
 
 	//TODO expose in construct.h
 	

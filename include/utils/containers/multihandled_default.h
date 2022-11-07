@@ -1,15 +1,20 @@
 #pragma once
-#include "multihandled.h"
+#include "multihandled_unsafe.h"
 
 //TODO write test cases
 
 namespace utils::containers
 	{
+	/// <summary>
+	/// Handles can either refer to an existing value or the default value. Two handles cannot refer to the same value unless it's the default one.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="inner_size"></typeparam>
 	template <typename T, size_t inner_size = 8>
-	class multihandled_default : public multihandled<T, inner_size>
+	class multihandled_default : private multihandled_unsafe<T, inner_size>
 		{
 		protected:
-			using parent_container_t = multihandled<T, inner_size>;
+			using parent_container_t = multihandled_unsafe<T, inner_size>;
 
 		public:
 			using handle_t           = parent_container_t::handle_t;
@@ -20,28 +25,70 @@ namespace utils::containers
 			using pointer            = parent_container_t::pointer;
 			using const_pointer      = parent_container_t::const_pointer;
 
+
 			template <typename ...Args>
-			multihandled_default(Args&&... args) :
-				default_handle{ parent_container_t::emplace(std::forward<Args>(args)...)}
-				{}
+			multihandled_default(Args&&... args) : default_value{std::forward<Args>(args)...}
+				{
+				inner_fake_handle.element_ptr = &default_value;
+				handle_default.inner_handle.element_ptr = &inner_fake_handle;
+				}
+
+			void clear() noexcept { parent_container_t::clear(); }
+
+			using parent_container_t::emplace;
+			using parent_container_t::push;
+			using parent_container_t::swap;
+
+			template <typename ...Args>
+			inline void emplace_at(handle_t& handle, Args&&... args)
+				{
+				if (!is_default(handle)) { parent_container_t::erase_content(handle); }
+				parent_container_t::emplace_at(handle, std::forward<Args>(args)...);
+				}
+
+			inline void push_at(handle_t& handle, const value_type& value)
+				{
+				if (!is_default(handle)) { parent_container_t::erase_content(handle); }
+				parent_container_t::push_at(handle, value);
+				}
+
+			void erase(const handle_t& handle) 
+				{
+				if (!is_default(handle)) { parent_container_t::erase_content(handle); }
+				parent_container_t::erase_handle(handle);
+				}
+
+			/// <summary>
+			/// Remaps and handle to the default value into a different value. The previous handle used to reference that value will be erased.
+			/// </summary>
+			/// <param name="handle_to_remap"></param>
+			/// <param name="handle_toward_target"></param>
+			/// <returns></returns>
+			void remap_and_erase_target_handle(handle_t& handle_to_remap, const handle_t& handle_remap_target) noexcept
+				{
+				parent_container_t::remap(handle_to_remap, handle_remap_target);
+				if (!is_default(handle_remap_target)) { parent_container_t::erase_handle(handle_remap_target); }
+				}
 
 			void reset_handle(handle_t& handle)
 				{
-				if (parent_container_t::get_inner_iterator(handle) != parent_container_t::get_inner_iterator(default_handle))
-					{
-					parent_container_t::erase_and_remap(handle, default_handle);
-					}
+				if (!is_default(handle)) { parent_container_t::erase_content_and_remap(handle, handle_default); }
 				}
 
-			handle_t get_default()
+			handle_t clone_default()
 				{
-				return parent_container_t::splice(default_handle);
+				return parent_container_t::clone(handle_default);
 				}
 			
-		private:
-			handle_t default_handle;
-		};
+			bool is_default(const handle_t& handle) const noexcept 
+				{
+				//Compares the pointed-at addresses instead of using == because handle_default being a fake handle doesn't exist within the handles container.
+				return handle.get() == handle_default.get(); 
+				}
 
-	template <typename T, size_t inner_size = 8>
-	using multidefaultoso = multihandled_default<T, inner_size>;
+		private:
+			T default_value;
+			utils::containers::hive::next<T>::iterator inner_fake_handle;
+			handle_t handle_default;
+		};
 	}

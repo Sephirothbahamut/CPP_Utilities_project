@@ -274,6 +274,21 @@
     <ClInclude Include="include\utils\containers\std_hash.h">
       <Filter>Utils\containers</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\containers\multithreading\concurrent_queue.h">
+      <Filter>Utils\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\thread_pool.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multihandled_unsafe.h">
+      <Filter>Utils\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\containers\multihandled_default_old.h">
+      <Filter>Utils\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\future.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

@@ -5,7 +5,8 @@
 #include "../compilation/debug.h"
 #include "../id_pool.h"
 
-//TODO see below smarter handled container
+
+//TODO use hive::next
 //TODO write test cases
 
 namespace utils::containers
@@ -132,52 +133,4 @@ namespace utils::containers
 			std::vector<size_t/*, Allocator*/> container_index_to_handle;
 		};
 
-	}
-
-namespace utils::beta::containers
-	{
-	//ctrl+f discord the following message "then with object_pool + unique_identifier_generator_and_recycler = handled_container"
-	//template <typename T, class Allocator = std::allocator<T>>
-	//class handled_container
-	//	{
-	//	public:
-	//
-	//
-	//
-	//	private:
-	//		//TODO
-	//		void reserve(size_t new_capacity)
-	//			{
-	//			assert(new_capacity > capacity);
-	//			auto new_data{std::make_unique_for_oberwrite<slot_t[]>(new_capacity)};
-	//
-	//			size_t begin{0};
-	//			size_t end{first_free};
-	//
-	//			while (true)
-	//				{
-	//				for (; begin < end; begin++)
-	//					{
-	//					new_data[begin] = std::move(data[begin]);
-	//					}
-	//				if (end == capacity) { break; }
-	//				while (data[end].next_free == end + 1)
-	//					{
-	//					end++;
-	//					}
-	//				begin = end + 1;
-	//				end = data[end].next_free;
-	//				}
-	//			}
-	//
-	//		union slot_t
-	//			{
-	//			size_t next_free;
-	//			T value;
-	//			};
-	//
-	//		size_t first_free{0};
-	//		size_t capacity{0};
-	//		std::unique_ptr<slot_t[]> data{nullptr};
-	//	};
 	}

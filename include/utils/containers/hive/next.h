@@ -8,6 +8,11 @@
 #include <array>
 
 //TODO complete iterators
+namespace utils::containers
+	{
+	template <typename T, size_t inner_size>
+	class multihandled_default;
+	}
 
 namespace utils::containers::hive
 	{
@@ -36,13 +41,15 @@ namespace utils::containers::hive
 			using segment_allocator_t = typename std::allocator_traits<Allocator>::template rebind_alloc<segment_t>;
 
 #pragma region iterators
-
 			template<typename iter_T>
 			struct base_iterator
 				{
 				friend class next;
 				template <typename iter_T>
 				friend struct next::base_iterator;
+
+				template <typename T, size_t inner_size>
+				friend class utils::containers::multihandled_default;
 
 				//using segment_ptr_t      = next   <slot_t, inner_size, Allocator>::segment_ptr_t;
 
@@ -58,6 +65,8 @@ namespace utils::containers::hive
 
 					base_iterator() : container_ptr{nullptr} {}
 					base_iterator(size_t index, next& container, pointer element_ptr) : index{ index }, container_ptr{ &container }, element_ptr{ element_ptr } { }
+
+					operator utils::observer_ptr<T> () { return element_ptr; }
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
@@ -172,6 +181,8 @@ namespace utils::containers::hive
 			using const_iterator         = base_iterator        <const T>;
 			using reverse_iterator       = base_reverse_iterator<      T>;
 			using const_reverse_iterator = base_reverse_iterator<const T>;
+
+			using handle_t = iterator;
 
 			next() {}
 			next(const Allocator& allocator) : segment_allocator{allocator} {}

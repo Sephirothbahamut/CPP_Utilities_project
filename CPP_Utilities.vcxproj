@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -140,6 +140,8 @@
     <ClInclude Include="include\utils\containers\flat_set.h" />
     <ClInclude Include="include\utils\containers\handled_container.h" />
     <ClInclude Include="include\utils\containers\flat_map.h" />
+    <ClInclude Include="include\utils\containers\multihandled_default_old.h" />
+    <ClInclude Include="include\utils\containers\multihandled_unsafe.h" />
     <ClInclude Include="include\utils\containers\hive\next.h" />
     <ClInclude Include="include\utils\containers\hive\skipfield.h" />
     <ClInclude Include="include\utils\containers\linked_vector.h" />
@@ -152,6 +154,7 @@
     <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
     <ClInclude Include="include\utils\containers\multihandled.h" />
     <ClInclude Include="include\utils\containers\multihandled_default.h" />
+    <ClInclude Include="include\utils\containers\multithreading\concurrent_queue.h" />
     <ClInclude Include="include\utils\containers\multithreading\consumable_queue.h" />
     <ClInclude Include="include\utils\containers\multithreading\consumption_delegating_queue.h" />
     <ClInclude Include="include\utils\containers\multithreading\multiqueue_consumer.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="include\utils\discard.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\flags.h" />
+    <ClInclude Include="include\utils\future.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />
     <ClInclude Include="include\utils\id_pool.h" />
     <ClInclude Include="include\utils\logger.h" />
@@ -195,6 +199,7 @@
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
+    <ClInclude Include="include\utils\thread_pool.h" />
     <ClInclude Include="include\utils\try_opt.h" />
     <ClInclude Include="include\utils\output\std_containers.h" />
     <ClInclude Include="include\utils\string.h" />
