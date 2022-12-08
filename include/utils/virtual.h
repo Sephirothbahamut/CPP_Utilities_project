@@ -4,9 +4,18 @@
 //#define utils_devirtualize protected: virtual void utils_i_am_virtual() final override { };
 namespace utils
 	{
+	class devirtualize;
+
 	/// <summary>
 	/// This class should be inherited virtually.
 	/// </summary>
-	struct virtualize { virtual void utils_i_am_virtual() = 0; };
-	struct devirtualize : virtual virtualize { virtual void utils_i_am_virtual() final override {} };
+	class virtualize 
+		{
+		friend class devirtualize;
+		virtual void utils_i_am_virtual() = 0; 
+		};
+	class devirtualize : virtual virtualize 
+		{
+		virtual void utils_i_am_virtual() final override {} 
+		};
 	}
