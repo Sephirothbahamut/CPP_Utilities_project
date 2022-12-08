@@ -66,7 +66,7 @@
 			return (SUCCEEDED(hr));
 			}
 
-		inline bool make_transparent_Layered(HWND hWnd, BYTE opacity = 100)
+		inline bool make_transparent_Layered(HWND hWnd, BYTE opacity = 127)
 			{
 			//Transparent window
 			SetWindowLong(hWnd, GWL_EXSTYLE,
