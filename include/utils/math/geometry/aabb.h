@@ -106,7 +106,14 @@ namespace utils::output
 		template <typename T>
 		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::geometry::aabb<T>& aabb)
 			{
-			os << "(left: " << aabb.ll << ", up: " << aabb.up << ", right: " << aabb.rr << ", down: " << aabb.dw << ")";
+			namespace ucc = utils::console::colour;
+
+			os  << ucc::brace << "(" 
+				<< ucc::type << "left"  << ucc::separ << ": " << ucc::value << aabb.ll << ucc::separ << ", "
+				<< ucc::type << "up"    << ucc::separ << ": " << ucc::value << aabb.up << ucc::separ << ", "
+				<< ucc::type << "right" << ucc::separ << ": " << ucc::value << aabb.rr << ucc::separ << ", "
+				<< ucc::type << "down"  << ucc::separ << ": " << ucc::value << aabb.dw << ucc::separ
+				<< ucc::brace << ")";
 			return os;
 			}
 		}
@@ -115,7 +122,7 @@ namespace utils::output
 	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::geometry::aabb<T>& aabb)
 		{
 		namespace ucc = utils::console::colour;
-		os << ucc::type << "aabb<" << typeid(T).name() << ">";
+		os << ucc::type << "aabb" << ucc::brace << "<" << ucc::type << typeid(T).name() << ucc::brace << ">";
 		return utils::output::typeless::operator<<(os, aabb);
 		}
 	}
