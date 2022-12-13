@@ -10,6 +10,6 @@ namespace utils::math::geometry
 		using vec2f::vec2f; 
 		point(const vec2f& copy) : vec2f{ copy } {}
 		
-		operator aabb() const noexcept { return {.rr{x}, .up{y}, .ll{x}, .dw{y}}; }
+		operator aabb() const noexcept { return {.ll{x}, .up{y}, .rr{x}, .dw{y}}; }
 		};
 	}

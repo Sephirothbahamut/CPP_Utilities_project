@@ -9,9 +9,9 @@ namespace utils::math
 	struct rect
 		{
 #pragma region Variables
-		T rr;
-		T up;
 		T ll;
+		T up;
+		T rr;
 		T dw;
 #pragma endregion Variables
 

@@ -59,7 +59,7 @@ void main()
 	auto sensicalrad{ 90_radpi };
 
 	utils::math::angle::base<float, 1.f> other{ .5 };
-	std::cout << deg << ", " << rad << ", " << sensicalrad << ", " << other << "\n";
+	//std::cout << deg << ", " << rad << ", " << sensicalrad << ", " << other << "\n";
 
 	utils::graphics::colour::rgb_u colour_a{ utils::graphics::colour::base::blue };
 	utils::graphics::colour::rgb_u colour_b{ utils::graphics::colour::base::cyan   , 128, 100 };

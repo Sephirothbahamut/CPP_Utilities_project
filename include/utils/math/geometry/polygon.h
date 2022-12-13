@@ -139,9 +139,9 @@ namespace utils::math::geometry
 				{
 				aabb ret
 					{
-					.rr = -constants::finf,
-					.up = constants::finf,
 					.ll =  constants::finf,
+					.up =  constants::finf,
+					.rr = -constants::finf,
 					.dw = -constants::finf,
 					};
 
