@@ -106,6 +106,9 @@ namespace utils::containers::hive
 					bool operator== (const self_type& rhs) const noexcept { return index ==  rhs.index; }
 					bool operator<=>(const self_type& rhs) const noexcept { return index <=> rhs.index; }
 
+					//TODO: this seems enough to auto-generate the hash. Check if standard or accidentally working with this compiler
+					friend struct std::hash<utils::containers::hive::next<T, inner_size, Allocator>::base_iterator<iter_T>>;
+
 				private:
 					size_t  index;
 					next*   container_ptr;
