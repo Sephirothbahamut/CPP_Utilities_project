@@ -92,9 +92,6 @@ namespace utils::math
 
 		bool contains(vec2<T> point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
 		};
-
-	template <typename T = float>
-	using axis_aligned_bounding_box = aabb<T>;
 	}
 
 
