@@ -43,13 +43,17 @@ namespace utils::math::angle
 			base() = default;
 			base(value_type value) : value{ value } {}
 			
-			template <value_type other_full_angle>
-			base(const base<value_type, other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
-			template <>
-			base<value_type, full_angle_value>(const base<value_type, full_angle_value>& src) : value{src.value} {}
+			// template <value_type other_full_angle>
+			// base(const base<value_type, other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
+			// template <>
+			// base<value_type, full_angle_value>(const base<value_type, full_angle_value>& src) : value{src.value} {}
 
 			template <value_type other_full_angle>
-			operator base<value_type, other_full_angle>() const noexcept { return { (value / full_angle) * other_full_angle }; }
+			operator base<value_type, other_full_angle>() const noexcept 
+				{
+				if constexpr (other_full_angle == full_angle) { return {value}; }
+				else { return {(value / full_angle) * other_full_angle}; }
+				}
 
 			base clamp() const noexcept
 				{
@@ -180,29 +184,29 @@ namespace utils::math
 
 namespace utils::output
 	{
-	namespace typeless
-		{
-		template <std::floating_point T, T full_angle_value>
-		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
-			{
-			namespace ucc = utils::console::colour;
-			os << ucc::value;
-			if (full_angle_value == 2.f * constants::PIf) { os << (angle.value / constants::PIf); }
-			else { os << angle.value; }
-
-			os << ucc::type;
-			if      (full_angle_value == T{360})               { os << "deg"; }
-			else if (full_angle_value == 2.f * constants::PIf) { os << "pirad"; }
-			else                                               { os << "/" << full_angle_value; }
-			return os;
-			}
-		}
-
-	template <std::floating_point T, T full_angle_value>
-	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
-		{
-		namespace ucc = utils::console::colour;
-		utils::output::typeless::operator<<(os, angle); 
-		return os << "_" << typeid(T).name();
-		}
+	//namespace typeless
+	//	{
+	//	template <std::floating_point T, T full_angle_value>
+	//	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
+	//		{
+	//		namespace ucc = utils::console::colour;
+	//		os << ucc::value;
+	//		if (full_angle_value == 2.f * constants::PIf) { os << (angle.value / constants::PIf); }
+	//		else { os << angle.value; }
+	//
+	//		os << ucc::type;
+	//		if      (full_angle_value == T{360})               { os << "deg"; }
+	//		else if (full_angle_value == 2.f * constants::PIf) { os << "pirad"; }
+	//		else                                               { os << "/" << full_angle_value; }
+	//		return os;
+	//		}
+	//	}
+	//
+	//template <std::floating_point T, T full_angle_value>
+	//inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
+	//	{
+	//	namespace ucc = utils::console::colour;
+	//	utils::output::typeless::operator<<(os, angle); 
+	//	return os << "_" << typeid(T).name();
+	//	}
 	}

@@ -65,23 +65,23 @@ namespace utils::math
 	}
 namespace utils::output
 	{
-	namespace typeless
-		{
-		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::transform2& container)
-			{
-			namespace ucc = utils::console::colour;
-			return os << ucc::brace << "(" 
-				<< ucc::type << "translation: " << container.translation << ucc::separ << ", " 
-				<< ucc::type << "rotation: "    << container.rotation    << ucc::separ << ", "
-				<< ucc::type << "scaling: "     << ucc::value << container.scaling 
-				<< ucc::brace << ")";
-			}
-		}
-
-	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::transform2& container)
-		{
-		namespace ucc = utils::console::colour;
-		os << ucc::type << "transform2";
-		return utils::output::typeless::operator<<(os, container);
-		}
+	//namespace typeless
+	//	{
+	//	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::transform2& container)
+	//		{
+	//		namespace ucc = utils::console::colour;
+	//		return os << ucc::brace << "(" 
+	//			<< ucc::type << "translation: " << container.translation << ucc::separ << ", " 
+	//			<< ucc::type << "rotation: "    << container.rotation    << ucc::separ << ", "
+	//			<< ucc::type << "scaling: "     << ucc::value << container.scaling 
+	//			<< ucc::brace << ")";
+	//		}
+	//	}
+	//
+	//inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::transform2& container)
+	//	{
+	//	namespace ucc = utils::console::colour;
+	//	os << ucc::type << "transform2";
+	//	return utils::output::typeless::operator<<(os, container);
+	//	}
 	}
