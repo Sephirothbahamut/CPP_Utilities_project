@@ -200,6 +200,7 @@
     <ClInclude Include="include\utils\math\vec3.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
+    <ClInclude Include="include\utils\one_time_tasks.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
     <ClInclude Include="include\utils\thread_pool.h" />
     <ClInclude Include="include\utils\try_opt.h" />
