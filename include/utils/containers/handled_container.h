@@ -44,17 +44,23 @@ namespace utils::containers
 				friend class handled_container;
 
 				public:
-					constexpr       reference operator* ()       noexcept { return container_ptr->operator[](*this); }
-					constexpr const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
+					using value_type      = T;
+					using reference       =       value_type&;
+					using const_reference = const value_type&;
+					using pointer         =       value_type*;
+					using const_pointer   = const value_type* const;
 
-					constexpr       pointer   operator->()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
-					constexpr const_pointer   operator->() const noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					      reference operator* ()       noexcept { return container_ptr->operator[](*this); }
+					const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
 
-					constexpr       reference value     ()       noexcept { return container_ptr->operator[](*this); }
-					constexpr const_reference value     () const noexcept { return container_ptr->operator[](*this); }
+					      pointer   operator->()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					const_pointer   operator->() const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
-					constexpr       pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
-					constexpr const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					      reference value     ()       noexcept { return container_ptr->operator[](*this); }
+					const_reference value     () const noexcept { return container_ptr->operator[](*this); }
+
+					      pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
 				private:
 					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
@@ -67,6 +73,12 @@ namespace utils::containers
 				friend class handled_container;
 
 				public:
+					using value_type      = T;
+					using reference       =       value_type&;
+					using const_reference = const value_type&;
+					using pointer         =       value_type*;
+					using const_pointer   = const value_type* const;
+
 					handle_unique           (const handle_unique& copy) = delete;
 					handle_unique& operator=(const handle_unique& copy) = delete;
 					handle_unique           (      handle_unique&& move) noexcept : handle_wrapper{*move.container_ptr, move.index} { move.release(); }
