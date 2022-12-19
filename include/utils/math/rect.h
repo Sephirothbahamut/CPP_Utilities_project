@@ -48,6 +48,14 @@ namespace utils::math
 		void    set_w(T       value) noexcept { rr = ll + value; }
 		void    set_s(vec2<T> value) noexcept { w = value.x; h = value.y; }
 		void    set_p(vec2<T> value) noexcept { x = value.x; y = value.y; }
+
+		// Center
+		T       get_center_x()        const noexcept { return ll + (w / T{2}); }
+		T       get_center_y()        const noexcept { return up + (h / T{2}); }
+		vec2<T> get_center  ()        const noexcept { return {get_center_x(), get_center_y()}; }
+		//TODO void    set_center_x(T value) { auto previous_w{get_w()}; }
+		//TODO void    set_center_x(T value)
+		//TODO set_center() 
 #pragma endregion Accessors
 
 #pragma region Properties
@@ -88,6 +96,10 @@ namespace utils::math
 		__declspec(property(get = get_p, put = set_p)) vec2<T> p;
 		__declspec(property(get = get_p, put = set_p)) vec2<T> pos;
 		__declspec(property(get = get_p, put = set_p)) vec2<T> position;
+
+		// Center
+		__declspec(property(get = get_center)) vec2<T> center;
+
 #pragma endregion Properties
 
 		bool contains(vec2<T> point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }

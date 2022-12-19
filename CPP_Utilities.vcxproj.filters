@@ -298,6 +298,9 @@
     <ClInclude Include="include\utils\one_time_tasks.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\index_range.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

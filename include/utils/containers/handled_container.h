@@ -21,20 +21,52 @@ namespace utils::containers
 			using inner_container_t = std::vector<T, Allocator>;
 
 		public:
-			//using handle_t = size_t;
 			class handle_t 
 				{
-				friend class handled_container<T>;//, Allocator>
+				friend class handled_container;
+
 				public:
-					handle_t() = default;
-					handle_t(id_pool_manual::value_type value) : value{value} {};
-					handle_t(const handle_t& copy) = default;
-					handle_t& operator=(const handle_t& copy) = default;
-					handle_t           (handle_t&& move) noexcept : value{move.value} { move.value = std::numeric_limits<id_pool_manual::value_type>::max(); }
-					handle_t& operator=(handle_t&& move) noexcept { value = move.value; move.value = std::numeric_limits<id_pool_manual::value_type>::max(); return *this; }
+					using value_type      = T;
+					using reference       = value_type&;
+					using const_reference = const value_type&;
+					using pointer         = value_type*;
+					using const_pointer   = const value_type* const;
+
+					handle_t(const handle_t& copy) = delete;
+					handle_t& operator=(const handle_t& copy) = delete;
+					handle_t           (handle_t&& move) noexcept : container_ptr  {move.container_ptr}, index { move.index} { move.release(); }
+					handle_t& operator=(handle_t&& move) noexcept { container_ptr = move.container_ptr;  index = move.index;   move.release(); return *this; }
+
+					~handle_t() { release(); }
+
+					constexpr       reference operator* ()       noexcept { return container_ptr->operator[](*this); }
+					constexpr const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
+
+					constexpr       pointer   operator->()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					constexpr const_pointer   operator->() const noexcept { return std::addressof(container_ptr->operator[](*this)); }
+
+					constexpr       reference value     ()       noexcept { return container_ptr->operator[](*this); }
+					constexpr const_reference value     () const noexcept { return container_ptr->operator[](*this); }
+
+					constexpr       pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
+					constexpr const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
+
+					bool has_value() const noexcept { return index != std::numeric_limits<size_t>::max(); }
+					void release()
+						{
+						if (has_value())
+							{
+							container_ptr->remove(*this);
+							}
+						}
 				private:
-					id_pool_manual::value_type value{std::numeric_limits<id_pool_manual::value_type>::max()};
+					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
+					id_pool_manual::value_type index;
+
+					handle_t(handled_container<T, Allocator>& container, id_pool_manual::value_type index) : container_ptr{&container}, index{index} {};
+
 				};
+			friend class handle_t;
 
 			using value_type             = inner_container_t::value_type;
 			using size_type              = inner_container_t::size_type;
@@ -63,18 +95,18 @@ namespace utils::containers
 	
 			      T& operator[](handle_t& handle)       noexcept 
 				{
-				return inner_container[handle_to_container_index[handle.value]]; 
+				return inner_container[handle_to_container_index[handle.index]];
 				}
-			const T& operator[](handle_t& handle) const noexcept 
+			const T& operator[](const handle_t& handle) const noexcept 
 				{
-				return inner_container[handle_to_container_index[handle.value]];
+				return inner_container[handle_to_container_index[handle.index]];
 				}
 			
 			void remove(handle_t& handle)
 				{
-				if (handle_to_container_index[handle.value] < (inner_container.size() - 1))
+				if (handle_to_container_index[handle.index] < (inner_container.size() - 1))
 					{
-					size_t to_remove_index{handle_to_container_index[handle.value]};
+					size_t to_remove_index{handle_to_container_index[handle.index]};
 					size_t other_moved_index{inner_container.size() - 1};
 
 					inner_container[to_remove_index] = std::move(inner_container[other_moved_index]);
@@ -85,14 +117,14 @@ namespace utils::containers
 				inner_container.pop_back();
 				container_index_to_handle.pop_back();
 
-				handle_to_container_index[handle.value] = std::numeric_limits<id_pool_manual::value_type>::max();
+				handle_to_container_index[handle.index] = std::numeric_limits<id_pool_manual::value_type>::max();
 
-				id_pool.release(handle.value);
-				handle = std::numeric_limits<id_pool_manual::value_type>::max();
+				id_pool.release(handle.index);
+				handle.index = std::numeric_limits<id_pool_manual::value_type>::max();
 				}
 	
-			size_t size() const noexcept { return inner_container.size(); }
-			bool empty() const noexcept { return inner_container.empty(); }
+			size_t size () const noexcept { return inner_container.size (); }
+			bool   empty() const noexcept { return inner_container.empty(); }
 
 			const auto begin()   const noexcept { return inner_container.begin(); }
 			      auto begin()         noexcept { return inner_container.begin(); }
@@ -114,16 +146,16 @@ namespace utils::containers
 		protected:
 			handle_t create_new_handle(size_t new_element_index) noexcept
 				{
-				handle_t handle{id_pool.get()};
-				if (handle.value >= handle_to_container_index.size())
+				handle_t handle{*this, id_pool.get()};
+				if (handle.index >= handle_to_container_index.size())
 					{
 					handle_to_container_index.push_back(new_element_index);
 					}
 				else
 					{
-					handle_to_container_index[handle.value] = new_element_index;
+					handle_to_container_index[handle.index] = new_element_index;
 					}
-				container_index_to_handle.push_back(handle.value);
+				container_index_to_handle.push_back(handle.index);
 				return handle;
 				}
 
@@ -132,5 +164,4 @@ namespace utils::containers
 			std::vector<id_pool_manual::value_type> handle_to_container_index;
 			std::vector<size_t/*, Allocator*/> container_index_to_handle;
 		};
-
 	}
