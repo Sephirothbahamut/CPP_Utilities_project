@@ -21,24 +21,29 @@ namespace utils::containers
 			using inner_container_t = std::vector<T, Allocator>;
 
 		public:
-			class handle_t 
+			class handle_raw 
 				{
 				friend class handled_container;
 
 				public:
 					using value_type      = T;
-					using reference       = value_type&;
+					using reference       =       value_type&;
 					using const_reference = const value_type&;
-					using pointer         = value_type*;
+					using pointer         =       value_type*;
 					using const_pointer   = const value_type* const;
 
-					handle_t(const handle_t& copy) = delete;
-					handle_t& operator=(const handle_t& copy) = delete;
-					handle_t           (handle_t&& move) noexcept : container_ptr  {move.container_ptr}, index { move.index} { move.release(); }
-					handle_t& operator=(handle_t&& move) noexcept { container_ptr = move.container_ptr;  index = move.index;   move.release(); return *this; }
+					bool has_value() const noexcept { return index != std::numeric_limits<size_t>::max(); }
+					
+				protected:
+					id_pool_manual::value_type index;
 
-					~handle_t() { release(); }
+					handle_raw(id_pool_manual::value_type index) : index{index} {}
+				};
+			class handle_wrapper : public handle_raw
+				{
+				friend class handled_container;
 
+				public:
 					constexpr       reference operator* ()       noexcept { return container_ptr->operator[](*this); }
 					constexpr const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
 
@@ -51,22 +56,43 @@ namespace utils::containers
 					constexpr       pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
 					constexpr const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
-					bool has_value() const noexcept { return index != std::numeric_limits<size_t>::max(); }
-					void release()
+				private:
+					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
+
+					handle_wrapper(handled_container<T, Allocator>& container, handle_raw inner_handle) : container_ptr{&container}, handle_raw{inner_handle} {};
+				};
+
+			class handle_unique : public handle_wrapper
+				{
+				friend class handled_container;
+
+				public:
+					handle_unique           (const handle_unique& copy) = delete;
+					handle_unique& operator=(const handle_unique& copy) = delete;
+					handle_unique           (      handle_unique&& move) noexcept : handle_wrapper{*move.container_ptr, move.index} { move.release(); }
+					handle_unique& operator=(      handle_unique&& move) noexcept { container_ptr = move.container_ptr; handle_raw::index = move.index; move.release(); return *this; }
+
+					~handle_unique() { reset(); }
+
+					void reset()
 						{
-						if (has_value())
+						if (handle_raw::has_value())
 							{
 							container_ptr->remove(*this);
 							}
 						}
+					handle_wrapper release()
+						{
+						handle_wrapper ret{*this};
+						handle_raw::index = std::numeric_limits<size_t>::max();
+						}
 				private:
 					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
-					id_pool_manual::value_type index;
 
-					handle_t(handled_container<T, Allocator>& container, id_pool_manual::value_type index) : container_ptr{&container}, index{index} {};
-
+					handle_unique(handled_container<T, Allocator>& container, handle_raw inner_handle) : handle_wrapper{container, inner_handle} {};
 				};
-			friend class handle_t;
+			[[nodiscard]] handle_wrapper make_wrapped(handle_raw handle) { return {*this, handle}; }
+			[[nodiscard]] handle_unique  make_unique (handle_raw handle) { return {*this, handle}; }
 
 			using value_type             = inner_container_t::value_type;
 			using size_type              = inner_container_t::size_type;
@@ -80,29 +106,29 @@ namespace utils::containers
 			using const_reverse_iterator = inner_container_t::const_reverse_iterator;
 	
 			template <typename ...Args>
-			handle_t emplace(Args&& ...args)
+			[[nodiscard]] handle_raw emplace(Args&& ...args)
 				{
 				inner_container.emplace_back(std::forward<Args>(args)...);
 				return create_new_handle(inner_container.size() - 1);
 				}
 
 			template <typename ...Args>
-			handle_t push(Args& ...args)
+			[[nodiscard]] handle_raw push(Args& ...args)
 				{
 				inner_container.push_back(args...);
 				return create_new_handle(inner_container.size() - 1);
 				}
 	
-			      T& operator[](handle_t& handle)       noexcept 
+			      T& operator[](handle_raw& handle)       noexcept
 				{
 				return inner_container[handle_to_container_index[handle.index]];
 				}
-			const T& operator[](const handle_t& handle) const noexcept 
+			const T& operator[](const handle_raw& handle) const noexcept
 				{
 				return inner_container[handle_to_container_index[handle.index]];
 				}
 			
-			void remove(handle_t& handle)
+			void remove(handle_raw& handle)
 				{
 				if (handle_to_container_index[handle.index] < (inner_container.size() - 1))
 					{
@@ -144,9 +170,9 @@ namespace utils::containers
 			      auto crend()         noexcept { return inner_container.crend(); }
 
 		protected:
-			handle_t create_new_handle(size_t new_element_index) noexcept
+			[[nodiscard]] handle_raw create_new_handle(size_t new_element_index) noexcept
 				{
-				handle_t handle{*this, id_pool.get()};
+				handle_raw handle{id_pool.get()};
 				if (handle.index >= handle_to_container_index.size())
 					{
 					handle_to_container_index.push_back(new_element_index);
