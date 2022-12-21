@@ -32,10 +32,14 @@ namespace utils::containers
 					using pointer         =       value_type*;
 					using const_pointer   = const value_type* const;
 
-					bool has_value() const noexcept { return index != std::numeric_limits<size_t>::max(); }
+					handle_raw() = default;
+
+					bool has_value() const noexcept { return index != std::numeric_limits<id_pool_manual::value_type>::max(); }
+
+					void reset() noexcept { index = std::numeric_limits<id_pool_manual::value_type>::max(); }
 					
 				protected:
-					id_pool_manual::value_type index;
+					id_pool_manual::value_type index{std::numeric_limits<id_pool_manual::value_type>::max()};
 
 					handle_raw(id_pool_manual::value_type index) : index{index} {}
 				};
@@ -50,6 +54,8 @@ namespace utils::containers
 					using pointer         =       value_type*;
 					using const_pointer   = const value_type* const;
 
+					handle_wrapper() = default;
+
 					      reference operator* ()       noexcept { return container_ptr->operator[](*this); }
 					const_reference operator* () const noexcept { return container_ptr->operator[](*this); }
 
@@ -62,7 +68,7 @@ namespace utils::containers
 					      pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
 					const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
-				private:
+				protected:
 					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
 
 					handle_wrapper(handled_container<T, Allocator>& container, handle_raw inner_handle) : container_ptr{&container}, handle_raw{inner_handle} {};
@@ -79,10 +85,12 @@ namespace utils::containers
 					using pointer         =       value_type*;
 					using const_pointer   = const value_type* const;
 
+					handle_unique() = default;
+
 					handle_unique           (const handle_unique& copy) = delete;
 					handle_unique& operator=(const handle_unique& copy) = delete;
 					handle_unique           (      handle_unique&& move) noexcept : handle_wrapper{*move.container_ptr, move.index} { move.release(); }
-					handle_unique& operator=(      handle_unique&& move) noexcept { container_ptr = move.container_ptr; handle_raw::index = move.index; move.release(); return *this; }
+					handle_unique& operator=(      handle_unique&& move) noexcept { handle_wrapper::container_ptr = move.container_ptr; handle_raw::index = move.index; move.release(); return *this; }
 
 					~handle_unique() { reset(); }
 
@@ -90,17 +98,17 @@ namespace utils::containers
 						{
 						if (handle_raw::has_value())
 							{
-							container_ptr->remove(*this);
+							handle_wrapper::container_ptr->remove(*this);
+							handle_raw::reset();
 							}
 						}
 					handle_wrapper release()
 						{
 						handle_wrapper ret{*this};
-						handle_raw::index = std::numeric_limits<size_t>::max();
+						handle_raw::reset();
+						return ret;
 						}
 				private:
-					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
-
 					handle_unique(handled_container<T, Allocator>& container, handle_raw inner_handle) : handle_wrapper{container, inner_handle} {};
 				};
 			[[nodiscard]] handle_wrapper make_wrapped(handle_raw handle) { return {*this, handle}; }

@@ -59,15 +59,16 @@ namespace utils::containers
 				}
 
 			/// <summary>
-			/// Remaps and handle to the default value into a different value. The previous handle used to reference that value will be erased.
+			/// Remaps an handle into a different value. The previous handle used to reference that value will be nullified.
 			/// </summary>
 			/// <param name="handle_to_remap"></param>
 			/// <param name="handle_toward_target"></param>
 			/// <returns></returns>
-			void remap_and_erase_target_handle(handle_t& handle_to_remap, const handle_t& handle_remap_target) noexcept
+			void remap_and_clear_target_handle(handle_t& handle_to_remap, handle_t& handle_remap_target) noexcept
 				{
+				if (!is_default(handle_to_remap)) { parent_container_t::erase_handle(handle_to_remap); }
 				parent_container_t::remap(handle_to_remap, handle_remap_target);
-				if (!is_default(handle_remap_target)) { parent_container_t::erase_handle(handle_remap_target); }
+				//handle_remap_target.nullify
 				}
 
 			void reset_handle(handle_t& handle)

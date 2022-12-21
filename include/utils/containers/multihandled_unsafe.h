@@ -50,6 +50,8 @@ namespace utils::containers
 
 					bool operator==(const handle_t& other) const noexcept { return inner_handle == other.inner_handle; }
 
+
+
 				private:
 					handle_t() = default;
 					handle_t(handles_container_t::iterator inner_handle) : inner_handle{inner_handle} {}
