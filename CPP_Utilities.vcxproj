@@ -202,6 +202,8 @@
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\one_time_tasks.h" />
+    <ClInclude Include="include\utils\oop\counting.h" />
+    <ClInclude Include="include\utils\oop\virtual.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
     <ClInclude Include="include\utils\thread_pool.h" />
     <ClInclude Include="include\utils\try_opt.h" />
@@ -210,7 +212,6 @@
     <ClInclude Include="include\utils\tracking.h" />
     <ClInclude Include="include\utils\variadic.h" />
     <ClInclude Include="include\utils\variant.h" />
-    <ClInclude Include="include\utils\virtual.h" />
     <ClInclude Include="include\utils\wrapper.h" />
   </ItemGroup>
   <ItemGroup>

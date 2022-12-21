@@ -126,14 +126,14 @@ namespace utils::containers
 			using const_reverse_iterator = inner_container_t::const_reverse_iterator;
 	
 			template <typename ...Args>
-			[[nodiscard]] handle_raw emplace(Args&& ...args)
+			handle_raw emplace(Args&& ...args)
 				{
 				inner_container.emplace_back(std::forward<Args>(args)...);
 				return create_new_handle(inner_container.size() - 1);
 				}
 
 			template <typename ...Args>
-			[[nodiscard]] handle_raw push(Args& ...args)
+			handle_raw push(Args& ...args)
 				{
 				inner_container.push_back(args...);
 				return create_new_handle(inner_container.size() - 1);
@@ -172,22 +172,22 @@ namespace utils::containers
 			size_t size () const noexcept { return inner_container.size (); }
 			bool   empty() const noexcept { return inner_container.empty(); }
 
-			const auto begin()   const noexcept { return inner_container.begin(); }
-			      auto begin()         noexcept { return inner_container.begin(); }
-			const auto end()     const noexcept { return inner_container.end(); }
-			      auto end()           noexcept { return inner_container.end(); }
-			const auto cbegin()  const noexcept { return inner_container.cbegin(); }
-			      auto cbegin()        noexcept { return inner_container.cbegin(); }
-			const auto cend()    const noexcept { return inner_container.cend(); }
-			      auto cend()          noexcept { return inner_container.cend(); }
-			const auto rbegin()  const noexcept { return inner_container.rbegin(); }
-			      auto rbegin()        noexcept { return inner_container.rbegin(); }
-			const auto rend()    const noexcept { return inner_container.rend(); }
-			      auto rend()          noexcept { return inner_container.rend(); }
+			const auto begin  () const noexcept { return inner_container.begin  (); }
+			      auto begin  ()       noexcept { return inner_container.begin  (); }
+			const auto end    () const noexcept { return inner_container.end    (); }
+			      auto end    ()       noexcept { return inner_container.end    (); }
+			const auto cbegin () const noexcept { return inner_container.cbegin (); }
+			      auto cbegin ()       noexcept { return inner_container.cbegin (); }
+			const auto cend   () const noexcept { return inner_container.cend   (); }
+			      auto cend   ()       noexcept { return inner_container.cend   (); }
+			const auto rbegin () const noexcept { return inner_container.rbegin (); }
+			      auto rbegin ()       noexcept { return inner_container.rbegin (); }
+			const auto rend   () const noexcept { return inner_container.rend   (); }
+			      auto rend   ()       noexcept { return inner_container.rend   (); }
 			const auto crbegin() const noexcept { return inner_container.crbegin(); }
 			      auto crbegin()       noexcept { return inner_container.crbegin(); }
-			const auto crend()   const noexcept { return inner_container.crend(); }
-			      auto crend()         noexcept { return inner_container.crend(); }
+			const auto crend  () const noexcept { return inner_container.crend  (); }
+			      auto crend  ()       noexcept { return inner_container.crend  (); }
 
 		protected:
 			[[nodiscard]] handle_raw create_new_handle(size_t new_element_index) noexcept

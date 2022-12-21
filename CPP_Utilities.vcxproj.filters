@@ -50,6 +50,9 @@
     <Filter Include="Utils\containers\multithreading">
       <UniqueIdentifier>{aee5b14c-b39c-4407-8266-0366b7f38944}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\oop">
+      <UniqueIdentifier>{e933390c-bf5a-49d8-8671-fa9c474cde98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -202,9 +205,6 @@
     <ClInclude Include="include\utils\containers\memberwise_operators\concepts.h">
       <Filter>Utils\containers\memberwise_operators</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\virtual.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\try_opt.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -300,6 +300,12 @@
     </ClInclude>
     <ClInclude Include="include\utils\index_range.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\oop\counting.h">
+      <Filter>Utils\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\oop\virtual.h">
+      <Filter>Utils\oop</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

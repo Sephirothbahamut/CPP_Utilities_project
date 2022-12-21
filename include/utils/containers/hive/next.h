@@ -16,16 +16,25 @@ namespace utils::containers
 
 namespace utils::containers::hive
 	{
+	/// <summary>
+	/// Elements addresses never change. Valid iterators are only partially invalidated by insertions. 
+	/// After an operation that adds a new element to the container, existing iterators may be safely dereferenced. However incrementing or decrementing such iterators may skip newly added elements.
+	/// After an operation that removes an existing element container, existing iterators to other elements may be safely dereferenced. However incrementing or decrementing such iterators is UB.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="Allocator"></typeparam>
+	/// <typeparam name="inner_size"></typeparam>
 	template <typename T, size_t inner_size = 8, typename Allocator = std::allocator<T>>
 	class next
 		{
 		private:
 			union slot_t
 				{
-				T element; size_t next_free;
+				T element; 
+				size_t next_free;
 
 				//these are needed because the inner_container's array of slot_t needs to know an explicit constructor and destructor for slot_t when slot_t contains a non-trivially constructible/destructible type
-				slot_t() {}
+				 slot_t() {}
 				~slot_t() {}
 				};
 			template<typename iter_t>
@@ -60,17 +69,17 @@ namespace utils::containers::hive
 					using const_reference   = const reference;
 					using pointer           = value_type* ;
 					using const_pointer     = const pointer;
-					using iterator_category = std::random_access_iterator_tag;
+					using iterator_category = std::forward_iterator_tag;
 					using difference_type   = ptrdiff_t ;
 
 					base_iterator() : container_ptr{nullptr} {}
-					base_iterator(size_t index, next& container, pointer element_ptr) : index{ index }, container_ptr{ &container }, element_ptr{ element_ptr } { }
+					base_iterator(size_t index, next& container, pointer element_ptr, size_t next_free) : index{index}, container_ptr{&container}, element_ptr{element_ptr}, next_free{next_free} { }
 
 					operator utils::observer_ptr<T> () { return element_ptr; }
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
-					base_iterator(const base_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{const_cast<pointer>(other.element_ptr)} {}
+					base_iterator(const base_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{const_cast<pointer>(other.element_ptr)}, next_free{other.next_free} {}
 
 					template<typename rhs_T>
 						requires std::same_as < T, std::remove_cv_t<rhs_T>>
@@ -86,8 +95,23 @@ namespace utils::containers::hive
 						requires std::same_as <T, std::remove_cv_t<rhs_T>>
 					difference_type operator- (const base_iterator<rhs_T>& rhs) const noexcept
 						{ 
-						return static_cast<difference_type>(index) - static_cast<difference_type>(rhs.index);
+						difference_type ret{0};
+						auto tmp{*this};
+						while (tmp != rhs) { tmp++; ret++; }
+						return ret;
 						}
+					
+					self_type  operator+ (difference_type rhs) const noexcept 
+						{
+						auto ret{*this};
+						for (size_t i = 0; i < rhs; i++) { ret.increment_index(); }
+						return ret; 
+						}
+
+					self_type& operator+=(difference_type rhs) noexcept { *this = *this + rhs; return *this; }
+
+					self_type  operator++(   ) noexcept { self_type i = *this; increment_index(); return i; }
+					self_type& operator++(int) noexcept { increment_index(); return *this; }
 
 					template<typename rhs_T>
 						requires std::same_as < slot_t, std::remove_cv_t<rhs_T>>
@@ -96,6 +120,7 @@ namespace utils::containers::hive
 						index         = other.index;
 						container_ptr = other.container_ptr;
 						element_ptr   = other.element_ptr;
+						next_free     = other.next_free;
 						return *this;
 						}
 
@@ -103,71 +128,27 @@ namespace utils::containers::hive
 					reference       operator* ()       noexcept requires(!std::is_const<iter_T>) { return *element_ptr; }
 					const_pointer   operator->() const noexcept                                  { return  element_ptr; }
 					pointer         operator->()       noexcept requires(!std::is_const<iter_T>) { return  element_ptr; }
-					bool operator== (const self_type& rhs) const noexcept { return index ==  rhs.index; }
+					bool operator== (const self_type& rhs) const noexcept { return element_ptr == rhs.element_ptr; }
 					bool operator<=>(const self_type& rhs) const noexcept { return index <=> rhs.index; }
 
 					//TODO: this seems enough to auto-generate the hash. Check if standard or accidentally working with this compiler
 					friend struct std::hash<utils::containers::hive::next<T, inner_size, Allocator>::base_iterator<iter_T>>;
 
 				private:
+					void increment_index()
+						{
+						while (++index == next_free)
+							{
+							if (index == container_ptr->capacity()) { element_ptr = nullptr; return; }
+							next_free = container_ptr->operator[](next_free).next_free;
+							}
+						element_ptr = std::addressof(container_ptr->address_at(index)->element);
+						}
+
 					size_t  index;
 					next*   container_ptr;
 					pointer element_ptr;
-				};
-
-			template<typename iter_T>
-			struct base_reverse_iterator
-				{
-				friend class next;
-				template <typename iter_T>
-				friend struct next::base_reverse_iterator;
-				
-				//using segment_ptr_t      = next   <slot_t, inner_size, Allocator>::segment_ptr_t;
-
-				public:
-					using self_type         = base_reverse_iterator<iter_T>;
-					using value_type        = iter_T  ;
-					using reference         = value_type& ;
-					using const_reference   = const reference;
-					using pointer           = value_type* ;
-					using const_pointer     = const pointer;
-					using iterator_category = std::random_access_iterator_tag;
-					using difference_type   = ptrdiff_t ;
-
-					base_reverse_iterator() : container_ptr{nullptr} {}
-					base_reverse_iterator(ptrdiff_t index, next& container, pointer element_ptr) : index{index}, container_ptr{&container}, element_ptr{element_ptr} { }
-
-					template<typename rhs_T>
-						requires std::same_as < T, std::remove_cv_t<rhs_T>>
-					base_reverse_iterator(const base_reverse_iterator<rhs_T>& other) : index{other.index}, container_ptr{other.container_ptr}, element_ptr{ const_cast<pointer>(other.element_ptr) } {}
-
-					template<typename rhs_T>
-						requires std::same_as < T, std::remove_cv_t<rhs_T>>
-					self_type& operator=(const base_reverse_iterator<rhs_T>& other)
-						{
-						index         = other.index;
-						container_ptr = other.container_ptr;
-						element_ptr   = other.element_ptr;
-						return *this;
-						}
-
-					template<typename rhs_T>
-						requires std::same_as <T, std::remove_cv_t<rhs_T>>
-					difference_type operator- (const base_reverse_iterator<rhs_T>& rhs) const noexcept
-						{ 
-						return static_cast<difference_type>(index) - static_cast<difference_type>(rhs.index);
-						}
-
-					const_reference operator* () const noexcept                                  { return *element_ptr; }
-					reference       operator* ()       noexcept requires(!std::is_const<iter_T>) { return *element_ptr; }
-					const_pointer   operator->() const noexcept                                  { return  element_ptr; }
-					pointer         operator->()       noexcept requires(!std::is_const<iter_T>) { return  element_ptr; }
-					bool operator== (const self_type& rhs) const noexcept { return index ==  rhs.index; }
-					bool operator<=>(const self_type& rhs) const noexcept { return index <=> rhs.index; }
-				private:
-					ptrdiff_t index;
-					next*     container_ptr;
-					pointer   element_ptr;
+					size_t  next_free;
 				};
 #pragma endregion iterators
 
@@ -245,7 +226,7 @@ namespace utils::containers::hive
 				_size++;
 
 				first_free = previous_next_free;
-				return {index, *this, &(address_at(static_cast<size_t>(index))->element) };
+				return {index, *this, &(address_at(static_cast<size_t>(index))->element), previous_next_free};
 				}
 
 			inline iterator push(const value_type& value)
@@ -271,32 +252,20 @@ namespace utils::containers::hive
 				_size--;
 				}
 
-			//TODO make iterable
-			//Note: iterators to a valid element will need to know the next_free index so on ++ increment they can skip over it.
-			//Thus iterators are invalidated not only on erase operations, but also on emplace operations
-			//const_iterator         cbegin () const { return {                                                         0, *this, address_at(static_cast<size_t>(0))            }; }
-			//const_iterator         begin  () const { return {                                                         0, *this, address_at(static_cast<size_t>(0))            }; }
-			//iterator               begin  ()       { return {                                                         0, *this, address_at(static_cast<size_t>(0))            }; }
-			//
- 			//const_iterator         cend   () const { return {size()                                                    , *this, nullptr                                       }; }
-			//const_iterator         end    () const { return {size()                                                    , *this, nullptr                                       }; }
-			//iterator               end    ()       { return {size()                                                    , *this, nullptr                                       }; }
-			//
-			//const_reverse_iterator crbegin() const { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), *this, address_at(static_cast<ptrdiff_t>(size() - 1))}; }
-			//const_reverse_iterator rbegin () const { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), *this, address_at(static_cast<ptrdiff_t>(size() - 1))}; }
-			//reverse_iterator       rbegin ()       { return {static_cast<ptrdiff_t>(size()) - static_cast<ptrdiff_t>(1), *this, address_at(static_cast<ptrdiff_t>(size() - 1))}; }
-			//
-			//const_reverse_iterator crend  () const { return {static_cast<ptrdiff_t>(                                -1), *this, nullptr                                       }; }
-			//const_reverse_iterator rend   () const { return {static_cast<ptrdiff_t>(                                -1), *this, nullptr                                       }; }
-			//reverse_iterator       rend   ()       { return {static_cast<ptrdiff_t>(                                -1), *this, nullptr                                       }; }
+			const_iterator         cbegin () const { return {0     , *this, std::addressof(address_at(static_cast<size_t>(0))->element), first_free}; }
+			const_iterator         begin  () const { return {0     , *this, std::addressof(address_at(static_cast<size_t>(0))->element), first_free}; }
+			iterator               begin  ()       { return {0     , *this, std::addressof(address_at(static_cast<size_t>(0))->element), first_free}; }
+			
+ 			const_iterator         cend   () const { return {size(), *this, nullptr                                                    , 0         }; }
+			const_iterator         end    () const { return {size(), *this, nullptr                                                    , 0         }; }
+			iterator               end    ()       { return {size(), *this, nullptr                                                    , 0         }; }
 
 		protected:
 			std::vector<utils::observer_ptr<segment_t>> segments;
-			size_t first_free{ 0 };
-			size_t last_free { 0 };
-			size_t _size     { 0 };
+			size_t first_free{0};
+			size_t _size     {0};
 			
-			segment_allocator_t segment_allocator ;
+			segment_allocator_t segment_allocator;
 
 			slot_t& get_free_slot()
 				{
@@ -320,7 +289,6 @@ namespace utils::containers::hive
 					{
 					new_segment[i].next_free = i + 1;
 					}
-				last_free = capacity();
 				}
 			
 			const segment_t& first_segment() const noexcept{ return *segments[0                  ]; }
@@ -379,14 +347,13 @@ namespace utils::containers::hive
 				
 			const slot_t& operator[](const size_t index) const noexcept
 				{
-				return segments[segment_index_containing_my_index(index)][my_index_to_segment_index(index)];
+				return (*segments[segment_index_containing_my_index(index)])[my_index_to_segment_index(index)];
 				}
 
 			      slot_t& operator[](const size_t index)       noexcept
 				{
-				return segments[segment_index_containing_my_index(index)][my_index_to_segment_index(index)];
+				return (*segments[segment_index_containing_my_index(index)])[my_index_to_segment_index(index)];
 				}
 		};
-
 
 	}

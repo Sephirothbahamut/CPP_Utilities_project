@@ -2,6 +2,7 @@
 #include <deque>
 #include <list>
 #include <algorithm>
+#include "../include/utils/oop/counting.h"
 #include "../../../include/utils/containers/hive/next.h"
 
 #include "CppUnitTest.h"
@@ -18,14 +19,12 @@ namespace Microsoft
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-struct disney // TODO do a better constructor to notice if destructors using disney really work :)
-	{
-	inline static size_t count{0};
-	int v;
-	disney(int v) : v{v} { count++; }
-	~disney() { count--; }
+using civ = utils::oop::counting_invalidating_move;
 
-	static void reset() { count = 0; }
+struct test_struct : civ
+	{
+	test_struct(int v) : v{v} {}
+	int v;
 	};
 
 namespace Tests
@@ -36,50 +35,76 @@ namespace Tests
 
 			TEST_METHOD(emplace)
 				{
-				disney::reset();
-				utils::containers::hive::next<disney> a;
-
+				test_struct::reset();
+				utils::containers::hive::next<test_struct> a;
+			
 				auto handle_0{a.emplace(0)};
-				Assert::AreEqual(size_t{1}, disney::count);
+				Assert::AreEqual(size_t{1}, test_struct::count());
 				auto handle_1{a.emplace(1)};
-				Assert::AreEqual(size_t{2}, disney::count);
+				Assert::AreEqual(size_t{2}, test_struct::count());
 				auto handle_2{a.emplace(2)};
-				Assert::AreEqual(size_t{3}, disney::count);
-
+				Assert::AreEqual(size_t{3}, test_struct::count());
+			
 				Assert::AreEqual(0, handle_0->v);
 				Assert::AreEqual(1, handle_1->v);
 				Assert::AreEqual(2, handle_2->v);
 				}
 			TEST_METHOD(destructor)
 				{
-				disney::reset();
+				test_struct::reset();
 				if (true)
 					{
-					utils::containers::hive::next<disney> a;
+					utils::containers::hive::next<test_struct> a;
 			
 					auto handle_0{a.emplace(0)};
 					auto handle_1{a.emplace(1)};
 					auto handle_2{a.emplace(2)};
-					Assert::AreEqual(size_t{3}, disney::count);
+					Assert::AreEqual(size_t{3}, test_struct::count());
 					}
-				Assert::AreEqual(size_t{0}, disney::count);
+				Assert::AreEqual(size_t{0}, test_struct::count());
 				}
 			TEST_METHOD(scramble)
 				{
-				disney::reset();
-				utils::containers::hive::next<disney> a;
+				test_struct::reset();
+				utils::containers::hive::next<test_struct> a;
 			
 				auto handle_0{a.emplace(0)};
 				auto handle_1{a.emplace(1)};
 				auto handle_2{a.emplace(2)};
-				Assert::AreEqual(size_t{3}, disney::count);
+				Assert::AreEqual(size_t{3}, test_struct::count());
 			
 				a.erase(handle_1);
-				Assert::AreEqual(size_t{2}, disney::count);
+				Assert::AreEqual(size_t{2}, test_struct::count());
 			
 				auto handle_3{a.emplace(3)};
 				Assert::AreEqual(3, handle_3->v);
-				Assert::AreEqual(size_t{3}, disney::count);
+				Assert::AreEqual(3, handle_1->v);
+				Assert::AreEqual(size_t{3}, test_struct::count());
+				}
+			TEST_METHOD(iterate)
+				{
+				test_struct::reset();
+				utils::containers::hive::next<test_struct> a;
+			
+				auto handle_0{a.emplace(0)};
+				auto handle_1{a.emplace(1)};
+				auto handle_2{a.emplace(2)};
+			
+				a.erase(handle_1);
+			
+				auto handle_3{a.emplace(3)};
+
+				size_t i{0};
+				for (const auto& element : a)
+					{
+					switch (i)
+						{
+						case 0: Assert::AreEqual(0, element.v); break;
+						case 1: Assert::AreEqual(3, element.v); break;
+						case 2: Assert::AreEqual(2, element.v); break;
+						}
+					i++;
+					}
 				}
 		};
 	}
