@@ -18,13 +18,9 @@ namespace Microsoft
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-struct disney { void hallo() const {} };
-struct pippo : disney { pippo(float param) {} void hello() const {} };
-struct pluto : disney { pluto(char  param) {} void there() const {} };
-
 namespace Tests
 	{
-	TEST_CLASS(Handled_container)
+	TEST_CLASS(handled_container)
 		{
 		public:
 
@@ -50,7 +46,7 @@ namespace Tests
 
 				Assert::AreEqual(size_t{3}, a.size());
 
-				a.remove(handle_2);
+				a.erase(handle_2);
 
 				Assert::AreEqual(size_t{2}, a.size());
 
@@ -75,7 +71,7 @@ namespace Tests
 
 					Assert::AreEqual(size_t{3}, a.size());
 
-					a.remove(handle_2);
+					a.erase(handle_2);
 
 					Assert::AreEqual(size_t{2}, a.size());
 

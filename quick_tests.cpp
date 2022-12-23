@@ -1,4 +1,6 @@
-﻿#include <iostream>
+﻿#include <string>
+#include <iostream>
+
 #include "include/utils/console/colour.h"
 
 #include "include/utils/containers/memberwise_operators_array.h"
@@ -21,8 +23,22 @@
 
 #include "include/utils/containers/multithreading/multiqueue_consumer.h"
 
+#include "include/utils/containers/object_pool.h"
 
-void main()
+
+template <typename T>
+void print(const T& t, const std::string& name)
+	{
+	std::cout << name << ": " << (t.has_value() ? std::to_string(t.value()) : "N/A");
+	if (t.has_value())
+		{
+		if constexpr (T::enabled_unique) { if (t.has_unique_ownership()) { std::cout << " unique"; } }
+		if constexpr (T::enabled_shared) { if (t.has_shared_ownership()) { std::cout << " shared (" << t.use_count() << ")"; } }
+		}
+	std::cout << std::endl;
+	}
+
+int main()
 	{
 	using namespace utils::output;
 	std::cout
@@ -92,7 +108,7 @@ void main()
 	auto handle_1{ handled.emplace(1) };
 	auto handle_2{ handled.emplace(2) };
 
-	handled.remove(handle_1);
+	handled.erase(handle_1);
 
 	auto handle_3{ handled.emplace(3) };
 

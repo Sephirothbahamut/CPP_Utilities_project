@@ -307,6 +307,9 @@
     <ClInclude Include="include\utils\oop\virtual.h">
       <Filter>Utils\oop</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\containers\object_pool.h">
+      <Filter>Utils\containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

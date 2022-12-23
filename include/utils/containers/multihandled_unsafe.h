@@ -21,7 +21,7 @@ namespace utils::containers
 		{
 		private:
 			using inner_container_t   = utils::containers::hive::next<T, inner_size>;
-			using handles_container_t = utils::containers::hive::next<typename inner_container_t::iterator, inner_size>;
+			using handles_container_t = utils::containers::hive::next<typename inner_container_t::handle_raw, inner_size>;
 
 		public:
 			class handle_t 
@@ -54,9 +54,9 @@ namespace utils::containers
 
 				private:
 					handle_t() = default;
-					handle_t(handles_container_t::iterator inner_handle) : inner_handle{inner_handle} {}
+					handle_t(handles_container_t::handle_raw inner_handle) : inner_handle{inner_handle} {}
 
-					typename handles_container_t::iterator inner_handle;
+					typename handles_container_t::handle_raw inner_handle;
 				};
 			friend class handle_t;
 			

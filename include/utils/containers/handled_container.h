@@ -38,6 +38,8 @@ namespace utils::containers
 
 					void reset() noexcept { index = std::numeric_limits<id_pool_manual::value_type>::max(); }
 					
+					bool operator==(const handle_raw& other) { return index == other.index; }
+
 				protected:
 					id_pool_manual::value_type index{std::numeric_limits<id_pool_manual::value_type>::max()};
 
@@ -68,6 +70,17 @@ namespace utils::containers
 					      pointer   get       ()       noexcept { return std::addressof(container_ptr->operator[](*this)); }
 					const_pointer   get       () const noexcept { return std::addressof(container_ptr->operator[](*this)); }
 
+					void erase_and_reset()
+						{
+						if (handle_raw::has_value())
+							{
+							container_ptr->erase(*this);
+							handle_raw::reset();
+							}
+						}
+
+					bool operator==(const handle_wrapper& other) { return (container_ptr == other.container_ptr) && handle_raw::operator==(other); }
+
 				protected:
 					utils::observer_ptr<handled_container<T, Allocator>> container_ptr;
 
@@ -89,25 +102,19 @@ namespace utils::containers
 
 					handle_unique           (const handle_unique& copy) = delete;
 					handle_unique& operator=(const handle_unique& copy) = delete;
-					handle_unique           (      handle_unique&& move) noexcept : handle_wrapper{*move.container_ptr, move.index} { move.release(); }
+					handle_unique           (      handle_unique&& move) noexcept : handle_wrapper{std::move(move)} { move.release(); }
 					handle_unique& operator=(      handle_unique&& move) noexcept { handle_wrapper::container_ptr = move.container_ptr; handle_raw::index = move.index; move.release(); return *this; }
 
 					~handle_unique() { reset(); }
 
-					void reset()
-						{
-						if (handle_raw::has_value())
-							{
-							handle_wrapper::container_ptr->remove(*this);
-							handle_raw::reset();
-							}
-						}
+					void reset() { release().erase_and_reset(); }
 					handle_wrapper release()
 						{
 						handle_wrapper ret{*this};
 						handle_raw::reset();
 						return ret;
 						}
+
 				private:
 					handle_unique(handled_container<T, Allocator>& container, handle_raw inner_handle) : handle_wrapper{container, inner_handle} {};
 				};
@@ -148,7 +155,7 @@ namespace utils::containers
 				return inner_container[handle_to_container_index[handle.index]];
 				}
 			
-			void remove(handle_raw& handle)
+			void erase(handle_raw& handle)
 				{
 				if (handle_to_container_index[handle.index] < (inner_container.size() - 1))
 					{

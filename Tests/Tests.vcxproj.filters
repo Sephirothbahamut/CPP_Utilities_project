@@ -60,5 +60,8 @@
     <ClCompile Include="counting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="containers\object_pool.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
