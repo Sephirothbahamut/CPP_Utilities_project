@@ -10,6 +10,8 @@
 #include "../memory.h"
 #include "../compilation/debug.h"
 
+//TODO finish tests
+//TODO const, reverse and reverse const iterators
 
 namespace utils::containers::details
 	{
@@ -723,110 +725,110 @@ namespace utils::containers::details
 								}
 						};
 						
-					//class iterator : private handle_base
-					//	{
-					//	friend class first_segment_t;
-					//	friend class segment_t;
-					//
-					//	public:
-					//		using value_type        = object_pool_details::value_type       ;
-					//		using reference         = object_pool_details::reference        ;
-					//		using const_reference   = object_pool_details::const_reference  ;
-					//		using pointer           = object_pool_details::pointer          ;
-					//		using const_pointer     = object_pool_details::const_pointer    ;
-					//		using iterator_category = object_pool_details::iterator_category;
-					//		using difference_type   = object_pool_details::difference_type  ;
-					//
-					//		iterator() = default;
-					//
-					//		iterator  operator+ (difference_type rhs) const noexcept
-					//			{//TODO can do better, naive is enough for now
-					//			auto ret{*this};
-					//			for (size_t i = 0; i < rhs; i++) { ret++; }
-					//			return ret;
-					//			}
-					//		iterator  operator- (difference_type rhs) const noexcept
-					//			{//TODO can do better, naive is enough for now
-					//			auto ret{*this};
-					//			for (size_t i = 0; i < rhs; i++) { ret--; }
-					//			return ret;
-					//			}
-					//
-					//		difference_type operator- (const iterator& rhs) const noexcept
-					//			{ //TODO
-					//			throw std::exception{"TODO"};
-					//			return 0;
-					//			}
-					//
-					//		iterator& operator+=(difference_type rhs) noexcept { *this = *this + rhs; return *this; }
-					//		iterator& operator-=(difference_type rhs) noexcept { *this = *this - rhs; return *this; }
-					//
-					//		iterator operator++() noexcept
-					//			{
-					//			auto ret{*this};
-					//
-					//			do
-					//				{
-					//				handle_bare::slot_ptr++;
-					//				if (handle_bare::slot_ptr == (handle_bare::segment_ptr->arr.data() + segment_size))
-					//					{
-					//					if constexpr (utils::compilation::debug)
-					//						{
-					//						if (!handle_bare::segment_ptr->next_segment) { throw std::out_of_range{"Trying to access next segment from the last segment."}; }
-					//						}
-					//					handle_bare::segment_ptr = handle_bare::segment_ptr->next_segment.get();
-					//					handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data();
-					//					}
-					//				} while (!handle_base::has_value());
-					//
-					//				return ret;
-					//			}
-					//
-					//		iterator& operator++(int) noexcept { operator++(); return *this; }
-					//
-					//		iterator operator--() noexcept
-					//			{
-					//			auto ret{*this};
-					//
-					//			do
-					//				{
-					//				handle_bare::slot_ptr--;
-					//				if (handle_bare::slot_ptr == (handle_bare::segment_ptr->arr.data() - 1))
-					//					{
-					//					if constexpr (utils::compilation::debug)
-					//						{
-					//						if (!handle_bare::segment_ptr->prev_segment) { throw std::out_of_range{"Trying to access previous segment from the first segment."}; }
-					//						}
-					//					handle_bare::segment_ptr = handle_bare::segment_ptr->prev_segment;
-					//					handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data() + (segment_size - 1);
-					//					}
-					//				} while (!handle_base::has_value());
-					//
-					//				return ret;
-					//			}
-					//
-					//		iterator& operator--(int) noexcept { operator--(); return *this; }
-					//
-					//		auto operator<=>(const iterator& rhs) const noexcept { return (rhs - *this); }
-					//
-					//	protected:
-					//		iterator(utils::observer_ptr<segment_t> segment_ptr, utils::observer_ptr<slot_t> slot_ptr) : handle_base{segment_ptr, slot_ptr} {}
-					//
-					//		/// <returns> True if end of segment was reached. </returns>
-					//		bool advance_until_value_or_end_of_segment()
-					//			{
-					//			do
-					//				{
-					//				handle_bare::slot_ptr++;
-					//				if (handle_base::slot_ptr == (handle_bare::segment_ptr->arr.data() + segment_size))
-					//					{
-					//					return true;
-					//					}
-					//				} 
-					//			while (!handle_base::has_value());
-					//			return false;
-					//			}
-					//	};
+					class iterator : private handle_base
+						{
+						friend class first_segment_t;
+						friend class segment_t;
+					
+						public:
+							using value_type        = object_pool_details::value_type       ;
+							using reference         = object_pool_details::reference        ;
+							using const_reference   = object_pool_details::const_reference  ;
+							using pointer           = object_pool_details::pointer          ;
+							using const_pointer     = object_pool_details::const_pointer    ;
+							using iterator_category = object_pool_details::iterator_category;
+							using difference_type   = object_pool_details::difference_type  ;
+					
+							iterator() = default;
+					
+							iterator  operator+ (difference_type rhs) const noexcept
+								{//TODO can do better, naive is enough for now
+								auto ret{*this};
+								for (size_t i = 0; i < rhs; i++) { ret++; }
+								return ret;
+								}
+							iterator  operator- (difference_type rhs) const noexcept
+								{//TODO can do better, naive is enough for now
+								auto ret{*this};
+								for (size_t i = 0; i < rhs; i++) { ret--; }
+								return ret;
+								}
+					
+							difference_type operator- (const iterator& rhs) const noexcept
+								{ //TODO
+								throw std::exception{"TODO"};
+								return 0;
+								}
+					
+							iterator& operator+=(difference_type rhs) noexcept { *this = *this + rhs; return *this; }
+							iterator& operator-=(difference_type rhs) noexcept { *this = *this - rhs; return *this; }
+					
+							iterator operator++() noexcept
+								{
+								auto ret{*this};
+					
+								do
+									{
+									handle_bare::slot_ptr++;
+									if (handle_bare::slot_ptr == (handle_bare::segment_ptr->arr.data() + segment_size))
+										{
+										if constexpr (utils::compilation::debug)
+											{
+											if (!handle_bare::segment_ptr->next_segment) { throw std::out_of_range{"Trying to access next segment from the last segment."}; }
+											}
+										handle_bare::segment_ptr = handle_bare::segment_ptr->next_segment.get();
+										handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data();
+										}
+									} while (!handle_base::has_value());
+					
+									return ret;
+								}
+					
+							iterator& operator++(int) noexcept { operator++(); return *this; }
+					
+							iterator operator--() noexcept
+								{
+								auto ret{*this};
+					
+								do
+									{
+									handle_bare::slot_ptr--;
+									if (handle_bare::slot_ptr == (handle_bare::segment_ptr->arr.data() - 1))
+										{
+										if constexpr (utils::compilation::debug)
+											{
+											if (!handle_bare::segment_ptr->prev_segment) { throw std::out_of_range{"Trying to access previous segment from the first segment."}; }
+											}
+										handle_bare::segment_ptr = handle_bare::segment_ptr->prev_segment;
+										handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data() + (segment_size - 1);
+										}
+									} while (!handle_base::has_value());
+					
+									return ret;
+								}
+					
+							iterator& operator--(int) noexcept { operator--(); return *this; }
+					
+							auto operator<=>(const iterator& rhs) const noexcept { return (rhs - *this); }
+					
+						protected:
+							iterator(utils::observer_ptr<segment_t> segment_ptr, utils::observer_ptr<slot_t> slot_ptr) : handle_base{segment_ptr, slot_ptr} {}
+					
+							/// <returns> True if end of segment was reached. </returns>
+							bool advance_until_value_or_end_of_segment()
+								{
+								do
+									{
+									handle_bare::slot_ptr++;
+									if (handle_base::slot_ptr == (handle_bare::segment_ptr->arr.data() + segment_size))
+										{
+										return true;
+										}
+									} 
+								while (!handle_base::has_value());
+								return false;
+								}
+						};
 			
 					template <typename ...Args>
 					inline handle_raw emplace(Args&&... args)
@@ -849,20 +851,20 @@ namespace utils::containers::details
 						return {emplace_inner(std::forward<Args>(args)...)};
 						}
 						
-					//iterator begin()
-					//	{
-					//	iterator ret{this, segment_t::arr.data()};
-					//	if (!ret.has_value())
-					//		{
-					//		while (ret.advance_until_value_or_end_of_segment() && ret.segment_ptr->next_segment)
-					//			{
-					//			ret.segment_ptr = ret.segment_ptr->next_segment.get();
-					//			}
-					//		}
-					//	return ret;
-					//	}
-					//
-					//iterator end() { return {last_segment, segment_t::arr.data() + segment_size}; }
+					iterator begin()
+						{
+						iterator ret{this, segment_t::arr.data()};
+						if (!ret.has_value())
+							{
+							while (ret.advance_until_value_or_end_of_segment() && ret.segment_ptr->next_segment)
+								{
+								ret.segment_ptr = ret.segment_ptr->next_segment.get();
+								}
+							}
+						return ret;
+						}
+					
+					iterator end() { return {last_segment, segment_t::arr.data() + segment_size}; }
 			
 				private:
 					handle_bare free_slot_handle;
@@ -902,27 +904,6 @@ namespace utils::containers::details
 
 namespace utils::containers
 	{
-	/// <summary>
-	///		A container with fast insertion and removal. Iteration speed varies. If many removals happened, iteration will be slowed down. Otherwise iteration performance is similar to a deque.
-	///		Handles require a pointer to the first segment, which is statically allocated, so they will be invalidated if the container itself is subject to a move operation.
-	///		In that case it might be desirable to store the object_pool in an unique_ptr.
-	///		An object_pool that doesn't grow past its segment size acts similarly to a static array.
-	/// </summary>
-	/// <typeparam name="T"> The type contained by the object pool</typeparam>
-	/// <typeparam name="refcount_value_T"> 
-	///		The type used for refcounts if shared handles are requested. 
-	///		The maximum amount of shared handles to the same resource is std::numeric_limits<refcount_value_T>::max() - 1. 
-	///		The last value is reserved as special value for unique handles if unique handles are requested.
-	/// </typeparam>
-	/// <typeparam name="Allocator"></typeparam>
-	/// <typeparam name="segment_size">
-	///		The size of sequential storage clusters for the type T. The first cluster is statically allocated.
-	/// </typeparam>
-	/// <typeparam name="object_pool_handle_types"></typeparam>
-	/// 
-	/// 
-	
-
 	/// <summary>
 	///		A container with fast insertion and removal. Iteration speed varies. If many removals happened, iteration will be slowed down. Otherwise iteration performance is similar to a deque.
 	///		Handles require a pointer to the first segment, which is statically allocated, so they will be invalidated if the container itself is subject to a move operation.
