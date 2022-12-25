@@ -256,7 +256,7 @@ namespace utils::containers::details
 						else { return true; }
 						}
 
-					bool operator== (const handle_bare& other) const noexcept { return handle_bare::slot_ptr == other.slot_ptr; }
+					bool operator== (const handle_base& other) const noexcept { return handle_bare::slot_ptr == other.slot_ptr; }
 
 				protected:
 					handle_base() = default;
@@ -725,7 +725,7 @@ namespace utils::containers::details
 								}
 						};
 						
-					class iterator : private handle_base
+					class iterator : public handle_base
 						{
 						friend class first_segment_t;
 						friend class segment_t;
@@ -772,12 +772,12 @@ namespace utils::containers::details
 									handle_bare::slot_ptr++;
 									if (handle_bare::slot_ptr == (handle_bare::segment_ptr->arr.data() + segment_size))
 										{
-										if constexpr (utils::compilation::debug)
+										if (handle_bare::segment_ptr->next_segment)
 											{
-											if (!handle_bare::segment_ptr->next_segment) { throw std::out_of_range{"Trying to access next segment from the last segment."}; }
+											handle_bare::segment_ptr = handle_bare::segment_ptr->next_segment.get();
+											handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data();
 											}
-										handle_bare::segment_ptr = handle_bare::segment_ptr->next_segment.get();
-										handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data();
+										else { break; }
 										}
 									} while (!handle_base::has_value());
 					
