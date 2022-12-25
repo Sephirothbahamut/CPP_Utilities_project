@@ -11,7 +11,6 @@
 
 namespace utils
 	{
-	//TODO check codereview stackexchange and apply changes
 	template <typename T>
 	class logger
 		{

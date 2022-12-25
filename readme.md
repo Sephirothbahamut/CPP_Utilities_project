@@ -5,10 +5,9 @@ there's no need to include .lib files to the project.
 
 # Usage Notes
 
- - Most of the headers assume to be compiled with at least C++17.
+ - Most of the headers assume to be compiled with at least C++20.
  - The files inside "include/utils" are mostly ready to be included and used in a C++ project. I only reccommend using the ones mentioned in this document, as some others are still not polished. 
- - The files inside "private" are used internally by other headers, but have no reason to be used alone.
- - The files inside "beta" should not be used without extensive reading and rewriting. They're very old code I haven't yet checked.
+ - The files inside "include/utils/beta" should not be used without extensive reading and rewriting. They're very old code I haven't yet checked.
  - Some usage examples can be seen in the Tests folder.
  - The angles header in particular contains errors that still need fixing; it's present in include/utils only because it's referenced in some other files.
 
@@ -24,16 +23,17 @@ if constexpr(utils::compilation::release) { ... }
 ```
 
 ### Cout extensions
-_[console_io.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/console_io.h), [cout_containers.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/cout_containers.h), [cout_utilities.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/cout_utilities.h)_
+_[console/io.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/console/io.h), [console/colour.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/console/colour.h), [output/std_containers.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/output/containers.h)_
 
 The files allow for more complex interactions with the console. 
-In particular cout_containers allows to output all the standard containers. On Windows platforms the output will be coloured.
-Some headers will make use of cout_utilities and colouring if they're included after cout_utilities (for example the data structures). 
-Some others will include cout_utilities regardless (the async logger).
+In particular `output/std_containers` allows to output all the standard containers. On Windows platforms the output will be coloured.
+Some classes from the library will make use of these headers to define their own output stream operator (angles, math vectors, containers).
+Both standard containers and library types can only be outputted after `using namespace utils::output;`.
 
 ```c++
-#include <utils/cout_containers>
+#include <utils/output/std_containers.h>
 
+using namespace utils::output;
 std::vector<int> v{1, 2, 3};
 std::cout << v; // Output: [1, 2, 3]
 ```
@@ -42,6 +42,8 @@ std::cout << v; // Output: [1, 2, 3]
 _[logger.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/logger.h), [message.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/message.h)_
 
 Delegate output operations to a dedicated thread, in order to save the main thread from output operations overhead.
+Can support custom message types.
+The output is both in the console and in a .txt file in the active directory. The output file can be configured.
 
 ### Tracking pointer
 _[tracking.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/tracking.h)_

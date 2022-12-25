@@ -17,7 +17,7 @@ namespace utils::containers::details
 	template
 		<
 		typename T,
-		size_t segment_size,
+		size_t segment_size = 8,
 		bool enable_raw    = true,
 		bool enable_unique = true,
 		bool enable_shared = true,
@@ -945,7 +945,7 @@ namespace utils::containers
 	template
 		<
 		typename T,
-		size_t segment_size,
+		size_t segment_size = 8,
 		bool enable_raw    = true,
 		bool enable_unique = true,
 		bool enable_shared = true,
