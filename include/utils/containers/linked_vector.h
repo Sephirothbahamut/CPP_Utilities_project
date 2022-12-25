@@ -601,19 +601,19 @@ namespace utils::containers
 			inline size_t capacity() const noexcept { return _segments_count * inner_size; }
 			inline size_t size()     const noexcept
 				{
-				if (segment_ptr_t segment = last_segment){ return (segments_count() - 1) * inner_size + segment->size; }
+				if (segment_ptr_t segment = last_segment_ptr){ return (segments_count() - 1) * inner_size + segment->size; }
 				return 0;
 				}
 
 			inline T& front() { return first_segment->arr[0]; }
-			inline T& back()  { return last_segment ->arr[last_segment->size - 1];  }
+			inline T& back()  { return last_segment_ptr ->arr[last_segment_ptr->size - 1];  }
 
 			inline bool empty() const { return first_segment == nullptr;  }
 			inline void clear()
 				{
 				if (segment_ptr_t segment_ptr = first_segment)
 					{
-					while (segment_ptr != last_segment)
+					while (segment_ptr != last_segment_ptr)
 						{
 						segment_ptr_t next_segment = segment_ptr->next;
 						segment_ptr->~segment_t(); //call destructor so individual elements within the array are destroyed automatically
@@ -627,7 +627,7 @@ namespace utils::containers
 						}
 					std::allocator_traits<segment_allocator_t>::deallocate(segment_allocator, segment_ptr, 1);
 					first_segment = nullptr;
-					last_segment  = nullptr;
+					last_segment_ptr  = nullptr;
 					_segments_count = 0;
 					}
 				}
@@ -635,7 +635,7 @@ namespace utils::containers
 			inline T& push(const value_type& value)
 				{
 				auto new_t{ new(get_free_slot()) T(value) };
-				last_segment->size++;
+				last_segment_ptr->size++;
 				return *new_t;
 				}
 
@@ -643,7 +643,7 @@ namespace utils::containers
 			inline T& emplace(Args&&... args) 
 				{
 				auto new_t{ new(get_free_slot()) T(std::forward<Args>(args)...) };
-				last_segment->size++;
+				last_segment_ptr->size++;
 				return *new_t;
 				}
 
@@ -670,10 +670,10 @@ namespace utils::containers
 				//update size
 				auto new_last_segment_ptr{ new_end.segment_ptr };
 				
-				while (new_last_segment_ptr != last_segment)
+				while (new_last_segment_ptr != last_segment_ptr)
 					{
-					auto delete_segment_ptr{ last_segment };
-					last_segment = last_segment->prev;
+					auto delete_segment_ptr{ last_segment_ptr };
+					last_segment_ptr = last_segment_ptr->prev;
 					std::allocator_traits<segment_allocator_t>::deallocate(segment_allocator, delete_segment_ptr, 1);
 					}
 				new_last_segment_ptr->size = new_end.segment_iterator - new_last_segment_ptr->begin();
@@ -687,13 +687,13 @@ namespace utils::containers
 			iterator               begin  ()       { if (first_segment) { return { first_segment->begin  ()                                    , first_segment }; } else { return {}; } }
 
 
- 			const_iterator         cend   () const { if (first_segment) { return { last_segment ->cbegin () +  last_segment->size              , last_segment  }; } else { return {}; } }
-			const_iterator         end    () const { if (first_segment) { return { last_segment ->cbegin () +  last_segment->size              , last_segment  }; } else { return {}; } }
-			iterator               end    ()       { if (first_segment) { return { last_segment ->begin  () +  last_segment->size              , last_segment  }; } else { return {}; } }
+ 			const_iterator         cend   () const { if (first_segment) { return { last_segment_ptr ->cbegin () +  last_segment_ptr->size              , last_segment_ptr  }; } else { return {}; } }
+			const_iterator         end    () const { if (first_segment) { return { last_segment_ptr ->cbegin () +  last_segment_ptr->size              , last_segment_ptr  }; } else { return {}; } }
+			iterator               end    ()       { if (first_segment) { return { last_segment_ptr ->begin  () +  last_segment_ptr->size              , last_segment_ptr  }; } else { return {}; } }
 
-			const_reverse_iterator crbegin() const { if (first_segment) { return { last_segment ->crbegin() + (inner_size - last_segment->size), last_segment  }; } else { return {}; } }
-			const_reverse_iterator rbegin () const { if (first_segment) { return { last_segment ->crbegin() + (inner_size - last_segment->size), last_segment  }; } else { return {}; } }
-			reverse_iterator       rbegin ()       { if (first_segment) { return { last_segment ->rbegin () + (inner_size - last_segment->size), last_segment  }; } else { return {}; } }
+			const_reverse_iterator crbegin() const { if (first_segment) { return { last_segment_ptr ->crbegin() + (inner_size - last_segment_ptr->size), last_segment_ptr  }; } else { return {}; } }
+			const_reverse_iterator rbegin () const { if (first_segment) { return { last_segment_ptr ->crbegin() + (inner_size - last_segment_ptr->size), last_segment_ptr  }; } else { return {}; } }
+			reverse_iterator       rbegin ()       { if (first_segment) { return { last_segment_ptr ->rbegin () + (inner_size - last_segment_ptr->size), last_segment_ptr  }; } else { return {}; } }
 
 			const_reverse_iterator crend  () const { if (first_segment) { return { first_segment->crend  ()                                    , first_segment }; } else { return {}; } }
 			const_reverse_iterator rend   () const { if (first_segment) { return { first_segment->crend  ()                                    , first_segment }; } else { return {}; } }
@@ -701,7 +701,7 @@ namespace utils::containers
 
 		protected:
 			segment_ptr_t  first_segment {nullptr};
-			segment_ptr_t  last_segment  {nullptr};
+			segment_ptr_t  last_segment_ptr  {nullptr};
 
 			size_t              _segments_count{0};
 			segment_allocator_t segment_allocator ;
@@ -711,8 +711,8 @@ namespace utils::containers
 			inline const segment_ptr_t get_first() const { return first_segment; }
 			inline       segment_ptr_t get_first()       { return first_segment; }
 
-			inline const segment_ptr_t get_last () const { return last_segment ; }
-			inline       segment_ptr_t get_last ()       { return last_segment ; }
+			inline const segment_ptr_t get_last () const { return last_segment_ptr ; }
+			inline       segment_ptr_t get_last ()       { return last_segment_ptr ; }
 
 			pointer get_free_slot()
 				{
@@ -724,8 +724,8 @@ namespace utils::containers
 			segment_ptr_t grow_if_full()
 				{
 				if (!first_segment) { return grow_first(); }
-				else if (last_segment->size == inner_size) { return grow(); }
-				else { return last_segment; }
+				else if (last_segment_ptr->size == inner_size) { return grow(); }
+				else { return last_segment_ptr; }
 				}
 
 			segment_ptr_t grow_first()
@@ -736,7 +736,7 @@ namespace utils::containers
 				new_segment->next = nullptr;
 
 				first_segment = new_segment;
-				last_segment = new_segment;
+				last_segment_ptr = new_segment;
 
 				return new_segment;
 				}
@@ -744,11 +744,11 @@ namespace utils::containers
 			segment_ptr_t grow()
 				{
 				segment_ptr_t new_segment{ std::allocator_traits<segment_allocator_t>::allocate(segment_allocator, 1) };
-				last_segment->next = new_segment;
+				last_segment_ptr->next = new_segment;
 				new_segment->size = 0;
-				new_segment->prev = last_segment;
+				new_segment->prev = last_segment_ptr;
 				new_segment->next = nullptr;
-				last_segment = new_segment;
+				last_segment_ptr = new_segment;
 
 				return new_segment;
 				}

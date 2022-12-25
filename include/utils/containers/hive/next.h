@@ -293,8 +293,8 @@ namespace utils::containers::hive
 			
 			const segment_t& first_segment() const noexcept{ return *segments[0                  ]; }
 			      segment_t& first_segment()       noexcept{ return *segments[0                  ]; }
-			const segment_t& last_segment () const noexcept{ return *segments[segments.size() - 1]; }
-			      segment_t& last_segment ()       noexcept{ return *segments[segments.size() - 1]; }
+			const segment_t& last_segment_ptr () const noexcept{ return *segments[segments.size() - 1]; }
+			      segment_t& last_segment_ptr ()       noexcept{ return *segments[segments.size() - 1]; }
 			
 			size_t segment_index_containing_my_index(size_t index) const noexcept
 				{

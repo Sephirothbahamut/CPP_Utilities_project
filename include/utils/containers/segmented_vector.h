@@ -240,7 +240,7 @@ namespace utils::containers
 			void shrink_to_fit() noexcept { /*Done because the standard says it's fine to do nothing lol :) */ } //TODO
 
 			inline T& front() { return first_segment().arr[0]; }
-			inline T& back()  { return last_segment ().arr[last_segment_size() - 1];  } // TODO da fare modifica ricordamelo
+			inline T& back()  { return last_segment_ptr ().arr[last_segment_size() - 1];  } // TODO da fare modifica ricordamelo
 
 			inline void clear()
 				{
@@ -251,11 +251,11 @@ namespace utils::containers
 					std::allocator_traits<segment_allocator_t>::deallocate(segment_allocator, *segments_it, 1);
 					}
 
-				auto& last_segment{**segments_it};
+				auto& last_segment_ptr{**segments_it};
 
 				for (size_t i{0}; i < last_segment_size(); i++)
 					{
-					last_segment[i].~T();
+					last_segment_ptr[i].~T();
 					}
 				std::allocator_traits<segment_allocator_t>::deallocate(segment_allocator, *segments_it, 1);
 
@@ -364,8 +364,8 @@ namespace utils::containers
 			
 			const segment_t& first_segment() const noexcept{ return *segments[0                  ]; }
 			      segment_t& first_segment()       noexcept{ return *segments[0                  ]; }
-			const segment_t& last_segment () const noexcept{ return *segments[segments.size() - 1]; }
-			      segment_t& last_segment ()       noexcept{ return *segments[segments.size() - 1]; }
+			const segment_t& last_segment_ptr () const noexcept{ return *segments[segments.size() - 1]; }
+			      segment_t& last_segment_ptr ()       noexcept{ return *segments[segments.size() - 1]; }
 
 			size_t last_segment_size() const noexcept { return size() - inner_size * (segments.size() - 1); }
 			

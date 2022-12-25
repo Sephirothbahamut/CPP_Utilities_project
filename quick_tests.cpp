@@ -25,18 +25,7 @@
 
 #include "include/utils/containers/object_pool.h"
 
-
-template <typename T>
-void print(const T& t, const std::string& name)
-	{
-	std::cout << name << ": " << (t.has_value() ? std::to_string(t.value()) : "N/A");
-	if (t.has_value())
-		{
-		if constexpr (T::enabled_unique) { if (t.has_unique_ownership()) { std::cout << " unique"; } }
-		if constexpr (T::enabled_shared) { if (t.has_shared_ownership()) { std::cout << " shared (" << t.use_count() << ")"; } }
-		}
-	std::cout << std::endl;
-	}
+#include "include/utils/oop/counting.h"
 
 int main()
 	{

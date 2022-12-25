@@ -864,11 +864,11 @@ namespace utils::containers::details
 						return ret;
 						}
 					
-					iterator end() { return {last_segment, segment_t::arr.data() + segment_size}; }
+					iterator end() { return {last_segment_ptr, segment_t::arr.data() + segment_size}; }
 			
 				private:
 					handle_bare free_slot_handle;
-					utils::observer_ptr<segment_t> last_segment{this};
+					utils::observer_ptr<segment_t> last_segment_ptr{this};
 
 					template <typename ...Args>
 					inline handle_raw emplace_inner(Args&&... args)
@@ -876,8 +876,9 @@ namespace utils::containers::details
 						if (free_slot_handle.slot_ptr == nullptr)
 							{
 							free_slot_handle.segment_ptr->next_segment = std::make_unique<segment_t>(free_slot_handle.segment_ptr);
-							last_segment = free_slot_handle.segment_ptr->next_segment.get();
-							free_slot_handle = {this, segment_t::arr.data()};
+							
+							last_segment_ptr = free_slot_handle.segment_ptr->next_segment.get();
+							free_slot_handle = {last_segment_ptr, last_segment_ptr->arr.data()};
 							}
 			
 						auto next_free_slot_it{free_slot_handle.slot_ptr->free_slot_handle};
