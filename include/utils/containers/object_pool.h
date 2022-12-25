@@ -763,33 +763,33 @@ namespace utils::containers::details
 							iterator& operator+=(difference_type rhs) noexcept { *this = *this + rhs; return *this; }
 							iterator& operator-=(difference_type rhs) noexcept { *this = *this - rhs; return *this; }
 					
-							iterator operator++() noexcept
+							iterator& operator++() noexcept
 								{
-								auto ret{*this};
-					
-								do
+								auto current_segment_end{handle_bare::segment_ptr->arr.data() + segment_size};
+								while (true)
 									{
 									handle_bare::slot_ptr++;
-									if (handle_bare::slot_ptr == (handle_bare::segment_ptr->arr.data() + segment_size))
+
+									if (handle_bare::slot_ptr == current_segment_end)
 										{
 										if (handle_bare::segment_ptr->next_segment)
 											{
 											handle_bare::segment_ptr = handle_bare::segment_ptr->next_segment.get();
-											handle_bare::slot_ptr = handle_bare::segment_ptr->arr.data();
+											handle_bare::slot_ptr    = handle_bare::segment_ptr->arr.data();
+											current_segment_end = handle_bare::segment_ptr->arr.data() + segment_size;
 											}
 										else { break; }
 										}
-									} while (!handle_base::has_value());
+									if (handle_base::has_value()) { break; }
+									}
 					
-									return ret;
+								return *this;
 								}
 					
-							iterator& operator++(int) noexcept { operator++(); return *this; }
+							iterator operator++(int) noexcept { auto ret{*this}; operator++(); return ret; }
 					
-							iterator operator--() noexcept
+							iterator& operator--() noexcept
 								{
-								auto ret{*this};
-					
 								do
 									{
 									handle_bare::slot_ptr--;
@@ -804,10 +804,10 @@ namespace utils::containers::details
 										}
 									} while (!handle_base::has_value());
 					
-									return ret;
+								return *this;
 								}
-					
-							iterator& operator--(int) noexcept { operator--(); return *this; }
+
+							iterator operator--(int) noexcept { auto ret{*this}; operator--(); return ret; }
 					
 							auto operator<=>(const iterator& rhs) const noexcept { return (rhs - *this); }
 					
@@ -864,7 +864,7 @@ namespace utils::containers::details
 						return ret;
 						}
 					
-					iterator end() { return {last_segment_ptr, segment_t::arr.data() + segment_size}; }
+					iterator end() { return {last_segment_ptr, last_segment_ptr->arr.data() + segment_size}; }
 			
 				private:
 					handle_bare free_slot_handle;
