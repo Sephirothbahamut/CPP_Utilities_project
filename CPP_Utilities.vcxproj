@@ -205,6 +205,9 @@
     <ClInclude Include="include\utils\oop\counting.h" />
     <ClInclude Include="include\utils\oop\virtual.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
+    <ClInclude Include="include\utils\third_party\concurrentqueue.h" />
+    <ClInclude Include="include\utils\third_party\magic_enum.h" />
+    <ClInclude Include="include\utils\third_party\polymorphic_value.h" />
     <ClInclude Include="include\utils\thread_pool.h" />
     <ClInclude Include="include\utils\try_opt.h" />
     <ClInclude Include="include\utils\output\std_containers.h" />

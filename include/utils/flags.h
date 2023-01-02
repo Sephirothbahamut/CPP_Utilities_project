@@ -61,7 +61,7 @@ namespace utils
 		constexpr flags<bit_t> operator~() const noexcept
 			{
 			flags<bit_t> ret{*this};
-			constexpr auto all_flags{utils::magic_enum::template enum_values<bit_t>()};
+			constexpr auto all_flags{utils::enums::template enum_values<bit_t>()};
 			for (auto bit : all_flags)
 				{
 				ret ^= bit;

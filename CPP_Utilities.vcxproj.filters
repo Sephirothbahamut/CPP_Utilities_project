@@ -53,6 +53,9 @@
     <Filter Include="Utils\oop">
       <UniqueIdentifier>{e933390c-bf5a-49d8-8671-fa9c474cde98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\third_party">
+      <UniqueIdentifier>{dc330aa9-0fc5-4efd-a6c7-2e95a859a34e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -306,6 +309,15 @@
     </ClInclude>
     <ClInclude Include="include\utils\containers\object_pool.h">
       <Filter>Utils\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\third_party\magic_enum.h">
+      <Filter>Utils\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\third_party\polymorphic_value.h">
+      <Filter>Utils\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\third_party\concurrentqueue.h">
+      <Filter>Utils\third_party</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
