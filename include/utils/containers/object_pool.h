@@ -911,19 +911,19 @@ namespace utils::containers
 	///		In that case it might be desirable to store the object_pool in an unique_ptr.
 	///		An object_pool that doesn't grow past its segment size acts similarly to a static array.
 	/// </summary>
-	/// <typeparam name="T"> The type contained by the object pool</typeparam>
-	/// <typeparam name="Allocator"></typeparam>
-	/// <typeparam name="segment_size">
+	/// <param name="T"> The type contained by the object pool</param>
+	/// <param name="Allocator"></param>
+	/// <param name="segment_size">
 	///		The size of sequential storage clusters for the type T. The first cluster is statically allocated.
-	/// </typeparam>
-	/// <typeparam name="refcount_value_T"> 
+	/// </param>
+	/// <param name="refcount_value_T"> 
 	///		The type used for refcounts if shared handles are enabled. 
-	///		The maximum amount of shared handles to the same resource is std::numeric_limits<refcount_value_T>::max() - 1. 
+	///		The maximum amount of shared handles to the same resource is std::numeric_limits  refcount_value_T  ::max() - 1. 
 	///		The last value is reserved as special value for unique handles if unique handles are enabled.
-	/// </typeparam>
-	/// <typeparam name="enable_raw"></typeparam>
-	/// <typeparam name="enable_unique"></typeparam>
-	/// <typeparam name="enable_shared"></typeparam>
+	/// </param>
+	/// <param name="enable_raw"   ></param>
+	/// <param name="enable_unique"></param>
+	/// <param name="enable_shared"></param>
 	template
 		<
 		typename T,
