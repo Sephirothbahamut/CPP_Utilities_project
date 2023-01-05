@@ -37,37 +37,6 @@ struct test_struct : civ
 
 int main()
 	{
-
-			{
-			test_struct::reset();
-
-			if (true)
-				{
-				utils::containers::object_pool<test_struct, 8, true, true, true> op;
-
-				auto h0{op.make_unique(0)};
-
-				if (true)
-					{
-					auto h1{op.make_unique(1)};
-
-					}
-
-
-				auto h1{op.make_unique(1)};
-				auto h2{op.make_unique(2)};
-				auto h3{op.make_unique(3)};
-				auto h4{op.make_unique(4)};
-				auto h5{op.make_unique(5)};
-				auto h6{op.make_unique(6)};
-				auto h7{op.make_unique(7)};
-				auto h8{op.make_unique(8)};
-				auto h9{op.make_unique(9)};
-
-				}
-
-			}
-
 	using namespace utils::output;
 	std::cout
 		<< utils::console::colour::foreground::blue

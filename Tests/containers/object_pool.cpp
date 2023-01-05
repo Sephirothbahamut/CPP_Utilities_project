@@ -206,15 +206,23 @@ namespace Tests
 
 					Assert::AreEqual(size_t{1}, test_struct::count());
 
-					auto h1{op.make_unique(1)};
-					auto h2{op.make_unique(2)};
-					auto h3{op.make_unique(3)};
-					auto h4{op.make_unique(4)};
-					auto h5{op.make_unique(5)};
-					auto h6{op.make_unique(6)};
-					auto h7{op.make_unique(7)};
-					auto h8{op.make_unique(8)};
-					auto h9{op.make_unique(9)};
+					auto uq1{op.make_unique(1)};
+					auto uq2{op.make_unique(2)};
+					auto uq3{op.make_unique(3)};
+
+					auto rw4{op.emplace(4)};
+					auto uq4{decltype(op)::handle_unique{rw4}};
+
+					auto sh5{op.make_shared(5)};
+					auto sh52{sh5};
+
+					auto rw6{op.emplace(6)};
+					auto sh6{decltype(op)::handle_shared{rw6}};
+					auto sh62{sh6};
+
+					auto uq7{op.make_unique(7)};
+					auto uq8{op.make_unique(8)};
+					auto uq9{op.make_unique(9)};
 
 					Assert::AreEqual(size_t{10}, test_struct::count());
 					}
