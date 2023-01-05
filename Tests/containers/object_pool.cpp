@@ -180,4 +180,46 @@ namespace Tests
 				Assert::AreEqual(size_t{0}, test_struct::count());
 				}
 		};
+	
+
+	TEST_CLASS(object_pool_all)
+		{
+		public:
+			TEST_METHOD(insertion_and_destructor)
+				{
+				test_struct::reset();
+
+				if (true)
+					{
+					utils::containers::object_pool<test_struct, 8, true, true, true> op;
+
+					auto h0{op.make_unique(0)};
+
+					Assert::AreEqual(size_t{1}, test_struct::count());
+
+					if (true)
+						{
+						auto h1{op.make_unique(1)};
+
+						Assert::AreEqual(size_t{2}, test_struct::count());
+						}
+
+					Assert::AreEqual(size_t{1}, test_struct::count());
+
+					auto h1{op.make_unique(1)};
+					auto h2{op.make_unique(2)};
+					auto h3{op.make_unique(3)};
+					auto h4{op.make_unique(4)};
+					auto h5{op.make_unique(5)};
+					auto h6{op.make_unique(6)};
+					auto h7{op.make_unique(7)};
+					auto h8{op.make_unique(8)};
+					auto h9{op.make_unique(9)};
+
+					Assert::AreEqual(size_t{10}, test_struct::count());
+					}
+
+				Assert::AreEqual(size_t{0}, test_struct::count());
+				}
+		};
 	}

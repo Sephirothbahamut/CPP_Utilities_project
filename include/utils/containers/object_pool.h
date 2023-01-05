@@ -103,6 +103,7 @@ namespace utils::containers::details
 					for (size_t i = 0; i < segment_size - 1; i++)
 						{
 						arr[i].free_slot_handle = {this, std::addressof(arr[i + 1])};
+						if constexpr (use_refcount || use_unique_bitset) { refcount[i] = 0; }
 						}
 					arr[segment_size - 1].free_slot_handle = {this, nullptr};
 					}
@@ -441,6 +442,7 @@ namespace utils::containers::details
 					class handle_unique : public handle_raw
 						{
 						friend class first_segment_t;
+
 						public:
 							using value_type        = object_pool_details::value_type       ;
 							using reference         = object_pool_details::reference        ;
@@ -554,7 +556,7 @@ namespace utils::containers::details
 								}
 			
 						protected:
-							handle_unique(handle_raw handle_raw_instance)
+							handle_unique(handle_raw& handle_raw_instance)
 								requires (!enabled_raw) :
 								handle_raw{handle_raw_instance}
 								{
@@ -703,7 +705,7 @@ namespace utils::containers::details
 								}
 			
 						protected:
-							handle_shared(handle_raw handle_raw_instance)
+							handle_shared(handle_raw& handle_raw_instance)
 								requires (!enabled_raw) :
 								handle_raw{handle_raw_instance}
 								{
@@ -841,14 +843,16 @@ namespace utils::containers::details
 					[[nodiscard]] inline handle_unique make_unique(Args&&... args)
 						requires (enabled_unique)
 						{
-						return {emplace_inner(std::forward<Args>(args)...)};
+						auto tmp{emplace_inner(std::forward<Args>(args)...)};
+						return {tmp};
 						}
 			
 					template <typename ...Args>
 					[[nodiscard]] inline handle_shared make_shared(Args&&... args)
 						requires (enabled_shared)
 						{
-						return {emplace_inner(std::forward<Args>(args)...)};
+						auto tmp{emplace_inner(std::forward<Args>(args)...)};
+						return {tmp};
 						}
 						
 					iterator begin()
