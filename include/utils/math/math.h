@@ -56,4 +56,31 @@ namespace utils::math
 
 	template <typename ...Ts>
 	constexpr auto max(const Ts& ...values) { return std::max({values...}); }
+
+	template <std::integral to_t, typename from_t>
+	requires (std::integral<from_t> || std::floating_point<from_t>) 
+	to_t cast_clamp(from_t f)
+		{
+		if constexpr (std::numeric_limits<from_t>::max() > std::numeric_limits<to_t>::max())
+			{
+			if (f > static_cast<from_t>(std::numeric_limits<to_t>::max())) { return static_cast<from_t>(std::numeric_limits<to_t>::max()); }
+			}
+
+		if constexpr (!std::unsigned_integral<from_t>)
+			{
+			if constexpr (!std::unsigned_integral<to_t>)
+				{
+				if constexpr (std::numeric_limits<from_t>::min() < std::numeric_limits<to_t>::min())
+					{
+					if (f < static_cast<from_t>(std::numeric_limits<to_t>::min())) { return static_cast<from_t>(std::numeric_limits<to_t>::min()); }
+					}
+				}
+			else
+				{
+				if (f < from_t{0}) { return to_t{0}; }
+				}
+			}
+
+		return static_cast<to_t>(f);
+		}
 	}
