@@ -63,7 +63,7 @@ namespace utils::math
 		{
 		if constexpr (std::numeric_limits<from_t>::max() > std::numeric_limits<to_t>::max())
 			{
-			if (f > static_cast<from_t>(std::numeric_limits<to_t>::max())) { return static_cast<from_t>(std::numeric_limits<to_t>::max()); }
+			if (f > static_cast<from_t>(std::numeric_limits<to_t>::max())) { return std::numeric_limits<to_t>::max(); }
 			}
 
 		if constexpr (!std::unsigned_integral<from_t>)
@@ -72,7 +72,7 @@ namespace utils::math
 				{
 				if constexpr (std::numeric_limits<from_t>::min() < std::numeric_limits<to_t>::min())
 					{
-					if (f < static_cast<from_t>(std::numeric_limits<to_t>::min())) { return static_cast<from_t>(std::numeric_limits<to_t>::min()); }
+					if (f < static_cast<from_t>(std::numeric_limits<to_t>::min())) { return std::numeric_limits<to_t>::min(); }
 					}
 				}
 			else
