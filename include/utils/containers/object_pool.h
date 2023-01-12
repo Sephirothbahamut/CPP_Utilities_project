@@ -398,28 +398,28 @@ namespace utils::containers::details
 							/// </summary>
 							void reset() noexcept 
 								{
-								if constexpr (utils::compilation::debug)
-									{
-									if constexpr (enabled_unique)
-										{
-										//has_unique_ownership() is always true in containers that only support unique handles
-										//so we mustn't throw in that case
-										if (handle_base::has_unique_ownership() && (enabled_raw || enabled_shared))
-											{
-											throw std::runtime_error{"Attempting to erase an handled owned by another unique handle."};
-											}
-										}
-									if constexpr (enabled_shared)
-										{
-										if (handle_base::has_shared_ownership())
-											{
-											throw std::runtime_error{"Attempting to erase an handled owned by one or more shared handles."};
-											}
-										}
-									}
-
 								if (handle_base::has_value())
 									{
+									if constexpr (utils::compilation::debug)
+										{
+										if constexpr (enabled_unique)
+											{
+											//has_unique_ownership() is always true in containers that only support unique handles
+											//so we mustn't throw in that case
+											if (handle_base::has_unique_ownership() && (enabled_raw || enabled_shared))
+												{
+												throw std::runtime_error{"Attempting to erase an handled owned by another unique handle."};
+												}
+											}
+										if constexpr (enabled_shared)
+											{
+											if (handle_base::has_shared_ownership())
+												{
+												throw std::runtime_error{"Attempting to erase an handled owned by one or more shared handles."};
+												}
+											}
+										}
+
 									first_segment_ptr->erase(*this);
 									handle_bare::slot_ptr = nullptr;
 									}
