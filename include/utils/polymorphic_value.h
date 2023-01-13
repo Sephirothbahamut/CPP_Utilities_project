@@ -4,6 +4,5 @@
 
 namespace utils
 	{
-	template <class T>
-	using polymorphic_value = isocpp_p0201::polymorphic_value<T>;
+	using namespace isocpp_p0201;
 	}

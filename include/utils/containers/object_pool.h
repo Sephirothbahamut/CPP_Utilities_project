@@ -855,6 +855,12 @@ namespace utils::containers::details
 						return {tmp};
 						}
 						
+					[[nodiscard]] inline handle_raw handle_to_iterator(iterator it)
+						requires (enabled_raw)
+						{
+						return {this, it};
+						}
+
 					iterator begin()
 						{
 						iterator ret{this, segment_t::arr.data()};
