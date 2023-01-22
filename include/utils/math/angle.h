@@ -6,23 +6,28 @@
 #include <variant> //Angle class
 #include <concepts>
 
-#include "../console/colour.h"
-#include "../math/math.h"
 #include "constants.h"
+#include "../math/math.h"
+#include "../console/colour.h"
+#include "../template_wrappers.h"
 
 //TODO write test cases
 
 namespace utils::math::angle
 	{
-	template <std::floating_point T, T full_angle_value>
+	template <std::floating_point T, utils::template_wrapper::number<T> full_angle_value>
 	class base;
+	
+	template <std::floating_point T = float>
+	using deg = base<T, utils::template_wrapper::number<T>{T{360.f}}>;
 
-	using degf = base<float , 360.f>;
-	using radf = base<float , 2.f * constants::PIf>;
-	using degd = base<double, 360. >;
-	using radd = base<double, 2.  * constants::PId>;
-	using deg  = degf;
-	using rad  = radf;
+	template <std::floating_point T = float>
+	using rad = base<T, utils::template_wrapper::number<T>{T{2.f * constants::PIf}}>;
+
+	using degf = deg<float >;
+	using radf = rad<float >;
+	using degd = deg<double>;
+	using radd = rad<double>;
 
 	namespace concepts
 		{
@@ -30,7 +35,7 @@ namespace utils::math::angle
 		concept angle = std::same_as<std::remove_cvref_t<T>, utils::math::angle::base<typename T::value_type, T::full_angle>>;
 		}
 
-	template <std::floating_point T = float, T full_angle_value = 1.f>
+	template <std::floating_point T = float, utils::template_wrapper::number<T> full_angle_value = 1.f>
 	class base
 		{
 		public:
@@ -48,8 +53,8 @@ namespace utils::math::angle
 			// template <>
 			// base<value_type, full_angle_value>(const base<value_type, full_angle_value>& src) : value{src.value} {}
 
-			template <value_type other_full_angle>
-			operator base<value_type, other_full_angle>() const noexcept 
+			template <utils::template_wrapper::number<value_type> other_full_angle>
+			operator base<value_type, other_full_angle>() const noexcept
 				{
 				if constexpr (other_full_angle == full_angle) { return {value}; }
 				else { return {(value / full_angle) * other_full_angle}; }
@@ -83,13 +88,13 @@ namespace utils::math::angle
 			//bool operator!=(const base oth) const noexcept { return !(*this == oth); }
 
 			// ...except it doesn't automatically cast, so here we go...
-			template <value_type other_full_angle> base  operator+ (const base<value_type, other_full_angle> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <value_type other_full_angle> base  operator- (const base<value_type, other_full_angle> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <value_type other_full_angle> base& operator+=(const base<value_type, other_full_angle> oth)       noexcept { return *this = *this + oth; }
-			template <value_type other_full_angle> base& operator-=(const base<value_type, other_full_angle> oth)       noexcept { return *this = *this - oth; }
+			template <utils::template_wrapper::number<value_type> other_full_angle> base  operator+ (const base<value_type, other_full_angle> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
+			template <utils::template_wrapper::number<value_type> other_full_angle> base  operator- (const base<value_type, other_full_angle> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
+			template <utils::template_wrapper::number<value_type> other_full_angle> base& operator+=(const base<value_type, other_full_angle> oth)       noexcept { return *this = *this + oth; }
+			template <utils::template_wrapper::number<value_type> other_full_angle> base& operator-=(const base<value_type, other_full_angle> oth)       noexcept { return *this = *this - oth; }
 
-			template <value_type other_full_angle> bool  operator==(const base<value_type, other_full_angle> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
-			template <value_type other_full_angle> bool  operator!=(const base<value_type, other_full_angle> oth) const noexcept { return !(*this == oth); }
+			template <utils::template_wrapper::number<value_type> other_full_angle> bool  operator==(const base<value_type, other_full_angle> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
+			template <utils::template_wrapper::number<value_type> other_full_angle> bool  operator!=(const base<value_type, other_full_angle> oth) const noexcept { return !(*this == oth); }
 
 			base  operator* (value_type oth) const noexcept { return { value * oth }; }
 			base  operator/ (value_type oth) const noexcept { return { value / oth }; }
@@ -132,12 +137,12 @@ namespace utils::math::angle
 	
 	namespace literals
 		{
-		inline deg operator""_deg  (         long double value) noexcept { return angle::deg{static_cast<float>(value)}; }
-		inline deg operator""_deg  (unsigned long long   value) noexcept { return angle::deg{static_cast<float>(value)}; }
-		inline rad operator""_rad  (         long double value) noexcept { return angle::rad{static_cast<float>(value)}; }
-		inline rad operator""_rad  (unsigned long long   value) noexcept { return angle::rad{static_cast<float>(value)}; }
-		inline rad operator""_radpi(         long double value) noexcept { return angle::rad{static_cast<float>(value) * constants::PIf}; }
-		inline rad operator""_radpi(unsigned long long   value) noexcept { return angle::rad{static_cast<float>(value) * constants::PIf}; }
+		inline degf operator""_deg  (         long double value) noexcept { return angle::degf{static_cast<float>(value)}; }
+		inline degf operator""_deg  (unsigned long long   value) noexcept { return angle::degf{static_cast<float>(value)}; }
+		inline radf operator""_rad  (         long double value) noexcept { return angle::radf{static_cast<float>(value)}; }
+		inline radf operator""_rad  (unsigned long long   value) noexcept { return angle::radf{static_cast<float>(value)}; }
+		inline radf operator""_radpi(         long double value) noexcept { return angle::radf{static_cast<float>(value) * constants::PIf}; }
+		inline radf operator""_radpi(unsigned long long   value) noexcept { return angle::radf{static_cast<float>(value) * constants::PIf}; }
 		}
 	}
 
@@ -175,10 +180,10 @@ namespace utils::math
 		template <math::angle::concepts::angle T> inline float                                      sin  (const T& a      ) noexcept { return a.sin(); }
 		template <math::angle::concepts::angle T> inline float                                      cos  (const T& a      ) noexcept { return a.cos(); }
 		template <math::angle::concepts::angle T> inline float                                      tan  (const T& a      ) noexcept { return a.tan        (    ); }
-		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> asin (float n         ) noexcept { return rad<T>::asin (n   ); }
-		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> acos (float n         ) noexcept { return rad<T>::acos (n   ); }
-		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> atan (float n         ) noexcept { return rad<T>::atan (n   ); }
-		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return rad<T>::atan2(a, b); }
+		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> asin (float n         ) noexcept { return angle::rad<T>::asin (n   ); }
+		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> acos (float n         ) noexcept { return angle::rad<T>::acos (n   ); }
+		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> atan (float n         ) noexcept { return angle::rad<T>::atan (n   ); }
+		template <std ::floating_point         T> inline math::angle::base<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return angle::rad<T>::atan2(a, b); }
 		}
 	}
 

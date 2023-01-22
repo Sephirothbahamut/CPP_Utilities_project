@@ -5,8 +5,10 @@
 #include <cmath>
 #include <concepts>
 
-#include "../containers/memberwise_operators_array.h"
+#include "../math/angle.h"
 #include "../console/colour.h"
+#include "../template_wrappers.h"
+#include "../containers/memberwise_operators_array.h"
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 
@@ -21,7 +23,7 @@ namespace utils::graphics::colour
 		yellow, cyan , magenta, 
 		};
 
-	template <typename T = float, size_t size = 3, T MAX_VALUE = (std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max())>
+	template <typename T = float, size_t size = 3, utils::template_wrapper::number<T> MAX_VALUE = utils::template_wrapper::number<T>{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()} >
 		requires(size >= 1 && size <= 4)
 	struct rgb;
 	
@@ -34,7 +36,7 @@ namespace utils::graphics::colour
 	using rgba_u = rgb<uint8_t, 4>;
 	using rgba   = rgb<float  , 4>;
 
-	template <std::floating_point T, bool has_alpha, T MAX_VALUE = (std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()), T max_angle_value = MAX_VALUE>
+	template <std::floating_point T, bool has_alpha, utils::template_wrapper::number<T> MAX_VALUE = utils::template_wrapper::number<T>{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()}, utils::template_wrapper::number<T> max_angle_value = MAX_VALUE >
 	struct hsv;
 
 	namespace details
@@ -45,7 +47,7 @@ namespace utils::graphics::colour
 		struct empty {};
 		}
 
-	template <typename T, size_t SIZE, T MAX_VALUE>
+	template <typename T, size_t SIZE, utils::template_wrapper::number<T> MAX_VALUE>
 		requires(SIZE >= 1 && SIZE <= 4)
 	struct rgb : utils::containers::memberwise_operators::arr<T, SIZE>
 		{
@@ -99,7 +101,7 @@ namespace utils::graphics::colour
 		//hsv<T, std::greater_equal<size_t>(static_size, 4), max_value, max_value> hsv() const noexcept requires(static_size >= 3);
 		};
 
-	template <std::floating_point T, bool has_alpha, T MAX_VALUE, T max_angle_value>
+	template <std::floating_point T, bool has_alpha, utils::template_wrapper::number<T> MAX_VALUE, utils::template_wrapper::number<T> max_angle_value>
 	struct hsv : std::conditional_t<has_alpha, details::alpha_field<T>, details::empty>
 		{
 		inline static constexpr T max_value = MAX_VALUE;
@@ -110,7 +112,7 @@ namespace utils::graphics::colour
 
 		hsv(base base, T components_multiplier = max_value, T alpha = max_value)
 			{
-			utils::math::angle::deg angle;
+			utils::math::angle::degf angle;
 			using namespace utils::math::angle::literals;
 			switch (base)
 				{
@@ -169,7 +171,7 @@ namespace utils::graphics::colour
 	//	}
 	
 	//TODO test
-	template <std::floating_point T, bool has_alpha, T MAX_VALUE, T max_angle_value>
+	template <std::floating_point T, bool has_alpha, utils::template_wrapper::number<T> MAX_VALUE, utils::template_wrapper::number<T> max_angle_value>
 	rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> hsv<T, has_alpha, MAX_VALUE, max_angle_value>::rgb() const noexcept
 		{
 		float h{this->h.value / 360.f};

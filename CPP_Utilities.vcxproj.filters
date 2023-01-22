@@ -169,7 +169,7 @@
     <ClInclude Include="include\utils\containers\buffer.h">
       <Filter>Utils\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\string.h">
+    <ClInclude Include="include\utils\template_wrappers.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\tracking.h">
@@ -324,6 +324,9 @@
     </ClInclude>
     <ClInclude Include="include\utils\oop\disable_move_copy.h">
       <Filter>Utils\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\compilation\CUDA.h">
+      <Filter>Utils\compilation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

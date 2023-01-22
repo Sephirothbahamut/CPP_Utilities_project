@@ -2,15 +2,16 @@
 
 #include <tuple>
 #include <algorithm>
+#include "concepts.h"
 
 namespace utils
 	{
-	namespace compile_time
+	namespace template_wrapper
 		{
 		template <size_t N>
-		struct template_string 
+		struct string 
 			{
-			constexpr template_string(const char(&str)[N]) 
+			constexpr string(const char(&str)[N]) 
 				{
 				std::copy_n(str, N, value);
 				}
@@ -18,7 +19,7 @@ namespace utils
 			char value[N];
 			};
 
-		template <template_string S1, template_string S2>
+		template <string S1, string S2>
 		consteval auto concat() 
 			{
 			return []<std::size_t... Is, std::size_t... Js>(std::index_sequence<Is...>, std::index_sequence<Js...>) 
@@ -28,5 +29,14 @@ namespace utils
 					}
 				(std::make_index_sequence<S1.size>{}, std::make_index_sequence<S2.size>{});
 			}
+
+		//TODO remove once all compilers support floating point template parameters (not working with NVCC as of today)
+		template <utils::concepts::number T>
+		struct number
+			{
+			T value;
+			constexpr operator T() const noexcept { return value; }
+			constexpr T& operator=(const T& value) noexcept { return *this; }
+			};
 		}
 	}

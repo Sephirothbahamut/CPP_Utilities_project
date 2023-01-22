@@ -5,6 +5,9 @@
 
 namespace utils::concepts
 	{
+	template <typename T>
+	concept number = std::floating_point<T> || std::integral<T>;
+
 	template <typename A, typename B>
 	concept same_as_undecorated = std::same_as<std::remove_cvref_t<A>, std::remove_cvref_t<B>>;
 

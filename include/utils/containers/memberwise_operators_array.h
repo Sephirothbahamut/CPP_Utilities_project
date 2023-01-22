@@ -105,8 +105,8 @@ namespace utils::containers::memberwise_operators
 	template <concepts::arr a_t> a_t  operator- (const a_t& v) noexcept { a_t ret; for (size_t i{ 0 }; i < v.size(); i++) { ret[i] = -v[i]; }; return ret; }
 
 #pragma region scalar
-	template <concepts::arr a_t> a_t  operator++(const a_t& v) noexcept { return (*this) += typename a_t::value_type{1}; }
-	template <concepts::arr a_t> a_t  operator--(const a_t& v) noexcept { return (*this) -= typename a_t::value_type{1}; }
+	template <concepts::arr a_t> a_t  operator++(const a_t& v) noexcept { return a_t{v} += typename a_t::value_type{1}; }
+	template <concepts::arr a_t> a_t  operator--(const a_t& v) noexcept { return a_t{v} -= typename a_t::value_type{1}; }
 
 	template <concepts::arr a_t> a_t  operator+ (const a_t& a, const typename a_t::value_type& b) noexcept { a_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] + b; }; return ret; }
 	template <concepts::arr a_t> a_t  operator- (const a_t& a, const typename a_t::value_type& b) noexcept { a_t ret; for (size_t i{0}; i < a.size(); i++) { ret[i] = a[i] - b; }; return ret; }

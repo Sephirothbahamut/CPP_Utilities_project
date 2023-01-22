@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClInclude Include="include\utils\beta\containers\hive\pool.h" />
     <ClInclude Include="include\utils\clock.h" />
+    <ClInclude Include="include\utils\compilation\CUDA.h" />
     <ClInclude Include="include\utils\compilation\debug.h" />
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\concepts.h" />
@@ -213,7 +214,7 @@
     <ClInclude Include="include\utils\thread_pool.h" />
     <ClInclude Include="include\utils\try_opt.h" />
     <ClInclude Include="include\utils\output\std_containers.h" />
-    <ClInclude Include="include\utils\string.h" />
+    <ClInclude Include="include\utils\template_wrappers.h" />
     <ClInclude Include="include\utils\tracking.h" />
     <ClInclude Include="include\utils\variadic.h" />
     <ClInclude Include="include\utils\variant.h" />

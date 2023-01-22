@@ -42,8 +42,10 @@ namespace utils::math
 			public:
 				vec_impl() = default; //TODO we should be able to remove this?
 				vec_impl(T x, T y)                            noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(x); self.set_y(y); }; //TODO we should be able to remove this?
-				vec_impl(math::angle::deg angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
-				vec_impl(math::angle::rad angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
+
+				vec_impl(math::angle::degf angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
+				vec_impl(math::angle::radf angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
+
 				//template <float full_angle_value>
 				//vec(math::angle::base<full_angle_value> angle) noexcept requires(size == 2) : x{angle.cos()}, y{angle.sin()} {} //TODO test
 				//template <typename other_t>
