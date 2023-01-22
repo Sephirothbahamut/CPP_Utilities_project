@@ -29,14 +29,5 @@ namespace utils
 					}
 				(std::make_index_sequence<S1.size>{}, std::make_index_sequence<S2.size>{});
 			}
-
-		//TODO remove once all compilers support floating point template parameters (not working with NVCC as of today)
-		template <utils::concepts::number T>
-		struct number
-			{
-			T value;
-			constexpr operator T() const noexcept { return value; }
-			constexpr T& operator=(const T& value) noexcept { return *this; }
-			};
 		}
 	}

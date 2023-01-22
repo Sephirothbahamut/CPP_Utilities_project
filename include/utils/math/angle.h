@@ -15,14 +15,14 @@
 
 namespace utils::math::angle
 	{
-	template <std::floating_point T, utils::template_wrapper::number<T> full_angle_value>
+	template <std::floating_point T, T full_angle_value>
 	class base;
 	
 	template <std::floating_point T = float>
-	using deg = base<T, utils::template_wrapper::number<T>{T{360.f}}>;
+	using deg = base<T, 360.f>;
 
 	template <std::floating_point T = float>
-	using rad = base<T, utils::template_wrapper::number<T>{T{2.f * constants::PIf}}>;
+	using rad = base<T, T{2.f * constants::PIf}>;
 
 	using degf = deg<float >;
 	using radf = rad<float >;
@@ -35,13 +35,13 @@ namespace utils::math::angle
 		concept angle = std::same_as<std::remove_cvref_t<T>, utils::math::angle::base<typename T::value_type, T::full_angle>>;
 		}
 
-	template <std::floating_point T = float, utils::template_wrapper::number<T> full_angle_value = 1.f>
+	template <std::floating_point T = float, T full_angle_value = 1.f >
 	class base
 		{
 		public:
 			using value_type = T;
-			inline static constexpr value_type full_angle = full_angle_value;
-			inline static constexpr value_type half_angle = full_angle / value_type{2};
+			inline static constexpr value_type full_angle{full_angle_value};
+			inline static constexpr value_type half_angle{full_angle / value_type{2}};
 
 			value_type value{ 0.f };
 
@@ -53,7 +53,7 @@ namespace utils::math::angle
 			// template <>
 			// base<value_type, full_angle_value>(const base<value_type, full_angle_value>& src) : value{src.value} {}
 
-			template <utils::template_wrapper::number<value_type> other_full_angle>
+			template <value_type other_full_angle>
 			operator base<value_type, other_full_angle>() const noexcept
 				{
 				if constexpr (other_full_angle == full_angle) { return {value}; }
@@ -70,7 +70,7 @@ namespace utils::math::angle
 					return { new_value };
 					}
 				}
-			base& clamp_self()       noexcept { *this = this->clamped(); return *this; }
+			base& clamp_self()       noexcept { *this = clamp(); return *this; }
 
 			// Shouldn't be needed because...
 			//template <value_type other_full_angle> base  operator+ (const base<other_full_angle> oth) const noexcept { return {value + static_cast<base<full_angle>>(oth).value}; }
@@ -88,13 +88,12 @@ namespace utils::math::angle
 			//bool operator!=(const base oth) const noexcept { return !(*this == oth); }
 
 			// ...except it doesn't automatically cast, so here we go...
-			template <utils::template_wrapper::number<value_type> other_full_angle> base  operator+ (const base<value_type, other_full_angle> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <utils::template_wrapper::number<value_type> other_full_angle> base  operator- (const base<value_type, other_full_angle> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <utils::template_wrapper::number<value_type> other_full_angle> base& operator+=(const base<value_type, other_full_angle> oth)       noexcept { return *this = *this + oth; }
-			template <utils::template_wrapper::number<value_type> other_full_angle> base& operator-=(const base<value_type, other_full_angle> oth)       noexcept { return *this = *this - oth; }
-
-			template <utils::template_wrapper::number<value_type> other_full_angle> bool  operator==(const base<value_type, other_full_angle> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
-			template <utils::template_wrapper::number<value_type> other_full_angle> bool  operator!=(const base<value_type, other_full_angle> oth) const noexcept { return !(*this == oth); }
+			template <T full_angle_value> base  operator+ (const base<T, full_angle_value> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
+			template <T full_angle_value> base  operator- (const base<T, full_angle_value> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
+			template <T full_angle_value> base& operator+=(const base<T, full_angle_value> oth)       noexcept { return *this = *this + oth; }
+			template <T full_angle_value> base& operator-=(const base<T, full_angle_value> oth)       noexcept { return *this = *this - oth; }
+			template <T full_angle_value> bool  operator==(const base<T, full_angle_value> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
+			template <T full_angle_value> bool  operator!=(const base<T, full_angle_value> oth) const noexcept { return !(*this == oth); }
 
 			base  operator* (value_type oth) const noexcept { return { value * oth }; }
 			base  operator/ (value_type oth) const noexcept { return { value / oth }; }
@@ -189,29 +188,29 @@ namespace utils::math
 
 namespace utils::output
 	{
-	//namespace typeless
-	//	{
-	//	template <std::floating_point T, T full_angle_value>
-	//	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
-	//		{
-	//		namespace ucc = utils::console::colour;
-	//		os << ucc::value;
-	//		if (full_angle_value == 2.f * constants::PIf) { os << (angle.value / constants::PIf); }
-	//		else { os << angle.value; }
-	//
-	//		os << ucc::type;
-	//		if      (full_angle_value == T{360})               { os << "deg"; }
-	//		else if (full_angle_value == 2.f * constants::PIf) { os << "pirad"; }
-	//		else                                               { os << "/" << full_angle_value; }
-	//		return os;
-	//		}
-	//	}
-	//
-	//template <std::floating_point T, T full_angle_value>
-	//inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
-	//	{
-	//	namespace ucc = utils::console::colour;
-	//	utils::output::typeless::operator<<(os, angle); 
-	//	return os << "_" << typeid(T).name();
-	//	}
+	namespace typeless
+		{
+		template <std::floating_point T, T full_angle_value>
+		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
+			{
+			namespace ucc = utils::console::colour;
+			os << ucc::value;
+			if constexpr (full_angle_value == 2.f * constants::PIf) { os << (angle.value / constants::PIf); }
+			else { os << angle.value; }
+	
+			os << ucc::type;
+			if      constexpr (full_angle_value == T{360})               { os << "deg"; }
+			else if constexpr (full_angle_value == 2.f * constants::PIf) { os << "pirad"; }
+			else                                               { os << "/" << full_angle_value; }
+			return os;
+			}
+		}
+	
+	template <std::floating_point T, T full_angle_value>
+	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
+		{
+		namespace ucc = utils::console::colour;
+		utils::output::typeless::operator<<(os, angle); 
+		return os << "_" << typeid(T).name();
+		}
 	}

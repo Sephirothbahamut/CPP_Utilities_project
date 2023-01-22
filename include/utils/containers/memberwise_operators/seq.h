@@ -89,8 +89,8 @@ namespace utils::containers::memberwise_operators::seq
 	template <concepts::stdvecarr a_t> a_t  operator- (const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < v.size(); i++) { ret[i] = -v[i]; }; return ret; }
 
 #pragma region scalar
-	template <concepts::stdvecarr a_t> a_t  operator++(const a_t& v) noexcept { return (*this) += typename a_t::value_type{1}; }
-	template <concepts::stdvecarr a_t> a_t  operator--(const a_t& v) noexcept { return (*this) -= typename a_t::value_type{1}; }
+	template <concepts::stdvecarr a_t> a_t  operator++(const a_t& v) noexcept { return v + typename a_t::value_type{1}; }
+	template <concepts::stdvecarr a_t> a_t  operator--(const a_t& v) noexcept { return v - typename a_t::value_type{1}; }
 
 	template <concepts::stdvecarr a_t> a_t  operator+ (const a_t& a, const typename a_t::value_type& b) noexcept { return operation            (a, b, [](const a_t::value_type& a, const a_t::value_type& b) { return a +  b; }); }
 	template <concepts::stdvecarr a_t> a_t  operator- (const a_t& a, const typename a_t::value_type& b) noexcept { return operation            (a, b, [](const a_t::value_type& a, const a_t::value_type& b) { return a -  b; }); }

@@ -112,19 +112,25 @@ int main()
 	
 	using namespace utils::containers::memberwise_operators::seq;
 	std::vector<float> stdarr_a;
-	std::vector<float> stdarr_out{ 1.f - stdarr_a + -stdarr_a };
+	std::vector<float> stdarr_out{1.f - stdarr_a + -stdarr_a};
 	
 	
 	using namespace utils::output;
 	std::cout << a << "\n";
 	
 	using namespace utils::math::angle::literals;
-	auto deg{ 90_deg };
-	auto rad{ 90_rad };
-	auto sensicalrad{ 90_radpi };
+	auto deg{90_deg};
+	auto rad{90_rad};
+	auto sensicalrad{90_radpi};
 	
 	utils::math::angle::base<float, 1.f> other{ .5 };
-	//std::cout << deg << ", " << rad << ", " << sensicalrad << ", " << other << "\n";
+	std::cout << deg << ", " << rad << ", " << sensicalrad << ", " << other << "\n";
+
+	deg + rad;
+
+	utils::math::vec2f f2;
+	f2 - deg;
+
 	
 	utils::graphics::colour::rgb_u colour_a{ utils::graphics::colour::base::blue };
 	utils::graphics::colour::rgb_u colour_b{ utils::graphics::colour::base::cyan   , 128, 100 };

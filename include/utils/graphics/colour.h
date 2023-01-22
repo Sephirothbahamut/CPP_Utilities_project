@@ -23,10 +23,10 @@ namespace utils::graphics::colour
 		yellow, cyan , magenta, 
 		};
 
-	template <typename T = float, size_t size = 3, utils::template_wrapper::number<T> MAX_VALUE = utils::template_wrapper::number<T>{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()} >
+	template <typename T = float, size_t size = 3>
 		requires(size >= 1 && size <= 4)
 	struct rgb;
-	
+
 	using rgb_f  = rgb<float  , 3>;
 	using rgb_d  = rgb<double , 3>;
 	using rgb_u  = rgb<uint8_t, 3>;
@@ -36,8 +36,20 @@ namespace utils::graphics::colour
 	using rgba_u = rgb<uint8_t, 4>;
 	using rgba   = rgb<float  , 4>;
 
-	template <std::floating_point T, bool has_alpha, utils::template_wrapper::number<T> MAX_VALUE = utils::template_wrapper::number<T>{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()}, utils::template_wrapper::number<T> max_angle_value = MAX_VALUE >
+	template <std::floating_point T, bool has_alpha>
 	struct hsv;
+
+	namespace concepts
+		{
+		template <typename T>
+		concept rgb = std::same_as<T, colour::rgb<typename T::value_type, T::static_size>>;
+
+		template <typename T>
+		concept hsv = std::same_as<T, colour::hsv<typename T::value_type, T::has_alpha>>;
+
+		template <typename T>
+		concept colour = rgb<T> || hsv<T>;
+		}
 
 	namespace details
 		{
@@ -47,14 +59,15 @@ namespace utils::graphics::colour
 		struct empty {};
 		}
 
-	template <typename T, size_t SIZE, utils::template_wrapper::number<T> MAX_VALUE>
+	template <typename T, size_t SIZE>
 		requires(SIZE >= 1 && SIZE <= 4)
 	struct rgb : utils::containers::memberwise_operators::arr<T, SIZE>
 		{
 		using value_type = utils::containers::memberwise_operators::arr<T, SIZE>::value_type;
 		inline static constexpr size_t static_size{utils::containers::memberwise_operators::arr<T, SIZE>::static_size};
+		inline static constexpr bool has_alpha{static_size == 4};
 
-		inline static constexpr T max_value = MAX_VALUE;
+		inline static constexpr T max_value{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()};
 
 		rgb(T r = T{0}, T g = T{0}, T b = T{0}, T a = T{max_value})
 			{
@@ -101,10 +114,12 @@ namespace utils::graphics::colour
 		//hsv<T, std::greater_equal<size_t>(static_size, 4), max_value, max_value> hsv() const noexcept requires(static_size >= 3);
 		};
 
-	template <std::floating_point T, bool has_alpha, utils::template_wrapper::number<T> MAX_VALUE, utils::template_wrapper::number<T> max_angle_value>
-	struct hsv : std::conditional_t<has_alpha, details::alpha_field<T>, details::empty>
+	template <std::floating_point T, bool HAS_ALPHA>
+	struct hsv : std::conditional_t<HAS_ALPHA, details::alpha_field<T>, details::empty>
 		{
-		inline static constexpr T max_value = MAX_VALUE;
+		inline static constexpr T max_value{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()};
+		inline static constexpr T max_angle_value{std::floating_point<T> ? static_cast<T>(1) : static_cast<T>(360)};
+		inline static constexpr bool has_alpha{HAS_ALPHA};
 
 		hsv() = default;
 		hsv(T h, T s, T v, T a) requires( has_alpha) : h{h}, s{s}, v{v}, details::alpha_field<T>{a} {}
@@ -138,7 +153,7 @@ namespace utils::graphics::colour
 		T v;
 #pragma endregion fields
 
-		rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> rgb() const noexcept;
+		rgb<T, (HAS_ALPHA ? 4 : 3)> rgb() const noexcept;
 		};
 
 	////TODO test
@@ -171,8 +186,8 @@ namespace utils::graphics::colour
 	//	}
 	
 	//TODO test
-	template <std::floating_point T, bool has_alpha, utils::template_wrapper::number<T> MAX_VALUE, utils::template_wrapper::number<T> max_angle_value>
-	rgb<T, (has_alpha ? 4 : 3), MAX_VALUE> hsv<T, has_alpha, MAX_VALUE, max_angle_value>::rgb() const noexcept
+	template <std::floating_point T, bool has_alpha>
+	rgb<T, (has_alpha ? 4 : 3)> hsv<T, has_alpha>::rgb() const noexcept
 		{
 		float h{this->h.value / 360.f};
 		float r, g, b;
@@ -205,8 +220,8 @@ namespace utils::output
 	{
 	namespace typeless
 		{
-		template <typename T, size_t SIZE, T MAX_VALUE>
-		inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE, MAX_VALUE>& colour)
+		template <typename T, size_t SIZE>
+		inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE>& colour)
 			{
 			namespace ucc = utils::console::colour;
 
@@ -223,8 +238,8 @@ namespace utils::output
 			}
 		}
 
-	template <typename T, size_t SIZE, T MAX_VALUE>
-	inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE, MAX_VALUE>& colour)
+	template <typename T, size_t SIZE>
+	inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE>& colour)
 		{
 		namespace ucc = utils::console::colour;
 		os << ucc::type << "rgb" << SIZE << typeid(T).name();

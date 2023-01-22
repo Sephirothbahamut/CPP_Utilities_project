@@ -117,6 +117,7 @@ namespace utils::containers
 			const inner_container_t& get_array() const noexcept { return _arr; }
 			      inner_container_t& get_array()       noexcept { return _arr; }
 
+			size_type get_index(coords_type coords) const noexcept { return get_index(coords.x, coords.y); }
 			size_type get_index(size_type x, size_type y) const noexcept
 				{
 				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * static_width); }
