@@ -1,14 +1,19 @@
 #pragma once
-#include <stdint.h>
-#include <cassert>
-#include <algorithm>
 #include <cmath>
+#include <limits>
+#include <cassert>
 #include <concepts>
+#include <algorithm>
 
+#include "../compilation/warnings.h"
 #include "../math/angle.h"
 #include "../console/colour.h"
 #include "../template_wrappers.h"
-#include "../containers/memberwise_operators_array.h"
+
+#include "../details/vec/common.h"
+#include "../details/vec/output.h"
+#include "../details/vec/memberwise_operators.h"
+#include "../details/vec/factories.h"
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 
@@ -16,15 +21,14 @@
 
 namespace utils::graphics::colour
 	{
-	enum base
+	enum class base
 		{
 		black , white, 
 		red   , green, blue   , 
 		yellow, cyan , magenta, 
 		};
 
-	template <typename T = float, size_t size = 3>
-		requires(size >= 1 && size <= 4)
+	template <typename T, size_t size>
 	struct rgb;
 
 	using rgb_f  = rgb<float  , 3>;
@@ -57,62 +61,74 @@ namespace utils::graphics::colour
 		struct alpha_field { T a; };
 
 		struct empty {};
+
+		inline extern constexpr const char colour_name[]{"rgb"};
+
+		template<typename T, size_t SIZE, typename DERIVED_T>
+		class colour_crtp :
+			public utils::details::vec::array<T, SIZE, DERIVED_T>,
+			public utils::details::vec::memberwise_operators<T, DERIVED_T>,
+			public utils::details::vec::output<colour_name, DERIVED_T>,
+			public utils::details::vec::factories<T, SIZE, DERIVED_T>
+			{
+			public:
+				using derived_t = DERIVED_T;
+
+			private:
+				constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
+				constexpr const auto     & get_arr() const noexcept { return derived().array; }
+				constexpr       auto     & get_arr()       noexcept { return derived().array; }
+
+				using arr_t = std::array<T, SIZE>;
+
+			public:
+				inline static constexpr const size_t static_size{std::tuple_size_v<arr_t>};
+				using value_type = typename arr_t::value_type;
+
+				inline static constexpr T max_value{std::floating_point<T> ? static_cast<T>(1.) : std::numeric_limits<T>::max()};
+
+				using utils::details::vec::factories<T, SIZE, DERIVED_T>::from;
+
+				inline static constexpr derived_t from(base base, T components_multiplier = max_value, T alpha = max_value)
+					{
+					derived_t ret;
+					if constexpr (static_size >= 1) { ret.r = components_multiplier * (base == base::white || base == base::red || base == base::yellow || base == base::magenta); }
+					if constexpr (static_size >= 2) { ret.g = components_multiplier * (base == base::white || base == base::green || base == base::yellow || base == base::cyan); }
+					if constexpr (static_size >= 3) { ret.b = components_multiplier * (base == base::white || base == base::blue || base == base::magenta || base == base::cyan); }
+					if constexpr (static_size >= 4) { ret.a = alpha; }
+					return ret;
+					}
+			};
 		}
 
-	template <typename T, size_t SIZE>
-		requires(SIZE >= 1 && SIZE <= 4)
-	struct rgb : utils::containers::memberwise_operators::arr<T, SIZE>
-		{
-		using value_type = utils::containers::memberwise_operators::arr<T, SIZE>::value_type;
-		inline static constexpr size_t static_size{utils::containers::memberwise_operators::arr<T, SIZE>::static_size};
-		inline static constexpr bool has_alpha{static_size == 4};
+#define utils_vec_hell_let_loose
 
-		inline static constexpr T max_value{std::floating_point<T> ? static_cast<T>(1) : std::numeric_limits<T>::max()};
+#ifdef utils_vec_hell_let_loose
+	// While akshually UB, this usage of unions is explicitly supported by gcc and according to various posts it's used in MS headers, which would imply it's supported by MSVC as well.
+	// The advantage is not only simplicity, but also that all operations are supported as you would naively expect them to.
+	// For instance, offsetof(y) works as expected, while it doesn't with the other versions.
 
-		rgb(T r = T{0}, T g = T{0}, T b = T{0}, T a = T{max_value})
-			{
-			if constexpr (static_size >= 1) { this->r = r; }
-			if constexpr (static_size >= 2) { this->g = g; }
-			if constexpr (static_size >= 3) { this->b = b; }
-			if constexpr (static_size >= 4) { this->a = a; }
-			}
+	// ...and yes I could write all the methods twice, one in the vec base class and the other in the colour base class
+	// but why do that when you can overcomplicate your life and waste your time in a funny mess of CRTPs with multiple inheritance? :)
 
-		rgb(base base, T components_multiplier = max_value, T alpha = max_value) requires(static_size >= 4)
-			{
-			if constexpr (static_size >= 1) { r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta); }
-			if constexpr (static_size >= 2) { g = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan   ); }
-			if constexpr (static_size >= 3) { b = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan   ); }
-			if constexpr (static_size >= 4) { a = alpha; }
-			}
+	template <typename T, size_t size>
+	struct rgb : details::colour_crtp<T, size, rgb<T, size>> { std::array<T, size> array; };
 
-#pragma region fields
-		      T& get_r(              )       noexcept requires(static_size >= 1) { return (*this)[0]; }
-		const T& get_r(              ) const noexcept requires(static_size >= 1) { return (*this)[0]; }
-		      T& set_r(const T& value)       noexcept requires(static_size >= 1) { return (*this)[0] = value; }
+	utils_disable_warnings_begin
+		utils_disable_warning_clang("-Wgnu-anonymous-struct")
+		utils_disable_warning_clang("-Wnested-anon-types")
+		utils_disable_warning_gcc("-Wpedantic")
 
-		__declspec(property(get = get_r, put = set_r)) T r;
+		template<typename T> struct rgb<T, 1> : details::colour_crtp<T, 1, rgb<T, 1>> { union { std::array<T, 1> array; struct { T r         ; }; }; };
+		template<typename T> struct rgb<T, 2> : details::colour_crtp<T, 2, rgb<T, 2>> { union { std::array<T, 2> array; struct { T r, g      ; }; }; };
+		template<typename T> struct rgb<T, 3> : details::colour_crtp<T, 3, rgb<T, 3>> { union { std::array<T, 3> array; struct { T r, g, b   ; }; }; };
+		template<typename T> struct rgb<T, 4> : details::colour_crtp<T, 4, rgb<T, 4>> { union { std::array<T, 4> array; struct { T r, g, b, a; }; }; };
 
-		      T& get_g(              )       noexcept requires(static_size >= 2) { return (*this)[1]; }
-		const T& get_g(              ) const noexcept requires(static_size >= 2) { return (*this)[1]; }
-		      T& set_g(const T& value)       noexcept requires(static_size >= 2) { return (*this)[1] = value; }
-
-		__declspec(property(get = get_g, put = set_g)) T g;
-
-		      T& get_b(              )       noexcept requires(static_size >= 3) { return (*this)[2]; }
-		const T& get_b(              ) const noexcept requires(static_size >= 3) { return (*this)[2]; }
-		      T& set_b(const T& value)       noexcept requires(static_size >= 3) { return (*this)[2] = value; }
-
-		__declspec(property(get = get_b, put = set_b)) T b;
-
-		      T& get_a(              )       noexcept requires(static_size >= 4) { return (*this)[3]; }
-		const T& get_a(              ) const noexcept requires(static_size >= 4) { return (*this)[3]; }
-		      T& set_a(const T& value)       noexcept requires(static_size >= 4) { return (*this)[3] = value; }
-
-		__declspec(property(get = get_a, put = set_a)) T a;
-#pragma endregion fields
-
-		//hsv<T, std::greater_equal<size_t>(static_size, 4), max_value, max_value> hsv() const noexcept requires(static_size >= 3);
-		};
+	utils_disable_warnings_end
+#else
+	#error A day may come when the alternatives to the Undefined Behaviour version will be written, when we forsake our bad habits and break all bonds of C, but it is not this day.
+#endif
 
 	template <std::floating_point T, bool HAS_ALPHA>
 	struct hsv : std::conditional_t<HAS_ALPHA, details::alpha_field<T>, details::empty>
@@ -121,11 +137,7 @@ namespace utils::graphics::colour
 		inline static constexpr T max_angle_value{std::floating_point<T> ? static_cast<T>(1) : static_cast<T>(360)};
 		inline static constexpr bool has_alpha{HAS_ALPHA};
 
-		hsv() = default;
-		hsv(T h, T s, T v, T a) requires( has_alpha) : h{h}, s{s}, v{v}, details::alpha_field<T>{a} {}
-		hsv(T h, T s, T v     )                      : h{h}, s{s}, v{v}                             {}
-
-		hsv(base base, T components_multiplier = max_value, T alpha = max_value)
+		inline static constexpr hsv from(base base, T components_multiplier = max_value, T alpha = max_value)
 			{
 			utils::math::angle::degf angle;
 			using namespace utils::math::angle::literals;

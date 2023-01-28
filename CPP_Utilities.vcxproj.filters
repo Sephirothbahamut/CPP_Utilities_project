@@ -56,6 +56,9 @@
     <Filter Include="Utils\third_party">
       <UniqueIdentifier>{dc330aa9-0fc5-4efd-a6c7-2e95a859a34e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\details\vec">
+      <UniqueIdentifier>{052b3c9f-7f3c-4702-8e79-2ae015d1a897}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -78,9 +81,6 @@
     </ClInclude>
     <ClInclude Include="include\utils\math\identity_numbers.h">
       <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\memberwise_operators_array.h">
-      <Filter>Utils\containers</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\math.h">
       <Filter>Utils\math</Filter>
@@ -195,15 +195,6 @@
     </ClInclude>
     <ClInclude Include="include\utils\containers\matrix_memory_layout.h">
       <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\memberwise_operators\seq.h">
-      <Filter>Utils\containers\memberwise_operators</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\memberwise_operators\par.h">
-      <Filter>Utils\containers\memberwise_operators</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\memberwise_operators\concepts.h">
-      <Filter>Utils\containers\memberwise_operators</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\try_opt.h">
       <Filter>Utils</Filter>
@@ -326,6 +317,27 @@
       <Filter>Utils\oop</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\compilation\CUDA.h">
+      <Filter>Utils\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\common.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\common.h">
+      <Filter>Utils\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\memberwise_operators.h">
+      <Filter>Utils\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\factories.h">
+      <Filter>Utils\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\output.h">
+      <Filter>Utils\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\compilation\warnings.h">
+      <Filter>Utils\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\compilation\compiler.h">
       <Filter>Utils\compilation</Filter>
     </ClInclude>
   </ItemGroup>

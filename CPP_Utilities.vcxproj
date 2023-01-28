@@ -100,7 +100,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -131,9 +131,11 @@
   <ItemGroup>
     <ClInclude Include="include\utils\beta\containers\hive\pool.h" />
     <ClInclude Include="include\utils\clock.h" />
+    <ClInclude Include="include\utils\compilation\compiler.h" />
     <ClInclude Include="include\utils\compilation\CUDA.h" />
     <ClInclude Include="include\utils\compilation\debug.h" />
     <ClInclude Include="include\utils\compilation\OS.h" />
+    <ClInclude Include="include\utils\compilation\warnings.h" />
     <ClInclude Include="include\utils\concepts.h" />
     <ClInclude Include="include\utils\console\io.h" />
     <ClInclude Include="include\utils\console\colour.h" />
@@ -150,10 +152,6 @@
     <ClInclude Include="include\utils\containers\matrix.h" />
     <ClInclude Include="include\utils\containers\matrix_dyn.h" />
     <ClInclude Include="include\utils\containers\matrix_memory_layout.h" />
-    <ClInclude Include="include\utils\containers\memberwise_operators\concepts.h" />
-    <ClInclude Include="include\utils\containers\memberwise_operators\par.h" />
-    <ClInclude Include="include\utils\containers\memberwise_operators\seq.h" />
-    <ClInclude Include="include\utils\containers\memberwise_operators_array.h" />
     <ClInclude Include="include\utils\containers\multihandled.h" />
     <ClInclude Include="include\utils\containers\multihandled_default.h" />
     <ClInclude Include="include\utils\containers\multithreading\concurrent_queue.h" />
@@ -171,6 +169,10 @@
     <ClInclude Include="include\utils\containers\segmented_vector.h" />
     <ClInclude Include="include\utils\containers\std_hash.h" />
     <ClInclude Include="include\utils\containers\storage_for.h" />
+    <ClInclude Include="include\utils\details\vec\common.h" />
+    <ClInclude Include="include\utils\details\vec\memberwise_operators.h" />
+    <ClInclude Include="include\utils\details\vec\output.h" />
+    <ClInclude Include="include\utils\details\vec\factories.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\flags.h" />
     <ClInclude Include="include\utils\future.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="include\utils\math\easings.h" />
     <ClInclude Include="include\utils\math\geometry\aabb.h" />
     <ClInclude Include="include\utils\math\geometry\circle.h" />
+    <ClInclude Include="include\utils\math\geometry\common.h" />
     <ClInclude Include="include\utils\math\geometry\continuous_interactions.h" />
     <ClInclude Include="include\utils\math\geometry\continuous_point.h" />
     <ClInclude Include="include\utils\math\geometry\interactions.h" />

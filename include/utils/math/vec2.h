@@ -36,37 +36,60 @@ namespace utils::math
 
 	namespace details
 		{
-		template<class leaf_t, class T>
-		class vec_impl<leaf_t, T, 2>
+		template<class T, typename DERIVED_T>
+		class vec_sized_specialization<T, 2, DERIVED_T>
 			{
 			public:
-				vec_impl() = default; //TODO we should be able to remove this?
-				vec_impl(T x, T y)                            noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(x); self.set_y(y); }; //TODO we should be able to remove this?
+				using derived_t = DERIVED_T;
 
-				vec_impl(math::angle::degf angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
-				vec_impl(math::angle::radf angle, T magnitude) noexcept { auto& self = static_cast<leaf_t&>(*this); self.set_x(angle.cos() * magnitude); self.set_y(angle.sin() * magnitude); } //TODO test
+			private:
+				constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
+				constexpr const auto& get_arr() const noexcept { return derived().array; }
+				constexpr       auto& get_arr()       noexcept { return derived().array; }
 
-				//template <float full_angle_value>
-				//vec(math::angle::base<full_angle_value> angle) noexcept requires(size == 2) : x{angle.cos()}, y{angle.sin()} {} //TODO test
-				//template <typename other_t>
-				//vec2(vec2<other_t> other)           noexcept : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {} //TODO test
-				//vec2(const vec2<T>& other) noexcept : x{other.x}, y{other.y} {} //TODO test
+				using arr_t = std::array<T, 2>;
 
-				template <typename T = float, T full_angle_value = 360.f>
-				math::angle::base<T, full_angle_value> angle() const noexcept { const leaf_t& self = static_cast<const leaf_t&>(*this); return math::angle::base<T, full_angle_value>::atan2(self.y, self.x); }
+			public:
+				inline static constexpr const size_t static_size{std::tuple_size_v<arr_t>};
+				using value_type = typename arr_t::value_type;
+
+				template<std::floating_point T, T f_a_v>
+				inline static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
+					{
+					return {.x{angle.cos() * magnitude}, .y{angle.sin() * magnitude}};
+					}
+
+				template <typename T = float, T f_a_v = 360.f>
+				constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
 				
 				// VEC & ANGLE OPERATIONS
-				template <typename T, T full_angle_value> leaf_t  operator+ (const utils::math::angle::base<T, full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
-				template <typename T, T full_angle_value> leaf_t  operator- (const utils::math::angle::base<T, full_angle_value> angle) const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {self.x * angle.cos() - self.y * angle.sin(), self.x * angle.sin() + self.y * angle.cos()}; }
-				template <typename T, T full_angle_value> leaf_t& operator+=(const utils::math::angle::base<T, full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self + angle; }
-				template <typename T, T full_angle_value> leaf_t& operator-=(const utils::math::angle::base<T, full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = self - angle; }
-				template <typename T, T full_angle_value> leaf_t& operator= (const utils::math::angle::base<T, full_angle_value> angle)       noexcept {       auto& self = static_cast<      leaf_t&>(*this); return self = {angle.cos() * self.magnitude(), angle.sin() * self.magnitude()}; }
+				template <std::floating_point T, T f_a_v> constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
+				template <std::floating_point T, T f_a_v> constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
+				template <std::floating_point T, T f_a_v> constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
+					{
+					derived().x = derived().x * angle.cos() - derived().y * angle.sin();
+					derived().y = derived().x * angle.sin() + derived().y * angle.cos();
+					return derived(); 
+					}
+				template <std::floating_point T, T f_a_v> constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept
+					{
+					auto nngle{-angle};
+					derived().x = derived().x * nngle.cos() - derived().y * nngle.sin();
+					derived().y = derived().x * nngle.sin() + derived().y * nngle.cos();
+					return derived();
+					}
+
+				template <std::floating_point T, T f_a_v> constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
+					{
+					return derived() = {angle.cos() * derived().magnitude(), angle.sin() * derived().magnitude()}; 
+					}
 
 				// OTHER
-				leaf_t perpendicular_right()            const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return { self.y, -self.x}; }
-				leaf_t perpendicular_left()             const noexcept { const auto& self = static_cast<const leaf_t&>(*this); return {-self.y,  self.x}; }
-				leaf_t perpendicular_clockwise()        const noexcept { return perpendicular_right(); }
-				leaf_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+				constexpr derived_t perpendicular_right           () const noexcept { return { derived().y, -derived().x}; }
+				constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
+				constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
+				constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 			};
 		}
 	}
