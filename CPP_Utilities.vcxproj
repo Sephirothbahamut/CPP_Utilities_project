@@ -172,7 +172,6 @@
     <ClInclude Include="include\utils\details\vec\common.h" />
     <ClInclude Include="include\utils\details\vec\memberwise_operators.h" />
     <ClInclude Include="include\utils\details\vec\output.h" />
-    <ClInclude Include="include\utils\details\vec\factories.h" />
     <ClInclude Include="include\utils\enum.h" />
     <ClInclude Include="include\utils\flags.h" />
     <ClInclude Include="include\utils\future.h" />

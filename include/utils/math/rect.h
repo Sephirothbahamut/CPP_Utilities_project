@@ -1,6 +1,6 @@
 #pragma once
 
-#include "geometry/aabb.h"
+#include "vec2.h"
 
 namespace utils::math
 	{
@@ -78,7 +78,7 @@ namespace utils::math
 				x_proxy x;
 				y_proxy y;
 
-				operator vec2<T>() const noexcept { return r.ul; }
+				operator vec2<T>() const noexcept { return {r.ul()}; }
 				p_proxy& operator=(const vec2<T>& new_value) noexcept
 					{
 					x = new_value.x;
@@ -157,7 +157,7 @@ namespace utils::math
 				w_proxy w;
 				h_proxy h;
 
-				operator vec2<T>() const noexcept { return r.dr - r.ul; }
+				operator vec2<T>() const noexcept { return r.dr() - r.ul(); }
 				s_proxy& operator=(const vec2<T>& new_value) noexcept
 					{
 					w = new_value.x;
@@ -191,18 +191,18 @@ namespace utils::math
 		void set_rr(T v)    noexcept { rr = v; }
 		void set_ll(T v)    noexcept { ll = v; }
 
-		const vec2<T > get_ul()        const noexcept { return {ll, up}; }
-		const vec2<T > get_ur()        const noexcept { return {rr, up}; }
-		const vec2<T > get_dr()        const noexcept { return {rr, dw}; }
-		const vec2<T > get_dl()        const noexcept { return {ll, dw}; }
-		      vec2<T&> get_ul()              noexcept { return {ll, up}; }
-		      vec2<T&> get_ur()              noexcept { return {rr, up}; }
-		      vec2<T&> get_dr()              noexcept { return {rr, dw}; }
-		      vec2<T&> get_dl()              noexcept { return {ll, dw}; }
-		      void     set_ul(vec2<T> value) noexcept { ll = value.x; up = value.y; }
-		      void     set_ur(vec2<T> value) noexcept { rr = value.x; up = value.y; }
-		      void     set_dr(vec2<T> value) noexcept { rr = value.x; dw = value.y; }
-		      void     set_dl(vec2<T> value) noexcept { ll = value.x; dw = value.y; }
+		const vec2   <T> get_ul()           const noexcept { return {ll, up}; }
+		const vec2   <T> get_ur()           const noexcept { return {rr, up}; }
+		const vec2   <T> get_dr()           const noexcept { return {rr, dw}; }
+		const vec2   <T> get_dl()           const noexcept { return {ll, dw}; }
+		      vecref2<T> get_ul()                 noexcept { return {ll, up}; }
+		      vecref2<T> get_ur()                 noexcept { return {rr, up}; }
+		      vecref2<T> get_dr()                 noexcept { return {rr, dw}; }
+		      vecref2<T> get_dl()                 noexcept { return {ll, dw}; }
+		      void       set_ul(vecref2<T> value) noexcept { ll = value.x; up = value.y; }
+		      void       set_ur(vecref2<T> value) noexcept { rr = value.x; up = value.y; }
+		      void       set_dr(vecref2<T> value) noexcept { rr = value.x; dw = value.y; }
+		      void       set_dl(vecref2<T> value) noexcept { ll = value.x; dw = value.y; }
 
 		// Pos-size
 		const x_proxy  get_x ()        const noexcept { return {*this}; }
@@ -247,30 +247,30 @@ namespace utils::math
 		__declspec(property(get = get_rr, put = set_rr)) T right;
 
 		// Corners
-		const vec2<T > ul          () const noexcept { return get_ul(); }
-		const vec2<T > up_left     () const noexcept { return get_ul(); }
-		const vec2<T > top_left    () const noexcept { return get_ul(); }
-		const vec2<T > ur          () const noexcept { return get_ur(); }
-		const vec2<T > up_right    () const noexcept { return get_ur(); }
-		const vec2<T > top_right   () const noexcept { return get_ur(); }
-		const vec2<T > dr          () const noexcept { return get_dr(); }
-		const vec2<T > down_right  () const noexcept { return get_dr(); }
-		const vec2<T > bottom_right() const noexcept { return get_dr(); }
-		const vec2<T > dl          () const noexcept { return get_dl(); }
-		const vec2<T > down_left   () const noexcept { return get_dl(); }
-		const vec2<T > bottom_left () const noexcept { return get_dl(); }
-		      vec2<T&> ul          ()       noexcept { return get_ul(); }
-		      vec2<T&> up_left     ()       noexcept { return get_ul(); }
-		      vec2<T&> top_left    ()       noexcept { return get_ul(); }
-		      vec2<T&> ur          ()       noexcept { return get_ur(); }
-		      vec2<T&> up_right    ()       noexcept { return get_ur(); }
-		      vec2<T&> top_right   ()       noexcept { return get_ur(); }
-		      vec2<T&> dr          ()       noexcept { return get_dr(); }
-		      vec2<T&> down_right  ()       noexcept { return get_dr(); }
-		      vec2<T&> bottom_right()       noexcept { return get_dr(); }
-		      vec2<T&> dl          ()       noexcept { return get_dl(); }
-		      vec2<T&> down_left   ()       noexcept { return get_dl(); }
-		      vec2<T&> bottom_left ()       noexcept { return get_dl(); }
+		const vec2   <T> ul          () const noexcept { return  get_ul() ; }
+		const vec2   <T> up_left     () const noexcept { return  get_ul() ; }
+		const vec2   <T> top_left    () const noexcept { return  get_ul() ; }
+		const vec2   <T> ur          () const noexcept { return  get_ur() ; }
+		const vec2   <T> up_right    () const noexcept { return  get_ur() ; }
+		const vec2   <T> top_right   () const noexcept { return  get_ur() ; }
+		const vec2   <T> dr          () const noexcept { return  get_dr() ; }
+		const vec2   <T> down_right  () const noexcept { return  get_dr() ; }
+		const vec2   <T> bottom_right() const noexcept { return  get_dr() ; }
+		const vec2   <T> dl          () const noexcept { return  get_dl() ; }
+		const vec2   <T> down_left   () const noexcept { return  get_dl() ; }
+		const vec2   <T> bottom_left () const noexcept { return  get_dl() ; }
+		      vecref2<T> ul          ()       noexcept { return {get_ul()}; }
+		      vecref2<T> up_left     ()       noexcept { return {get_ul()}; }
+		      vecref2<T> top_left    ()       noexcept { return {get_ul()}; }
+		      vecref2<T> ur          ()       noexcept { return {get_ur()}; }
+		      vecref2<T> up_right    ()       noexcept { return {get_ur()}; }
+		      vecref2<T> top_right   ()       noexcept { return {get_ur()}; }
+		      vecref2<T> dr          ()       noexcept { return {get_dr()}; }
+		      vecref2<T> down_right  ()       noexcept { return {get_dr()}; }
+		      vecref2<T> bottom_right()       noexcept { return {get_dr()}; }
+		      vecref2<T> dl          ()       noexcept { return {get_dl()}; }
+		      vecref2<T> down_left   ()       noexcept { return {get_dl()}; }
+		      vecref2<T> bottom_left ()       noexcept { return {get_dl()}; }
 
 		// Pos-size
 		const x_proxy  x           () const noexcept { return get_x (); }

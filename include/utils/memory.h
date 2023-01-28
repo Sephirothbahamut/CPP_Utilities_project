@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <concepts>
 
 namespace utils
 	{
@@ -14,10 +15,34 @@ namespace utils
 		{
 		using std::unique_ptr<T>::unique_ptr;
 
-		unique_deepcopy_ptr           (std::unique_ptr<T>&& unique_ptr) : std::unique_ptr<T>           {std::move(unique_ptr)} {}
-		unique_deepcopy_ptr& operator=(std::unique_ptr<T>&& unique_ptr) { std::unique_ptr<T>::operator=(std::move(unique_ptr)); return *this; }
+		constexpr unique_deepcopy_ptr           (std::unique_ptr<T>&& unique_ptr) : std::unique_ptr<T>           {std::move(unique_ptr)} {}
+		constexpr unique_deepcopy_ptr& operator=(std::unique_ptr<T>&& unique_ptr) { std::unique_ptr<T>::operator=(std::move(unique_ptr)); return *this; }
 
-		unique_deepcopy_ptr           (const unique_deepcopy_ptr& copy) : std::unique_ptr<T>           {std::make_unique<T>(*copy)} {}
-		unique_deepcopy_ptr& operator=(const unique_deepcopy_ptr& copy) { std::unique_ptr<T>::operator=(std::make_unique<T>(*copy)); return *this; }
+		constexpr unique_deepcopy_ptr           (const unique_deepcopy_ptr& copy) : std::unique_ptr<T>           {std::make_unique<T>(*copy)} {}
+		constexpr unique_deepcopy_ptr& operator=(const unique_deepcopy_ptr& copy) { std::unique_ptr<T>::operator=(std::make_unique<T>(*copy)); return *this; }
 		};
+
+	/// <summary> Non rebindable alternative to std::reference_wrapper. Meant mostly for strictly mimicing a T& inside containers. For any other use prefer std::reference_wrapper. </summary>
+	template <typename T>
+	class reference
+		{
+		public:
+			using value_type = T;
+
+			reference(value_type& ref) noexcept : ptr{&ref} {}
+
+			constexpr operator value_type () const noexcept { return *ptr; }
+			constexpr operator value_type&()       noexcept { return *ptr; }
+
+			constexpr reference& operator=(const value_type& value) noexcept { (*ptr) = value; return *this; }
+
+		private:
+			utils::observer_ptr<value_type> ptr;
+		};
+
+	namespace concepts
+		{
+		template <typename T>
+		concept reference = std::same_as<T, utils::reference<typename T::value_type>>;
+		}
 	}

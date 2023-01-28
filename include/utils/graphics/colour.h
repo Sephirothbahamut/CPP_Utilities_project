@@ -13,7 +13,6 @@
 #include "../details/vec/common.h"
 #include "../details/vec/output.h"
 #include "../details/vec/memberwise_operators.h"
-#include "../details/vec/factories.h"
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 
@@ -64,71 +63,91 @@ namespace utils::graphics::colour
 
 		inline extern constexpr const char colour_name[]{"rgb"};
 
-		template<typename T, size_t SIZE, typename DERIVED_T>
-		class colour_crtp :
-			public utils::details::vec::array<T, SIZE, DERIVED_T>,
-			public utils::details::vec::memberwise_operators<T, DERIVED_T>,
-			public utils::details::vec::output<colour_name, DERIVED_T>,
-			public utils::details::vec::factories<T, SIZE, DERIVED_T>
-			{
-			public:
-				using derived_t = DERIVED_T;
+		#ifdef utils_vec_hell_let_loose
+		// While akshually UB, this usage of unions is explicitly supported by gcc and according to various posts it's used in MS headers, which would imply it's supported by MSVC as well.
+		// The advantage is not only simplicity, but also that all operations are supported as you would naively expect them to.
+		// For instance, offsetof(y) works as expected, while it doesn't with the other versions.
 
-			private:
-				constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
-				constexpr const auto     & get_arr() const noexcept { return derived().array; }
-				constexpr       auto     & get_arr()       noexcept { return derived().array; }
+		template <typename T, size_t size>
+		struct rgb_named { std::array<T, size> array; };
 
-				using arr_t = std::array<T, SIZE>;
+		utils_disable_warnings_begin
+			utils_disable_warning_clang("-Wgnu-anonymous-struct")
+			utils_disable_warning_clang("-Wnested-anon-types")
+			utils_disable_warning_gcc("-Wpedantic")
 
-			public:
-				inline static constexpr const size_t static_size{std::tuple_size_v<arr_t>};
-				using value_type = typename arr_t::value_type;
-
-				inline static constexpr T max_value{std::floating_point<T> ? static_cast<T>(1.) : std::numeric_limits<T>::max()};
-
-				using utils::details::vec::factories<T, SIZE, DERIVED_T>::from;
-
-				inline static constexpr derived_t from(base base, T components_multiplier = max_value, T alpha = max_value)
-					{
-					derived_t ret;
-					if constexpr (static_size >= 1) { ret.r = components_multiplier * (base == base::white || base == base::red || base == base::yellow || base == base::magenta); }
-					if constexpr (static_size >= 2) { ret.g = components_multiplier * (base == base::white || base == base::green || base == base::yellow || base == base::cyan); }
-					if constexpr (static_size >= 3) { ret.b = components_multiplier * (base == base::white || base == base::blue || base == base::magenta || base == base::cyan); }
-					if constexpr (static_size >= 4) { ret.a = alpha; }
-					return ret;
-					}
-			};
+			template<typename T> struct rgb_named<T, 1> { union { std::array<T, 1> array; struct { T r;          }; }; };
+			template<typename T> struct rgb_named<T, 2> { union { std::array<T, 2> array; struct { T r, g;       }; }; };
+			template<typename T> struct rgb_named<T, 3> { union { std::array<T, 3> array; struct { T r, g, b;    }; }; };
+			template<typename T> struct rgb_named<T, 4> { union { std::array<T, 4> array; struct { T r, g, b, a; }; }; };
+		utils_disable_warnings_end
+		#endif
 		}
 
-#define utils_vec_hell_let_loose
+	template<typename T, size_t size>
+	class rgb :
+		public details::rgb_named<T, size>,
+		public utils::details::vec::common<T, size, rgb<T, size>>,
+		public utils::details::vec::memberwise_operators<T, size, rgb, rgb<T, size>>,
+		public utils::details::vec::output<details::colour_name, rgb<T, size>>
+		{
+		public:
+			using derived_t = rgb<T, size>;
 
-#ifdef utils_vec_hell_let_loose
-	// While akshually UB, this usage of unions is explicitly supported by gcc and according to various posts it's used in MS headers, which would imply it's supported by MSVC as well.
-	// The advantage is not only simplicity, but also that all operations are supported as you would naively expect them to.
-	// For instance, offsetof(y) works as expected, while it doesn't with the other versions.
+		private:
 
-	// ...and yes I could write all the methods twice, one in the vec base class and the other in the colour base class
-	// but why do that when you can overcomplicate your life and waste your time in a funny mess of CRTPs with multiple inheritance? :)
+			using arr_t = std::array<T, size>;
 
-	template <typename T, size_t size>
-	struct rgb : details::colour_crtp<T, size, rgb<T, size>> { std::array<T, size> array; };
+		public:
+			inline static constexpr const size_t static_size{size};
+			using value_type = typename arr_t::value_type;
+			inline static constexpr const T max_value{std::floating_point<T> ? static_cast<T>(1.) : std::numeric_limits<T>::max()};
 
-	utils_disable_warnings_begin
-		utils_disable_warning_clang("-Wgnu-anonymous-struct")
-		utils_disable_warning_clang("-Wnested-anon-types")
-		utils_disable_warning_gcc("-Wpedantic")
+#pragma region constructors
+			constexpr rgb(base base, T components_multiplier = max_value, T alpha = max_value)
+				{
+				if constexpr (static_size >= 1) { this->r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow || base == base::magenta); }
+				if constexpr (static_size >= 2) { this->g = components_multiplier * (base == base::white || base == base::green || base == base::yellow || base == base::cyan); }
+				if constexpr (static_size >= 3) { this->b = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan); }
+				if constexpr (static_size >= 4) { this->a = alpha; }
+				}
+			
+			template <std::convertible_to<value_type>... Args>
+				requires(sizeof...(Args) >= static_size)
+			constexpr rgb(const Args&... args) : details::rgb_named<T, size>{.array{static_cast<value_type>(args)...}} {}
 
-		template<typename T> struct rgb<T, 1> : details::colour_crtp<T, 1, rgb<T, 1>> { union { std::array<T, 1> array; struct { T r         ; }; }; };
-		template<typename T> struct rgb<T, 2> : details::colour_crtp<T, 2, rgb<T, 2>> { union { std::array<T, 2> array; struct { T r, g      ; }; }; };
-		template<typename T> struct rgb<T, 3> : details::colour_crtp<T, 3, rgb<T, 3>> { union { std::array<T, 3> array; struct { T r, g, b   ; }; }; };
-		template<typename T> struct rgb<T, 4> : details::colour_crtp<T, 4, rgb<T, 4>> { union { std::array<T, 4> array; struct { T r, g, b, a; }; }; };
+			template <std::convertible_to<value_type>... Args>
+				requires(sizeof...(Args) < static_size)
+			constexpr rgb(const Args&... args) : details::rgb_named<T, size>{.array{static_cast<value_type>(args)...}} 
+				{
+				for (size_t i = sizeof...(Args); i < static_size; i++)
+					{
+					if constexpr (sizeof...(Args)) { this->array[i] = this->array[sizeof...(Args) - 1]; }
+					else { this->array[i] = T{0}; }
+					}
+				}
 
-	utils_disable_warnings_end
-#else
-	#error A day may come when the alternatives to the Undefined Behaviour version will be written, when we forsake our bad habits and break all bonds of C, but it is not this day.
-#endif
+			template <concepts::rgb other_t>
+				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size == static_size)
+			constexpr rgb(const other_t& other) : details::rgb_named<T, size>{.array{std::apply([](const auto&... values) { return std::array<value_type, size>{static_cast<value_type>(values)...}; }, other.array)}} {}
+			
+			template <concepts::rgb other_t>
+				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size != static_size && utils::concepts::default_constructible<value_type>)
+			constexpr rgb(const other_t& other, value_type default_value = value_type{0})
+				{
+				size_t i{0};
+				for (; i < std::min(static_size, other_t::static_size); i++)
+					{
+					this->array[i] = static_cast<value_type>(other[i]);
+					}
+				for (size_t i = other.size(); i < static_size; i++)
+					{
+					if constexpr (other_t::static_size) { this->array[i] = default_value; }
+					else { this->array[i] = default_value; }
+					}
+				}
+#pragma endregion constructors
+		};
 
 	template <std::floating_point T, bool HAS_ALPHA>
 	struct hsv : std::conditional_t<HAS_ALPHA, details::alpha_field<T>, details::empty>

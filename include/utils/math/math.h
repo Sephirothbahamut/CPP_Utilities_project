@@ -1,7 +1,8 @@
 #pragma once
 
-#include <type_traits>
 #include <concepts>
+#include <algorithm>
+#include <type_traits>
 
 namespace utils::math
 	{

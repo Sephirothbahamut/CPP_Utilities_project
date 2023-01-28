@@ -8,20 +8,30 @@
 
 namespace utils::details::vec
 	{
+	// ...yes I could write all the methods twice, one in the vec base class and the other in the colour base class
+	// but why do that when you can overcomplicate your life and waste your time in a funny mess of CRTPs with multiple inheritance? :)
+
 	template<typename T, size_t SIZE, typename DERIVED_T>
-	class array;
+	class common;
 
 	namespace concepts
 		{
 		template<typename T>
-		concept array = std::derived_from<T, vec::array<typename T::value_type, T::static_size, T>>;
+		concept array = std::derived_from<T, vec::common<typename T::value_type, T::static_size, T>>;
 
 		template <typename T1, typename T2>
 		concept compatible_array = array<T1> && array<T2> && std::convertible_to<typename T1::value_type, typename T2::value_type>;
 		}
 
+	template <template<typename, size_t> class UNSPECIALIZED>
+	struct store_unspecialized 
+		{
+		template <typename T, size_t size>
+		using unspecialized_t = UNSPECIALIZED<T, size>;
+		};
+
 	template<typename T, size_t SIZE, typename DERIVED_T>
-	class array
+	class common
 		{
 		public:
 			using derived_t = DERIVED_T;

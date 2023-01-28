@@ -328,9 +328,6 @@
     <ClInclude Include="include\utils\details\vec\memberwise_operators.h">
       <Filter>Utils\details\vec</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\details\vec\factories.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\details\vec\output.h">
       <Filter>Utils\details\vec</Filter>
     </ClInclude>
