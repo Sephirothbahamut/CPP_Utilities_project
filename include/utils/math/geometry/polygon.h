@@ -16,7 +16,6 @@
 
 namespace utils::math::geometry
 	{
-
 	class polygon
 		{
 		public:
@@ -27,15 +26,12 @@ namespace utils::math::geometry
 
 #pragma region vertices and segments iteration
 #pragma region support types
-			struct vertex_ref
+			struct vertex_ref : vec2<float&>
 				{
-				float& x;
-				float& y;
-
-				vertex_ref(vec2f& source)      noexcept : x{source.x}, y{source.y} {}
-				vertex_ref(float& x, float& y) noexcept : x{x}, y{y}        {}
+				vertex_ref(vec2f& source)      noexcept : vec2<float&>{source.x, source.y} {}
+				vertex_ref(float& x, float& y) noexcept : vec2<float&>{       x,        y} {}
 				operator vec2f() const noexcept { return {x, y}; }
-				vertex_ref& operator=(const vec2f& other) { x = other.x; y = other.y; }
+				vertex_ref& operator=(const vec2f& other) { set_x(other.x); y = other.y; return *this; }
 				};
 			struct segment_ref
 				{

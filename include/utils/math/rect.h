@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../console/colour.h"
-#include "vec2.h"
+#include "geometry/aabb.h"
 
 namespace utils::math
 	{
@@ -192,38 +191,38 @@ namespace utils::math
 		void set_rr(T v)    noexcept { rr = v; }
 		void set_ll(T v)    noexcept { ll = v; }
 
-		const vec2<T> get_ul()         const noexcept { return {ll, up}; }
-		const vec2<T> get_ur()         const noexcept { return {rr, up}; }
-		const vec2<T> get_dr()         const noexcept { return {rr, dw}; }
-		const vec2<T> get_dl()         const noexcept { return {ll, dw}; }
-		      vec2<T> get_ul()               noexcept { return {ll, up}; }
-		      vec2<T> get_ur()               noexcept { return {rr, up}; }
-		      vec2<T> get_dr()               noexcept { return {rr, dw}; }
-		      vec2<T> get_dl()               noexcept { return {ll, dw}; }
+		const vec2<T > get_ul()        const noexcept { return {ll, up}; }
+		const vec2<T > get_ur()        const noexcept { return {rr, up}; }
+		const vec2<T > get_dr()        const noexcept { return {rr, dw}; }
+		const vec2<T > get_dl()        const noexcept { return {ll, dw}; }
+		      vec2<T&> get_ul()              noexcept { return {ll, up}; }
+		      vec2<T&> get_ur()              noexcept { return {rr, up}; }
+		      vec2<T&> get_dr()              noexcept { return {rr, dw}; }
+		      vec2<T&> get_dl()              noexcept { return {ll, dw}; }
 		      void     set_ul(vec2<T> value) noexcept { ll = value.x; up = value.y; }
 		      void     set_ur(vec2<T> value) noexcept { rr = value.x; up = value.y; }
 		      void     set_dr(vec2<T> value) noexcept { rr = value.x; dw = value.y; }
 		      void     set_dl(vec2<T> value) noexcept { ll = value.x; dw = value.y; }
 
 		// Pos-size
-		const x_proxy get_x()        const noexcept { return {*this}; }
-		const y_proxy get_y()        const noexcept { return {*this}; }
-		const w_proxy get_w()        const noexcept { return {*this}; }
-		const h_proxy get_h()        const noexcept { return {*this}; }
-		const p_proxy get_p()        const noexcept { return {*this}; }
-		const s_proxy get_s()        const noexcept { return {*this}; }
-		      x_proxy get_x()              noexcept { return {*this}; }
-		      y_proxy get_y()              noexcept { return {*this}; }
-		      w_proxy get_w()              noexcept { return {*this}; }
-		      h_proxy get_h()              noexcept { return {*this}; }
-		      p_proxy get_p()              noexcept { return {*this}; }
-		      s_proxy get_s()              noexcept { return {*this}; }
-		      void    set_x(T       value) noexcept { T tmp = w; ll = value; w = tmp; }
-		      void    set_y(T       value) noexcept { T tmp = h; up = value; h = tmp; }
-		      void    set_h(T       value) noexcept { dw = up + value; }
-		      void    set_w(T       value) noexcept { rr = ll + value; }
-		      void    set_s(vec2<T> value) noexcept { w = value.x; h = value.y; }
-		      void    set_p(vec2<T> value) noexcept 
+		const x_proxy  get_x ()        const noexcept { return {*this}; }
+		const y_proxy  get_y ()        const noexcept { return {*this}; }
+		const w_proxy  get_w ()        const noexcept { return {*this}; }
+		const h_proxy  get_h ()        const noexcept { return {*this}; }
+		const p_proxy  get_p ()        const noexcept { return {*this}; }
+		const s_proxy  get_s ()        const noexcept { return {*this}; }
+		      x_proxy  get_x ()              noexcept { return {*this}; }
+		      y_proxy  get_y ()              noexcept { return {*this}; }
+		      w_proxy  get_w ()              noexcept { return {*this}; }
+		      h_proxy  get_h ()              noexcept { return {*this}; }
+		      p_proxy  get_p ()              noexcept { return {*this}; }
+		      s_proxy  get_s ()              noexcept { return {*this}; }
+		      void     set_x (T       value) noexcept { T tmp = w; ll = value; w = tmp; }
+		      void     set_y (T       value) noexcept { T tmp = h; up = value; h = tmp; }
+		      void     set_h (T       value) noexcept { dw = up + value; }
+		      void     set_w (T       value) noexcept { rr = ll + value; }
+		      void     set_s (vec2<T> value) noexcept { w = value.x; h = value.y; }
+		      void     set_p (vec2<T> value) noexcept 
 			{
 			vec2<T> prev_s{get_s()};
 			x = value.x; y = value.y; 
@@ -246,48 +245,56 @@ namespace utils::math
 		__declspec(property(get = get_dw, put = set_dw)) T bottom;
 		__declspec(property(get = get_ll, put = set_ll)) T left;
 		__declspec(property(get = get_rr, put = set_rr)) T right;
-		__declspec(property(get = get_ll, put = set_ll)) T x1;
-		__declspec(property(get = get_rr, put = set_rr)) T x2;
-		__declspec(property(get = get_up, put = set_up)) T y1;
-		__declspec(property(get = get_dw, put = set_dw)) T y2;
 
 		// Corners
-		__declspec(property(get = get_ul, put = set_ul)) vec2<T> ul;
-		__declspec(property(get = get_ul, put = set_ul)) vec2<T> up_left;
-		__declspec(property(get = get_ul, put = set_ul)) vec2<T> top_left;
-		__declspec(property(get = get_ur, put = set_ur)) vec2<T> ur;
-		__declspec(property(get = get_ur, put = set_ur)) vec2<T> up_right;
-		__declspec(property(get = get_ur, put = set_ur)) vec2<T> top_right;
-		__declspec(property(get = get_dr, put = set_dr)) vec2<T> dr;
-		__declspec(property(get = get_dr, put = set_dr)) vec2<T> down_right;
-		__declspec(property(get = get_dr, put = set_dr)) vec2<T> bottom_right;
-		__declspec(property(get = get_dl, put = set_dl)) vec2<T> dl;
-		__declspec(property(get = get_dl, put = set_dl)) vec2<T> down_left;
-		__declspec(property(get = get_dl, put = set_dl)) vec2<T> bottom_left;
+		const vec2<T > ul          () const noexcept { return get_ul(); }
+		const vec2<T > up_left     () const noexcept { return get_ul(); }
+		const vec2<T > top_left    () const noexcept { return get_ul(); }
+		const vec2<T > ur          () const noexcept { return get_ur(); }
+		const vec2<T > up_right    () const noexcept { return get_ur(); }
+		const vec2<T > top_right   () const noexcept { return get_ur(); }
+		const vec2<T > dr          () const noexcept { return get_dr(); }
+		const vec2<T > down_right  () const noexcept { return get_dr(); }
+		const vec2<T > bottom_right() const noexcept { return get_dr(); }
+		const vec2<T > dl          () const noexcept { return get_dl(); }
+		const vec2<T > down_left   () const noexcept { return get_dl(); }
+		const vec2<T > bottom_left () const noexcept { return get_dl(); }
+		      vec2<T&> ul          ()       noexcept { return get_ul(); }
+		      vec2<T&> up_left     ()       noexcept { return get_ul(); }
+		      vec2<T&> top_left    ()       noexcept { return get_ul(); }
+		      vec2<T&> ur          ()       noexcept { return get_ur(); }
+		      vec2<T&> up_right    ()       noexcept { return get_ur(); }
+		      vec2<T&> top_right   ()       noexcept { return get_ur(); }
+		      vec2<T&> dr          ()       noexcept { return get_dr(); }
+		      vec2<T&> down_right  ()       noexcept { return get_dr(); }
+		      vec2<T&> bottom_right()       noexcept { return get_dr(); }
+		      vec2<T&> dl          ()       noexcept { return get_dl(); }
+		      vec2<T&> down_left   ()       noexcept { return get_dl(); }
+		      vec2<T&> bottom_left ()       noexcept { return get_dl(); }
 
 		// Pos-size
-		const x_proxy x       () const noexcept { return get_x(); }
-		const y_proxy y       () const noexcept { return get_y(); }
-		const h_proxy h       () const noexcept { return get_h(); }
-		const h_proxy height  () const noexcept { return get_h(); }
-		const w_proxy w       () const noexcept { return get_w(); }
-		const w_proxy width   () const noexcept { return get_w(); }
-		const s_proxy s       () const noexcept { return get_s(); }
-		const s_proxy size    () const noexcept { return get_s(); }
-		const p_proxy p       () const noexcept { return get_p(); }
-		const p_proxy pos     () const noexcept { return get_p(); }
-		const p_proxy position() const noexcept { return get_p(); }
-		      x_proxy x       ()       noexcept { return get_x(); }
-		      y_proxy y       ()       noexcept { return get_y(); }
-		      h_proxy h       ()       noexcept { return get_h(); }
-		      h_proxy height  ()       noexcept { return get_h(); }
-		      w_proxy w       ()       noexcept { return get_w(); }
-		      w_proxy width   ()       noexcept { return get_w(); }
-		      s_proxy s       ()       noexcept { return get_s(); }
-		      s_proxy size    ()       noexcept { return get_s(); }
-		      p_proxy p       ()       noexcept { return get_p(); }
-		      p_proxy pos     ()       noexcept { return get_p(); }
-		      p_proxy position()       noexcept { return get_p(); }
+		const x_proxy  x           () const noexcept { return get_x (); }
+		const y_proxy  y           () const noexcept { return get_y (); }
+		const h_proxy  h           () const noexcept { return get_h (); }
+		const h_proxy  height      () const noexcept { return get_h (); }
+		const w_proxy  w           () const noexcept { return get_w (); }
+		const w_proxy  width       () const noexcept { return get_w (); }
+		const s_proxy  s           () const noexcept { return get_s (); }
+		const s_proxy  size        () const noexcept { return get_s (); }
+		const p_proxy  p           () const noexcept { return get_p (); }
+		const p_proxy  pos         () const noexcept { return get_p (); }
+		const p_proxy  position    () const noexcept { return get_p (); }
+		      x_proxy  x           ()       noexcept { return get_x (); }
+		      y_proxy  y           ()       noexcept { return get_y (); }
+		      h_proxy  h           ()       noexcept { return get_h (); }
+		      h_proxy  height      ()       noexcept { return get_h (); }
+		      w_proxy  w           ()       noexcept { return get_w (); }
+		      w_proxy  width       ()       noexcept { return get_w (); }
+		      s_proxy  s           ()       noexcept { return get_s (); }
+		      s_proxy  size        ()       noexcept { return get_s (); }
+		      p_proxy  p           ()       noexcept { return get_p (); }
+		      p_proxy  pos         ()       noexcept { return get_p (); }
+		      p_proxy  position    ()       noexcept { return get_p (); }
 
 		// Center
 		__declspec(property(get = get_center)) vec2<T> center;

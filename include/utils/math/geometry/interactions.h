@@ -13,37 +13,40 @@ namespace utils::math::geometry
 	{
 	enum class collision_strictness_t { strict, loose };
 
-
 #pragma region Point
 	#pragma region Point-point
-		inline bool intersects(const point& a, const point& b) { return a == b; };
+		inline float distance(const point& a, const point& b) noexcept { return point::distance(b, b); }
+
+		inline bool intersects(const point& a, const point& b) noexcept { return a == b; };
 		
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains(const point& a, const point& b) { return a == b; };
+		inline bool contains(const point& a, const point& b) noexcept { return a == b; };
 		template <bool hollow_a = false, bool hollow_b = false>
-		inline bool collides(const point& a, const point& b) { return a == b; };
-
+		inline bool collides(const point& a, const point& b) noexcept { return a == b; };
 	#pragma endregion Point-point
 
 #pragma endregion Point
 
 #pragma region Segment
 	#pragma region Segment-point
+		inline float distance(const segment& segment, const point& point) noexcept { return segment.minimum_distance(point); }
+
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool intersects(const segment& segment, const point& point) noexcept { return segment.contains(point); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
 		template <bool hollow_a = false, bool hollow_b = false>
 		inline bool collides  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
-
-		inline bool intersects(const point& point, const segment& segment) noexcept { return segment.contains(point); }
+		
+		inline bool intersects(const point& a, const segment& b) noexcept { return intersects(b, a); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
-		inline bool contains  (const point& point, const segment& segment) noexcept { return false; }
+		inline bool contains  (const point& a, const segment& b) noexcept { return contains<strictness>(b, a); }
 		template <bool hollow_a = false, bool hollow_b = false>
-		inline bool collides  (const point& point, const segment& segment) noexcept { return segment.contains(point); }
+		inline bool collides  (const point& a, const segment& b) noexcept { return contains<hollow_b, hollow_a>(b, a); }
 	#pragma endregion Segment-point
 
 	#pragma region Segment-segment
+		inline float distance(const segment& a, const segment& b) noexcept { return std::min({a.minimum_distance(b.a), a.minimum_distance(b.b), b.minimum_distance(a.a), b.minimum_distance(a.b)}); }
 		inline bool intersects(const segment& a, const segment& b) noexcept { return a.intersects(b); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains  (const segment& a, const segment& b) noexcept { return a.contains(b.a) && a.contains(b.b); }
@@ -54,7 +57,16 @@ namespace utils::math::geometry
 
 #pragma region Polygon
 	#pragma region Polygon-point
-		
+		inline float distance(const polygon& polygon, const point& point) noexcept 
+			{
+			float dist{std::numeric_limits<float>::infinity()};
+			for (const auto& edge : polygon.get_edges())
+				{
+				dist = std::min(dist, distance(edge, point));
+				}
+			return dist;
+			}
+
 		inline bool intersects(const polygon& polygon, const point& point) noexcept
 			{
 			for (const auto& edge : polygon.get_edges())
@@ -769,4 +781,11 @@ namespace utils::math::geometry
 		}
 	#pragma endregion Circle-circle
 #pragma endregion Circle
+
+		void q()
+			{
+			segment s;
+			point p;
+			intersects(p, s);
+			}
 		}

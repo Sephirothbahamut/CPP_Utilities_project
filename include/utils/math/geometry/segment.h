@@ -119,18 +119,16 @@ namespace utils::math::geometry
 				return std::nullopt;
 				}
 			
-			operator aabb() const noexcept
-			{
-				aabb ret
-					{
+			aabb bounding_box() const noexcept
+				{
+				return aabb
+					{rect<float>{
 					.ll = std::min(a.x,  b.x),
 					.up = std::min(a.y,  b.y),
 					.rr = std::max(a.x,  b.x),
 					.dw = std::max(a.y,  b.y),
-					};
-
-				return ret;
-			}
+					}};
+				}
 
 		private:
 		};
