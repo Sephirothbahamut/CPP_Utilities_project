@@ -13,29 +13,29 @@
 #include "include/utils/output/std_containers.h"
 #include "include/utils/graphics/colour.h"
 
-//#include "include/utils/containers/matrix.h"
-//#include "include/utils/logger.h"
-//
-//#include "include/utils/containers/handled_container.h"
-//#include "include/utils/containers/multihandled.h"
-//
-//#include "include/utils/containers/hive/next.h"
-//#include "include/utils/containers/linked_vector.h"
-//#include "include/utils/containers/segmented_vector.h"
-//
-//#include "include/utils/containers/multithreading/multiqueue_consumer.h"
-//
-//#include "include/utils/containers/object_pool.h"
-//
-//#include "include/utils/oop/counting.h"
+#include "include/utils/containers/matrix.h"
+#include "include/utils/logger.h"
 
-//using civ = utils::oop::counting_invalidating_move;
+#include "include/utils/containers/handled_container.h"
+#include "include/utils/containers/multihandled.h"
 
-//struct test_struct : civ
-//	{
-//	test_struct(int v) : v{v} {}
-//	int v;
-//	};
+#include "include/utils/containers/hive/next.h"
+#include "include/utils/containers/linked_vector.h"
+#include "include/utils/containers/segmented_vector.h"
+
+#include "include/utils/containers/multithreading/multiqueue_consumer.h"
+
+#include "include/utils/containers/object_pool.h"
+
+#include "include/utils/oop/counting.h"
+
+using civ = utils::oop::counting_invalidating_move;
+
+struct test_struct : civ
+	{
+	test_struct(int v) : v{v} {}
+	int v;
+	};
 
 int main()
 	{
@@ -157,44 +157,44 @@ int main()
 	std::cout << "position: " << static_cast<utils::math::vec2f>(rf.position()) << std::endl;
 	std::cout << "size    : " << static_cast<utils::math::vec2f>(rf.size    ()) << std::endl;
 	
-	//utils::containers::mat2x2f mat2x2f{ 1 };
-	//utils::containers::mat3x3f mat3x3f;
-	//utils::containers::mat4x4f mat4x4f;
-	//mat2x2f += mat2x2f;
-	//std::cout << mat2x2f << "\n" << mat4x4f << "\n";
-	//
-	//
-	//utils::globals::logger.err("hi");
-	//utils::globals::logger.wrn("how");
-	//utils::globals::logger.log("are");
-	//utils::globals::logger.dgn("you");
-	//utils::globals::logger.inf("?");
-	//
-	//utils::containers::handled_container<int> handled;
-	//
-	//auto handle_0{ handled.emplace(0) };
-	//auto handle_1{ handled.emplace(1) };
-	//auto handle_2{ handled.emplace(2) };
-	//
-	//handled.erase(handle_1);
-	//
-	//auto handle_3{ handled.emplace(3) };
-	//
-	//
-	//utils::containers::multithreading::consumption_delegating_queue<int  > queue_a{[](int  & i) { std::cout << "int   " << i << std::endl; }};
-	//utils::containers::multithreading::consumption_delegating_queue<float> queue_b{[](float& c) { std::cout << "float " << c << std::endl; }};
-	//
-	////utils::containers::multithreading::multiqueue_consumer consumer<int, utils::containers::multithreading::operation_flag_bits::pre>{[]() {}, []() {}};
-	//utils::containers::multithreading::multiqueue_consumer consumer{ []() { std::cout << "pre " << std::endl; }, []() { std::cout << "post " << std::endl; } };
-	//consumer.bind(queue_a);
-	//consumer.bind(queue_b);
-	//
-	//for (size_t i = 0; true; i++)
-	//	{
-	//	queue_a.push(i);
-	//	queue_b.push('a' + i);
-	//
-	//	using namespace std::chrono_literals;
-	//	std::this_thread::sleep_for(.1s);
-	//	}
+	utils::containers::mat2x2f mat2x2f{ 1 };
+	utils::containers::mat3x3f mat3x3f;
+	utils::containers::mat4x4f mat4x4f;
+	mat2x2f += mat2x2f;
+	std::cout << mat2x2f << "\n" << mat4x4f << "\n";
+	
+	
+	utils::globals::logger.err("hi");
+	utils::globals::logger.wrn("how");
+	utils::globals::logger.log("are");
+	utils::globals::logger.dgn("you");
+	utils::globals::logger.inf("?");
+	
+	utils::containers::handled_container<int> handled;
+	
+	auto handle_0{ handled.emplace(0) };
+	auto handle_1{ handled.emplace(1) };
+	auto handle_2{ handled.emplace(2) };
+	
+	handled.erase(handle_1);
+	
+	auto handle_3{ handled.emplace(3) };
+	
+	
+	utils::containers::multithreading::consumption_delegating_queue<int  > queue_a{[](int  & i) { std::cout << "int   " << i << std::endl; }};
+	utils::containers::multithreading::consumption_delegating_queue<float> queue_b{[](float& c) { std::cout << "float " << c << std::endl; }};
+	
+	//utils::containers::multithreading::multiqueue_consumer consumer<int, utils::containers::multithreading::operation_flag_bits::pre>{[]() {}, []() {}};
+	utils::containers::multithreading::multiqueue_consumer consumer{ []() { std::cout << "pre " << std::endl; }, []() { std::cout << "post " << std::endl; } };
+	consumer.bind(queue_a);
+	consumer.bind(queue_b);
+	
+	for (size_t i = 0; true; i++)
+		{
+		queue_a.push(i);
+		queue_b.push('a' + i);
+	
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(.1s);
+		}
 	}

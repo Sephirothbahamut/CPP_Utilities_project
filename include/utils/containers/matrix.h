@@ -15,64 +15,78 @@ namespace utils::containers
 	template <typename T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
 	class matrix;
 	
-	template <size_t width, size_t height> using mati   = matrix<int     , width, height>;
-	template <size_t width, size_t height> using mati8  = matrix<int8_t  , width, height>;
-	template <size_t width, size_t height> using mati16 = matrix<int16_t , width, height>;
-	template <size_t width, size_t height> using mati32 = matrix<int32_t , width, height>;
-	template <size_t width, size_t height> using mati64 = matrix<int64_t , width, height>;
-	template <size_t width, size_t height> using matu   = matrix<unsigned, width, height>;
-	template <size_t width, size_t height> using matu8  = matrix<uint8_t , width, height>;
-	template <size_t width, size_t height> using matu16 = matrix<uint16_t, width, height>;
-	template <size_t width, size_t height> using matu32 = matrix<uint32_t, width, height>;
-	template <size_t width, size_t height> using matu64 = matrix<uint64_t, width, height>;
-	template <size_t width, size_t height> using mats   = matrix<size_t  , width, height>;
-	template <size_t width, size_t height> using matf   = matrix<float   , width, height>;
-	template <size_t width, size_t height> using matd   = matrix<double  , width, height>;
+	template <size_t width, size_t height> using mat_i      = matrix<int          , width, height>;
+	template <size_t width, size_t height> using mat_i8     = matrix<int8_t       , width, height>;
+	template <size_t width, size_t height> using mat_i16    = matrix<int16_t      , width, height>;
+	template <size_t width, size_t height> using mat_i32    = matrix<int32_t      , width, height>;
+	template <size_t width, size_t height> using mat_i64    = matrix<int64_t      , width, height>;
+	template <size_t width, size_t height> using mat_u      = matrix<unsigned     , width, height>;
+	template <size_t width, size_t height> using mat_u8     = matrix<uint8_t      , width, height>;
+	template <size_t width, size_t height> using mat_u16    = matrix<uint16_t     , width, height>;
+	template <size_t width, size_t height> using mat_u32    = matrix<uint32_t     , width, height>;
+	template <size_t width, size_t height> using mat_u64    = matrix<uint64_t     , width, height>;
+	template <size_t width, size_t height> using mat_s      = matrix<size_t       , width, height>;
+	template <size_t width, size_t height> using mat_f      = matrix<float        , width, height>;
+	template <size_t width, size_t height> using mat_d      = matrix<double       , width, height>;
+	template <size_t width, size_t height> using mat_l      = matrix<long         , width, height>;
+	template <size_t width, size_t height> using mat_ul     = matrix<unsigned long, width, height>;
 	
-	template <typename T> using mat2x2 = matrix<T, 2, 2>;
-	using mat2x2i   = mat2x2<int     >;
-	using mat2x2i8  = mat2x2<int8_t  >;
-	using mat2x2i16 = mat2x2<int16_t >;
-	using mat2x2i32 = mat2x2<int32_t >;
-	using mat2x2i64 = mat2x2<int64_t >;
-	using mat2x2u   = mat2x2<unsigned>;
-	using mat2x2u8  = mat2x2<uint8_t >;
-	using mat2x2u16 = mat2x2<uint16_t>;
-	using mat2x2u32 = mat2x2<uint32_t>;
-	using mat2x2u64 = mat2x2<uint64_t>;
-	using mat2x2s   = mat2x2<size_t  >;
-	using mat2x2f   = mat2x2<float   >;
-	using mat2x2d   = mat2x2<double  >;
+	template <typename T>
+	using mat2x2 = matrix<T, 2, 2>;
+
+	using mat2x2i   = mat2x2<int          >;
+	using mat2x2i8  = mat2x2<int8_t       >;
+	using mat2x2i16 = mat2x2<int16_t      >;
+	using mat2x2i32 = mat2x2<int32_t      >;
+	using mat2x2i64 = mat2x2<int64_t      >;
+	using mat2x2u   = mat2x2<unsigned     >;
+	using mat2x2u8  = mat2x2<uint8_t      >;
+	using mat2x2u16 = mat2x2<uint16_t     >;
+	using mat2x2u32 = mat2x2<uint32_t     >;
+	using mat2x2u64 = mat2x2<uint64_t     >;
+	using mat2x2s   = mat2x2<size_t       >;
+	using mat2x2f   = mat2x2<float        >;
+	using mat2x2d   = mat2x2<double       >;
+	using mat2x2l   = mat2x2<long         >;
+	using mat2x2ul  = mat2x2<unsigned long>;
 	
-	template <typename T> using mat3x3 = matrix<T, 3, 3>;
-	using mat3x3i   = mat3x3<int     >;
-	using mat3x3i8  = mat3x3<int8_t  >;
-	using mat3x3i16 = mat3x3<int16_t >;
-	using mat3x3i32 = mat3x3<int32_t >;
-	using mat3x3i64 = mat3x3<int64_t >;
-	using mat3x3u   = mat3x3<unsigned>;
-	using mat3x3u8  = mat3x3<uint8_t >;
-	using mat3x3u16 = mat3x3<uint16_t>;
-	using mat3x3u32 = mat3x3<uint32_t>;
-	using mat3x3u64 = mat3x3<uint64_t>;
-	using mat3x3s   = mat3x3<size_t  >;
-	using mat3x3f   = mat3x3<float   >;
-	using mat3x3d   = mat3x3<double  >;
+	template <typename T>
+	using mat3x3 = matrix<T, 3, 3>;
+
+	using mat3x3i   = mat3x3<int          >;
+	using mat3x3i8  = mat3x3<int8_t       >;
+	using mat3x3i16 = mat3x3<int16_t      >;
+	using mat3x3i32 = mat3x3<int32_t      >;
+	using mat3x3i64 = mat3x3<int64_t      >;
+	using mat3x3u   = mat3x3<unsigned     >;
+	using mat3x3u8  = mat3x3<uint8_t      >;
+	using mat3x3u16 = mat3x3<uint16_t     >;
+	using mat3x3u32 = mat3x3<uint32_t     >;
+	using mat3x3u64 = mat3x3<uint64_t     >;
+	using mat3x3s   = mat3x3<size_t       >;
+	using mat3x3f   = mat3x3<float        >;
+	using mat3x3d   = mat3x3<double       >;
+	using mat3x3l   = mat3x3<long         >;
+	using mat3x3ul  = mat3x3<unsigned long>;
 	
-	template <typename T> using mat4x4 = matrix<T, 4, 4>;
-	using mat4x4i   = mat4x4<int     >;
-	using mat4x4i8  = mat4x4<int8_t  >;
-	using mat4x4i16 = mat4x4<int16_t >;
-	using mat4x4i32 = mat4x4<int32_t >;
-	using mat4x4i64 = mat4x4<int64_t >;
-	using mat4x4u   = mat4x4<unsigned>;
-	using mat4x4u8  = mat4x4<uint8_t >;
-	using mat4x4u16 = mat4x4<uint16_t>;
-	using mat4x4u32 = mat4x4<uint32_t>;
-	using mat4x4u64 = mat4x4<uint64_t>;
-	using mat4x4s   = mat4x4<size_t  >;
-	using mat4x4f   = mat4x4<float   >;
-	using mat4x4d   = mat4x4<double  >;
+	template <typename T>
+	using mat4x4 = matrix<T, 4, 4>;
+
+	using mat4x4i   = mat4x4<int          >;
+	using mat4x4i8  = mat4x4<int8_t       >;
+	using mat4x4i16 = mat4x4<int16_t      >;
+	using mat4x4i32 = mat4x4<int32_t      >;
+	using mat4x4i64 = mat4x4<int64_t      >;
+	using mat4x4u   = mat4x4<unsigned     >;
+	using mat4x4u8  = mat4x4<uint8_t      >;
+	using mat4x4u16 = mat4x4<uint16_t     >;
+	using mat4x4u32 = mat4x4<uint32_t     >;
+	using mat4x4u64 = mat4x4<uint64_t     >;
+	using mat4x4s   = mat4x4<size_t       >;
+	using mat4x4f   = mat4x4<float        >;
+	using mat4x4d   = mat4x4<double       >;
+	using mat4x4l   = mat4x4<long         >;
+	using mat4x4ul  = mat4x4<unsigned long>;
 
 	namespace concepts
 		{

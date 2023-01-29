@@ -15,7 +15,6 @@
 
 namespace utils::containers::details
 	{
-
 	template
 		<
 		typename T,
@@ -30,7 +29,6 @@ namespace utils::containers::details
 	class object_pool_details
 		{
 		public:
-
 			using value_type        = T;
 			using reference         = value_type& ;
 			using const_reference   = const reference;
@@ -48,8 +46,8 @@ namespace utils::containers::details
 		private:
 			// Shared handles imply a refcount array. That array is used to keep track of unique handles through the special value numeric_limits<recount_value_type>::max()
 			// In absence of shared handles:
-			// raw handles alone imply complete absence of refcount and unique bitsets
-			// unique handles alone imply complete absence of refcount and unique bitsets
+			// raw    handles alone imply complete absence of refcount and unique bitsets
+			// unique handles alone imply complete absence of refcount and unique bitsets (if an element exists, an unique handle to it must exist somewhere in the program)
 			// raw and unique together require unique bitset to keep track of which elements are owned and which aren't
 			inline static constexpr const bool use_refcount      = enabled_shared;
 			inline static constexpr const bool use_unique_bitset = enable_raw && enable_unique && !enable_shared;
@@ -65,6 +63,7 @@ namespace utils::containers::details
 				utils::observer_ptr<slot_t   > slot_ptr   {nullptr};
 				};
 			
+			// not a variant, information about which field is active is held in a bitset, achieving better cache friendliness when iterating on densely occupied slots.
 			union slot_t
 				{
 				T element;
@@ -73,6 +72,7 @@ namespace utils::containers::details
 				~slot_t() {}
 				};
 			
+#pragma region refcount containers definitions
 			template <typename refcount_value_type>
 			class refcount_base
 				{
@@ -95,7 +95,14 @@ namespace utils::containers::details
 			class refcount_base<void> {};
 			
 			using refcount_t = refcount_base<refcount_value_type>;
+#pragma endregion refcount containers definitions
 			
+			// Each segment keeps "segment_size" count of:
+			// sequentially stored slots for elements
+			// bitset representing occupied slots
+			// refcount if needed
+			// has the information to manage new/delete on individual slot's element field
+
 			struct segment_t
 				{
 				segment_t(utils::observer_ptr<segment_t> prev_segment = nullptr) : prev_segment{prev_segment}
