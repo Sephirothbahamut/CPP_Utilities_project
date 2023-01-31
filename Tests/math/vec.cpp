@@ -54,7 +54,7 @@ namespace Tests
 			TEST_METHOD(properties)
 				{
 				using namespace utils::math::operators;
-				utils::math::vec<float, 5> a;
+				utils::math::vec<float, 4> a;
 
 				a.x = 3;
 				a.y = a.x;
@@ -65,7 +65,6 @@ namespace Tests
 				Assert::AreEqual(3.f, a[1]);
 				Assert::AreEqual(3.f, a[2]);
 				Assert::AreEqual(3.f, a[3]);
-				Assert::AreEqual(0.f, a[4]);
 
 				}
 			TEST_METHOD(custom_operators)

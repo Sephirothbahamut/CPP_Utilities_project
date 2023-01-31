@@ -24,12 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="containers\memberwise_operators.cpp">
-      <Filter>Source Files\containers</Filter>
-    </ClCompile>
-    <ClCompile Include="containers\memberwise_operators_array.cpp">
-      <Filter>Source Files\containers</Filter>
-    </ClCompile>
     <ClCompile Include="math\vec.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
@@ -62,6 +56,12 @@
     </ClCompile>
     <ClCompile Include="containers\object_pool.cpp">
       <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="math\vec_operators.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\rect.cpp">
+      <Filter>Source Files\math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

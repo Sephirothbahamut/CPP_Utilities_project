@@ -63,10 +63,10 @@ namespace utils::math::geometry
 		segment hit_edge;
 		float distance{std::numeric_limits<float>::infinity()};
 
-		details::check_continuous_point_to_edge(cpoint, segment{aabb.ul, aabb.ur}, intersection, hit_edge, distance);
-		details::check_continuous_point_to_edge(cpoint, segment{aabb.ur, aabb.dr}, intersection, hit_edge, distance);
-		details::check_continuous_point_to_edge(cpoint, segment{aabb.dr, aabb.dl}, intersection, hit_edge, distance);
-		details::check_continuous_point_to_edge(cpoint, segment{aabb.dl, aabb.ul}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(cpoint, segment{aabb.ul(), aabb.ur()}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(cpoint, segment{aabb.ur(), aabb.dr()}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(cpoint, segment{aabb.dr(), aabb.dl()}, intersection, hit_edge, distance);
+		details::check_continuous_point_to_edge(cpoint, segment{aabb.dl(), aabb.ul()}, intersection, hit_edge, distance);
 
 		if (!intersection) { return std::nullopt; }
 
