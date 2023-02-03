@@ -40,8 +40,8 @@ namespace utils::math
 				x_proxy& operator-=(const T& delta) noexcept { return (*this) = operator-(delta); }
 
 			private:
-				x_proxy(rect& r) : r{r} {}
-				rect& r;
+				x_proxy(rect<T>& r) : r{r} {}
+				rect<T>& r;
 			};
 		class y_proxy
 			{
@@ -66,8 +66,8 @@ namespace utils::math
 				y_proxy& operator-=(const T& delta) noexcept { return (*this) = operator-(delta); }
 
 			private:
-				y_proxy(rect& r) : r{r} {}
-				rect& r;
+				y_proxy(rect<T>& r) : r{r} {}
+				rect<T>& r;
 			};
 		class p_proxy
 			{
@@ -93,8 +93,60 @@ namespace utils::math
 				p_proxy& operator-=(const vec2<T>& delta) noexcept { return (*this) = operator-(delta); }
 
 			private:
-				p_proxy(rect& r) : x{r}, y{r}, r{r} {}
-				rect& r;
+				p_proxy(rect<T>& r) : x{r}, y{r}, r{r} {}
+				rect<T>& r;
+			};
+
+		class const_p_proxy;
+		class const_x_proxy
+			{
+			template <typename T>
+			friend class rect;
+			friend class p_proxy;
+
+			public:
+				operator T() const noexcept { return r.ll; }
+
+				T operator+(const T& delta) const noexcept { return static_cast<T>(*this) + delta; }
+				T operator-(const T& delta) const noexcept { return static_cast<T>(*this) - delta; }
+
+			private:
+				const_x_proxy(const rect<T>& r) : r{r} {}
+				const rect<T>& r;
+			};
+		class const_y_proxy
+			{
+			template <typename T>
+			friend class rect;
+			friend class const_p_proxy;
+
+			public:
+				operator T() const noexcept { return r.up; }
+
+				T operator+(const T& delta) const noexcept { return static_cast<T>(*this) + delta; }
+				T operator-(const T& delta) const noexcept { return static_cast<T>(*this) - delta; }
+
+			private:
+				const_y_proxy(const rect<T>& r) : r{r} {}
+				const rect<T>& r;
+			};
+		class const_p_proxy
+			{
+			template <typename T>
+			friend class rect;
+
+			public:
+				x_proxy x;
+				y_proxy y;
+
+				operator vec2<T>() const noexcept { return {r.ul()}; }
+
+				vec2<T> operator+(const vec2<T>& delta) const noexcept { return static_cast<vec2<T>>(*this) + delta; }
+				vec2<T> operator-(const vec2<T>& delta) const noexcept { return static_cast<vec2<T>>(*this) - delta; }
+
+			private:
+				const_p_proxy(const rect<T>& r) : x{r}, y{r}, r{r} {}
+				const rect<T>& r;
 			};
 
 	#pragma endregion Position
@@ -108,10 +160,10 @@ namespace utils::math
 
 			public:
 				operator T() const noexcept { return r.rr - r.ll; }
-				w_proxy& operator=(const T& new_value) noexcept 
+				w_proxy& operator=(const T& new_value) noexcept
 					{
-					r.rr = r.ll + new_value; 
-					return *this; 
+					r.rr = r.ll + new_value;
+					return *this;
 					}
 
 				T operator+(const T& delta) const noexcept { return static_cast<T>(*this) + delta; }
@@ -121,8 +173,8 @@ namespace utils::math
 				w_proxy& operator-=(const T& delta) noexcept { return (*this) = operator-(delta); }
 
 			private:
-				w_proxy(rect& r) : r{r} {}
-				rect& r;
+				w_proxy(rect<T>& r) : r{r} {}
+				rect<T>& r;
 			};
 		class h_proxy
 			{
@@ -145,8 +197,8 @@ namespace utils::math
 				h_proxy& operator-=(const T& delta) noexcept { return (*this) = operator-(delta); }
 
 			private:
-				h_proxy(rect& r) : r{r} {}
-				rect& r;
+				h_proxy(rect<T>& r) : r{r} {}
+				rect<T>& r;
 			};
 		class s_proxy
 			{
@@ -172,8 +224,64 @@ namespace utils::math
 				s_proxy& operator-=(const vec2<T>& delta) noexcept { return (*this) = operator-(delta); }
 
 			private:
-				s_proxy(rect& r) : w{r}, h{r}, r{r} {}
-				rect& r;
+				s_proxy(rect<T>& r) : w{r}, h{r}, r{r} {}
+				rect<T>& r;
+			};
+		class const_s_proxy;
+		class const_w_proxy
+			{
+			template <typename T>
+			friend class rect;
+			friend class const_s_proxy;
+
+			public:
+				operator T() const noexcept { return r.rr - r.ll; }
+				const_w_proxy& operator=(const T& new_value) noexcept
+					{
+					r.rr = r.ll + new_value;
+					return *this;
+					}
+
+				T operator+(const T& delta) const noexcept { return static_cast<T>(*this) + delta; }
+				T operator-(const T& delta) const noexcept { return static_cast<T>(*this) - delta; }
+
+			private:
+				const_w_proxy(const rect<T>& r) : r{r} {}
+				const rect<T>& r;
+			};
+		class const_h_proxy
+			{
+			template <typename T>
+			friend class rect;
+			friend class const_s_proxy;
+
+			public:
+				operator T() const noexcept { return r.dw - r.up; }
+
+				T operator+(const T& delta) const noexcept { return static_cast<T>(*this) + delta; }
+				T operator-(const T& delta) const noexcept { return static_cast<T>(*this) - delta; }
+
+			private:
+				const_h_proxy(const rect<T>& r) : r{r} {}
+				const rect<T>& r;
+			};
+		class const_s_proxy
+			{
+			template <typename T>
+			friend class rect;
+
+			public:
+				const_w_proxy w;
+				const_h_proxy h;
+
+				operator vec2<T>() const noexcept { return r.dr() - r.ul(); }
+
+				vec2<T> operator+(const vec2<T>& delta) const noexcept { return static_cast<vec2<T>>(*this) + delta; }
+				vec2<T> operator-(const vec2<T>& delta) const noexcept { return static_cast<vec2<T>>(*this) - delta; }
+
+			private:
+				const_s_proxy(const rect<T>& r) : w{r}, h{r}, r{r} {}
+				const rect<T>& r;
 			};
 	#pragma endregion Size
 #pragma endregion Proxies
@@ -205,12 +313,12 @@ namespace utils::math
 		      void       set_dl(vecref2<T> value) noexcept { ll = value.x; dw = value.y; }
 
 		// Pos-size
-		const x_proxy  get_x ()        const noexcept { return {*this}; }
-		const y_proxy  get_y ()        const noexcept { return {*this}; }
-		const w_proxy  get_w ()        const noexcept { return {*this}; }
-		const h_proxy  get_h ()        const noexcept { return {*this}; }
-		const p_proxy  get_p ()        const noexcept { return {*this}; }
-		const s_proxy  get_s ()        const noexcept { return {*this}; }
+		const_x_proxy  get_x ()        const noexcept { return {*this}; }
+		const_y_proxy  get_y ()        const noexcept { return {*this}; }
+		const_w_proxy  get_w ()        const noexcept { return {*this}; }
+		const_h_proxy  get_h ()        const noexcept { return {*this}; }
+		const_p_proxy  get_p ()        const noexcept { return {*this}; }
+		const_s_proxy  get_s ()        const noexcept { return {*this}; }
 		      x_proxy  get_x ()              noexcept { return {*this}; }
 		      y_proxy  get_y ()              noexcept { return {*this}; }
 		      w_proxy  get_w ()              noexcept { return {*this}; }
@@ -275,12 +383,12 @@ namespace utils::math
 		// Pos-size
 		const x_proxy  x           () const noexcept { return get_x (); }
 		const y_proxy  y           () const noexcept { return get_y (); }
-		const h_proxy  h           () const noexcept { return get_h (); }
-		const h_proxy  height      () const noexcept { return get_h (); }
-		const w_proxy  w           () const noexcept { return get_w (); }
-		const w_proxy  width       () const noexcept { return get_w (); }
-		const s_proxy  s           () const noexcept { return get_s (); }
-		const s_proxy  size        () const noexcept { return get_s (); }
+		const_h_proxy  h           () const noexcept { return get_h (); }
+		const_h_proxy  height      () const noexcept { return get_h (); }
+		const_w_proxy  w           () const noexcept { return get_w (); }
+		const_w_proxy  width       () const noexcept { return get_w (); }
+		const_s_proxy  s           () const noexcept { return get_s (); }
+		const_s_proxy  size        () const noexcept { return get_s (); }
 		const p_proxy  p           () const noexcept { return get_p (); }
 		const p_proxy  pos         () const noexcept { return get_p (); }
 		const p_proxy  position    () const noexcept { return get_p (); }

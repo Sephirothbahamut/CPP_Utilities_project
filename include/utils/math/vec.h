@@ -266,8 +266,8 @@ namespace utils::math
 					ret += tmp * tmp;
 					}
 					
-					    if constexpr (a.size() > b.size()) { for (; i < std::min(static_size, a.size()); i++) { ret += a[i] * a[i]; } }
-				else if constexpr (a.size() < b.size()) { for (; i < std::min(static_size, b.size()); i++) { ret += b[i] * b[i]; } }
+				     if /*constepxr*/ (a.size() > b.size()) { for (; i < std::min(static_size, a.size()); i++) { ret += a[i] * a[i]; } } //TODO check why no conxtexpr
+				else if /*constepxr*/ (a.size() < b.size()) { for (; i < std::min(static_size, b.size()); i++) { ret += b[i] * b[i]; } } //TODO check why no conxtexpr
 
 				return ret;
 				}

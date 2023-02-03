@@ -22,24 +22,16 @@ namespace utils::math::geometry
 			polygon(std::initializer_list<vec2f>&& vertices) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};
 
 			polygon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
-			polygon(std::vector<vec2f>& vertices) : _vertices{std::move(vertices)} {}
+			polygon(std::vector<vec2f>&& vertices) : _vertices{std::move(vertices)} {}
 
 #pragma region vertices and segments iteration
 #pragma region support types
-			struct vertex_ref : vec2<float&>
-				{
-				vertex_ref(vec2f& source)      noexcept : vec2<float&>{source.x, source.y} {}
-				vertex_ref(float& x, float& y) noexcept : vec2<float&>{       x,        y} {}
-				operator vec2f() const noexcept { return {x, y}; }
-				vertex_ref& operator=(const vec2f& other) { set_x(other.x); y = other.y; return *this; }
-				};
 			struct segment_ref
 				{
-				vertex_ref a;
-				vertex_ref b;
+				utils::math::vecref2f a;
+				utils::math::vecref2f b;
 
-				segment_ref(vec2f& a,     vec2f& b)     noexcept : a{a}, b{b} {}
-				segment_ref(vertex_ref a, vertex_ref b) noexcept : a{a}, b{b} {}
+				segment_ref(vec2f& a, vec2f& b) noexcept : a{a}, b{b} {}
 				operator segment() const noexcept { return {a, b}; }
 				segment_ref& operator=(const segment& other) { a = other.a; b = other.b; }
 				};
@@ -62,28 +54,24 @@ namespace utils::math::geometry
 					iterator<container_t>& operator--()    noexcept { index--; return *this; }
 					iterator<container_t>  operator--(int) noexcept { iterator<container_t> tmp(*this); --(*this); return tmp; }
 
-					iterator<container_t>  operator+ (const difference_type& n)           const { return iterator<container_t>{container, {index + n}}; }
 					iterator<container_t>& operator+=(const difference_type& n) { index += n; return *this; }
-					iterator<container_t>  operator- (const difference_type& n)           const { return iterator<container_t>{container, {index - n}}; }
 					iterator<container_t>& operator-=(const difference_type& n) { index -= n; return *this; }
+					iterator<container_t>  operator+ (const difference_type& n)           const { return iterator<container_t>{container, {index + n}}; }
+					iterator<container_t>  operator- (const difference_type& n)           const { return iterator<container_t>{container, {index - n}}; }
 					difference_type        operator- (const iterator<container_t>& other) const { return index - other.index; }
 
 					friend iterator<container_t> operator+(const difference_type& n, const iterator<container_t>& iterator) { return {iterator.container, n + iterator.index}; }
 
 					reference operator[](const difference_type& n) const { return (*container)[index + n]; }
 
-					bool operator==(const iterator<container_t>& other) const noexcept { return index == other.index; }
-					bool operator!=(const iterator<container_t>& other) const noexcept { return index != other.index; }
-					bool operator< (const iterator<container_t>& other) const noexcept { return index < other.index; }
-					bool operator> (const iterator<container_t>& other) const noexcept { return index > other.index; }
-					bool operator<=(const iterator<container_t>& other) const noexcept { return index <= other.index; }
-					bool operator>=(const iterator<container_t>& other) const noexcept { return index >= other.index; }
+					bool operator== (const iterator<container_t>& other) const noexcept { return index ==  other.index; }
+					bool operator<=>(const iterator<container_t>& other) const noexcept { return index <=> other.index; }
 
-					reference   operator* () const noexcept { return  (*container)[index]; }
+					reference operator* () const noexcept { return  (*container)[index]; }
 
 				private:
 					size_t index{0};
-					container_t* container{nullptr};
+					utils::observer_ptr<container_t> container{nullptr};
 				};
 			class edges_ref
 				{
@@ -91,15 +79,15 @@ namespace utils::math::geometry
 				public:
 					using value_type = segment_ref;
 
-					edges_ref(polygon* poly) noexcept : poly{poly} {}
-
-					size_t size() const noexcept { return poly->edges_count(); }
-					segment_ref operator[](size_t index) const noexcept { return poly->edges_ref_get(index); }
+					size_t size() const noexcept { return poly_ptr->edges_count(); }
+					segment_ref operator[](size_t index) const noexcept { return poly_ptr->edges_ref_get(index); }
 
 					auto begin() const noexcept { return iterator{*this}; }
 					auto end()   const noexcept { return iterator{*this, size()}; }
+
 				private:
-					polygon* poly;
+					edges_ref(polygon& poly) noexcept : poly_ptr{&poly} {}
+					utils::observer_ptr<polygon> poly_ptr;
 				};
 			class edges_cpy
 				{
@@ -107,25 +95,27 @@ namespace utils::math::geometry
 				public:
 					using value_type = segment;
 
-					edges_cpy(const polygon* poly) noexcept : poly{poly} {}
-
-					size_t size() const noexcept { return poly->edges_count(); }
-					segment operator[](size_t index) const noexcept { return poly->edges_get(index); }
+					size_t size() const noexcept { return poly_ptr->edges_count(); }
+					segment operator[](size_t index) const noexcept { return poly_ptr->edges_get(index); }
 
 					auto begin() const noexcept { return iterator(*this); }
 					auto end()   const noexcept { return iterator(*this, size()); }
+
 				private:
-					const polygon* poly;
+					edges_cpy(const polygon& poly) noexcept : poly_ptr{&poly} {}
+					utils::observer_ptr<const polygon> poly_ptr;
 				};
 #pragma endregion support types
+
 			std::ranges::ref_view<      std::vector<vec2f>> get_vertices()       noexcept { return std::views::all(_vertices); };
 			std::ranges::ref_view<const std::vector<vec2f>> get_vertices() const noexcept { return std::views::all(_vertices); };
 
-			edges_ref    get_edges_ref()      noexcept { return edges_ref{this}; }
-			edges_cpy    get_edges()    const noexcept { return edges_cpy{this}; }
+			edges_ref    get_edges()       noexcept { return edges_ref{*this}; }
+			edges_cpy    get_edges() const noexcept { return edges_cpy{*this}; }
 
-			segment_ref edges_ref_get(size_t index)       noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]}; };
-			segment     edges_get    (size_t index) const noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]}; };
+		private:
+			segment_ref edges_get(size_t index)       noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]}; };
+			segment     edges_get(size_t index) const noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]}; };
 			//segment get_edge(size_t index) const noexcept { return {_vertices[index], _vertices[(index + 1) % _vertices.size()]]}; }
 			size_t edges_count() const noexcept { return _vertices.size(); }
 

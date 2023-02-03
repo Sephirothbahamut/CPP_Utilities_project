@@ -63,6 +63,7 @@ namespace utils::graphics::colour
 
 		inline extern constexpr const char colour_name[]{"rgb"};
 
+		#define utils_vec_hell_let_loose
 		#ifdef utils_vec_hell_let_loose
 		// While akshually UB, this usage of unions is explicitly supported by gcc and according to various posts it's used in MS headers, which would imply it's supported by MSVC as well.
 		// The advantage is not only simplicity, but also that all operations are supported as you would naively expect them to.

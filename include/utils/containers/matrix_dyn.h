@@ -5,8 +5,6 @@
 #include <stdexcept>
 #include <initializer_list>
 
-#include "memberwise_operators/par.h"
-#include "memberwise_operators/seq.h"
 #include "matrix_memory_layout.h"
 #include "../math/vec2.h"
 #include "../console/colour.h"
