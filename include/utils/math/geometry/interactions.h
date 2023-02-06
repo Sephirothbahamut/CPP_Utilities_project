@@ -9,13 +9,15 @@
 #include "aabb.h"
 #include "../constants.h"
 
+//TODO add missing distance operations
+
 namespace utils::math::geometry
 	{
 	enum class collision_strictness_t { strict, loose };
 
 #pragma region Point
 	#pragma region Point-point
-		inline float distance(const point& a, const point& b) noexcept { return point::distance(b, b); }
+		inline float distance(const point& a, const point& b) noexcept { return point::distance(a, b); }
 
 		inline bool intersects(const point& a, const point& b) noexcept { return a == b; };
 		
@@ -38,6 +40,7 @@ namespace utils::math::geometry
 		template <bool hollow_a = false, bool hollow_b = false>
 		inline bool collides  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
 		
+		inline float distance(const point& point, const segment& segment) noexcept { return distance(segment, point); }
 		inline bool intersects(const point& a, const segment& b) noexcept { return intersects(b, a); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains  (const point& a, const segment& b) noexcept { return contains<strictness>(b, a); }
@@ -398,7 +401,7 @@ namespace utils::math::geometry
 				{
 				if (contains<collision_strictness_t::loose>(a, vertex)) { return true; }
 				}
-			if (contains(b, a.ul) || contains(b, a.ur) || contains(b, a.dr) || contains(b, a.dl)) { return true; }
+			if (contains(b, a.ul()) || contains(b, a.ur()) || contains(b, a.dr()) || contains(b, a.dl())) { return true; }
 			return intersects(a, b);
 			}
 
@@ -433,7 +436,7 @@ namespace utils::math::geometry
 				{
 				if (contains<collision_strictness_t::loose>(a, vertex)) { return true; }
 				}
-			if (contains(b, a.ul) || contains(b, a.ur) || contains(b, a.dr) || contains(b, a.dl)) { return true; }
+			if (contains(b, a.ul()) || contains(b, a.ur()) || contains(b, a.dr()) || contains(b, a.dl())) { return true; }
 			return intersects(a, b);
 			}
 
@@ -523,6 +526,11 @@ namespace utils::math::geometry
 
 #pragma region Circle
 	#pragma region Circle-point
+		inline float distance(const circle& circle, const point& point) noexcept
+			{
+			auto ret{vec2f::distance(circle.center, point)};
+			return ret < circle.radius ? circle.radius - ret : ret - circle.radius;
+			}
 
 		inline bool intersects(const circle& circle, const point& point) noexcept
 			{
@@ -547,8 +555,7 @@ namespace utils::math::geometry
 			else					{ return contains<collision_strictness_t::loose>(circle, point); }
 			}
 
-
-
+		inline float distance(const point& point, const circle& circle) noexcept { return distance(circle, point); }
 		inline bool intersects(const point& point, const circle& circle) noexcept { return intersects(circle, point); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains  (const point& point, const circle& circle) noexcept { return false; }
@@ -738,6 +745,11 @@ namespace utils::math::geometry
 #pragma endregion Circle-aabb
 
 	#pragma region Circle-circle
+		inline float distance(const circle& a, const circle& b) noexcept
+			{
+			return vec2f::distance(a.center, b.center) - (a.radius + b.radius);
+			}
+
 		template <collision_strictness_t strictness>
 		inline bool contains(const circle& a, const circle& b) noexcept;
 		inline bool intersects(const circle& a, const circle& b) noexcept

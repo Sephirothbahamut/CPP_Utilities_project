@@ -88,8 +88,8 @@ namespace utils::details::vec
 					if (derived()[i] != b[i]) { return false; }
 					}
 
-					 if /*constexpr*/ (derived().size() > b.size()) { for (; i < derived().size(); i++) { if (derived()[i] != T{}) { return false; } } } //TODO check why no constexpr
-				else if /*constexpr*/ (derived().size() < b.size()) { for (; i < b        .size(); i++) { if (b        [i] != T{}) { return false; } } } //TODO check why no constexpr
+					 if constexpr (DERIVED_T::static_size > T2::static_size) { for (; i < derived().size(); i++) { if (derived()[i] != T{}) { return false; } } } //TODO check why no constexpr
+				else if constexpr (DERIVED_T::static_size < T2::static_size) { for (; i < b        .size(); i++) { if (b        [i] != T{}) { return false; } } } //TODO check why no constexpr
 
 				return true;
 				}			

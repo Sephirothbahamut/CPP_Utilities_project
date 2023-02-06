@@ -33,7 +33,19 @@ namespace utils::math::geometry
 
 				segment_ref(vec2f& a, vec2f& b) noexcept : a{a}, b{b} {}
 				operator segment() const noexcept { return {a, b}; }
-				segment_ref& operator=(const segment& other) { a = other.a; b = other.b; }
+
+				segment_ref(segment_ref&& move) = delete;
+				segment_ref& operator=(segment_ref&& move) = delete;
+
+				segment_ref& operator=(const segment& other) // { a.operator=(other.a); b.operator=(other.b); return *this; } 
+					//TODO understand why it tries to cast other.a and other.b to vecref, trying to call vecref::operator=(vecref) instead of trying to call vecref::operator=(vec)
+					{
+					a.x = other.a.x;
+					a.y = other.a.y;
+					b.x = other.b.x;
+					b.y = other.b.y;
+					return *this;
+					}
 				};
 
 			template <typename container_t>
@@ -80,7 +92,7 @@ namespace utils::math::geometry
 					using value_type = segment_ref;
 
 					size_t size() const noexcept { return poly_ptr->edges_count(); }
-					segment_ref operator[](size_t index) const noexcept { return poly_ptr->edges_ref_get(index); }
+					segment_ref operator[](size_t index) const noexcept { return poly_ptr->edges_get(index); }
 
 					auto begin() const noexcept { return iterator{*this}; }
 					auto end()   const noexcept { return iterator{*this, size()}; }
@@ -120,7 +132,7 @@ namespace utils::math::geometry
 			size_t edges_count() const noexcept { return _vertices.size(); }
 
 #pragma endregion vertices and segments iteration
-
+		public:
 			operator aabb() const noexcept
 				{
 				aabb ret

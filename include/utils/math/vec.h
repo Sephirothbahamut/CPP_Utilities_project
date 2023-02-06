@@ -219,11 +219,11 @@ namespace utils::math
 			//special case for vec of references
 			template <concepts::vec other_t>
 				requires(utils::concepts::reference<value_type> && std::same_as<typename other_t::value_type, typename value_type::value_type> && other_t::static_size == static_size)
-			constexpr vec(other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](auto&... values) { return std::array<value_type, size>{values...}; }, other)}} {}
+			constexpr vec(      other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](      auto&... values) -> std::array<value_type, size> { return {                        values ...}; }, other.array)}} {}
 
 			template <concepts::vec other_t>
 				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size == static_size)
-			constexpr vec(const other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](const auto&... values) { return std::array<value_type, size>{static_cast<value_type>(values)...}; }, other.array)}} {}
+			constexpr vec(const other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](const auto&... values) -> std::array<value_type, size> { return {static_cast<value_type>(values)...}; }, other.array)}} {}
 			
 			template <concepts::vec other_t>
 				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size != static_size && utils::concepts::default_constructible<value_type>)

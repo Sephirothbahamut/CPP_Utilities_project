@@ -67,7 +67,7 @@ namespace utils::math::geometry
 				// It falls where t = [(p-a) . (b-a)] / |b-a|^2
 				// We clamp t from [0,1] to handle points outside the segment vw.
 				//const float t = std::max(0.f, std::min(1.f, ((point - a) <utils::math::operators::dot> (b - a)) / l2));
-				const float t = utils::math::clamp(0.f, 1.f, ((point - a) < utils::math::operators::dot > (b - a)) / l2);
+				const float t = utils::math::clamp(((point - a) < utils::math::operators::dot > (b - a)) / l2, 0.f, 1.f);
 				const vec2f projection = a + (b - a) * t;  // Projection falls on the segment
 				return vec2f::distance(point, projection);
 				}
