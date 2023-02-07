@@ -39,7 +39,7 @@ namespace utils::math::geometry
 		inline bool contains  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
 		template <bool hollow_a = false, bool hollow_b = false>
 		inline bool collides  (const segment& segment, const point& point) noexcept { return segment.contains(point); }
-		
+
 		inline float distance(const point& point, const segment& segment) noexcept { return distance(segment, point); }
 		inline bool intersects(const point& a, const segment& b) noexcept { return intersects(b, a); }
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
