@@ -90,12 +90,12 @@ namespace utils
 
 			const_reference operator[](size_type i)              const noexcept { return _arr[i]; }
 			      reference operator[](size_type i)                    noexcept { return _arr[i]; }
-			const_reference operator[](math::vec2s coords)       const noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)]; }
-			      reference operator[](math::vec2s coords)             noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)]; }
-			const_reference at        (size_type i)              const          { if (i >= mat_int_t::size ()                            ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-			      reference at        (size_type i)                             { if (i >= mat_int_t::size ()                            ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-			const_reference at        (size_type x, size_type y) const          { if (x >= mat_int_t::width() || y >= mat_int_t::height()) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-			      reference at        (size_type x, size_type y)                { if (x >= mat_int_t::width() || y >= mat_int_t::height()) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+			const_reference operator[](math::vec2s coords)       const noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
+			      reference operator[](math::vec2s coords)             noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
+			const_reference at        (size_type i)              const          { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+			      reference at        (size_type i)                             { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+			const_reference at        (size_type x, size_type y) const          { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+			      reference at        (size_type x, size_type y)                { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
 			const_reference at        (math::vec2s coords)       const          { return at(coords.x, coords.y); }
 			      reference at        (math::vec2s coords)                      { return at(coords.x, coords.y); }
 
@@ -119,4 +119,44 @@ namespace utils
 		private:
 			container_t& container;
 		};
+	}
+
+namespace utils::output
+	{
+	namespace typeless
+		{
+		template <std::ranges::random_access_range container_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT>
+		inline ::std::ostream& operator<<(::std::ostream& os, const utils::matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>& container) noexcept
+			{
+			namespace ucc = utils::console::colour;
+			os << ucc::brace << "[";
+
+			if (!container.empty())
+				{
+				for (size_t y = 0; y < container.sizes().y - 1; y++)
+					{
+					for (size_t x = 0; x < container.sizes().x - 1; x++)
+						{
+						os << ucc::value << container[{x, y}] << ucc::separ << ", ";
+						}
+					os << ucc::value << container[{container.sizes().x - 1, y}] << " | ";
+					}
+				
+				for (size_t x = 0; x < container.sizes().x - 1; x++)
+					{
+					os << ucc::value << container[{x, container.sizes().y - 1}] << ucc::separ << ", ";
+					}
+				os << ucc::value << container[{container.sizes().x - 1, container.sizes().y - 1}];
+				}
+			return os << ucc::brace << "]";
+			}
+		}
+
+	template <std::ranges::random_access_range container_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT>
+	inline ::std::ostream& operator<<(::std::ostream& os, const utils::matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>& container) noexcept
+		{
+		namespace ucc = utils::console::colour;
+		os << ucc::type << "mat" << container.sizes().x << "x" << container.sizes().y << typeid(T).name();
+		return utils::output::typeless::operator<<(os, container);
+		}
 	}
