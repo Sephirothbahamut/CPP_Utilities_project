@@ -56,7 +56,8 @@ namespace utils::math::geometry
 			vec2f perpendicular_left()  const noexcept { const auto tmp{forward()}; return tmp.perpendicular_left(); }
 
 
-			float minimum_distance(const vec2f& point) const noexcept {
+			float minimum_distance(const vec2f& point) const noexcept 
+				{
 				// https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 
 				// Return minimum distance between line segment vw and point p
@@ -68,8 +69,13 @@ namespace utils::math::geometry
 				// We clamp t from [0,1] to handle points outside the segment vw.
 				//const float t = std::max(0.f, std::min(1.f, ((point - a) <utils::math::operators::dot> (b - a)) / l2));
 				const float t = utils::math::clamp(((point - a) < utils::math::operators::dot > (b - a)) / l2, 0.f, 1.f);
-				const vec2f projection = a + (b - a) * t;  // Projection falls on the segment
+				const vec2f projection{a + (b - a) * t};  // Projection falls on the segment
 				return vec2f::distance(point, projection);
+				}
+
+			float distance_line(const vec2f& point) const noexcept
+				{
+				return vec2f::distance(point, closest_point_in_line(point));
 				}
 
 			vec2f vector() const noexcept { return b - a; }

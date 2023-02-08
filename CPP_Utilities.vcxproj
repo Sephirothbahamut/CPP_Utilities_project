@@ -203,6 +203,7 @@
     <ClInclude Include="include\utils\math\vec.h" />
     <ClInclude Include="include\utils\math\vec2.h" />
     <ClInclude Include="include\utils\math\vec3.h" />
+    <ClInclude Include="include\utils\matrix_interface.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\one_time_tasks.h" />
