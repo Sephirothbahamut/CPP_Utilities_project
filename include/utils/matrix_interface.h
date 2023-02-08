@@ -3,7 +3,8 @@
 #include <ranges>
 
 #include "math/vec2.h"
-#include "containers/matrix_memory_layout.h"
+#include "compilation/CUDA.h"
+#include "compilation/debug.h"
 
 namespace utils
 	{
@@ -19,8 +20,8 @@ namespace utils
 				static constexpr math::vec2s static_sizes{WIDTH, HEIGHT};
 				static constexpr size_t      static_size{static_sizes.x * static_sizes.y};
 
-				math::vec2s sizes() const noexcept { return static_sizes; }
-				size_t      size () const noexcept { return static_size ; }
+				utils_cuda_available math::vec2s sizes() const noexcept { return static_sizes; }
+				utils_cuda_available size_t      size () const noexcept { return static_size ; }
 
 			private:
 			};
@@ -31,14 +32,14 @@ namespace utils
 			public:
 				static constexpr matrix_memory memory_layout{MEMORY_LAYOUT};
 
-				matrix_interface(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x * sizes.y} {}
+				utils_cuda_available matrix_interface(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x * sizes.y} {}
 
-				math::vec2s sizes() const noexcept { return _sizes; }
-				size_t      size () const noexcept { return _size ; }
+				utils_cuda_available math::vec2s sizes() const noexcept { return _sizes; }
+				utils_cuda_available size_t      size () const noexcept { return _size ; }
 
 			private:
-				math::vec2s _sizes{};
-				size_t      _size {};
+				utils_cuda_available math::vec2s _sizes{};
+				utils_cuda_available size_t      _size {};
 			};
 		}
 
@@ -48,15 +49,15 @@ namespace utils
 		public:
 			using details::matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>::matrix_interface;
 
-			size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x, coords.y); }
-			size_t get_index(size_t x, size_t y) const noexcept
+			utils_cuda_available size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x, coords.y); }
+			utils_cuda_available size_t get_index(size_t x, size_t y) const noexcept
 				{
 				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * size().x); }
 				else { return y + (x * size().y); }
 				}
-			size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % size().x; } else { return index / size().y; } }
-			size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / size().x; } else { return index % size().y; } }
-			math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
+			utils_cuda_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % size().x; } else { return index / size().y; } }
+			utils_cuda_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / size().x; } else { return index % size().y; } }
+			utils_cuda_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
 
 		private:
 		};
@@ -66,15 +67,31 @@ namespace utils
 		{
 		using mat_int_t = matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>;
 		public:
-			matrix_wrapper(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
+			utils_cuda_available matrix_wrapper(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>{},
 				container{container}
-				{}
+				{
+				if constexpr (utils::compilation::debug)
+					{
+					if (container.size() != mat_int_t::size())
+						{
+						throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
+						}
+					}
+				}
 
-			matrix_wrapper(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
+			utils_cuda_available matrix_wrapper(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
 				matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>{sizes},
 				container{container}
-				{}
+				{
+				if constexpr (utils::compilation::debug)
+					{
+					if (container.size() != mat_int_t::size())
+						{
+						throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
+						}
+					}
+				}
 
 			using container_t            = container_T;
 			using value_type             = container_t::value_type;
@@ -88,33 +105,33 @@ namespace utils
 			using reverse_iterator       = container_t::reverse_iterator;
 			using const_reverse_iterator = container_t::const_reverse_iterator;
 
-			const_reference operator[](size_type i)              const noexcept { return _arr[i]; }
-			      reference operator[](size_type i)                    noexcept { return _arr[i]; }
-			const_reference operator[](math::vec2s coords)       const noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
-			      reference operator[](math::vec2s coords)             noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
-			const_reference at        (size_type i)              const          { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-			      reference at        (size_type i)                             { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-			const_reference at        (size_type x, size_type y) const          { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-			      reference at        (size_type x, size_type y)                { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-			const_reference at        (math::vec2s coords)       const          { return at(coords.x, coords.y); }
-			      reference at        (math::vec2s coords)                      { return at(coords.x, coords.y); }
+			utils_cuda_available const_reference operator[](size_type i)              const noexcept { return _arr[i]; }
+			utils_cuda_available       reference operator[](size_type i)                    noexcept { return _arr[i]; }
+			utils_cuda_available const_reference operator[](math::vec2s coords)       const noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
+			utils_cuda_available       reference operator[](math::vec2s coords)             noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
+			utils_cuda_available const_reference at(size_type i             ) const { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+			utils_cuda_available       reference at(size_type i             )       { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+			utils_cuda_available const_reference at(size_type x, size_type y) const { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+			utils_cuda_available       reference at(size_type x, size_type y)       { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+			utils_cuda_available const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
+			utils_cuda_available       reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
 
-			const auto begin  () const noexcept { return container.begin  (); }
-			      auto begin  ()       noexcept { return container.begin  (); }
-			const auto end    () const noexcept { return container.end    (); }
-			      auto end    ()       noexcept { return container.end    (); }
-			const auto cbegin () const noexcept { return container.cbegin (); }
-			      auto cbegin ()       noexcept { return container.cbegin (); }
-			const auto cend   () const noexcept { return container.cend   (); }
-			      auto cend   ()       noexcept { return container.cend   (); }
-			const auto rbegin () const noexcept { return container.rbegin (); }
-			      auto rbegin ()       noexcept { return container.rbegin (); }
-			const auto rend   () const noexcept { return container.rend   (); }
-			      auto rend   ()       noexcept { return container.rend   (); }
-			const auto crbegin() const noexcept { return container.crbegin(); }
-			      auto crbegin()       noexcept { return container.crbegin(); }
-			const auto crend  () const noexcept { return container.crend  (); }
-			      auto crend  ()       noexcept { return container.crend  (); }
+			utils_cuda_available const auto begin  () const noexcept { return container.begin  (); }
+			utils_cuda_available       auto begin  ()       noexcept { return container.begin  (); }
+			utils_cuda_available const auto end    () const noexcept { return container.end    (); }
+			utils_cuda_available       auto end    ()       noexcept { return container.end    (); }
+			utils_cuda_available const auto cbegin () const noexcept { return container.cbegin (); }
+			utils_cuda_available       auto cbegin ()       noexcept { return container.cbegin (); }
+			utils_cuda_available const auto cend   () const noexcept { return container.cend   (); }
+			utils_cuda_available       auto cend   ()       noexcept { return container.cend   (); }
+			utils_cuda_available const auto rbegin () const noexcept { return container.rbegin (); }
+			utils_cuda_available       auto rbegin ()       noexcept { return container.rbegin (); }
+			utils_cuda_available const auto rend   () const noexcept { return container.rend   (); }
+			utils_cuda_available       auto rend   ()       noexcept { return container.rend   (); }
+			utils_cuda_available const auto crbegin() const noexcept { return container.crbegin(); }
+			utils_cuda_available       auto crbegin()       noexcept { return container.crbegin(); }
+			utils_cuda_available const auto crend  () const noexcept { return container.crend  (); }
+			utils_cuda_available       auto crend  ()       noexcept { return container.crend  (); }
 
 		private:
 			container_t& container;

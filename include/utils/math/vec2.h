@@ -52,10 +52,10 @@ namespace utils::math
 				using derived_t = DERIVED_T;
 
 			private:
-				constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
-				constexpr const auto& get_arr() const noexcept { return derived().array; }
-				constexpr       auto& get_arr()       noexcept { return derived().array; }
+				utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
+				utils_cuda_available constexpr const auto& get_arr() const noexcept { return derived().array; }
+				utils_cuda_available constexpr       auto& get_arr()       noexcept { return derived().array; }
 
 				using arr_t = std::array<T, 2>;
 
@@ -64,7 +64,7 @@ namespace utils::math
 				using value_type = typename arr_t::value_type;
 
 				template<std::floating_point T, T f_a_v>
-				inline static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
+				utils_cuda_available  static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
 					{
 					auto x{angle.cos() * magnitude};
 					auto y{angle.sin() * magnitude};
@@ -75,15 +75,15 @@ namespace utils::math
 				constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
 				
 				// VEC & ANGLE OPERATIONS
-				template <std::floating_point T, T f_a_v> constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
-				template <std::floating_point T, T f_a_v> constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
-				template <std::floating_point T, T f_a_v> constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
+				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
+				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
+				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
 					{
 					derived().x = derived().x * angle.cos() - derived().y * angle.sin();
 					derived().y = derived().x * angle.sin() + derived().y * angle.cos();
 					return derived(); 
 					}
-				template <std::floating_point T, T f_a_v> constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept
+				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept
 					{
 					auto nngle{-angle};
 					derived().x = derived().x * nngle.cos() - derived().y * nngle.sin();
@@ -91,16 +91,16 @@ namespace utils::math
 					return derived();
 					}
 
-				template <std::floating_point T, T f_a_v> constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
+				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
 					{
 					return derived() = {angle.cos() * derived().magnitude(), angle.sin() * derived().magnitude()}; 
 					}
 
 				// OTHER
-				constexpr derived_t perpendicular_right           () const noexcept { return { derived().y, -derived().x}; }
-				constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
-				constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
-				constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+				utils_cuda_available constexpr derived_t perpendicular_right           () const noexcept { return { derived().y, -derived().x}; }
+				utils_cuda_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
+				utils_cuda_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
+				utils_cuda_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 			};
 		}
 	}

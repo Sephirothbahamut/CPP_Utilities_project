@@ -20,9 +20,6 @@
     <Filter Include="Utils\containers">
       <UniqueIdentifier>{fca3cf14-c1e3-424c-9697-ee8f2f85cab1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\containers\memberwise_operators">
-      <UniqueIdentifier>{7fa32045-637e-406d-b6e8-bee55ec114ac}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils\containers\hive">
       <UniqueIdentifier>{554a512e-fd5c-4fb1-a9ef-8fc722a43ab0}</UniqueIdentifier>
     </Filter>

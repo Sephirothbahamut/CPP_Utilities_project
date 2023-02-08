@@ -4,8 +4,8 @@
 #include <cmath>
 #include <functional> //reference_wrapper
 
-#include "../memory.h"
 #include "math.h"
+#include "../memory.h"
 #include "../details/vec/common.h"
 #include "../details/vec/output.h"
 #include "../details/vec/memberwise_operators.h"
@@ -194,20 +194,20 @@ namespace utils::math
 #pragma region constructors
 			using details::vec_sized_specialization<T, size, derived_t>::vec_sized_specialization;
 			
-			constexpr vec() noexcept : vec{value_type{0}} {}
+			utils_cuda_available constexpr vec() noexcept : vec{value_type{0}} {}
 
 			//special case for vec of references
 			template <std::same_as<typename value_type::value_type>... Args>
 				requires(utils::concepts::reference<value_type> && sizeof...(Args) == static_size)
-			constexpr vec(Args&... args) noexcept : details::vec_named<T, size>{.array{args...}} {}
+			utils_cuda_available constexpr vec(Args&... args) noexcept : details::vec_named<T, size>{.array{args...}} {}
 
 			template <std::convertible_to<value_type>... Args>
 				requires(sizeof...(Args) >= static_size)
-			constexpr vec(const Args&... args) noexcept : details::vec_named<T, size>{.array{static_cast<value_type>(args)...}} {}
+			utils_cuda_available constexpr vec(const Args&... args) noexcept : details::vec_named<T, size>{.array{static_cast<value_type>(args)...}} {}
 
 			template <std::convertible_to<value_type>... Args>
 				requires(sizeof...(Args) < static_size)
-			constexpr vec(const Args&... args) noexcept : details::vec_named<T, size>{.array{static_cast<value_type>(args)...}}
+			utils_cuda_available constexpr vec(const Args&... args) noexcept : details::vec_named<T, size>{.array{static_cast<value_type>(args)...}}
 				{
 				for (size_t i = sizeof...(Args); i < static_size; i++)
 					{
@@ -219,15 +219,15 @@ namespace utils::math
 			//special case for vec of references
 			template <concepts::vec other_t>
 				requires(utils::concepts::reference<value_type> && std::same_as<typename other_t::value_type, typename value_type::value_type> && other_t::static_size == static_size)
-			constexpr vec(      other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](      auto&... values) -> std::array<value_type, size> { return {                        values ...}; }, other.array)}} {}
+			utils_cuda_available constexpr vec(      other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](      auto&... values) -> std::array<value_type, size> { return {                        values ...}; }, other.array)}} {}
 
 			template <concepts::vec other_t>
 				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size == static_size)
-			constexpr vec(const other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](const auto&... values) -> std::array<value_type, size> { return {static_cast<value_type>(values)...}; }, other.array)}} {}
+			utils_cuda_available constexpr vec(const other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](const auto&... values) -> std::array<value_type, size> { return {static_cast<value_type>(values)...}; }, other.array)}} {}
 			
 			template <concepts::vec other_t>
 				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size != static_size && utils::concepts::default_constructible<value_type>)
-			constexpr vec(const other_t& other, value_type default_value = value_type{0}) noexcept
+			utils_cuda_available constexpr vec(const other_t& other, value_type default_value = value_type{0}) noexcept
 				{
 				size_t i{0};
 				for (; i < std::min(static_size, other_t::static_size); i++)
@@ -242,21 +242,21 @@ namespace utils::math
 				}
 #pragma endregion constructors
 
-			constexpr value_type get_length2() const noexcept { value_type ret{0}; for (const auto& element : this->array) { ret += element * element; } return ret; }
-			constexpr value_type get_length () const noexcept { return std::sqrt(get_length2()); }
+			utils_cuda_available constexpr value_type get_length2() const noexcept { value_type ret{0}; for (const auto& element : this->array) { ret += element * element; } return ret; }
+			utils_cuda_available constexpr value_type get_length () const noexcept { return std::sqrt(get_length2()); }
 
-			constexpr derived_t& set_length    (value_type value) noexcept { *this = normalize() * value; return *this; }
+			utils_cuda_available constexpr derived_t& set_length    (value_type value) noexcept { *this = normalize() * value; return *this; }
 
 			__declspec(property(get = get_length, put = set_length)) value_type length;
 
-			constexpr derived_t  normalize     () const noexcept { return get_length() ? *this / get_length() : *this; }
-			constexpr derived_t& normalize_self()       noexcept { return *this = normalize(); }
+			utils_cuda_available constexpr derived_t  normalize     () const noexcept { return get_length() ? *this / get_length() : *this; }
+			utils_cuda_available constexpr derived_t& normalize_self()       noexcept { return *this = normalize(); }
 
 
 #pragma region distances
 			/// <summary> Evaluate distance^2 in the size of this vec. Missing coordinates are considered 0. </summary>
 			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			inline static constexpr value_type distance2(const derived_t& a, const T2& b) noexcept
+			utils_cuda_available static constexpr value_type distance2(const derived_t& a, const T2& b) noexcept
 				{
 				value_type ret{0};
 				size_t i{0};
@@ -274,7 +274,7 @@ namespace utils::math
 
 			/// <summary> Evaluate distance^2 in all the axes of the smaller vec. </summary>
 			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			inline static constexpr value_type distance2_shared(const derived_t& a, const T2& b) noexcept
+			utils_cuda_available static constexpr value_type distance2_shared(const derived_t& a, const T2& b) noexcept
 				{
 				value_type ret{0};
 				size_t i{0};
@@ -289,7 +289,7 @@ namespace utils::math
 
 			/// <summary> Evaluate distance^2 in all the axes of the larger vec. Missing coordinates for the smaller one are considered 0. </summary>
 			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			inline static constexpr value_type distance2_complete(const derived_t& a, const T2& b) noexcept
+			utils_cuda_available static constexpr value_type distance2_complete(const derived_t& a, const T2& b) noexcept
 				{
 				value_type ret{0};
 				size_t i{0};
@@ -306,28 +306,28 @@ namespace utils::math
 				}
 			/// <summary> Evaluate distance in the size of this vec. Missing coordinates are considered 0. </summary>
 			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			inline static constexpr value_type distance(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance2(a, b)); }
+			utils_cuda_available static constexpr value_type distance(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance2(a, b)); }
 
 			/// <summary> Evaluate distance in all the axes of the smaller vec. </summary>
 			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			inline static constexpr value_type distance_shared(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance_shared2(a, b)); }
+			utils_cuda_available static constexpr value_type distance_shared(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance_shared2(a, b)); }
 
 			/// <summary> Evaluate distance in all the axes of the larger vec. Missing coordinates for the smaller one are considered 0. </summary>
 			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			inline static constexpr value_type distance_complete(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance_complete2(a, b)); }
+			utils_cuda_available static constexpr value_type distance_complete(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance_complete2(a, b)); }
 
 #pragma endregion distances
 #pragma region interpolation
 
-			inline static constexpr derived_t slerp_fast(const derived_t& a, const derived_t& b, value_type t) noexcept
+			utils_cuda_available static constexpr derived_t slerp_fast(const derived_t& a, const derived_t& b, value_type t) noexcept
 				{
 				return utils::math::lerp(a, b, t).normalize() * (utils::math::lerp(a.get_length(), b.get_length(), t));
 				}
-			inline static constexpr derived_t tlerp_fast(const derived_t& a, const derived_t& b, value_type t) noexcept
+			utils_cuda_available static constexpr derived_t tlerp_fast(const derived_t& a, const derived_t& b, value_type t) noexcept
 				{
 				return utils::math::lerp(a, b, t).normalize() * std::sqrt(utils::math::lerp(a.get_length2(), b.get_length2(), t));
 				}
-			inline static constexpr derived_t slerp(const derived_t& a, const derived_t& b, value_type t) noexcept //TODO test
+			utils_cuda_available static constexpr derived_t slerp(const derived_t& a, const derived_t& b, value_type t) noexcept //TODO test
 				{
 				value_type dot = utils::math::clamp(vec::dot(a, b), -1.0f, 1.0f);
 				value_type theta = std::acos(dot) * t;
@@ -337,32 +337,32 @@ namespace utils::math
 
 #pragma endregion interpolation
 #pragma region factories
-			static constexpr derived_t zero    () noexcept requires(static_size >= 1) { return {value_type{ 0}}; }
-
-			static constexpr derived_t rr      () noexcept requires(static_size == 1) { return {value_type{ 1}}; }
-			static constexpr derived_t ll      () noexcept requires(static_size == 1) { return {value_type{-1}}; }
-			static constexpr derived_t rr      () noexcept requires(static_size >  1) { return {value_type{ 1}, value_type{ 0}}; }
-			static constexpr derived_t ll      () noexcept requires(static_size >  1) { return {value_type{-1}, value_type{ 0}}; }
-			static constexpr derived_t right   () noexcept requires(static_size >= 1) { return rr(); }
-			static constexpr derived_t left    () noexcept requires(static_size >= 1) { return ll(); }
-
-			static constexpr derived_t up      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{-1}}; }
-			static constexpr derived_t dw      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{ 1}}; }
-			static constexpr derived_t up      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			static constexpr derived_t dw      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			static constexpr derived_t down    () noexcept requires(static_size >= 2) { return dw(); }
-
-			static constexpr derived_t fw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
-			static constexpr derived_t bw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
-			static constexpr derived_t fw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			static constexpr derived_t bw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			static constexpr derived_t forward () noexcept requires(static_size >= 3) { return fw(); }
-			static constexpr derived_t backward() noexcept requires(static_size >= 3) { return bw(); }
+			utils_cuda_available static constexpr derived_t zero    () noexcept requires(static_size >= 1) { return {value_type{ 0}}; }
+			
+			utils_cuda_available static constexpr derived_t rr      () noexcept requires(static_size == 1) { return {value_type{ 1}}; }
+			utils_cuda_available static constexpr derived_t ll      () noexcept requires(static_size == 1) { return {value_type{-1}}; }
+			utils_cuda_available static constexpr derived_t rr      () noexcept requires(static_size >  1) { return {value_type{ 1}, value_type{ 0}}; }
+			utils_cuda_available static constexpr derived_t ll      () noexcept requires(static_size >  1) { return {value_type{-1}, value_type{ 0}}; }
+			utils_cuda_available static constexpr derived_t right   () noexcept requires(static_size >= 1) { return rr(); }
+			utils_cuda_available static constexpr derived_t left    () noexcept requires(static_size >= 1) { return ll(); }
+			
+			utils_cuda_available static constexpr derived_t up      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{-1}}; }
+			utils_cuda_available static constexpr derived_t dw      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{ 1}}; }
+			utils_cuda_available static constexpr derived_t up      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_cuda_available static constexpr derived_t dw      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_cuda_available static constexpr derived_t down    () noexcept requires(static_size >= 2) { return dw(); }
+			
+			utils_cuda_available static constexpr derived_t fw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
+			utils_cuda_available static constexpr derived_t bw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
+			utils_cuda_available static constexpr derived_t fw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_cuda_available static constexpr derived_t bw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_cuda_available static constexpr derived_t forward () noexcept requires(static_size >= 3) { return fw(); }
+			utils_cuda_available static constexpr derived_t backward() noexcept requires(static_size >= 3) { return bw(); }
 
 #pragma region factories
 				
 			template <concepts::vec b_t>
-			static constexpr value_type dot(const derived_t& a, const b_t& b) noexcept
+			utils_cuda_available static constexpr value_type dot(const derived_t& a, const b_t& b) noexcept
 				requires std::convertible_to<value_type, typename b_t::value_type>
 				{
 				value_type ret{0}; for (size_t i{0}; i < static_size; i++) 
@@ -382,7 +382,7 @@ namespace utils::math
 			class _inner;
 
 			template <concepts::vec a_t>
-			inline friend _inner<a_t> operator<(const a_t& lhs, _dot proxy) noexcept { return {lhs}; }
+			utils_cuda_available inline friend _inner<a_t> operator<(const a_t& lhs, _dot proxy) noexcept { return {lhs}; }
 
 			template <concepts::vec a_t>
 			class _inner
@@ -390,7 +390,7 @@ namespace utils::math
 				public:
 					template <concepts::vec b_t>
 					typename a_t::value_type operator>(const b_t& rhs) const noexcept  { return a_t::dot(lhs, rhs); }
-					_inner(const a_t& lhs) noexcept : lhs{lhs} {}
+					utils_cuda_available _inner(const a_t& lhs) noexcept : lhs{lhs} {}
 				private:
 					const a_t& lhs;
 				};
@@ -403,7 +403,7 @@ namespace utils::math
 			class _inner;
 
 			template <concepts::vec a_t>
-			inline friend _inner<a_t> operator<(const a_t& lhs, _cross proxy) noexcept { return {lhs}; }
+			utils_cuda_available inline friend _inner<a_t> operator<(const a_t& lhs, _cross proxy) noexcept { return {lhs}; }
 
 			template <concepts::vec a_t>
 			class _inner
@@ -411,7 +411,7 @@ namespace utils::math
 				public:
 					template <concepts::vec b_t>
 					a_t operator>(const b_t& rhs) const noexcept { return lhs * rhs; }
-					_inner(const a_t& lhs) noexcept : lhs{lhs} {}
+					utils_cuda_available _inner(const a_t& lhs) noexcept : lhs{lhs} {}
 				private:
 					const a_t& lhs;
 				};

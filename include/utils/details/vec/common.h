@@ -4,6 +4,7 @@
 #include <concepts>
 
 #include "../../output/std_containers.h"
+#include "../../compilation/CUDA.h"
 #include "../../console/colour.h"
 
 namespace utils::details::vec
@@ -37,10 +38,10 @@ namespace utils::details::vec
 			using derived_t = DERIVED_T;
 	
 		private:
-			constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-			constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
-			constexpr const auto     & get_arr() const noexcept { return derived().array; }
-			constexpr       auto     & get_arr()       noexcept { return derived().array; }
+			utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+			utils_cuda_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
+			utils_cuda_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
 	
 			using arr_t = std::array<T, SIZE>;
 			
@@ -58,26 +59,26 @@ namespace utils::details::vec
 			using reverse_iterator        = typename arr_t::reverse_iterator      ;
 			using const_reverse_iterator  = typename arr_t::const_reverse_iterator;
 	
-			constexpr size_t size() const noexcept { return get_arr().size(); }
-	
-			constexpr const value_type& operator[](size_t index) const noexcept { return get_arr()   [index]; }
-			constexpr       value_type& operator[](size_t index)       noexcept { return get_arr()   [index]; }
-			constexpr const value_type& at        (size_t index) const          { return get_arr().at(index); }
-			constexpr       value_type& at        (size_t index)                { return get_arr().at(index); }
-	
-			constexpr       iterator  begin()       noexcept { return get_arr(). begin(); }
-			constexpr const_iterator  begin() const noexcept { return get_arr(). begin(); }
-			constexpr const_iterator cbegin()       noexcept { return get_arr().cbegin(); }
-			constexpr       iterator  end  ()       noexcept { return get_arr(). end  (); }
-			constexpr const_iterator  end  () const noexcept { return get_arr(). end  (); }
-			constexpr const_iterator cend  ()       noexcept { return get_arr().cend  (); }
-	
-			constexpr       reverse_iterator  rbegin()       noexcept { return get_arr(). begin(); }
-			constexpr const_reverse_iterator  rbegin() const noexcept { return get_arr(). begin(); }
-			constexpr const_reverse_iterator crbegin()       noexcept { return get_arr().cbegin(); }
-			constexpr       reverse_iterator  rend  ()       noexcept { return get_arr(). end  (); }
-			constexpr const_reverse_iterator  rend  () const noexcept { return get_arr(). end  (); }
-			constexpr const_reverse_iterator crend  ()       noexcept { return get_arr().cend  (); }
+			utils_cuda_available constexpr size_t size() const noexcept { return get_arr().size(); }
+			 
+			utils_cuda_available constexpr const value_type& operator[](size_t index) const noexcept { return get_arr()   [index]; }
+			utils_cuda_available constexpr       value_type& operator[](size_t index)       noexcept { return get_arr()   [index]; }
+			utils_cuda_available constexpr const value_type& at        (size_t index) const          { return get_arr().at(index); }
+			utils_cuda_available constexpr       value_type& at        (size_t index)                { return get_arr().at(index); }
+			 
+			utils_cuda_available constexpr       iterator  begin()       noexcept { return get_arr(). begin(); }
+			utils_cuda_available constexpr const_iterator  begin() const noexcept { return get_arr(). begin(); }
+			utils_cuda_available constexpr const_iterator cbegin()       noexcept { return get_arr().cbegin(); }
+			utils_cuda_available constexpr       iterator  end  ()       noexcept { return get_arr(). end  (); }
+			utils_cuda_available constexpr const_iterator  end  () const noexcept { return get_arr(). end  (); }
+			utils_cuda_available constexpr const_iterator cend  ()       noexcept { return get_arr().cend  (); }
+			 
+			utils_cuda_available constexpr       reverse_iterator  rbegin()       noexcept { return get_arr(). begin(); }
+			utils_cuda_available constexpr const_reverse_iterator  rbegin() const noexcept { return get_arr(). begin(); }
+			utils_cuda_available constexpr const_reverse_iterator crbegin()       noexcept { return get_arr().cbegin(); }
+			utils_cuda_available constexpr       reverse_iterator  rend  ()       noexcept { return get_arr(). end  (); }
+			utils_cuda_available constexpr const_reverse_iterator  rend  () const noexcept { return get_arr(). end  (); }
+			utils_cuda_available constexpr const_reverse_iterator crend  ()       noexcept { return get_arr().cend  (); }
 		};
 	}
 
