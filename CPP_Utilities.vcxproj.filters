@@ -337,6 +337,9 @@
     <ClInclude Include="include\utils\matrix_interface.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\mat.h">
+      <Filter>Utils\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
