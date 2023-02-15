@@ -338,8 +338,8 @@ namespace utils::math
 			}
 
 		// Center
-		T       get_center_x()        const noexcept { return ll + (w / T{2}); }
-		T       get_center_y()        const noexcept { return up + (h / T{2}); }
+		T       get_center_x()        const noexcept { return ll + (w() / T{2}); }
+		T       get_center_y()        const noexcept { return up + (h() / T{2}); }
 		vec2<T> get_center  ()        const noexcept { return {get_center_x(), get_center_y()}; }
 		//TODO void    set_center_x(T value) { auto previous_w{get_w()}; }
 		//TODO void    set_center_x(T value)
@@ -381,17 +381,17 @@ namespace utils::math
 		      vecref2<T> bottom_left ()       noexcept { return {get_dl()}; }
 
 		// Pos-size
-		const x_proxy  x           () const noexcept { return get_x (); }
-		const y_proxy  y           () const noexcept { return get_y (); }
+		const_x_proxy  x           () const noexcept { return get_x (); }
+		const_y_proxy  y           () const noexcept { return get_y (); }
 		const_h_proxy  h           () const noexcept { return get_h (); }
 		const_h_proxy  height      () const noexcept { return get_h (); }
 		const_w_proxy  w           () const noexcept { return get_w (); }
 		const_w_proxy  width       () const noexcept { return get_w (); }
 		const_s_proxy  s           () const noexcept { return get_s (); }
 		const_s_proxy  size        () const noexcept { return get_s (); }
-		const p_proxy  p           () const noexcept { return get_p (); }
-		const p_proxy  pos         () const noexcept { return get_p (); }
-		const p_proxy  position    () const noexcept { return get_p (); }
+		const_p_proxy  p           () const noexcept { return get_p (); }
+		const_p_proxy  pos         () const noexcept { return get_p (); }
+		const_p_proxy  position    () const noexcept { return get_p (); }
 		      x_proxy  x           ()       noexcept { return get_x (); }
 		      y_proxy  y           ()       noexcept { return get_y (); }
 		      h_proxy  h           ()       noexcept { return get_h (); }
