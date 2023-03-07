@@ -54,7 +54,7 @@ namespace utils::containers::details
 
 			using refcount_value_type = std::conditional_t<use_refcount, refcount_value_T, std::conditional_t<use_unique_bitset, typename std::bitset<segment_size>::reference, void>>;
 
-			class segment_t;
+			struct segment_t;
 			union slot_t;
 			
 			struct handle_bare
@@ -403,7 +403,7 @@ namespace utils::containers::details
 							/// Erases the object referred to by this handle from the container.
 							/// Undefined behaviour if the same object was owned by other non-raw handles.
 							/// </summary>
-							void reset() noexcept 
+							void reset() utils_if_release(noexcept)
 								{
 								if (handle_base::has_value())
 									{
@@ -737,7 +737,7 @@ namespace utils::containers::details
 					class iterator : public handle_base
 						{
 						friend class first_segment_t;
-						friend class segment_t;
+						friend struct segment_t;
 					
 						public:
 							using value_type        = object_pool_details::value_type       ;

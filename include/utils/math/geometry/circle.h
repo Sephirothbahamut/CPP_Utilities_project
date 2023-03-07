@@ -10,7 +10,7 @@ namespace utils::math::geometry
 			vec2f center;
 			float radius;
 
-			operator aabb() const noexcept
+			aabb bounding_box() const noexcept
 			{
 				aabb ret
 					{
@@ -23,4 +23,6 @@ namespace utils::math::geometry
 				return ret;
 			}
 		};
+
+	aabb bounding_box(const circle& from) { return from.bounding_box(); }
 	}

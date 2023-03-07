@@ -102,6 +102,12 @@ namespace utils::math::angle
 
 			constexpr base  operator-()const noexcept { return base{ value + half_angle }.clamp(); }
 
+			static constexpr base min_distance(const base a, const base b) noexcept
+				{
+				T d{(b.value - a.value) % 360};
+				return d < -half_angle ? d + full_angle : d > half_angle ? d - full_angle : d;
+				}
+
 			constexpr value_type normalize_in_range(base min, base max) const noexcept
 				{
 				min.clamp();

@@ -138,4 +138,6 @@ namespace utils::math::geometry
 
 		private:
 		};
+	
+	aabb bounding_box(const segment& from) { return from.bounding_box(); }
 	}

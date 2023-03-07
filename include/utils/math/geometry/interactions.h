@@ -82,7 +82,7 @@ namespace utils::math::geometry
 		inline bool contains(const polygon& polygon, const point& point) noexcept
 			{
 			// A point is inside a polygon if given a line in any direction, it intersects the polygon segments an uneven number of times
-			segment tmp_segment{point, vec2f{point.x + static_cast<aabb>(polygon).right, point.y}}; //A segment which lies on a generic horizontal line
+			segment tmp_segment{point, vec2f{point.x + bounding_box(polygon).right, point.y}}; //A segment which lies on a generic horizontal line
 
 			bool is_inside = false;
 
@@ -696,6 +696,9 @@ namespace utils::math::geometry
 				&& contains<strictness>(circle, aabb.dr) && contains<strictness>(circle, aabb.dl);
 			}
 
+		template <collision_strictness_t strictness>
+		inline bool contains(const aabb& aabb, const circle& circle) noexcept;
+
 		template <bool hollow_a = false, bool hollow_b = false>
 		inline bool collides(const circle& circle, const aabb& aabb) noexcept
 			{//TODO betterify, look herehttps://arrowinmyknee.com/2021/04/02/how-to-detect-intersection-between-circle-and-aabb/
@@ -714,13 +717,8 @@ namespace utils::math::geometry
 			return contains<collision_strictness_t::loose>(aabb, circle) || intersects(circle, aabb);
 			}
 
-		template <>
-		inline bool collides<false, true>(const circle& circle, const aabb& aabb) noexcept
-			{
-			return collides<true, false>(aabb, circle);
-			}
-
 		inline bool intersects(const aabb& aabb, const circle& circle) noexcept { return intersects(circle, aabb); }
+
 		template <collision_strictness_t strictness = collision_strictness_t::loose>
 		inline bool contains(const aabb& aabb, const circle& circle) noexcept 
 			{

@@ -68,7 +68,7 @@ namespace utils::math
 					{
 					auto x{angle.cos() * magnitude};
 					auto y{angle.sin() * magnitude};
-					return derived_t::from(x, y);
+					return derived_t{x, y};
 					}
 
 				template <typename T = float, T f_a_v = 360.f>

@@ -17,7 +17,7 @@
 namespace utils::math
 	{
 	template <typename T, size_t size>
-	struct vec;
+	class vec;
 	
 	//fast typenames
 	template <typename T, size_t size> 

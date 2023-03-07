@@ -16,11 +16,11 @@ namespace utils::math::geometry::transformations
 
 	inline geometry::point scale(const geometry::point& point, float scaling) noexcept
 		{
-		return geometry::point{ point * scaling };
+		return point * scaling;
 		}
 	inline geometry::point rotate(const geometry::point& point, math::angle::radf rotation) noexcept
 		{
-		return point + rotation;
+		return static_cast<geometry::point>(static_cast<vec2f>(point) + rotation);
 		}
 	inline geometry::point translate(const geometry::point& point, vec2f translation) noexcept
 		{

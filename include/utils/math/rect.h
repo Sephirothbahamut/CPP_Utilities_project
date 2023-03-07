@@ -20,7 +20,7 @@ namespace utils::math
 		class x_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class p_proxy;
 
 			public:
@@ -46,7 +46,7 @@ namespace utils::math
 		class y_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class p_proxy;
 
 			public:
@@ -72,7 +72,7 @@ namespace utils::math
 		class p_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 
 			public:
 				x_proxy x;
@@ -101,7 +101,7 @@ namespace utils::math
 		class const_x_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class p_proxy;
 
 			public:
@@ -117,7 +117,7 @@ namespace utils::math
 		class const_y_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class const_p_proxy;
 
 			public:
@@ -133,7 +133,7 @@ namespace utils::math
 		class const_p_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 
 			public:
 				x_proxy x;
@@ -155,7 +155,7 @@ namespace utils::math
 		class w_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class s_proxy;
 
 			public:
@@ -179,7 +179,7 @@ namespace utils::math
 		class h_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class s_proxy;
 
 			public:
@@ -203,7 +203,7 @@ namespace utils::math
 		class s_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 
 			public:
 				w_proxy w;
@@ -231,7 +231,7 @@ namespace utils::math
 		class const_w_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class const_s_proxy;
 
 			public:
@@ -252,7 +252,7 @@ namespace utils::math
 		class const_h_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 			friend class const_s_proxy;
 
 			public:
@@ -268,7 +268,7 @@ namespace utils::math
 		class const_s_proxy
 			{
 			template <typename T>
-			friend class rect;
+			friend struct rect;
 
 			public:
 				const_w_proxy w;

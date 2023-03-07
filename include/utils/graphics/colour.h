@@ -28,7 +28,7 @@ namespace utils::graphics::colour
 		};
 
 	template <typename T, size_t size>
-	struct rgb;
+	class rgb;
 
 	using rgb_f  = rgb<float  , 3>;
 	using rgb_d  = rgb<double , 3>;

@@ -17,11 +17,15 @@ namespace utils
 			{
 			public:
 				static constexpr matrix_memory memory_layout{MEMORY_LAYOUT};
-				static constexpr math::vec2s static_sizes{WIDTH, HEIGHT};
-				static constexpr size_t      static_size{static_sizes.x * static_sizes.y};
+				static constexpr math::vec2s static_sizes {WIDTH, HEIGHT};
+				static constexpr size_t      static_size  {static_sizes.x * static_sizes.y};
+				static constexpr math::vec2s static_width {static_sizes.x};
+				static constexpr math::vec2s static_height{static_sizes.y};
 
-				utils_cuda_available math::vec2s sizes() const noexcept { return static_sizes; }
-				utils_cuda_available size_t      size () const noexcept { return static_size ; }
+				utils_cuda_available math::vec2s sizes () const noexcept { return static_sizes; }
+				utils_cuda_available size_t      size  () const noexcept { return static_size ; }
+				utils_cuda_available size_t      width () const noexcept { return static_sizes.x; }
+				utils_cuda_available size_t      height() const noexcept { return static_sizes.y; }
 
 			private:
 			};
@@ -34,8 +38,10 @@ namespace utils
 
 				utils_cuda_available matrix_interface(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x * sizes.y} {}
 
-				utils_cuda_available math::vec2s sizes() const noexcept { return _sizes; }
-				utils_cuda_available size_t      size () const noexcept { return _size ; }
+				utils_cuda_available math::vec2s sizes () const noexcept { return _sizes; }
+				utils_cuda_available size_t      size  () const noexcept { return _size ; }
+				utils_cuda_available size_t      width () const noexcept { return _sizes.x; }
+				utils_cuda_available size_t      height() const noexcept { return _sizes.y; }
 
 			private:
 				utils_cuda_available math::vec2s _sizes{};
@@ -43,26 +49,28 @@ namespace utils
 			};
 		}
 
-	template<size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT>
+	template<size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
 	class matrix_interface : public details::matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>
 		{
 		public:
+			using details::matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>::memory_layout;
+			using details::matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>::sizes;
 			using details::matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>::matrix_interface;
 
 			utils_cuda_available size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x, coords.y); }
 			utils_cuda_available size_t get_index(size_t x, size_t y) const noexcept
 				{
-				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * size().x); }
-				else { return y + (x * size().y); }
+				if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * sizes().x); }
+				else { return y + (x * sizes().y); }
 				}
-			utils_cuda_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % size().x; } else { return index / size().y; } }
-			utils_cuda_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / size().x; } else { return index % size().y; } }
+			utils_cuda_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % sizes().x; } else { return index / sizes().y; } }
+			utils_cuda_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x; } else { return index % sizes().y; } }
 			utils_cuda_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
 
 		private:
 		};
 
-	template <std::ranges::random_access_range container_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT>
+	template<typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
 	class matrix_wrapper : public matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>
 		{
 		using mat_int_t = matrix_interface<WIDTH, HEIGHT, MEMORY_LAYOUT>;
@@ -105,10 +113,10 @@ namespace utils
 			using reverse_iterator       = container_t::reverse_iterator;
 			using const_reverse_iterator = container_t::const_reverse_iterator;
 
-			utils_cuda_available const_reference operator[](size_type i)              const noexcept { return _arr[i]; }
-			utils_cuda_available       reference operator[](size_type i)                    noexcept { return _arr[i]; }
-			utils_cuda_available const_reference operator[](math::vec2s coords)       const noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
-			utils_cuda_available       reference operator[](math::vec2s coords)             noexcept { return _arr[mat_int_t::get_index(coords.x, coords.y)];    }
+			utils_cuda_available const_reference operator[](size_type i)              const noexcept { return container[i]; }
+			utils_cuda_available       reference operator[](size_type i)                    noexcept { return container[i]; }
+			utils_cuda_available const_reference operator[](math::vec2s coords)       const noexcept { return container[mat_int_t::get_index(coords.x, coords.y)];    }
+			utils_cuda_available       reference operator[](math::vec2s coords)             noexcept { return container[mat_int_t::get_index(coords.x, coords.y)];    }
 			utils_cuda_available const_reference at(size_type i             ) const { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
 			utils_cuda_available       reference at(size_type i             )       { if (i >= mat_int_t::size ()                               ) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
 			utils_cuda_available const_reference at(size_type x, size_type y) const { if (x >= mat_int_t::sizes().x || y >= mat_int_t::sizes().y) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
@@ -173,7 +181,7 @@ namespace utils::output
 	inline ::std::ostream& operator<<(::std::ostream& os, const utils::matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>& container) noexcept
 		{
 		namespace ucc = utils::console::colour;
-		os << ucc::type << "mat" << container.sizes().x << "x" << container.sizes().y << typeid(T).name();
+		os << ucc::type << "mat" << container.sizes().x << "x" << container.sizes().y << typeid(container_T::value_type).name();
 		return utils::output::typeless::operator<<(os, container);
 		}
 	}

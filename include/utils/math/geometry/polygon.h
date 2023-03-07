@@ -133,7 +133,7 @@ namespace utils::math::geometry
 
 #pragma endregion vertices and segments iteration
 		public:
-			operator aabb() const noexcept
+			aabb bounding_box() const noexcept
 				{
 				aabb ret
 					{
@@ -166,4 +166,6 @@ namespace utils::math::geometry
 		convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
 		convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}
 		};
+
+	aabb bounding_box(const polygon& from) { return from.bounding_box(); }
 	}
