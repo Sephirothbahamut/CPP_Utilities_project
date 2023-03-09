@@ -176,20 +176,33 @@ namespace utils::math
 	template<typename T, size_t size>
 	class vec:
 		public details::vec_named<T, size>,
-		public utils::details::vec::common<T, size, vec<T, size>>,
-		public utils::details::vec::memberwise_operators<T, size, vec, vec<T, size>>,
+		public utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>>,
 		public utils::details::vec::output<details::vec_name, vec<T, size>>,
 		public details::vec_sized_specialization<T, size, vec<T, size>>
 		{
 		public:
 			using derived_t = vec<T, size>;
+			using common_t = utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>;
 
 		private:
 			using arr_t = std::array<T, size>;
 
 		public:
 			inline static constexpr const size_t static_size{size};
-			using value_type = typename arr_t::value_type;
+			using value_type              = typename common_t::value_type            ;
+			using size_type               = typename common_t::size_type             ;
+			using difference_type         = typename common_t::difference_type       ;
+			using reference               = typename common_t::reference             ;
+			using const_reference         = typename common_t::const_reference       ;
+			using pointer                 = typename common_t::pointer               ;
+			using const_pointer           = typename common_t::const_pointer         ;
+			using iterator                = typename common_t::iterator              ;
+			using const_iterator          = typename common_t::const_iterator        ;
+			using reverse_iterator        = typename common_t::reverse_iterator      ;
+			using const_reverse_iterator  = typename common_t::const_reverse_iterator;
+			using nonref_derived_t        = typename common_t::nonref_derived_t      ;
+			using nonref_value_type       = typename common_t::nonref_value_type     ;
 
 #pragma region constructors
 			using details::vec_sized_specialization<T, size, derived_t>::vec_sized_specialization;

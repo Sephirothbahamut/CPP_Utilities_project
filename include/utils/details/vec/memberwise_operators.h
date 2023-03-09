@@ -9,94 +9,140 @@
 namespace utils::details::vec
 	{
 			
-	template<typename T, size_t SIZE, template<typename, size_t> class UNSPECIALIZED, typename DERIVED_T>
+	template<typename COMMON_T>
 	class memberwise_operators;
 
 	namespace concepts
 		{
-		//template <typename T>
-		//concept memberwise_operators = std::derived_from<T, vec::memberwise_operators<typename T::value_type, T::static_size, T::unspecialized>>;
-		}
-
-	namespace details
-		{
 		template <typename T>
-		struct get_nonref { using type = T; };
-
-		template <utils::concepts::reference T>
-		struct get_nonref<T> { using type = typename T::value_type; };
+		concept memberwise_operators = std::derived_from<T, vec::memberwise_operators<typename T::common_t>>;
+		template <typename T, typename to>
+		concept compatible_memberwise = memberwise_operators<T> && memberwise_operators<to> && std::convertible_to<typename T::nonref_value_type, typename to::nonref_value_type>;
+		template <typename T, typename to>
+		concept compatible_scalar = memberwise_operators<to> && std::convertible_to<T, typename to::nonref_value_type>;
 		}
 
-	template<typename T, size_t SIZE, template<typename, size_t> class UNSPECIALIZED, typename DERIVED_T>
+	template<typename COMMON_T>
 	class memberwise_operators
 		{
 		public:
-			template <typename T, size_t size>
-			using unspecialized_t = UNSPECIALIZED<T, size>;
-
-			using derived_t = DERIVED_T;
-			using value_type = T;
-			using nonref_value_type = details::get_nonref<value_type>::type;
-			using nonref_derived_t  = std::conditional_t<utils::concepts::reference<value_type>, unspecialized_t<nonref_value_type, SIZE>, derived_t>;
+			using common_t          = COMMON_T;
+			using derived_t         = common_t::derived_t;
+			using value_type        = common_t::value_type;
+			using nonref_derived_t  = common_t::nonref_derived_t;
+			using nonref_value_type = common_t::nonref_value_type;
 		private:
 			utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
 			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 		public:
+		};
+
+	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t>
+	utils_cuda_available constexpr a_t& operator_scalar_self_assign(a_t& a, const b_t& b) noexcept
+		{
+		for (size_t i{0}; i < a.size(); i++)
+			{
+			callback(a[i], b);
+			}
+		return a;
+		}
+	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t>
+	utils_cuda_available constexpr typename a_t::nonref_derived_t& operator_scalar(const a_t& a, const b_t& b) noexcept
+		{
+		typename a_t::nonref_derived_t ret;
+		for (size_t i{0}; i < a.size(); i++)
+			{
+			ret = callback(a[i], b);
+			}
+		return ret;
+		}
+
+	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t>
+	utils_cuda_available constexpr a_t& operator_vector_self_assign(a_t& a, const b_t& b) noexcept
+		{
+		size_t i{0};
+		for (; i < std::min(a.size(), b.size()); i++)
+			{
+			callback(a[i], b[i]);
+			}
+		return a;
+		}
+
+	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t>
+	utils_cuda_available constexpr typename get_larger<a_t, b_t>::type::nonref_derived_t& operator_vector(const a_t& a, const b_t& b) noexcept
+		{
+		using ret_t = typename get_larger<a_t, b_t>::type::nonref_derived_t;
+		ret_t ret;
+
+		size_t i{0};
+		for (; i < std::min(a.size(), b.size()); i++)
+			{
+			ret[i] = callback(a[i], b[i]);
+			}
+		
+		if constexpr (a_t::static_size > b_t::static_size) { for (; i < a.size(); i++) { ret[i] = a[i]; } }
+		else
+		if constexpr (a_t::static_size < b_t::static_size) { for (; i < b.size(); i++) { ret[i] = b[i]; } }
+
+		return ret;
+		}
+
 #pragma region scalar
-			utils_cuda_available constexpr auto& operator+=(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i] += b; } return derived(); }
-			utils_cuda_available constexpr auto& operator-=(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i] -= b; } return derived(); }
-			utils_cuda_available constexpr auto& operator*=(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i] *= b; } return derived(); }
-			utils_cuda_available constexpr auto& operator/=(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i] /= b; } return derived(); }
-			utils_cuda_available constexpr auto& operator|=(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i] |= b; } return derived(); }
-			utils_cuda_available constexpr auto& operator&=(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i] &= b; } return derived(); }
-			utils_cuda_available constexpr auto& operator =(const value_type& b)       noexcept { for (size_t i{0}; i < derived().size(); i++) { derived()[i]  = b; } return derived(); }
-			
-			utils_cuda_available constexpr auto  operator+ (const value_type& b) const noexcept { nonref_derived_t ret{derived()}; ret += b; return ret; }
-			utils_cuda_available constexpr auto  operator- (const value_type& b) const noexcept { nonref_derived_t ret{derived()}; ret -= b; return ret; }
-			utils_cuda_available constexpr auto  operator* (const value_type& b) const noexcept { nonref_derived_t ret{derived()}; ret *= b; return ret; }
-			utils_cuda_available constexpr auto  operator/ (const value_type& b) const noexcept { nonref_derived_t ret{derived()}; ret /= b; return ret; }
-			utils_cuda_available constexpr auto  operator| (const value_type& b) const noexcept { nonref_derived_t ret{derived()}; ret |= b; return ret; }
-			utils_cuda_available constexpr auto  operator& (const value_type& b) const noexcept { nonref_derived_t ret{derived()}; ret &= b; return ret; }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator+=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a += b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator-=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a -= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator*=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a *= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator/=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a /= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator|=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a |= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator&=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a &= b; }>(a, b); }
+	//utils_cuda_available template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> constexpr a_t& operator =(a_t& a, const b_t& b) noexcept { for (size_t i{0}; i < a.size(); i++) { a[i] =  b; } return derived(); }
+
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator+ (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a + b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator- (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a - b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator* (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a * b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator/ (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a / b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator| (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a | b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator& (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a & b; }>(a, b); }
 #pragma endregion scalar
-#pragma region array
-			template <concepts::compatible_array<derived_t> T2> constexpr derived_t& operator =(const T2& b) noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] = b[i]; } return *this; }
-#pragma endregion array
+
 #pragma region self
-			constexpr nonref_derived_t operator! () const noexcept { nonref_derived_t ret{derived()}; for (size_t i{0}; i < derived().size(); i++) { ret[i] = !ret[i]; } return ret; }
-			constexpr nonref_derived_t operator- () const noexcept { nonref_derived_t ret{derived()}; for (size_t i{0}; i < derived().size(); i++) { ret[i] = -ret[i]; } return ret; }
+	template<concepts::memberwise_operators a_t> utils_cuda_available constexpr a_t::nonref_derived_t operator! (const a_t& a) noexcept { typename a_t::nonref_derived_t ret{a}; for (size_t i{0}; i < a.size(); i++) { ret[i] = !ret[i]; } return ret; }
+	template<concepts::memberwise_operators a_t> utils_cuda_available constexpr a_t::nonref_derived_t operator- (const a_t& a) noexcept { typename a_t::nonref_derived_t ret{a}; for (size_t i{0}; i < a.size(); i++) { ret[i] = -ret[i]; } return ret; }
 #pragma endregion self
 
 #pragma region array
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto& operator+=(const T2& b)       noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] += b[i]; } return derived(); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto& operator-=(const T2& b)       noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] -= b[i]; } return derived(); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto& operator*=(const T2& b)       noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] *= b[i]; } return derived(); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto& operator/=(const T2& b)       noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] /= b[i]; } return derived(); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto& operator|=(const T2& b)       noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] |= b[i]; } return derived(); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto& operator&=(const T2& b)       noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] &= b[i]; } return derived(); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto  operator+ (const T2& b) const noexcept { nonref_derived_t ret{derived()}; ret += b; return ret; }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto  operator- (const T2& b) const noexcept { nonref_derived_t ret{derived()}; ret -= b; return ret; }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto  operator* (const T2& b) const noexcept { nonref_derived_t ret{derived()}; ret *= b; return ret; }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto  operator/ (const T2& b) const noexcept { nonref_derived_t ret{derived()}; ret /= b; return ret; }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto  operator| (const T2& b) const noexcept { nonref_derived_t ret{derived()}; ret |= b; return ret; }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr auto  operator& (const T2& b) const noexcept { nonref_derived_t ret{derived()}; ret &= b; return ret; }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr bool  operator!=(const T2& b) const noexcept { return !(derived() == b); }
-			template <concepts::compatible_array<DERIVED_T> T2> utils_cuda_available constexpr bool  operator==(const T2& b) const noexcept
-				{
-				size_t i{0};
-				for (; i < std::min(derived().size(), b.size()); i++)
-					{
-					if (derived()[i] != b[i]) { return false; }
-					}
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator+=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a += b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator-=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a -= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator*=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a *= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator/=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a /= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator|=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a |= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator&=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a &= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator+ (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a + b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator- (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a - b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator* (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a * b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator/ (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a / b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator| (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a | b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator& (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a & b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr bool operator!=(const a_t& a, const b_t& b) noexcept { return !(a == b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr bool operator==(const a_t& a, const b_t& b) noexcept
+		{
+		size_t i{0};
+		for (; i < std::min(a.size(), b.size()); i++)
+			{
+			if (a[i] != b[i]) { return false; }
+			}
 
-					 if constexpr (DERIVED_T::static_size > T2::static_size) { for (; i < derived().size(); i++) { if (derived()[i] != T{}) { return false; } } } //TODO check why no constexpr
-				else if constexpr (DERIVED_T::static_size < T2::static_size) { for (; i < b        .size(); i++) { if (b        [i] != T{}) { return false; } } } //TODO check why no constexpr
+		if constexpr (a_t::static_size > b_t::static_size) { for (; i < a.size(); i++) { if (a[i] != typename a_t::nonref_value_type{}) { return false; } } }
+		else
+		if constexpr (a_t::static_size < b_t::static_size) { for (; i < b.size(); i++) { if (b[i] != typename b_t::nonref_value_type{}) { return false; } } }
 
-				return true;
-				}			
+		return true;
+		}
+	//template <concepts::compatible_array<derived_t> T2> constexpr derived_t& operator =(const T2& b) noexcept { for (size_t i{0}; i < std::min(derived().size(), b.size()); i++) { derived()[i] = b[i]; } return *this; }
 #pragma endregion array
-		};
 	}
+
+
 
 namespace utils::math
 	{
