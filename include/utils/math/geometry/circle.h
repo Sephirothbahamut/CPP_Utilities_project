@@ -1,17 +1,19 @@
 #pragma once
 
-#include "../vec2.h"
+#include "common.h"
 
 namespace utils::math::geometry
 	{
-	class circle
+	template <bool hollow>
+	class circle : shape_base<circle<hollow>, hollow>
 		{
 		public:
 			vec2f center;
 			float radius;
 
+			
 			aabb bounding_box() const noexcept
-			{
+				{
 				aabb ret
 					{
 					.ll = center.x - radius,
@@ -21,8 +23,32 @@ namespace utils::math::geometry
 					};
 
 				return ret;
-			}
-		};
+				}
+			
+			vec2f closest_point_to(const point& other) const noexcept;
+			bool  contains        (const point& other) const noexcept;
+			
+			vec2f                closest_point_to(const segment& other) const noexcept;
+			bool                 intersects      (const segment& other) const noexcept;
+			std::optional<vec2f> intersection    (const segment& other) const noexcept;
+			bool                 contains        (const segment& other) const noexcept;
 
-	aabb bounding_box(const circle& from) { return from.bounding_box(); }
+			template<bool hollow_b> vec2f                closest_point_to(const aabb<hollow_b>& other) const noexcept;
+			template<bool hollow_b> vec2f                distance_min    (const aabb<hollow_b>& other) const noexcept;
+			template<bool hollow_b> bool                 intersects      (const aabb<hollow_b>& other) const noexcept;
+			template<bool hollow_b> std::optional<vec2f> intersection    (const aabb<hollow_b>& other) const noexcept;
+			template<bool hollow_b> bool                 contains        (const aabb<hollow_b>& other) const noexcept;
+			
+			template<bool hollow_b> vec2f                closest_point_to(const polygon<hollow_b>& other) const noexcept;
+			template<bool hollow_b> vec2f                distance_min    (const polygon<hollow_b>& other) const noexcept;
+			template<bool hollow_b> bool                 intersects      (const polygon<hollow_b>& other) const noexcept;
+			template<bool hollow_b> std::optional<vec2f> intersection    (const polygon<hollow_b>& other) const noexcept;
+			template<bool hollow_b> bool                 contains        (const polygon<hollow_b>& other) const noexcept;
+			
+			template<bool hollow_b> vec2f                closest_point_to(const circle<hollow_b>& other) const noexcept;
+			template<bool hollow_b> vec2f                distance_min    (const circle<hollow_b>& other) const noexcept;
+			template<bool hollow_b> bool                 intersects      (const circle<hollow_b>& other) const noexcept;
+			template<bool hollow_b> std::optional<vec2f> intersection    (const circle<hollow_b>& other) const noexcept;
+			template<bool hollow_b> bool                 contains        (const circle<hollow_b>& other) const noexcept;
+		};
 	}

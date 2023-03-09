@@ -7,6 +7,9 @@ namespace utils::math
 	template <typename T = float>
 	struct rect
 		{
+		static rect<T> from_possize(utils::math::vec2<T> position, utils::math::vec2<T> size) { return {.ll{position.x}, .up{position.y}, .rr{position.x + size.x}, .dw{position.y + size.y}}; }
+		static rect<T> from_ul_dr  (utils::math::vec2<T> ul      , utils::math::vec2<T> dr  ) { return {.ll{ul      .x}, .up{ul      .y}, .rr{dr      .x         }, .dw{dr      .y         }}; }
+
 #pragma region Variables
 		T ll{0};
 		T up{0};

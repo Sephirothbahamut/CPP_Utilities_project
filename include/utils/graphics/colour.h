@@ -88,8 +88,8 @@ namespace utils::graphics::colour
 	template<typename T, size_t size>
 	class rgb :
 		public details::rgb_named<T, size>,
-		public utils::details::vec::common<T, size, rgb<T, size>>,
-		public utils::details::vec::memberwise_operators<T, size, rgb, rgb<T, size>>,
+		public utils::details::vec::common<T, size, rgb<T, size>, rgb<typename utils::details::vec::get_nonref<T>::type, size>>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, rgb<T, size>, rgb<typename utils::details::vec::get_nonref<T>::type, size>>>,
 		public utils::details::vec::output<details::colour_name, rgb<T, size>>
 		{
 		public:

@@ -1,10 +1,12 @@
 #pragma once
 
-#include "../rect.h"
+#include "common.h"
 
 namespace utils::math::geometry
 	{
-	using aabb = rect<float>;
-
-	aabb bounding_box(const aabb& from) { return from; }
+	template <bool hollow>
+	struct aabb : public rect<float>, shape_base<aabb<hollow>, hollow>
+		{
+		aabb bounding_box() const noexcept { return this; }
+		};
 	}

@@ -17,6 +17,7 @@ namespace utils::math::geometry
 
 #pragma region Point
 	#pragma region Point-point
+		inline point closest(const point& a, const point& b) noexcept { return a; }
 		inline float distance(const point& a, const point& b) noexcept { return point::distance(a, b); }
 
 		inline bool intersects(const point& a, const point& b) noexcept { return a == b; };

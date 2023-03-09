@@ -16,8 +16,7 @@
 
 namespace utils::math::geometry
 	{
-	template <bool hollow>
-	class polygon : public shape_base<polygon<hollow>, hollow>
+	class polygon
 		{
 		public:
 			polygon(std::initializer_list<vec2f>&& vertices) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};

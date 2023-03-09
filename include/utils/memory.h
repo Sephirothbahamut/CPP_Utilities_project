@@ -43,6 +43,6 @@ namespace utils
 	namespace concepts
 		{
 		template <typename T>
-		concept reference = std::same_as<T, utils::reference<typename T::value_type>>;
+		concept reference = std::same_as<T, utils::reference<typename T::value_type>> || std::same_as<T, std::reference_wrapper<typename T::value_type>>;
 		}
 	}

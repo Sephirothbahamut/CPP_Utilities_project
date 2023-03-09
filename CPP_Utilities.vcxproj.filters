@@ -340,6 +340,33 @@
     <ClInclude Include="include\utils\math\mat.h">
       <Filter>Utils\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\inner_shapes.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_aabb.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_circle.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_continuous_point.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_point.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_polygon.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_segment.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\capsule.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions_capsule.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
