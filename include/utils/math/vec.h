@@ -174,7 +174,12 @@ namespace utils::math
 		}
 
 	template<typename T, size_t size>
-	class vec:
+	class
+	#ifdef utils_compiler_msvc
+		//Other compilers make empty bases occupy 0, MSVC doesn't always do that without the following line:
+		__declspec(empty_bases)
+	#endif
+	vec:
 		public details::vec_named<T, size>,
 		public utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>,
 		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>>,

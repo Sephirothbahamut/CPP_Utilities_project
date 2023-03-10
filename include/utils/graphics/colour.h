@@ -86,7 +86,12 @@ namespace utils::graphics::colour
 		}
 
 	template<typename T, size_t size>
-	class rgb :
+	class
+	#ifdef utils_compiler_msvc
+			//Other compilers make empty bases occupy 0, MSVC doesn't always do that without the following line:
+			__declspec(empty_bases)
+	#endif
+	rgb :
 		public details::rgb_named<T, size>,
 		public utils::details::vec::common<T, size, rgb<T, size>, rgb<typename utils::details::vec::get_nonref<T>::type, size>>,
 		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, rgb<T, size>, rgb<typename utils::details::vec::get_nonref<T>::type, size>>>,

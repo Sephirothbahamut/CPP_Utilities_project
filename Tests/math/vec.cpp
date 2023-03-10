@@ -11,6 +11,25 @@ namespace Tests
 	TEST_CLASS(math_vec)
 		{
 		public:
+			TEST_METHOD(memory_layout_and_sizes)
+				{
+				utils::math::vec<float, 4> vec_a{5.f, 0.f, 0.f, 5.f};
+				utils::math::vec<float, 3> vec_b{vec_a};
+				utils::math::vec<float, 2> vec_c{3.f, 2.f};
+				utils::math::vec<float, 8> vec_d{vec_c, 1.f};
+				auto vec_e{!vec_a};
+				utils::math::vec<float, 8> vec_f{3.f, 2.f, 1.f, 0.f};
+
+				Assert::AreEqual(sizeof(decltype(vec_a)), (sizeof(float) * 4));
+				Assert::AreEqual(sizeof(decltype(vec_b)), (sizeof(float) * 3));
+				Assert::AreEqual(sizeof(decltype(vec_c)), (sizeof(float) * 2));
+				Assert::AreEqual(sizeof(decltype(vec_d)), (sizeof(float) * 8));
+				Assert::AreEqual(sizeof(decltype(vec_e)), (sizeof(float) * 4));
+				Assert::AreEqual(sizeof(decltype(vec_f)), (sizeof(float) * 8));
+
+				Assert::AreEqual(sizeof(decltype(vec_c + vec_b)), (sizeof(float) * std::max(decltype(vec_c)::static_size, decltype(vec_b)::static_size)));
+				Assert::AreEqual(sizeof(decltype(vec_b + vec_c)), (sizeof(float) * std::max(decltype(vec_c)::static_size, decltype(vec_b)::static_size)));
+				}
 			TEST_METHOD(constructors)
 				{
 				utils::math::vec<float, 2> zero_default;
