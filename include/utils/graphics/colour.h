@@ -112,30 +112,48 @@ namespace utils::graphics::colour
 #pragma region constructors
 			constexpr rgb(base base, T components_multiplier = max_value, T alpha = max_value)
 				{
-				if constexpr (static_size >= 1) { this->r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow || base == base::magenta); }
-				if constexpr (static_size >= 2) { this->g = components_multiplier * (base == base::white || base == base::green || base == base::yellow || base == base::cyan); }
+				if constexpr (static_size >= 1) { this->r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta); }
+				if constexpr (static_size >= 2) { this->g = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan); }
 				if constexpr (static_size >= 3) { this->b = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan); }
 				if constexpr (static_size >= 4) { this->a = alpha; }
 				}
 			
 			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) >= static_size)
+				requires(sizeof...(Args) == static_size)
 			constexpr rgb(const Args&... args) : details::rgb_named<T, size>{.array{static_cast<value_type>(args)...}} {}
 
-			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) < static_size)
-			constexpr rgb(const Args&... args) : details::rgb_named<T, size>{.array{static_cast<value_type>(args)...}} 
+			constexpr rgb(const value_type& value, const value_type& alpha = max_value)
+				requires(static_size == 4)
 				{
-				for (size_t i = sizeof...(Args); i < static_size; i++)
+				for (size_t i{0}; i < 4; i++)
 					{
-					if constexpr (sizeof...(Args)) { this->array[i] = this->array[sizeof...(Args) - 1]; }
-					else { this->array[i] = T{0}; }
+					this->array[i] = value;
+					}
+				this->array[4] = alpha;
+				}
+			constexpr rgb(const value_type& value)
+				requires(static_size <= 3)
+				{
+				for (size_t i{0}; i < static_size; i++)
+					{
+					this->array[i] = value;
 					}
 				}
 
 			template <concepts::rgb other_t>
 				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size == static_size)
-			constexpr rgb(const other_t& other) : details::rgb_named<T, size>{.array{std::apply([](const auto&... values) { return std::array<value_type, size>{static_cast<value_type>(values)...}; }, other.array)}} {}
+			constexpr rgb(const other_t& other) : details::rgb_named<T, size>{.array{std::apply([](const auto&... values) 
+				{
+				if constexpr (std::same_as<value_type, uint8_t> && std::same_as<other_t::value_type, float>)
+					{
+					return std::array<value_type, size>{static_cast<uint8_t>(values * static_cast<float>(max_value))...};
+					}
+				else if constexpr (std::same_as<value_type, float> && std::same_as<other_t::value_type, uint8_t>)
+					{
+					return std::array<value_type, size>{(static_cast<float>(values) / static_cast<float>(other_t::max_value))...};
+					}
+				}, other.array)}}
+				{}
 			
 			template <concepts::rgb other_t>
 				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size != static_size && utils::concepts::default_constructible<value_type>)

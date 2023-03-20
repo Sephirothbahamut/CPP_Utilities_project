@@ -16,8 +16,7 @@
 
 namespace utils::math::geometry
 	{
-	template <bool hollow>
-	class polygon : public shape_base<polygon<hollow>, hollow>
+	class polygon : public shape_base<polygon>
 		{
 		public:
 			polygon(std::initializer_list<vec2f>&& vertices) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};
@@ -33,7 +32,7 @@ namespace utils::math::geometry
 				utils::math::vecref2f b;
 
 				segment_ref(vec2f& a, vec2f& b) noexcept : a{a}, b{b} {}
-				operator segment() const noexcept { return {a, b}; }
+				operator segment() const noexcept { return segment{utils::math::vec2f{a}, utils::math::vec2f{b}}; }
 
 				segment_ref(segment_ref&& move) = delete;
 				segment_ref& operator=(segment_ref&& move) = delete;
@@ -137,12 +136,12 @@ namespace utils::math::geometry
 			aabb bounding_box() const noexcept
 				{
 				aabb ret
-					{
-					.ll =  constants::finf,
-					.up =  constants::finf,
-					.rr = -constants::finf,
-					.dw = -constants::finf,
-					};
+					{{
+					.ll{ constants::finf},
+					.up{ constants::finf},
+					.rr{-constants::finf},
+					.dw{-constants::finf},
+					}};
 
 				for(const auto& vertex : get_vertices())
 					{
@@ -155,10 +154,42 @@ namespace utils::math::geometry
 				return ret;
 				}
 
-			private:
-				std::vector<vec2f> _vertices;
+		private:
+			std::vector<vec2f> _vertices;
+				
+			using shape_base<polygon>::closest_point_and_distance;
+			using shape_base<polygon>::closest_point_to;
+			using shape_base<polygon>::distance_min;
+			using shape_base<polygon>::vector_to;
+			using shape_base<polygon>::intersects;
+			using shape_base<polygon>::intersection;
+			using shape_base<polygon>::contains;
+			using shape_base<polygon>::collision;
 
+			closest_point_and_distance_t closest_point_and_distance(const point& other) const noexcept;
+			bool                 intersects      (const point& other) const noexcept;
+			std::optional<vec2f> intersection    (const point& other) const noexcept;
+			bool                 contains        (const point& other) const noexcept;
+			
+			closest_point_and_distance_t closest_point_and_distance(const segment& other) const noexcept;
+			bool                 intersects      (const segment& other) const noexcept;
+			std::optional<vec2f> intersection    (const segment& other) const noexcept;
+			bool                 contains        (const segment& other) const noexcept;
 
+			closest_point_and_distance_t closest_point_and_distance(const aabb& other) const noexcept;
+			bool                 intersects      (const aabb& other) const noexcept;
+			std::optional<vec2f> intersection    (const aabb& other) const noexcept;
+			bool                 contains        (const aabb& other) const noexcept;
+			
+			closest_point_and_distance_t closest_point_and_distance(const polygon& other) const noexcept;
+			bool                 intersects      (const polygon& other) const noexcept;
+			std::optional<vec2f> intersection    (const polygon& other) const noexcept;
+			bool                 contains        (const polygon& other) const noexcept;
+			
+			closest_point_and_distance_t closest_point_and_distance(const circle& other) const noexcept;
+			bool                 intersects      (const circle& other) const noexcept;
+			std::optional<vec2f> intersection    (const circle& other) const noexcept;
+			bool                 contains        (const circle& other) const noexcept;
 		};
 
 	struct convex_polygon : polygon 
@@ -166,6 +197,12 @@ namespace utils::math::geometry
 		convex_polygon(std::initializer_list<vec2f>&& vertices) : polygon{std::forward<std::initializer_list<vec2f>>(vertices)} {};
 		convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
 		convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}
+
+		using shape_base<polygon>::contains;
+
+		bool contains(const point  & other) const noexcept;
+		bool contains(const aabb   & other) const noexcept;
+		bool contains(const polygon& other) const noexcept;
 		};
 
 	aabb bounding_box(const polygon& from) { return from.bounding_box(); }

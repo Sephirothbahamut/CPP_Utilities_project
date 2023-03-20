@@ -4,9 +4,8 @@
 
 namespace utils::math::geometry
 	{
-	template <bool hollow>
-	struct aabb : public rect<float>, shape_base<aabb<hollow>, hollow>
+	struct aabb : public rect<float>, shape_base<aabb>
 		{
-		aabb bounding_box() const noexcept { return this; }
+		aabb bounding_box() const noexcept { return *this; }
 		};
 	}
