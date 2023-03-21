@@ -48,7 +48,7 @@ namespace utils::details::vec
 		return a;
 		}
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t>
-	utils_cuda_available constexpr typename a_t::nonref_derived_t& operator_scalar(const a_t& a, const b_t& b) noexcept
+	utils_cuda_available constexpr typename a_t::nonref_derived_t operator_scalar(const a_t& a, const b_t& b) noexcept
 		{
 		typename a_t::nonref_derived_t ret;
 		for (size_t i{0}; i < a.size(); i++)
@@ -70,7 +70,7 @@ namespace utils::details::vec
 		}
 
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t>
-	utils_cuda_available constexpr typename get_larger<a_t, b_t>::type::nonref_derived_t& operator_vector(const a_t& a, const b_t& b) noexcept
+	utils_cuda_available constexpr typename get_larger<a_t, b_t>::type::nonref_derived_t operator_vector(const a_t& a, const b_t& b) noexcept
 		{
 		using ret_t = typename get_larger<a_t, b_t>::type::nonref_derived_t;
 		ret_t ret;

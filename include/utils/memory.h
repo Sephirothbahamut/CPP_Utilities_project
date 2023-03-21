@@ -22,27 +22,28 @@ namespace utils
 		constexpr unique_deepcopy_ptr& operator=(const unique_deepcopy_ptr& copy) { std::unique_ptr<T>::operator=(std::make_unique<T>(*copy)); return *this; }
 		};
 
-	/// <summary> Non rebindable alternative to std::reference_wrapper. Meant mostly for strictly mimicing a T& inside containers. For any other use prefer std::reference_wrapper. </summary>
-	template <typename T>
-	class reference
-		{
-		public:
-			using value_type = T;
-
-			reference(value_type& ref) noexcept : ptr{&ref} {}
-
-			constexpr operator value_type () const noexcept { return *ptr; }
-			constexpr operator value_type&()       noexcept { return *ptr; }
-
-			constexpr reference& operator=(const value_type& value) noexcept { (*ptr) = value; return *this; }
-
-		private:
-			utils::observer_ptr<value_type> ptr;
-		};
-
 	namespace concepts
 		{
 		template <typename T>
-		concept reference = std::same_as<T, utils::reference<typename T::value_type>> || std::same_as<T, std::reference_wrapper<typename T::value_type>>;
+		concept reference = std::same_as<T, std::reference_wrapper<typename T::type>>;
 		}
+
+	template <typename T>
+	struct remove_cvref
+		{
+		using type = std::remove_cvref_t<T>;
+		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
+		type cast(const T& input) { return static_cast<type>(input); }
+		};
+
+	template <concepts::reference T>
+	struct remove_cvref<T>
+		{
+		using type = std::remove_cvref_t<typename T::type>;
+		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
+		type cast(const T& input) { return static_cast<type>(input); }
+		};
+
+	template <typename T>
+	using remove_cvref_t = typename remove_cvref<T>::type;
 	}

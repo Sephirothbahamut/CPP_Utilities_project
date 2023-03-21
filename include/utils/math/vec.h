@@ -21,7 +21,7 @@ namespace utils::math
 	
 	//fast typenames
 	template <typename T, size_t size> 
-	using vecref = vec<utils::reference<T>, size>;
+	using vecref = vec<std::reference_wrapper<T>, size>;
 	
 	template <size_t size> using vec_i      = vec   <int          , size>;
 	template <size_t size> using vec_i8     = vec   <int8_t       , size>;
@@ -181,14 +181,14 @@ namespace utils::math
 	#endif
 	vec:
 		public details::vec_named<T, size>,
-		public utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>>,
+		public utils::details::vec::common<T, size, vec<T, size>, vec<utils::remove_cvref_t<T>, size>>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec<T, size>, vec<utils::remove_cvref_t<T>, size>>>,
 		public utils::details::vec::output<details::vec_name, vec<T, size>>,
 		public details::vec_sized_specialization<T, size, vec<T, size>>
 		{
 		public:
 			using derived_t = vec<T, size>;
-			using common_t = utils::details::vec::common<T, size, vec<T, size>, vec<typename utils::details::vec::get_nonref<T>::type, size>>;
+			using common_t = utils::details::vec::common<T, size, vec<T, size>, vec<utils::remove_cvref_t<T>, size>>;
 
 		private:
 			using arr_t = std::array<T, size>;
@@ -215,7 +215,7 @@ namespace utils::math
 			utils_cuda_available constexpr vec() noexcept : vec{value_type{0}} {}
 
 			//special case for vec of references
-			template <std::same_as<typename value_type::value_type>... Args>
+			template <std::same_as<utils::remove_cvref_t<value_type>>... Args>
 				requires(utils::concepts::reference<value_type> && sizeof...(Args) == static_size)
 			utils_cuda_available constexpr vec(Args&... args) noexcept : details::vec_named<T, size>{.array{args...}} {}
 
@@ -236,7 +236,7 @@ namespace utils::math
 			
 			//special case for vec of references
 			template <concepts::vec other_t>
-				requires(utils::concepts::reference<value_type> && std::same_as<typename other_t::value_type, typename value_type::value_type> && other_t::static_size == static_size)
+				requires(utils::concepts::reference<value_type> && std::same_as<typename other_t::value_type, utils::remove_cvref_t<value_type>> && other_t::static_size == static_size)
 			utils_cuda_available constexpr vec(      other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](      auto&... values) -> std::array<value_type, size> { return {                        values ...}; }, other.array)}} {}
 
 			template <concepts::vec other_t>

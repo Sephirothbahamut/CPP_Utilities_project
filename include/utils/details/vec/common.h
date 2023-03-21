@@ -24,12 +24,6 @@ namespace utils::details::vec
 		concept compatible_array = array<T1> && array<T2> && std::convertible_to<typename T1::value_type, typename T2::value_type>;
 		}
 
-	template <typename T>
-	struct get_nonref { using type = T; };
-
-	template <utils::concepts::reference T>
-	struct get_nonref<T> { using type = typename T::value_type; };
-
 	template <concepts::array a_t, concepts::array b_t>
 	struct get_larger
 		{
@@ -54,7 +48,7 @@ namespace utils::details::vec
 			using const_iterator          = typename arr_t::const_iterator        ;
 			using reverse_iterator        = typename arr_t::reverse_iterator      ;
 			using const_reverse_iterator  = typename arr_t::const_reverse_iterator;
-			using nonref_value_type       = typename get_nonref<T>::type;
+			using nonref_value_type       = typename utils::remove_cvref_t<value_type>;
 			using nonref_derived_t        = NONREF_DERIVED_T;
 	
 		private:
