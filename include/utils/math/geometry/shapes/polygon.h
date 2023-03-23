@@ -84,18 +84,19 @@ namespace utils::math::geometry
 		};
 
 	template <bool view>
-	struct convex_polygon : polygon<view>
+	class convex_polygon : public polygon<view>
 		{
-		using polygon<view>;
-		convex_polygon(std::initializer_list<vec2f>&& vertices) : polygon{std::forward<std::initializer_list<vec2f>>(vertices)} {};
-		convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
-		convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}
+		public:
+			using polygon<view>;
+			convex_polygon(std::initializer_list<vec2f>&& vertices) : polygon{std::forward<std::initializer_list<vec2f>>(vertices)} {};
+			convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
+			convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}
 
-		using shape_base<polygon<view>>::contains;
+			using shape_base<polygon<view>>::contains;
 
-		template <bool view> bool contains(const point  <view>& other) const noexcept;
-		template <bool view> bool contains(const aabb   <view>& other) const noexcept;
-		template <bool view> bool contains(const polygon<view>& other) const noexcept;
+			template <bool view> bool contains(const point  <view>& other) const noexcept;
+			template <bool view> bool contains(const aabb   <view>& other) const noexcept;
+			template <bool view> bool contains(const polygon<view>& other) const noexcept;
 		};
 	}
 

@@ -77,6 +77,7 @@ namespace utils::math
 		struct vec_named { std::array<T, size> array; };
 
 		utils_disable_warnings_begin
+			utils_disable_warning_msvc(4201)
 			utils_disable_warning_clang("-Wgnu-anonymous-struct")
 			utils_disable_warning_clang("-Wnested-anon-types")
 			utils_disable_warning_gcc("-Wpedantic")

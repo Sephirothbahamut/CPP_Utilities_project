@@ -6,7 +6,7 @@
 namespace utils::math::geometry
 	{
 	template <bool view>
-	struct circle : shape_base<circle<view>>
+	class circle : shape_base<circle<view>>
 		{
 		public:
 			using vertex_t = std::conditional_t<view, vecref2f, vec2f>;

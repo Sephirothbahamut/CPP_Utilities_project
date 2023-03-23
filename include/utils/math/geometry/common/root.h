@@ -14,7 +14,7 @@ namespace utils::math
 	template <typename T, size_t size>
 	class vec;
 	template <typename T>
-	class rect;
+	struct rect;
 	}
 
 namespace utils::math::geometry

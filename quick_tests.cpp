@@ -47,12 +47,29 @@ int main()
 
 	utils::math::geometry::point<false> p{1.f, 1.f};
 	
-	std::vector<utils::math::vec2f> container{{1, 2}, {2, 3}, {3, 4}};
-
+	p.closest_point_and_distance(circ);
 	std::cout << circ.contains(circ);
 
-	if (auto opt{circ.collision(p)})
-		{
-		std::cout << opt.value();
-		}
+	//if (auto opt{circ.collision(p)})
+	//	{
+	//	std::cout << opt.value();
+	//	}
+
+
+
+	//Memory references to sequential storage on gpu
+
+	//std::vector<utils::math::vec2f> memory_pool
+	//	{
+	//		//polygon vertices
+	//		{1, 2}, {2, 3}, {3, 4}, 
+	//		//point
+	//		{2.5, 2.5},
+	//		//circle {pos }, {radius, 0}
+	//		{3, 2}, {2, 0} 
+	//	};
+
+	//utils::math::geometry::polygon<true> ref_poly{memory_pool.data(), memory_pool.data() + 3};
+	//utils::math::geometry::point  <true> ref_pt  {*(memory_pool.data() + 3)};
+	//utils::math::geometry::circle <true> ref_circ{.center{*(memory_pool.data() + 4)}, .radius{(memory_pool.data() + 5)->y}};
 	}
