@@ -1,7 +1,5 @@
 #pragma once
-
-#include "point.h"
-#include "segment.h"
+#include "../shapes.h"
 
 namespace utils::math::geometry
 	{

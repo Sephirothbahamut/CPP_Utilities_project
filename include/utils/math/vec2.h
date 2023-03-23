@@ -2,6 +2,7 @@
 
 #include "vec.h"
 #include "angle.h"
+#include "geometry/common/root.h"
 
 namespace utils::math
 	{
@@ -46,7 +47,7 @@ namespace utils::math
 	namespace details
 		{
 		template<class T, typename DERIVED_T>
-		class vec_sized_specialization<T, 2, DERIVED_T>
+		class vec_sized_specialization<T, 2, DERIVED_T> : public geometry::shape_base<DERIVED_T>
 			{
 			public:
 				using derived_t = DERIVED_T;
@@ -54,8 +55,8 @@ namespace utils::math
 			private:
 				utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
 				utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
-				utils_cuda_available constexpr const auto& get_arr() const noexcept { return derived().array; }
-				utils_cuda_available constexpr       auto& get_arr()       noexcept { return derived().array; }
+				utils_cuda_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
+				utils_cuda_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
 
 				using arr_t = std::array<T, 2>;
 
@@ -101,6 +102,34 @@ namespace utils::math
 				utils_cuda_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
 				utils_cuda_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
 				utils_cuda_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+
+#pragma region geometry
+			template <bool view> vec2f closest_point_to(const geometry::point         <view>& b) const noexcept;
+			template <bool view> vec2f closest_point_to(const geometry::segment       <view>& b) const noexcept;
+			template <bool view> vec2f closest_point_to(const geometry::aabb          <view>& b) const noexcept;
+			template <bool view> vec2f closest_point_to(const geometry::polygon       <view>& b) const noexcept;
+			template <bool view> vec2f closest_point_to(const geometry::convex_polygon<view>& b) const noexcept;
+			template <bool view> vec2f closest_point_to(const geometry::circle        <view>& b) const noexcept;
+			template <bool view> vec2f closest_point_to(const geometry::capsule       <view>& b) const noexcept;
+
+			template <bool view> float distance_min    (const geometry::point         <view>& b) const noexcept;
+			template <bool view> float distance_min    (const geometry::segment       <view>& b) const noexcept;
+			template <bool view> float distance_min    (const geometry::aabb          <view>& b) const noexcept;
+			template <bool view> float distance_min    (const geometry::polygon       <view>& b) const noexcept;
+			template <bool view> float distance_min    (const geometry::convex_polygon<view>& b) const noexcept;
+			template <bool view> float distance_min    (const geometry::circle        <view>& b) const noexcept;
+			template <bool view> float distance_min    (const geometry::capsule       <view>& b) const noexcept;
+			
+			template <bool view> bool contains(const geometry::point         <view>& b) const noexcept;
+			template <bool view> bool contains(const geometry::segment       <view>& b) const noexcept;
+			template <bool view> bool contains(const geometry::aabb          <view>& b) const noexcept;
+			template <bool view> bool contains(const geometry::polygon       <view>& b) const noexcept;
+			template <bool view> bool contains(const geometry::convex_polygon<view>& b) const noexcept;
+			template <bool view> bool contains(const geometry::circle        <view>& b) const noexcept;
+			template <bool view> bool contains(const geometry::capsule       <view>& b) const noexcept;
+
+			geometry::aabb<false> bounding_box() const noexcept;
+#pragma endregion geometry
 			};
 		}
 	}

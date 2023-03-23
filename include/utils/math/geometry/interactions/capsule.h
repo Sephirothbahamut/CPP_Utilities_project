@@ -1,6 +1,5 @@
 #pragma once
-
-#include "common.h"
+#include "../shapes.h"
 
 namespace utils::math::geometry
 	{

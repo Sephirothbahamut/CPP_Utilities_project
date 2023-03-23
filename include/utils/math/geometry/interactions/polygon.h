@@ -1,17 +1,10 @@
 #pragma once
-
-#include <variant>
-#include <vector>
-#include <array>
-#include <iterator>
-#include <ranges>
-#include <initializer_list>
-
-#include "inner_shapes.h"
+#include "../shapes.h"
 
 namespace utils::math::geometry
 	{
-	closest_point_and_distance_t polygon::closest_point_and_distance(const point& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	closest_point_and_distance_t polygon<view_a>::closest_point_and_distance(const point<view_b>& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -22,7 +15,8 @@ namespace utils::math::geometry
 		return best;
 		}
 
-	bool polygon::intersects(const point& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::intersects(const point<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -31,7 +25,8 @@ namespace utils::math::geometry
 		return false;
 		}
 
-	std::optional<vec2f> polygon::intersection(const point& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	std::optional<vec2f> polygon<view_a>::intersection(const point<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -39,9 +34,10 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const point& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::contains(const point<view_b>& other) const noexcept
 		{
-		// A point is inside a polygon if given a line in any direction, it intersects the polygon segments an uneven number of times
+		// A point<view_b> is inside a polygon<view_b> if given a line in any direction, it intersects the polygon<view_b> segments an uneven number of times
 		segment tmp_segment{other, vec2f{other.x + bounding_box().right, other.y}}; //A segment which lies on a generic horizontal line
 
 		bool is_inside = false;
@@ -71,16 +67,18 @@ namespace utils::math::geometry
 		return is_inside;
 		}
 
-	bool convex_polygon::contains(const point& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool convex_polygon<view_a>::contains(const point<view_b>& other) const noexcept
 		{
-		for (const auto& edge : get_edges())
+		for (const auto& edge : polygon<view_a>::get_edges())
 			{
 			if (edge.point_side(other) != side_t::right) { return false; }
 			}
 		return true;
 		}
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const segment& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	closest_point_and_distance_t polygon<view_a>::closest_point_and_distance(const segment<view_b>& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -91,7 +89,8 @@ namespace utils::math::geometry
 		return best;
 		}
 
-	bool polygon::intersects(const segment& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::intersects(const segment<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -99,7 +98,8 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const segment& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	std::optional<vec2f> polygon<view_a>::intersection(const segment<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -107,9 +107,11 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const segment& other) const noexcept { return contains(other.a) && contains(other.b); }
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::contains(const segment<view_b>& other) const noexcept { return contains(other.a) && contains(other.b); }
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const aabb& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	closest_point_and_distance_t polygon<view_a>::closest_point_and_distance(const aabb<view_b>& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -119,7 +121,8 @@ namespace utils::math::geometry
 			}
 		return best;
 		}
-	bool polygon::intersects(const aabb& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::intersects(const aabb<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -127,7 +130,8 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const aabb& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	std::optional<vec2f> polygon<view_a>::intersection(const aabb<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -135,7 +139,8 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const aabb& other) const noexcept 
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::contains(const aabb<view_b>& other) const noexcept 
 		{
 		return contains(other.ul()) 
 			&& contains(other.ur()) 
@@ -143,7 +148,8 @@ namespace utils::math::geometry
 			&& contains(other.dl())
 			&& !intersects(other);
 		}
-	bool convex_polygon::contains(const aabb& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool convex_polygon<view_a>::contains(const aabb<view_b>& other) const noexcept
 		{
 		return contains(other.ul())
 			&& contains(other.ur())
@@ -151,7 +157,8 @@ namespace utils::math::geometry
 			&& contains(other.dl());
 		}
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const polygon& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	closest_point_and_distance_t polygon<view_a>::closest_point_and_distance(const polygon<view_b>& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -161,7 +168,8 @@ namespace utils::math::geometry
 			}
 		return best;
 		}
-	bool polygon::intersects(const polygon& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::intersects(const polygon<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -169,7 +177,8 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const polygon& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	std::optional<vec2f> polygon<view_a>::intersection(const polygon<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -177,7 +186,8 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const polygon& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::contains(const polygon<view_b>& other) const noexcept
 		{
 		for (const auto& vertex : other.get_vertices())
 			{
@@ -185,7 +195,8 @@ namespace utils::math::geometry
 			}
 		return !intersects(other);
 		}
-	bool convex_polygon::contains(const polygon& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool convex_polygon<view_a>::contains(const polygon<view_b>& other) const noexcept
 		{
 		for (const auto& vertex : other.get_vertices())
 			{
@@ -194,7 +205,8 @@ namespace utils::math::geometry
 		return true;
 		}
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const circle& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	closest_point_and_distance_t polygon<view_a>::closest_point_and_distance(const circle<view_b>& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -204,7 +216,8 @@ namespace utils::math::geometry
 			}
 		return best;
 		}
-	bool polygon::intersects(const circle& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::intersects(const circle<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -212,7 +225,8 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const circle& other) const noexcept
+	template <bool view_a> template <bool view_b>
+	std::optional<vec2f> polygon<view_a>::intersection(const circle<view_b>& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -220,7 +234,9 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const circle& other) const noexcept
+
+	template <bool view_a> template <bool view_b>
+	bool polygon<view_a>::contains(const circle<view_b>& other) const noexcept
 		{
 		return contains(other.center) && (distance_min(other.center) < other.radius);
 

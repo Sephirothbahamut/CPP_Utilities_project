@@ -1,12 +1,13 @@
 #pragma once
-#include <ostream>
-#include <array>
-#include <vector>
-#include <list>
-#include <forward_list>
 #include <set>
 #include <map>
+#include <list>
+#include <array>
+#include <vector>
 #include <string>
+#include <ostream>
+#include <optional>
+#include <forward_list>
 
 #include "../console/colour.h"
 
@@ -17,6 +18,20 @@ namespace utils::output
 		inline std::ostream& operator<<(std::ostream& os, const utils::console::colour::foreground_t      & c) { return utils::output::operator<<(os, c); }
 		inline std::ostream& operator<<(std::ostream& os, const utils::console::colour::background_t      & c) { return utils::output::operator<<(os, c); }
 		inline std::ostream& operator<<(std::ostream& os, const utils::console::colour::restore_defaults_t& c) { return utils::output::operator<<(os, c); }
+		
+		template <typename T>
+		inline ::std::ostream& operator<<(::std::ostream& os, const ::std::optional<T>& container)
+			{
+			namespace ucc = utils::console::colour;
+			os << ucc::brace << "(" << ucc::value;
+			if (container.has_value()) 
+				{
+				using namespace utils::output; 
+				os << (*container); 
+				}
+			else { os << "nullopt"; }
+			return os << ucc::brace << ")";
+			}
 
 		template <typename FIRST, typename SECOND>
 		inline ::std::ostream& operator<<(::std::ostream& os, const ::std::pair<FIRST, SECOND>& container)
@@ -142,6 +157,15 @@ namespace utils::output
 			return os << ucc::brace << "]";
 			}
 		}
+	
+	template <typename T>
+	inline ::std::ostream& operator<<(::std::ostream& os, const ::std::optional<T>& container)
+		{
+		namespace ucc = utils::console::colour;
+		os << ucc::type << "std::optional";
+		return typeless::operator<<(os, container);
+		}
+		
 	template <typename FIRST, typename SECOND>
 	inline ::std::ostream& operator<<(::std::ostream& os, const ::std::pair<FIRST, SECOND>& container)
 		{

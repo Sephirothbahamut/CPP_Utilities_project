@@ -1,11 +1,11 @@
 #pragma once
 #include "../../concepts.h"
 
-#include "segment.h"
-#include "aabb.h"
-#include "circle.h"
-#include "point.h"
-#include "polygon.h"
+#include "shapes/segment.h"
+#include "shapes/aabb.h"
+#include "shapes/circle.h"
+#include "shapes/point.h"
+#include "shapes/polygon.h"
 
 namespace utils::math::geometry
 	{

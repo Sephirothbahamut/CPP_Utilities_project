@@ -2,11 +2,12 @@
 
 #include "../memory.h"
 #include "vec2.h"
+#include "geometry/common/root.h"
 
 namespace utils::math
 	{
 	template <typename T = float>
-	struct rect
+	struct rect : geometry::shape_with_vertices_base<rect<T>>
 		{
 		using value_type = T;
 		using nonref_value_type = utils::remove_cvref_t<value_type>;

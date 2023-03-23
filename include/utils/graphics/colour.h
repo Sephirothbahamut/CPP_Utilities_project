@@ -93,8 +93,8 @@ namespace utils::graphics::colour
 	#endif
 	rgb :
 		public details::rgb_named<T, size>,
-		public utils::details::vec::common<T, size, rgb<T, size>, rgb<typename utils::details::vec::get_nonref<T>::type, size>>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, rgb<T, size>, rgb<typename utils::details::vec::get_nonref<T>::type, size>>>,
+		public utils::details::vec::common<T, size, rgb<T, size>, rgb<utils::remove_cvref_t<T>, size>>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, rgb<T, size>, rgb<utils::remove_cvref_t<T>, size>>>,
 		public utils::details::vec::output<details::colour_name, rgb<T, size>>
 		{
 		public:

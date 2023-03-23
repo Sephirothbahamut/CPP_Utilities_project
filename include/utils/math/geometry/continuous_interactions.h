@@ -11,7 +11,6 @@
 #include "aabb.h"
 
 #include "continuous_point.h"
-#include "interactions.h"
 
 #include "../constants.h"
 

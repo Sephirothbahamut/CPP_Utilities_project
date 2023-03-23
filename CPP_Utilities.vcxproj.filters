@@ -56,6 +56,15 @@
     <Filter Include="Utils\details\vec">
       <UniqueIdentifier>{052b3c9f-7f3c-4702-8e79-2ae015d1a897}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\math\geometry\common">
+      <UniqueIdentifier>{fa51f762-d413-4a27-953d-b981bf5ae568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\math\geometry\shapes">
+      <UniqueIdentifier>{415f7683-8f4a-4823-ad91-3744c569844c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\math\geometry\interactions">
+      <UniqueIdentifier>{c45e4545-15f3-4e79-a2c7-076ac0e8e9bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -99,42 +108,6 @@
     </ClInclude>
     <ClInclude Include="include\utils\graphics\colour.h">
       <Filter>Utils\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\continuous_interactions.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\continuous_point.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\point.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\polygon.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\segment.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes_continuous.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes_discrete.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\transformations.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\aabb.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\circle.h">
-      <Filter>Utils\math\geometry</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\average.h">
       <Filter>Utils\math</Filter>
@@ -316,9 +289,6 @@
     <ClInclude Include="include\utils\compilation\CUDA.h">
       <Filter>Utils\compilation</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\common.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\details\vec\common.h">
       <Filter>Utils\details\vec</Filter>
     </ClInclude>
@@ -340,32 +310,68 @@
     <ClInclude Include="include\utils\math\mat.h">
       <Filter>Utils\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\inner_shapes.h">
+    <ClInclude Include="include\utils\math\geometry\common\begin.h">
+      <Filter>Utils\math\geometry\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes.h">
       <Filter>Utils\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_aabb.h">
+    <ClInclude Include="include\utils\math\geometry\shapes_discrete.h">
       <Filter>Utils\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_circle.h">
+    <ClInclude Include="include\utils\math\geometry\shapes_continuous.h">
       <Filter>Utils\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_continuous_point.h">
+    <ClInclude Include="include\utils\math\geometry\shapes\capsule.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes\circle.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes\continuous_point.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes\point.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes\polygon.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes\segment.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes\aabb.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions.h">
       <Filter>Utils\math\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_point.h">
-      <Filter>Utils\math\geometry</Filter>
+    <ClInclude Include="include\utils\math\geometry\interactions\capsule.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_polygon.h">
-      <Filter>Utils\math\geometry</Filter>
+    <ClInclude Include="include\utils\math\geometry\interactions\circle.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_segment.h">
-      <Filter>Utils\math\geometry</Filter>
+    <ClInclude Include="include\utils\math\geometry\interactions\continuous_point.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\capsule.h">
-      <Filter>Utils\math\geometry</Filter>
+    <ClInclude Include="include\utils\math\geometry\interactions\point.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions_capsule.h">
-      <Filter>Utils\math\geometry</Filter>
+    <ClInclude Include="include\utils\math\geometry\interactions\polygon.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\segment.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\aabb.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\common\root.h">
+      <Filter>Utils\math\geometry\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\common\with_vertices_end.h">
+      <Filter>Utils\math\geometry\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

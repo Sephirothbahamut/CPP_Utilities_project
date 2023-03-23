@@ -1,7 +1,7 @@
 #pragma once
 #include "../../concepts.h"
 
-#include "continuous_point.h"
+#include "shapes/continuous_point.h"
 
 namespace utils::math::geometry
 	{

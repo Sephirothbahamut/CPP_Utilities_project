@@ -1,7 +1,7 @@
 #pragma once
 #include "../compilation/OS.h"
 
-#ifdef _WIN32
+#ifdef utils_os_windows
 
 	#ifdef NOMINMAX
 		#include <windows.h>
@@ -13,7 +13,7 @@
 		#undef NOMINMAX
 	#endif
 
-#elif __linux__
+#elif utils_os_linux
 	char _getch()
 		{
 		//Do not question, I don't know either. It just works.
