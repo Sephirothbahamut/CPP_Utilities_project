@@ -1,13 +1,17 @@
 #pragma once
 
+#pragma message ("rect.h includes")
+
 #include "../memory.h"
 #include "vec2.h"
 #include "geometry/common/root.h"
 
+#pragma message ("rect.h body")
+
 namespace utils::math
 	{
 	template <typename T = float>
-	struct rect : geometry::shape_with_vertices_base<rect<T>>
+	struct rect : geometry::shape_base<rect<T>>
 		{
 		using value_type = T;
 		using nonref_value_type = utils::remove_cvref_t<value_type>;
@@ -426,6 +430,13 @@ namespace utils::math
 		__declspec(property(get = get_center)) vec2<nonref_value_type> center;
 
 #pragma endregion Properties
+
+		auto get_edges()       noexcept;
+		auto get_edges() const noexcept;
+		
+		rect<T>& scale_self    (const float      & scaling    ) noexcept;
+		rect<T>& rotate_self   (const angle::radf& rotation   ) noexcept;
+		rect<T>& translate_self(const vec2f      & translation) noexcept;
 
 		bool contains(vec2<nonref_value_type> point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
 		};

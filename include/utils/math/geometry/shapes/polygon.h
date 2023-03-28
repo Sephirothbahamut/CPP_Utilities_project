@@ -2,37 +2,47 @@
 
 #include <vector>
 
+#include "../../../index_range.h"
 #include "../common/begin.h"
 #include "aabb.h"
 
 namespace utils::math::geometry
 	{
-	template <bool view>
-	class polygon : public shape_with_vertices_base<polygon<view>>
+	class polygon : public shape_base<polygon>
 		{
-		private:
-			using shape_with_vertices_base<polygon<view>>::get_edges;
 		public:
-			using vertices_t = std::conditional_t<view, std::span<vec2f>, std::vector<vec2f>>;
+			using vertices_t = std::vector<vec2f>;
 
-			polygon(std::initializer_list<vec2f>&& vertices) requires(view) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};
+			polygon(std::initializer_list<vec2f>&& vertices) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};
 
-			polygon(const std::vector<vec2f>& vertices) requires(view) : _vertices{vertices} {}
-			polygon(std::vector<vec2f>&& vertices) requires(view) : _vertices{std::move(vertices)} {}
+			polygon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
+			polygon(std::vector<vec2f>&& vertices) : _vertices{std::move(vertices)} {}
 
 			std::ranges::ref_view<      std::vector<vec2f>> get_vertices()       noexcept { return std::views::all(_vertices); };
 			std::ranges::ref_view<const std::vector<vec2f>> get_vertices() const noexcept { return std::views::all(_vertices); };
 
-		public:
-			aabb<false> bounding_box() const noexcept
+			auto get_edges() noexcept
 				{
-				aabb<false> ret
-					{{
+				auto vertices{get_vertices()};
+				vecref2f vr{vertices[0]};
+				return utils::index_range{0, vertices.size(), [&vertices](size_t index) -> geometry::edge_ref { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
+				}
+			auto get_edges() const noexcept
+				{
+				auto vertices{get_vertices()};
+				return utils::index_range{0, vertices.size(), [&vertices](size_t index) -> geometry::segment { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
+				}
+
+		public:
+			aabb bounding_box() const noexcept
+				{
+				aabb ret
+					{
 					.ll{ constants::finf},
 					.up{ constants::finf},
 					.rr{-constants::finf},
 					.dw{-constants::finf},
-					}};
+					};
 
 				for(const auto& vertex : get_vertices())
 					{
@@ -47,7 +57,8 @@ namespace utils::math::geometry
 
 		private:
 			vertices_t _vertices;
-				
+
+		public:
 			using shape_base<polygon>::closest_point_and_distance;
 			using shape_base<polygon>::closest_point_to;
 			using shape_base<polygon>::distance_min;
@@ -57,47 +68,48 @@ namespace utils::math::geometry
 			using shape_base<polygon>::contains;
 			using shape_base<polygon>::collision;
 
-			template <bool view> closest_point_and_distance_t closest_point_and_distance(const point<view>& other) const noexcept;
-			template <bool view> bool                 intersects      (const point<view>& other) const noexcept;
-			template <bool view> std::optional<vec2f> intersection    (const point<view>& other) const noexcept;
-			template <bool view> bool                 contains        (const point<view>& other) const noexcept;
+			closest_point_and_distance_t closest_point_and_distance(const point& other) const noexcept;
+			bool                 intersects      (const point& other) const noexcept;
+			std::optional<vec2f> intersection    (const point& other) const noexcept;
+			bool                 contains        (const point& other) const noexcept;
 
-			template <bool view> closest_point_and_distance_t closest_point_and_distance(const segment<view>& other) const noexcept;
-			template <bool view> bool                 intersects      (const segment<view>& other) const noexcept;
-			template <bool view> std::optional<vec2f> intersection    (const segment<view>& other) const noexcept;
-			template <bool view> bool                 contains        (const segment<view>& other) const noexcept;
+			closest_point_and_distance_t closest_point_and_distance(const segment& other) const noexcept;
+			bool                 intersects      (const segment& other) const noexcept;
+			std::optional<vec2f> intersection    (const segment& other) const noexcept;
+			bool                 contains        (const segment& other) const noexcept;
 
-			template <bool view> closest_point_and_distance_t closest_point_and_distance(const aabb<view>& other) const noexcept;
-			template <bool view> bool                 intersects      (const aabb<view>& other) const noexcept;
-			template <bool view> std::optional<vec2f> intersection    (const aabb<view>& other) const noexcept;
-			template <bool view> bool                 contains        (const aabb<view>& other) const noexcept;
+			closest_point_and_distance_t closest_point_and_distance(const aabb& other) const noexcept;
+			bool                 intersects      (const aabb& other) const noexcept;
+			std::optional<vec2f> intersection    (const aabb& other) const noexcept;
+			bool                 contains        (const aabb& other) const noexcept;
 
-			template <bool view> closest_point_and_distance_t closest_point_and_distance(const polygon<view>& other) const noexcept;
-			template <bool view> bool                 intersects      (const polygon<view>& other) const noexcept;
-			template <bool view> std::optional<vec2f> intersection    (const polygon<view>& other) const noexcept;
-			template <bool view> bool                 contains        (const polygon<view>& other) const noexcept;
+			closest_point_and_distance_t closest_point_and_distance(const polygon& other) const noexcept;
+			bool                 intersects      (const polygon& other) const noexcept;
+			std::optional<vec2f> intersection    (const polygon& other) const noexcept;
+			bool                 contains        (const polygon& other) const noexcept;
 
-			template <bool view> closest_point_and_distance_t closest_point_and_distance(const circle<view>& other) const noexcept;
-			template <bool view> bool                 intersects      (const circle<view>& other) const noexcept;
-			template <bool view> std::optional<vec2f> intersection    (const circle<view>& other) const noexcept;
-			template <bool view> bool                 contains        (const circle<view>& other) const noexcept;
+			closest_point_and_distance_t closest_point_and_distance(const circle& other) const noexcept;
+			bool                 intersects      (const circle& other) const noexcept;
+			std::optional<vec2f> intersection    (const circle& other) const noexcept;
+			bool                 contains        (const circle& other) const noexcept;
+	
+			polygon& scale_self    (const float      & scaling    ) noexcept { for(auto& vertex : get_vertices()) { vertex.scale_self    (scaling    ); } return *this; }
+			polygon& rotate_self   (const angle::radf& rotation   ) noexcept { for(auto& vertex : get_vertices()) { vertex.rotate_self   (rotation   ); } return *this; }
+			polygon& translate_self(const vec2f      & translation) noexcept { for(auto& vertex : get_vertices()) { vertex.translate_self(translation); } return *this; }
 		};
 
-	template <bool view>
-	class convex_polygon : public polygon<view>
+	class convex_polygon : public polygon
 		{
 		public:
-			using polygon<view>;
+			using polygon::polygon;
 			convex_polygon(std::initializer_list<vec2f>&& vertices) : polygon{std::forward<std::initializer_list<vec2f>>(vertices)} {};
 			convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
 			convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}
 
-			using shape_base<polygon<view>>::contains;
+			using shape_base<polygon>::contains;
 
-			template <bool view> bool contains(const point  <view>& other) const noexcept;
-			template <bool view> bool contains(const aabb   <view>& other) const noexcept;
-			template <bool view> bool contains(const polygon<view>& other) const noexcept;
+			bool contains(const point  & other) const noexcept;
+			bool contains(const aabb   & other) const noexcept;
+			bool contains(const polygon& other) const noexcept;
 		};
 	}
-
-#include "../common/with_vertices_end.h"

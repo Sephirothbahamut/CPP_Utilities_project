@@ -2,96 +2,101 @@
 
 // Split from begin so it can be included in vec2 and rect that are defined outside of geometry.
 // This allows for them to inherit from the base shapes
-
 #include <memory>
 #include <utility>
 #include <optional>
 
+#include "../../angle.h"
 #include "../../../compilation/CUDA.h"
 
 namespace utils::math
 	{
 	template <typename T, size_t size>
 	class vec;
+	using vec2f = vec<float, 2>;
+
 	template <typename T>
 	struct rect;
+
+	class transform2;
 	}
 
 namespace utils::math::geometry
 	{
-	template <bool view = false> using point = utils::math::vec <std::conditional_t<view, std::reference_wrapper<float>, float>, 2>;
-	template <bool view = false> using aabb  = utils::math::rect<std::conditional_t<view, std::reference_wrapper<float>, float>>;
-	template <bool view = false> class segment       ;
-	template <bool view = false> class polygon       ;
-	template <bool view = false> class convex_polygon;
-	template <bool view = false> class circle        ;
-	template <bool view = false> class capsule       ;
+	using  point = utils::math::vec2f;
+	using  aabb  = utils::math::rect<float>;
+	struct segment       ;
+	class  polygon       ;
+	class  convex_polygon;
+	struct circle        ;
+	class  capsule       ;
 
-	struct closest_point_and_distance_t { point<false> position; float distance; };
+	struct edge_ref;
 
-	template <typename DERIVED_T>
-	struct shape_base;
+	struct closest_point_and_distance_t;
+
+	namespace details
+		{
+		template <typename DERIVED_T>
+		struct shape_base_inner
+			{
+			protected:
+				using derived_t = DERIVED_T;
+				utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+			};
+		}
 
 	namespace concepts 
 		{
 		template <typename T>
-		concept shape = std::derived_from<T, shape_base<T>>;
+		concept shape = std::derived_from<T, details::shape_base_inner<T>>;
 		}
 
 	template <typename DERIVED_T>
-	struct shape_base
+	struct shape_base : details::shape_base_inner<DERIVED_T>
 		{
 		private:
-			using derived_t = DERIVED_T;
-			utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+			using derived_t = details::shape_base_inner<DERIVED_T>::derived_t;
+			using details::shape_base_inner<DERIVED_T>::derived;
 
 		public:
 #pragma region interactions
 			template <concepts::shape other_t>
-			closest_point_and_distance_t closest_point_and_distance(const other_t& b) const noexcept { return {derived().closest_point_to(b), derived().distance_min(b)}; };
+			closest_point_and_distance_t closest_point_and_distance(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			point<false> closest_point_to(const other_t& b) const noexcept { return derived().closest_point_and_distance(b).position; };
+			point closest_point_to(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			float distance_min(const other_t& b) const noexcept { return derived().closest_point_and_distance(b).distance; }
+			float distance_min(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			vec<float, 2> vector_to(const other_t& b) const noexcept { return b.closest_point_to(derived()) - derived().closest_point_to(b); }
+			point vector_to(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			std::optional<point<false>> intersects(const other_t& b) const noexcept { return derived().distance_min(b) == 0; };
+			std::optional<point> intersects(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			std::optional<point<false>> intersection(const other_t& b) const noexcept { return derived().intersects(b) ? std::optional<point>{derived().closest_point_to(b)} : std::nullopt; };
+			std::optional<point> intersection(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			bool contains(const other_t& b) const noexcept { return false; };
+			bool contains(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			std::optional<point<false>> collision(const other_t& b) const noexcept
-				{
-				/*if constexpr (!  hollow)*/ { if (derived().contains(b)) { return true; } }
-				/*if constexpr (!b.hollow)*/ { if (b.contains(derived())) { return true; } }
-				return derived().intersection(b).has_value();
-				};
+			std::optional<point> collision(const other_t& b) const noexcept;
 #pragma endregion interactions
-			//aabb<false> bounding_box() const noexcept = 0;
-		};
-	
-	template <typename DERIVED_T>
-	struct shape_with_vertices_base : shape_base<DERIVED_T>
-		{
-		private:
-			using derived_t = DERIVED_T;
-			utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+#pragma region transformations
+			DERIVED_T  scale         (const float      & scaling    ) const noexcept;
+			DERIVED_T  rotate        (const angle::radf& rotation   ) const noexcept;
+			DERIVED_T  translate     (const vec2f      & translation) const noexcept;
+			DERIVED_T  transform     (const transform2 & transform  ) const noexcept;
+			DERIVED_T& scale_self    (const float      & scaling    )       noexcept;
+			DERIVED_T& rotate_self   (const angle::radf& rotation   )       noexcept;
+			DERIVED_T& translate_self(const vec2f      & translation)       noexcept;
+			DERIVED_T& transform_self(const transform2 & transform  )       noexcept;
+#pragma endregion transformations
 
-		public:
-#pragma region views
-			segment<true > get_edges()       noexcept;
-			segment<false> get_edges() const noexcept;
-#pragma endregion views
+			//aabb bounding_box() const noexcept = 0;
 		};
 	}

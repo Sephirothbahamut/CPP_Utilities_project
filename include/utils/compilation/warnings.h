@@ -32,7 +32,9 @@
         #define utils_disable_warning_gcc(name) utils_pragma_gnu(GCC diagnostic ignored name)
         #define utils_disable_warning_clang(name)
     #endif
-
+    
+    #define utils_disable_warning_msvc(msvc_number)
+    
 #elif
 #define utils_disable_warnings_all_begin
     #define utils_disable_warnings_begin

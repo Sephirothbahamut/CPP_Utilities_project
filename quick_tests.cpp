@@ -29,6 +29,7 @@
 
 #include "include/utils/oop/counting.h"
 
+#include "include/utils/math/geometry/shapes.h"
 #include "include/utils/math/geometry/interactions.h"
 
 using civ = utils::oop::counting_invalidating_move;
@@ -43,33 +44,29 @@ int main()
 	{
 	using namespace utils::output;
 
-	utils::math::geometry::circle<false> circ{.center{0.f, 0.f}, .radius{5.f}};
+	utils::math::geometry::circle circ{.center{0.f, 0.f}, .radius{5.f}};
 
-	utils::math::geometry::point<false> p{1.f, 1.f};
+	utils::math::geometry::point p{8.f, 1.f};
 	
-	p.closest_point_and_distance(circ);
-	std::cout << circ.contains(circ);
+	static_assert(utils::math::geometry::concepts::shape<decltype(p)>);
+
+	auto ret{circ.contains(p)};
+	std::cout << ret << std::endl;
+
+	utils::math::transform2 transform {{0.f, 0.f}, utils::math::angle::degf{90.f}, 2.f};
+	utils::math::transform2 transform2{transform.inverse()};
+
+	auto circ2{circ.transform(transform)};
+	circ.transform_self(transform.inverse());
+
+	std::cout << circ .contains(p) << std::endl;
+	std::cout << circ2.contains(p) << std::endl;
+
+	//p.closest_point_and_distance(circ);
+	//std::cout << circ.contains(circ);
 
 	//if (auto opt{circ.collision(p)})
 	//	{
 	//	std::cout << opt.value();
 	//	}
-
-
-
-	//Memory references to sequential storage on gpu
-
-	//std::vector<utils::math::vec2f> memory_pool
-	//	{
-	//		//polygon vertices
-	//		{1, 2}, {2, 3}, {3, 4}, 
-	//		//point
-	//		{2.5, 2.5},
-	//		//circle {pos }, {radius, 0}
-	//		{3, 2}, {2, 0} 
-	//	};
-
-	//utils::math::geometry::polygon<true> ref_poly{memory_pool.data(), memory_pool.data() + 3};
-	//utils::math::geometry::point  <true> ref_pt  {*(memory_pool.data() + 3)};
-	//utils::math::geometry::circle <true> ref_circ{.center{*(memory_pool.data() + 4)}, .radius{(memory_pool.data() + 5)->y}};
 	}

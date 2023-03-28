@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma message ("vec2.h includes")
+
 #include "vec.h"
 #include "angle.h"
 #include "geometry/common/root.h"
@@ -104,32 +106,47 @@ namespace utils::math
 				utils_cuda_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 
 #pragma region geometry
-			template <bool view> vec2f closest_point_to(const geometry::point         <view>& b) const noexcept;
-			template <bool view> vec2f closest_point_to(const geometry::segment       <view>& b) const noexcept;
-			template <bool view> vec2f closest_point_to(const geometry::aabb          <view>& b) const noexcept;
-			template <bool view> vec2f closest_point_to(const geometry::polygon       <view>& b) const noexcept;
-			template <bool view> vec2f closest_point_to(const geometry::convex_polygon<view>& b) const noexcept;
-			template <bool view> vec2f closest_point_to(const geometry::circle        <view>& b) const noexcept;
-			template <bool view> vec2f closest_point_to(const geometry::capsule       <view>& b) const noexcept;
 
-			template <bool view> float distance_min    (const geometry::point         <view>& b) const noexcept;
-			template <bool view> float distance_min    (const geometry::segment       <view>& b) const noexcept;
-			template <bool view> float distance_min    (const geometry::aabb          <view>& b) const noexcept;
-			template <bool view> float distance_min    (const geometry::polygon       <view>& b) const noexcept;
-			template <bool view> float distance_min    (const geometry::convex_polygon<view>& b) const noexcept;
-			template <bool view> float distance_min    (const geometry::circle        <view>& b) const noexcept;
-			template <bool view> float distance_min    (const geometry::capsule       <view>& b) const noexcept;
-			
-			template <bool view> bool contains(const geometry::point         <view>& b) const noexcept;
-			template <bool view> bool contains(const geometry::segment       <view>& b) const noexcept;
-			template <bool view> bool contains(const geometry::aabb          <view>& b) const noexcept;
-			template <bool view> bool contains(const geometry::polygon       <view>& b) const noexcept;
-			template <bool view> bool contains(const geometry::convex_polygon<view>& b) const noexcept;
-			template <bool view> bool contains(const geometry::circle        <view>& b) const noexcept;
-			template <bool view> bool contains(const geometry::capsule       <view>& b) const noexcept;
+				using geometry::shape_base<derived_t>::closest_point_and_distance;
+				using geometry::shape_base<derived_t>::closest_point_to;
+				using geometry::shape_base<derived_t>::distance_min;
+				using geometry::shape_base<derived_t>::vector_to;
+				using geometry::shape_base<derived_t>::intersects;
+				using geometry::shape_base<derived_t>::intersection;
+				using geometry::shape_base<derived_t>::contains;
+				using geometry::shape_base<derived_t>::collision;
 
-			geometry::aabb<false> bounding_box() const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::point         & b) const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::segment       & b) const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::aabb          & b) const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::polygon       & b) const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::convex_polygon& b) const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::circle        & b) const noexcept;
+				utils_cuda_available vec2f closest_point_to(const geometry::capsule       & b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::point         & b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::segment       & b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::aabb          & b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::polygon       & b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::convex_polygon& b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::circle        & b) const noexcept;
+				utils_cuda_available float distance_min    (const geometry::capsule       & b) const noexcept;
+
+				utils_cuda_available bool contains(const geometry::point         & b) const noexcept;
+				utils_cuda_available bool contains(const geometry::segment       & b) const noexcept;
+				utils_cuda_available bool contains(const geometry::aabb          & b) const noexcept;
+				utils_cuda_available bool contains(const geometry::polygon       & b) const noexcept;
+				utils_cuda_available bool contains(const geometry::convex_polygon& b) const noexcept;
+				utils_cuda_available bool contains(const geometry::circle        & b) const noexcept;
+				utils_cuda_available bool contains(const geometry::capsule       & b) const noexcept;
+
+				utils_cuda_available derived_t& scale_self    (const float      & scaling    ) noexcept;
+				utils_cuda_available derived_t& rotate_self   (const angle::radf& rotation   ) noexcept;
+				utils_cuda_available derived_t& translate_self(const vec2f      & translation) noexcept;
+
+				geometry::aabb bounding_box() const noexcept;
 #pragma endregion geometry
 			};
 		}
 	}
+
+#include "geometry/common/begin.h"

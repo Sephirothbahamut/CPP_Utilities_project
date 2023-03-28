@@ -185,7 +185,6 @@
     <ClInclude Include="include\utils\math\easings.h" />
     <ClInclude Include="include\utils\math\geometry\common\begin.h" />
     <ClInclude Include="include\utils\math\geometry\common\root.h" />
-    <ClInclude Include="include\utils\math\geometry\common\with_vertices_end.h" />
     <ClInclude Include="include\utils\math\geometry\interactions.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\aabb.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\capsule.h" />
@@ -199,11 +198,13 @@
     <ClInclude Include="include\utils\math\geometry\shapes\capsule.h" />
     <ClInclude Include="include\utils\math\geometry\shapes\circle.h" />
     <ClInclude Include="include\utils\math\geometry\shapes\continuous_point.h" />
+    <ClInclude Include="include\utils\math\geometry\shapes\edge_ref.h" />
     <ClInclude Include="include\utils\math\geometry\shapes\point.h" />
     <ClInclude Include="include\utils\math\geometry\shapes\polygon.h" />
     <ClInclude Include="include\utils\math\geometry\shapes\segment.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_continuous.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_discrete.h" />
+    <ClInclude Include="include\utils\math\geometry\transformations.h" />
     <ClInclude Include="include\utils\math\identity_numbers.h" />
     <ClInclude Include="include\utils\math\mat.h" />
     <ClInclude Include="include\utils\math\math.h" />

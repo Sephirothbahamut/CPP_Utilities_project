@@ -1,19 +1,18 @@
 #pragma once
 
+#include "common/begin.h"
+
+
 #include "../../concepts.h"
 
 #include "../vec2.h"
 #include "../angle.h"
 #include "../transform2.h"
 #include "shapes.h"
-
 //TODO replace operators with named functions (translate, rotate, scale)
 namespace utils::math::geometry::transformations
 	{
 #pragma region point
-	// NOT to do, already defined in vec2.h //note, there's a space between to and do to not make it appear when searching for "TO[blank]DO"
-	// Akshually since we're not using operators anymore...
-
 	inline geometry::point scale(const geometry::point& point, float scaling) noexcept
 		{
 		return point * scaling;

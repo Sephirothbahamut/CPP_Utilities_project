@@ -370,8 +370,11 @@
     <ClInclude Include="include\utils\math\geometry\common\root.h">
       <Filter>Utils\math\geometry\common</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\common\with_vertices_end.h">
-      <Filter>Utils\math\geometry\common</Filter>
+    <ClInclude Include="include\utils\math\geometry\shapes\edge_ref.h">
+      <Filter>Utils\math\geometry\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\transformations.h">
+      <Filter>Utils\math\geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

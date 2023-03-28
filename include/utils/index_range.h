@@ -39,7 +39,7 @@ namespace utils
 					auto operator->() const noexcept { return callback(index); }
 
 					iterator& operator++() { index++; return *this; }
-					iterator operator++(int) { iterator retval = *this; ++(*this); return retval; }
+					iterator operator++(int) { iterator retval{*this}; ++(*this); return retval; }
 
 					auto operator<=>(const iterator& other) { return index <=> other.index; }
 
@@ -55,8 +55,8 @@ namespace utils
 					callback_t callback;
 				};
 
-			auto begin() const noexcept { return iterator<decltype(callback(size_t{0}))>{min}; }
-			auto end()   const noexcept { return iterator<decltype(callback(size_t{0}))>{max}; }
+			auto begin() const noexcept { return iterator<decltype(callback(size_t{0}))>{min, callback}; }
+			auto end()   const noexcept { return iterator<decltype(callback(size_t{0}))>{max, callback}; }
 
 			index_range(size_t min, size_t max, callback_t callback) noexcept : min{min}, max{max}, callback{callback} {}
 

@@ -15,7 +15,7 @@ namespace utils::constants
 	inline constexpr float  epsilon  = epsilonf;
 
 	inline constexpr double dinf = std::numeric_limits<double>::infinity();
-	inline constexpr double finf = std::numeric_limits<float >::infinity();
+	inline constexpr float  finf = std::numeric_limits<float >::infinity();
 	inline constexpr float  inf  = finf;
 
 	}
