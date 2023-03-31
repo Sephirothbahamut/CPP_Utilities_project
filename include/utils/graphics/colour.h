@@ -118,7 +118,12 @@ namespace utils::graphics::colour
 				if constexpr (static_size >= 3) { this->b = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan); }
 				if constexpr (static_size >= 4) { this->a = alpha; }
 				}
-			
+
+			constexpr rgb() noexcept requires(static_size == 1) : details::rgb_named<T, size>{.r{0}                     } {}
+			constexpr rgb() noexcept requires(static_size == 2) : details::rgb_named<T, size>{.r{0}, .g{0}              } {}
+			constexpr rgb() noexcept requires(static_size == 3) : details::rgb_named<T, size>{.r{0}, .g{0}, .b{0}       } {}
+			constexpr rgb() noexcept requires(static_size == 4) : details::rgb_named<T, size>{.r{0}, .g{0}, .b{0}, .a{1}} {}
+
 			template <std::convertible_to<value_type>... Args>
 				requires(sizeof...(Args) == static_size)
 			constexpr rgb(const Args&... args) : details::rgb_named<T, size>{.array{static_cast<value_type>(args)...}} {}

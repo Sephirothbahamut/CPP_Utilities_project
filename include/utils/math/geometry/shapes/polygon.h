@@ -66,7 +66,7 @@ namespace utils::math::geometry
 			using shape_base<polygon>::intersects;
 			using shape_base<polygon>::intersection;
 			using shape_base<polygon>::contains;
-			using shape_base<polygon>::collision;
+			using shape_base<polygon>::collides_with;
 
 			closest_point_and_distance_t closest_point_and_distance(const point& other) const noexcept;
 			bool                 intersects      (const point& other) const noexcept;
@@ -101,7 +101,9 @@ namespace utils::math::geometry
 	class convex_polygon : public polygon
 		{
 		public:
+			using derived_t = convex_polygon;
 			using polygon::polygon;
+
 			convex_polygon(std::initializer_list<vec2f>&& vertices) : polygon{std::forward<std::initializer_list<vec2f>>(vertices)} {};
 			convex_polygon(const std::vector<vec2f>& vertices) : polygon{vertices} {}
 			convex_polygon(      std::vector<vec2f>& vertices) : polygon{std::move(vertices)} {}

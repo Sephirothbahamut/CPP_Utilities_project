@@ -84,7 +84,8 @@ namespace utils::math::geometry
 			bool contains(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			std::optional<point> collision(const other_t& b) const noexcept;
+			bool collides_with(const other_t& b) const noexcept;
+
 #pragma endregion interactions
 #pragma region transformations
 			DERIVED_T  scale         (const float      & scaling    ) const noexcept;

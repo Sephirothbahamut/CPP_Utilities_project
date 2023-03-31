@@ -43,4 +43,6 @@ namespace utils::math
 		}
 	rect<float>& rect<float>::rotate_self   (const angle::radf& rotation   ) noexcept { return *this; }
 	rect<float>& rect<float>::translate_self(const vec2f      & translation) noexcept { pos() += translation; return *this; }
+
+	rect<float> rect<float>::bounding_box() const noexcept { return *this; }
 	}

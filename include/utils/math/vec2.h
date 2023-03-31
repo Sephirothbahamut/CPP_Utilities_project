@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma message ("vec2.h includes")
-
 #include "vec.h"
 #include "angle.h"
 #include "geometry/common/root.h"
@@ -114,7 +112,7 @@ namespace utils::math
 				using geometry::shape_base<derived_t>::intersects;
 				using geometry::shape_base<derived_t>::intersection;
 				using geometry::shape_base<derived_t>::contains;
-				using geometry::shape_base<derived_t>::collision;
+				using geometry::shape_base<derived_t>::collides_with;
 
 				utils_cuda_available vec2f closest_point_to(const geometry::point         & b) const noexcept;
 				utils_cuda_available vec2f closest_point_to(const geometry::segment       & b) const noexcept;

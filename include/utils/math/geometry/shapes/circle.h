@@ -30,7 +30,7 @@ namespace utils::math::geometry
 			using shape_base<circle>::intersects;
 			using shape_base<circle>::intersection;
 			using shape_base<circle>::contains;
-			using shape_base<circle>::collision;
+			using shape_base<circle>::collides_with;
 			
 			vec2f                closest_point_to(const point  & other) const noexcept;
 			bool                 contains        (const point  & other) const noexcept;

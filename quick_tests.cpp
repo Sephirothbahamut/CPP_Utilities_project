@@ -62,6 +62,7 @@ int main()
 	std::cout << circ .contains(p) << std::endl;
 	std::cout << circ2.contains(p) << std::endl;
 
+	static_assert(utils::math::geometry::concepts::shape<utils::math::geometry::convex_polygon>);
 	//p.closest_point_and_distance(circ);
 	//std::cout << circ.contains(circ);
 

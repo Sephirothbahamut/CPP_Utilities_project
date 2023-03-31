@@ -8,7 +8,7 @@
 
 namespace utils::math::geometry
 	{
-	struct closest_point_and_distance_t { point position; float distance; };
+	struct closest_point_and_distance_t { point position{0.f, 0.f}; float distance{0.f}; };
 
 	template <typename derived_t>
 	template <concepts::shape other_t>
@@ -40,7 +40,7 @@ namespace utils::math::geometry
 
 	template <typename derived_t>
 	template <concepts::shape other_t>
-	std::optional<point> shape_base<derived_t>::collision(const other_t& b) const noexcept
+	bool shape_base<derived_t>::collides_with(const other_t& b) const noexcept
 		{
 		/*if constexpr (!  hollow)*/ { if (derived().contains(b)) { return true; } }
 		/*if constexpr (!b.hollow)*/ { if (b.contains(derived())) { return true; } }

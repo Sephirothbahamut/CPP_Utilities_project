@@ -204,7 +204,6 @@
     <ClInclude Include="include\utils\math\geometry\shapes\segment.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_continuous.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_discrete.h" />
-    <ClInclude Include="include\utils\math\geometry\transformations.h" />
     <ClInclude Include="include\utils\math\identity_numbers.h" />
     <ClInclude Include="include\utils\math\mat.h" />
     <ClInclude Include="include\utils\math\math.h" />

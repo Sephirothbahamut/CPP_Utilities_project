@@ -18,6 +18,8 @@ namespace utils
 			using pointer         = value_type*;
 			using const_pointer   = const value_type* const;
 
+			wrapper() = default;
+
 			template <typename ...Args>
 			wrapper(Args&& ...args) : element{std::forward<Args>(args)...} {}
 

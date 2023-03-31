@@ -1,8 +1,5 @@
 #pragma once
 
-
-#pragma message ("vec.h includes")
-
 #include <array>
 #include <cmath>
 #include <functional> //reference_wrapper
@@ -14,9 +11,6 @@
 #include "../details/vec/memberwise_operators.h"
 
 #include "../compilation/warnings.h"
-
-//TODO finish test cases
-#pragma message ("vec.h body")
 
 namespace utils::math
 	{

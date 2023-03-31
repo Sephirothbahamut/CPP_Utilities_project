@@ -16,6 +16,7 @@ namespace utils::math::geometry
 	struct segment : shape_base<segment>
 		{
 		public:
+			segment() = default;
 			segment(const vec2f& a, const vec2f& b) : a{a}, b{b} {}
 			vec2f a;
 			vec2f b;
@@ -100,7 +101,7 @@ namespace utils::math::geometry
 			using shape_base<segment>::intersects;
 			using shape_base<segment>::intersection;
 			using shape_base<segment>::contains;
-			using shape_base<segment>::collision;
+			using shape_base<segment>::collides_with;
 
 			vec2f closest_point_to(const point& other) const noexcept;
 			float distance_min    (const point& other) const noexcept;
