@@ -53,7 +53,7 @@ namespace utils::details::vec
 		typename a_t::nonref_derived_t ret;
 		for (size_t i{0}; i < a.size(); i++)
 			{
-			ret = callback(a[i], b);
+			ret[i] = callback(a[i], b);
 			}
 		return ret;
 		}
