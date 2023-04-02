@@ -438,7 +438,7 @@ namespace utils::math
 		using geometry::shape_base<rect<T>>::collides_with;
 		
 		vec2f closest_point_to(const geometry::point& other) const noexcept;
-		float distance_min    (const geometry::point& b) const noexcept { return closest_point_to(b).distance_min(b); }
+		float                distance_min    (const geometry::point& b) const noexcept;
 		bool                 intersects      (const geometry::point& other) const noexcept;
 		std::optional<vec2f> intersection    (const geometry::point& other) const noexcept;
 		//bool                 contains        (const geometry::point& other) const noexcept;

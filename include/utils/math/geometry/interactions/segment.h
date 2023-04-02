@@ -3,7 +3,7 @@
 
 namespace utils::math::geometry
 	{
-	vec2f segment::closest_point_to(const point& other) const noexcept
+	inline vec2f segment::closest_point_to(const point& other) const noexcept
 		{//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-a-point-and-a-line-segment-in-c/
 		vec2f delta = {b.x - a.x, b.y - a.y};
 
@@ -11,16 +11,16 @@ namespace utils::math::geometry
 
 		return t < 0 ? a : t > 1 ? b : vec2f{a.x + t * delta.x, a.y + t * delta.y};
 		}
-	float segment::distance_min(const point& other) const noexcept { return other.distance_min(closest_point_to(other)); }
+	inline float segment::distance_min(const point& other) const noexcept { return other.distance_min(closest_point_to(other)); }
 
-	bool segment::contains(const point& other) const noexcept
+	inline bool segment::contains(const point& other) const noexcept
 		{
 		// https://stackoverflow.com/questions/17692922/check-is-a-point-x-y-is-between-two-points-drawn-on-a-straight-line
 		auto dist{distance_min(other)};
 		return dist == 0;
 		}
 
-	closest_point_and_distance_t segment::closest_point_and_distance(const segment& other) const noexcept
+	inline closest_point_and_distance_t segment::closest_point_and_distance(const segment& other) const noexcept
 		{
 		point closest_to_a{closest_point_to(point{other.a})};
 		point closest_to_b{closest_point_to(point{other.b})};
@@ -36,12 +36,12 @@ namespace utils::math::geometry
 			}
 		}
 
-	bool segment::intersects(const segment& other) const noexcept
+	inline bool segment::intersects(const segment& other) const noexcept
 		{
 		return intersects_line(other) && other.intersects_line(*this);
 		}
 
-	std::optional<vec2f> segment::intersection(const segment& other) const noexcept
+	inline std::optional<vec2f> segment::intersection(const segment& other) const noexcept
 		{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 		vec2f s1, s2;
 		s1.x = b.x - a.x;
@@ -61,7 +61,7 @@ namespace utils::math::geometry
 		return std::nullopt;
 		}
 
-	closest_point_and_distance_t segment::closest_point_and_distance(const aabb& other) const noexcept
+	inline closest_point_and_distance_t segment::closest_point_and_distance(const aabb& other) const noexcept
 		{
 		point ret{closest_point_to(segment{other.ul(), other.ur()})};
 		float dist_min{ret.distance_min(segment{other.ul(), other.ur()})};
@@ -73,12 +73,12 @@ namespace utils::math::geometry
 		return {ret, dist_min};
 		}
 
-	bool segment::intersects(const aabb& other) const noexcept
+	inline bool segment::intersects(const aabb& other) const noexcept
 		{
 		return intersects(segment{other.ul(), other.ur()}) || intersects(segment{other.ur(), other.dr()}) || intersects(segment{other.dr(), other.dl()}) || intersects(segment{other.dl(), other.ul()});
 		}
 
-	std::optional<vec2f> segment::intersection(const aabb& other) const noexcept
+	inline std::optional<vec2f> segment::intersection(const aabb& other) const noexcept
 		{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 		if (auto opt{intersection(segment{other.ul(), other.ur()})}) { return opt; }
 		if (auto opt{intersection(segment{other.ur(), other.dr()})}) { return opt; }
@@ -86,12 +86,12 @@ namespace utils::math::geometry
 		return       intersection(segment{other.dl(), other.ul()});
 		}
 
-	bool segment::contains(const aabb& other) const noexcept
+	inline bool segment::contains(const aabb& other) const noexcept
 		{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 		return contains(other.ul()) && contains(other.ur()) && contains(other.dr()) && contains(other.dl());
 		}
 
-	closest_point_and_distance_t segment::closest_point_and_distance(const polygon& other) const noexcept
+	inline closest_point_and_distance_t segment::closest_point_and_distance(const polygon& other) const noexcept
 		{
 		point ret;
 		float dist_min{constants::finf};
@@ -106,7 +106,7 @@ namespace utils::math::geometry
 		return {ret, dist_min};
 		}
 
-	bool segment::intersects(const polygon& other) const noexcept
+	inline bool segment::intersects(const polygon& other) const noexcept
 		{
 		for (const auto& edge : other.get_edges())
 			{
@@ -115,7 +115,7 @@ namespace utils::math::geometry
 		return false;
 		}
 
-	std::optional<vec2f> segment::intersection(const polygon& other) const noexcept
+	inline std::optional<vec2f> segment::intersection(const polygon& other) const noexcept
 		{
 		for (const auto& edge : other.get_edges())
 			{
@@ -124,7 +124,7 @@ namespace utils::math::geometry
 		return std::nullopt;
 		}
 
-	bool segment::contains(const polygon& other) const noexcept
+	inline bool segment::contains(const polygon& other) const noexcept
 		{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 		for (const auto& vertex : other.get_vertices())
 			{
@@ -133,24 +133,24 @@ namespace utils::math::geometry
 		return true;
 		}
 
-	closest_point_and_distance_t segment::closest_point_and_distance(const circle& other) const noexcept
+	inline closest_point_and_distance_t segment::closest_point_and_distance(const circle& other) const noexcept
 		{
 		//TODO
 		return {};
 		}
 
-	bool segment::intersects(const circle& other) const noexcept
+	inline bool segment::intersects(const circle& other) const noexcept
 		{
 		return distance_min(other.center) < other.radius;
 		}
 
-	std::optional<vec2f> segment::intersection(const circle& other) const noexcept
+	inline std::optional<vec2f> segment::intersection(const circle& other) const noexcept
 		{
 		//TODO
 		return std::nullopt;
 		}
 
-	bool segment::contains(const circle& other) const noexcept
+	inline bool segment::contains(const circle& other) const noexcept
 		{
 		return other.radius == 0 && contains(other.center);
 		}

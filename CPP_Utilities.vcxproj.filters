@@ -65,6 +65,9 @@
     <Filter Include="Utils\math\geometry\interactions">
       <UniqueIdentifier>{c45e4545-15f3-4e79-a2c7-076ac0e8e9bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\math\geometry\voronoi">
+      <UniqueIdentifier>{82807980-9518-4b95-bad1-ca61d34ad983}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -373,9 +376,18 @@
     <ClInclude Include="include\utils\math\geometry\shapes\edge_ref.h">
       <Filter>Utils\math\geometry\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\voronoi\voronoi.h">
+      <Filter>Utils\math\geometry\voronoi</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\third_party\jc_voronoi.h">
+      <Filter>Utils\third_party</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="quick_test_libs_implementation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

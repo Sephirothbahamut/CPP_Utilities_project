@@ -16,18 +16,18 @@ namespace utils::math::geometry
 	struct segment : shape_base<segment>
 		{
 		public:
-			segment() = default;
-			segment(const vec2f& a, const vec2f& b) : a{a}, b{b} {}
+			inline segment() = default;
+			inline segment(const vec2f& a, const vec2f& b) : a{a}, b{b} {}
 			vec2f a;
 			vec2f b;
 
-			float length2() const noexcept { return vec2f::distance2(a, b); }
-			float length () const noexcept { return vec2f::distance (a, b); }
+			inline float length2() const noexcept { return vec2f::distance2(a, b); }
+			inline float length () const noexcept { return vec2f::distance (a, b); }
 
-			const vec2f& operator[](size_t index) const noexcept { return index == 0 ? a : b; }
-			      vec2f& operator[](size_t index)       noexcept { return index == 0 ? a : b; }
+			inline const vec2f& operator[](size_t index) const noexcept { return index == 0 ? a : b; }
+			inline       vec2f& operator[](size_t index)       noexcept { return index == 0 ? a : b; }
 
-			vec2f closest_point_in_line_to(const vec2f& point) const noexcept
+			inline vec2f closest_point_in_line_to(const vec2f& point) const noexcept
 				{//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-a-point-and-a-line-segment-in-c/
 				vec2f delta = b - a;
 
@@ -37,14 +37,14 @@ namespace utils::math::geometry
 				}
 
 			/// <summary> Unit vector from a towards b. </summary>
-			vec2f forward() const noexcept { return (b - a).normalize(); }
+			inline vec2f forward() const noexcept { return (b - a).normalize(); }
 			/// <summary> Unit vector perpendicular on the left from a to b. </summary>
-			vec2f perpendicular_right() const noexcept { return forward().perpendicular_right(); }
+			inline vec2f perpendicular_right() const noexcept { return forward().perpendicular_right(); }
 			/// <summary> Unit vector perpendicular on the right from a to b. </summary>
-			vec2f perpendicular_left()  const noexcept { return forward().perpendicular_left (); }
+			inline vec2f perpendicular_left()  const noexcept { return forward().perpendicular_left (); }
 
 
-			float minimum_distance(const vec2f& point) const noexcept 
+			inline float minimum_distance(const vec2f& point) const noexcept
 				{
 				// https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 
@@ -61,28 +61,30 @@ namespace utils::math::geometry
 				return vec2f::distance(point, projection);
 				}
 
-			float distance_line(const vec2f& point) const noexcept
+			inline float distance_line(const vec2f& point) const noexcept
 				{
 				return vec2f::distance(point, closest_point_in_line_to(point));
 				}
 
-			vec2f vector() const noexcept { return b - a; }
+			inline vec2f vector() const noexcept { return b - a; }
 
-			side_t point_side(const vec2f& point) const noexcept
+			inline vec2f closest_vertex(const vec2f& point) const noexcept { return distance_min(a) < distance_min(b) ? a : b; }
+
+			inline side_t point_side(const vec2f& point) const noexcept
 				{
 				// a-b-point triangle signed area^2
 				const float some_significant_name_ive_yet_to_figure_out{((b.x - a.x) * (point.y - a.y)) - ((point.x - a.x) * (b.y - a.y))};
 				return some_significant_name_ive_yet_to_figure_out < -constants::epsilonf? side_t::left : some_significant_name_ive_yet_to_figure_out > constants::epsilonf ? side_t::right : side_t::equal;
 				}
 
-			bool intersects_line(const segment& other) const noexcept
+			inline bool intersects_line(const segment& other) const noexcept
 				{
 				auto point_side_a{other.point_side(a)};
 				auto point_side_b{other.point_side(b)};
 				return (point_side_a != point_side_b) || (point_side_a == side_t::equal); // second condition returns true when the two lines are the same
 				}
 			
-			aabb bounding_box() const noexcept
+			inline aabb bounding_box() const noexcept
 				{
 				return aabb{rect<float>
 					{
@@ -127,9 +129,9 @@ namespace utils::math::geometry
 			std::optional<vec2f> intersection    (const circle& other) const noexcept;
 			bool                 contains        (const circle& other) const noexcept;
 			
-			segment& scale_self    (const float      & scaling    ) noexcept { a.scale_self    (scaling    ); b.scale_self    (scaling    ); return *this; }
-			segment& rotate_self   (const angle::radf& rotation   ) noexcept { a.rotate_self   (rotation   ); b.rotate_self   (rotation   ); return *this; }
-			segment& translate_self(const vec2f      & translation) noexcept { a.translate_self(translation); b.translate_self(translation); return *this; }
+			inline segment& scale_self    (const float      & scaling    ) noexcept { a.scale_self    (scaling    ); b.scale_self    (scaling    ); return *this; }
+			inline segment& rotate_self   (const angle::radf& rotation   ) noexcept { a.rotate_self   (rotation   ); b.rotate_self   (rotation   ); return *this; }
+			inline segment& translate_self(const vec2f      & translation) noexcept { a.translate_self(translation); b.translate_self(translation); return *this; }
 		private:
 		};
 	}

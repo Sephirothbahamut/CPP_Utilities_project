@@ -204,6 +204,7 @@
     <ClInclude Include="include\utils\math\geometry\shapes\segment.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_continuous.h" />
     <ClInclude Include="include\utils\math\geometry\shapes_discrete.h" />
+    <ClInclude Include="include\utils\math\geometry\voronoi\voronoi.h" />
     <ClInclude Include="include\utils\math\identity_numbers.h" />
     <ClInclude Include="include\utils\math\mat.h" />
     <ClInclude Include="include\utils\math\math.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="include\utils\oop\virtual.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
     <ClInclude Include="include\utils\third_party\concurrentqueue.h" />
+    <ClInclude Include="include\utils\third_party\jc_voronoi.h" />
     <ClInclude Include="include\utils\third_party\magic_enum.h" />
     <ClInclude Include="include\utils\third_party\polymorphic_value.h" />
     <ClInclude Include="include\utils\thread_pool.h" />
@@ -234,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp" />
+    <ClCompile Include="quick_test_libs_implementation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

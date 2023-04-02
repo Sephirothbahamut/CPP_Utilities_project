@@ -10,7 +10,7 @@ namespace utils::math::geometry
 			vec2f center;
 			float radius;
 
-			aabb bounding_box() const noexcept
+			inline aabb bounding_box() const noexcept
 				{
 				aabb ret
 					{
@@ -58,8 +58,8 @@ namespace utils::math::geometry
 			std::optional<vec2f> intersection    (const circle & other) const noexcept;
 			bool                 contains        (const circle & other) const noexcept;
 			
-			circle& scale_self    (const float      & scaling    ) noexcept { center.scale_self (scaling    ); radius *= scaling; return *this; };
-			circle& rotate_self   (const angle::radf& rotation   ) noexcept { center.rotate_self(rotation   ); return *this; };
-			circle& translate_self(const vec2f      & translation) noexcept { center.translate  (translation); return *this; };
+			inline circle& scale_self    (const float      & scaling    ) noexcept { center.scale_self (scaling    ); radius *= scaling; return *this; };
+			inline circle& rotate_self   (const angle::radf& rotation   ) noexcept { center.rotate_self(rotation   ); return *this; };
+			inline circle& translate_self(const vec2f      & translation) noexcept { center.translate  (translation); return *this; };
 		};
 	}

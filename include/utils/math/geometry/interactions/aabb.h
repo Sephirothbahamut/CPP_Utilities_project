@@ -3,7 +3,8 @@
 
 namespace utils::math
 	{
-	vec2f rect<float>::closest_point_to(const geometry::point& other) const noexcept
+	template <typename T>
+	vec2f rect<T>::closest_point_to(const geometry::point& other) const noexcept
 		{
 		if(!contains(other))
 			{
@@ -33,7 +34,8 @@ namespace utils::math
 			}
 		}
 
-	float rect<float>::distance_min(const geometry::point& other) const noexcept
+	template <typename T>
+	float rect<T>::distance_min(const geometry::point& other) const noexcept
 		{
 		if (other.x <= ll)
 			{
@@ -68,7 +70,8 @@ namespace utils::math
 			}
 		}
 
-	bool rect<float>::intersects(const geometry::point& other) const noexcept
+	template <typename T>
+	bool rect<T>::intersects(const geometry::point& other) const noexcept
 		{
 		return (other.x == ll && other.y < dw && other.y > up)
 			|| (other.x == rr && other.y < dw && other.y > up)
@@ -76,7 +79,8 @@ namespace utils::math
 			|| (other.y == dw && other.x < rr && other.x > ll);
 		}
 
-	std::optional<vec2f> rect<float>::intersection(const geometry::point& other) const noexcept
+	template <typename T>
+	std::optional<vec2f> rect<T>::intersection(const geometry::point& other) const noexcept
 		{
 		if (intersects(other)) { return other; }
 		}

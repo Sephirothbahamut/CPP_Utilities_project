@@ -3,7 +3,7 @@
 
 namespace utils::math::geometry
 	{
-	closest_point_and_distance_t polygon::closest_point_and_distance(const point& other) const noexcept
+	inline closest_point_and_distance_t polygon::closest_point_and_distance(const point& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -14,7 +14,7 @@ namespace utils::math::geometry
 		return best;
 		}
 
-	bool polygon::intersects(const point& other) const noexcept
+	inline bool polygon::intersects(const point& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -23,7 +23,7 @@ namespace utils::math::geometry
 		return false;
 		}
 
-	std::optional<vec2f> polygon::intersection(const point& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection(const point& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -31,7 +31,7 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const point& other) const noexcept
+	inline bool polygon::contains(const point& other) const noexcept
 		{
 		// A point is inside a polygon if given a line in any direction, it intersects the polygon segments an uneven number of times
 		segment tmp_segment{other, vec2f{other.x + bounding_box().right, other.y}}; //A segment which lies on a generic horizontal line
@@ -63,7 +63,7 @@ namespace utils::math::geometry
 		return is_inside;
 		}
 
-	bool convex_polygon::contains(const point& other) const noexcept
+	inline bool convex_polygon::contains(const point& other) const noexcept
 		{
 		for (const auto& edge : polygon::get_edges())
 			{
@@ -72,7 +72,7 @@ namespace utils::math::geometry
 		return true;
 		}
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const segment& other) const noexcept
+	inline closest_point_and_distance_t polygon::closest_point_and_distance(const segment& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -83,7 +83,7 @@ namespace utils::math::geometry
 		return best;
 		}
 
-	bool polygon::intersects(const segment& other) const noexcept
+	inline bool polygon::intersects(const segment& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -91,7 +91,7 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const segment& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection(const segment& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -99,9 +99,9 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const segment& other) const noexcept { return contains(other.a) && contains(other.b); }
+	inline bool polygon::contains(const segment& other) const noexcept { return contains(other.a) && contains(other.b); }
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const aabb& other) const noexcept
+	inline closest_point_and_distance_t polygon::closest_point_and_distance(const aabb& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -111,7 +111,7 @@ namespace utils::math::geometry
 			}
 		return best;
 		}
-	bool polygon::intersects(const aabb& other) const noexcept
+	inline bool polygon::intersects(const aabb& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -119,7 +119,7 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const aabb& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection(const aabb& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -127,7 +127,7 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const aabb& other) const noexcept 
+	inline bool polygon::contains(const aabb& other) const noexcept
 		{
 		return contains(other.ul()) 
 			&& contains(other.ur()) 
@@ -135,7 +135,7 @@ namespace utils::math::geometry
 			&& contains(other.dl())
 			&& !intersects(other);
 		}
-	bool convex_polygon::contains(const aabb& other) const noexcept
+	inline bool convex_polygon::contains(const aabb& other) const noexcept
 		{
 		return contains(other.ul())
 			&& contains(other.ur())
@@ -143,7 +143,7 @@ namespace utils::math::geometry
 			&& contains(other.dl());
 		}
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const polygon& other) const noexcept
+	inline closest_point_and_distance_t polygon::closest_point_and_distance(const polygon& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -153,7 +153,7 @@ namespace utils::math::geometry
 			}
 		return best;
 		}
-	bool polygon::intersects(const polygon& other) const noexcept
+	inline bool polygon::intersects(const polygon& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -161,7 +161,7 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const polygon& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection(const polygon& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -169,7 +169,7 @@ namespace utils::math::geometry
 			}
 		return std::nullopt;
 		}
-	bool polygon::contains(const polygon& other) const noexcept
+	inline bool polygon::contains(const polygon& other) const noexcept
 		{
 		for (const auto& vertex : other.get_vertices())
 			{
@@ -177,7 +177,7 @@ namespace utils::math::geometry
 			}
 		return !intersects(other);
 		}
-	bool convex_polygon::contains(const polygon& other) const noexcept
+	inline bool convex_polygon::contains(const polygon& other) const noexcept
 		{
 		for (const auto& vertex : other.get_vertices())
 			{
@@ -186,7 +186,7 @@ namespace utils::math::geometry
 		return true;
 		}
 
-	closest_point_and_distance_t polygon::closest_point_and_distance(const circle& other) const noexcept
+	inline closest_point_and_distance_t polygon::closest_point_and_distance(const circle& other) const noexcept
 		{
 		closest_point_and_distance_t best;
 		for (const auto& edge : get_edges())
@@ -196,7 +196,7 @@ namespace utils::math::geometry
 			}
 		return best;
 		}
-	bool polygon::intersects(const circle& other) const noexcept
+	inline bool polygon::intersects(const circle& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -204,7 +204,7 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	std::optional<vec2f> polygon::intersection(const circle& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection(const circle& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
@@ -213,7 +213,7 @@ namespace utils::math::geometry
 		return std::nullopt;
 		}
 
-	bool polygon::contains(const circle& other) const noexcept
+	inline bool polygon::contains(const circle& other) const noexcept
 		{
 		return contains(other.center) && (distance_min(other.center) < other.radius);
 		}

@@ -12,6 +12,6 @@ namespace utils::math::geometry
 		utils::math::vecref2f a;
 		utils::math::vecref2f b;
 
-		operator segment() const noexcept { return segment{a, b}; }
+		inline operator segment() const noexcept { return segment{a, b}; }
 		};
 	}

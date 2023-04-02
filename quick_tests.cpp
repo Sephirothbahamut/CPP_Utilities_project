@@ -32,6 +32,8 @@
 #include "include/utils/math/geometry/shapes.h"
 #include "include/utils/math/geometry/interactions.h"
 
+#include "include/utils/math/geometry/voronoi/voronoi.h"
+
 using civ = utils::oop::counting_invalidating_move;
 
 struct test_struct : civ
@@ -39,7 +41,6 @@ struct test_struct : civ
 	test_struct(int v) : v{v} {}
 	int v;
 	};
-
 int main()
 	{
 	using namespace utils::output;
@@ -62,7 +63,10 @@ int main()
 	std::cout << circ .contains(p) << std::endl;
 	std::cout << circ2.contains(p) << std::endl;
 
-	static_assert(utils::math::geometry::concepts::shape<utils::math::geometry::convex_polygon>);
+	std::vector<utils::math::vec2f> points{{1.f, 2.f},{5.f, 6.f},{3.f, 2.f},{7.f, 8.f},{8.f, 3.f}};
+	utils::math::geometry::aabb aabb{.ll{0.f}, .up{0.f}, .rr{10.f}, .dw{10.f}};
+	utils::math::geometry::voronoi::graph voronoi{std::views::all(points), aabb};
+	//static_assert(utils::math::geometry::concepts::shape<utils::math::geometry::convex_polygon>);
 	//p.closest_point_and_distance(circ);
 	//std::cout << circ.contains(circ);
 
