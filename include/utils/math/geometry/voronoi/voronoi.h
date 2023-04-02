@@ -9,6 +9,7 @@ namespace utils::math::geometry::voronoi
 	{
 	struct cell : polygon //TODO make convex_polygon when convex_polygon's concept is fixed
 		{
+		inline cell() = default;
 		inline cell(const vec2f& site, const std::vector<vec2f>& vertices) : polygon{vertices}, site{site} {}
 
 		std::vector<utils::observer_ptr<cell>> neighbours;

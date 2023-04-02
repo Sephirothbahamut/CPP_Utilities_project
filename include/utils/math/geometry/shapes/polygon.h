@@ -6,6 +6,7 @@
 #include "../common/begin.h"
 #include "aabb.h"
 
+#include <iostream>
 namespace utils::math::geometry
 	{
 	class polygon : public shape_base<polygon>
@@ -13,6 +14,7 @@ namespace utils::math::geometry
 		public:
 			using vertices_t = std::vector<vec2f>;
 
+			inline polygon() = default;
 			inline polygon(std::initializer_list<vec2f>&& vertices) : _vertices{ std::forward<std::initializer_list<vec2f>>(vertices) } {};
 
 			inline polygon(const std::vector<vec2f>& vertices) : _vertices{vertices} {}
@@ -24,13 +26,19 @@ namespace utils::math::geometry
 			inline auto get_edges() noexcept
 				{
 				auto vertices{get_vertices()};
+				if (vertices.size() == 0)
+					{
+					std::cout << "asd";
+					}
 				vecref2f vr{vertices[0]};
-				return utils::index_range{0, vertices.size(), [&vertices](size_t index) -> geometry::edge_ref { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
+				//For future me: do NOT capture vertices by reference, it wouldn't exist outside of this scope :)
+				return utils::index_range{0, vertices.size(), [vertices](size_t index) -> geometry::edge_ref { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
 				}
 			inline auto get_edges() const noexcept
 				{
 				auto vertices{get_vertices()};
-				return utils::index_range{0, vertices.size(), [&vertices](size_t index) -> geometry::segment { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
+				//For future me: do NOT capture vertices by reference, it wouldn't exist outside of this scope :)
+				return utils::index_range{0, vertices.size(), [vertices](size_t index) -> geometry::segment { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
 				}
 
 		public:
