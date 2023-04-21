@@ -84,4 +84,117 @@ namespace utils::math
 		{
 		if (intersects(other)) { return other; }
 		}
+
+	//TODO From here on I copied polygon functions that rely on get_edges(), should be possible to optimize
+
+	template <typename T>
+	inline geometry::closest_point_and_distance_t rect<T>::closest_point_and_distance(const geometry::segment& other) const noexcept
+		{
+		geometry::closest_point_and_distance_t best;
+		for (const auto& edge : get_edges())
+			{
+			geometry::closest_point_and_distance_t tmp{geometry::segment{edge}.closest_point_and_distance(other)};
+			if (tmp.distance < best.distance) { best = tmp; }
+			}
+		return best;
+		}
+
+	template <typename T>
+	inline bool rect<T>::intersects(const geometry::segment& other) const noexcept
+		{
+		for (const auto& edge : get_edges())
+			{
+			if (geometry::segment{edge}.intersects(other)) { return true; }
+			}
+		return false;
+		}
+	template <typename T>
+	inline std::optional<vec2f> rect<T>::intersection(const geometry::segment& other) const noexcept
+		{
+		for (const auto& edge : get_edges())
+			{
+			if (auto opt{geometry::segment{edge}.intersection(other)}) { return opt; }
+			}
+		return std::nullopt;
+		}
+	template <typename T>
+	inline bool rect<T>::contains(const geometry::segment& other) const noexcept { return contains(other.a) && contains(other.b); }
+
+	template <typename T>
+	inline geometry::closest_point_and_distance_t rect<T>::closest_point_and_distance(const geometry::aabb& other) const noexcept
+		{
+		geometry::closest_point_and_distance_t best;
+		for (const auto& edge : get_edges())
+			{
+			geometry::closest_point_and_distance_t tmp{geometry::segment{edge}.closest_point_and_distance(other)};
+			if (tmp.distance < best.distance) { best = tmp; }
+			}
+		return best;
+		}
+	template <typename T>
+	inline bool rect<T>::intersects(const geometry::aabb& other) const noexcept
+		{
+		for (const auto& edge : get_edges())
+			{
+			if (geometry::segment{edge}.intersects(other)) { return true; }
+			}
+		return false;
+		}
+	template <typename T>
+	inline std::optional<vec2f> rect<T>::intersection(const geometry::aabb& other) const noexcept
+		{
+		for (const auto& edge : get_edges())
+			{
+			if (auto opt{geometry::segment{edge}.intersection(other)}) { return opt; }
+			}
+		return std::nullopt;
+		}
+	template <typename T>
+	inline bool rect<T>::contains(const geometry::aabb& other) const noexcept
+		{
+		return contains(other.ul()) 
+			&& contains(other.ur()) 
+			&& contains(other.dr()) 
+			&& contains(other.dl())
+			&& !intersects(other);
+		}
+
+	template <typename T>
+	inline geometry::closest_point_and_distance_t rect<T>::closest_point_and_distance(const geometry::polygon& other) const noexcept
+		{
+		geometry::closest_point_and_distance_t best;
+		for (const auto& edge : get_edges())
+			{
+			geometry::closest_point_and_distance_t tmp{geometry::segment{edge}.closest_point_and_distance(other)};
+			if (tmp.distance < best.distance) { best = tmp; }
+			}
+		return best;
+		}
+	template <typename T>
+	inline bool rect<T>::intersects(const geometry::polygon& other) const noexcept
+		{
+		for (const auto& edge : get_edges())
+			{
+			if (geometry::segment{edge}.intersects(other)) { return true; }
+			}
+		return false;
+		}
+	template <typename T>
+	inline std::optional<vec2f> rect<T>::intersection(const geometry::polygon& other) const noexcept
+		{
+		for (const auto& edge : get_edges())
+			{
+			if (auto opt{geometry::segment{edge}.intersection(other)}) { return opt; }
+			}
+		return std::nullopt;
+		}
+	template <typename T>
+	inline bool rect<T>::contains(const geometry::polygon& other) const noexcept
+		{
+		for (const auto& vertex : other.get_vertices())
+			{
+			if (!contains(vertex)) { return false; }
+			}
+		return !intersects(other);
+		}
 	}

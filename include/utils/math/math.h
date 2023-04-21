@@ -84,4 +84,33 @@ namespace utils::math
 
 		return static_cast<to_t>(f);
 		}
+
+	template <typename T, T FULL_VALUE>
+	struct type_based_numeric_range;
+
+	namespace concepts
+		{
+		template <typename T>
+		concept type_based_numeric_range = std::same_as<T, utils::math::type_based_numeric_range<typename T::value_type, T::full_value>>;
+		}
+
+	template <typename T, T FULL_VALUE = std::floating_point<T> ? T{1} : std::numeric_limits<T>::max()>
+	struct type_based_numeric_range
+		{
+		using value_type = T;
+		inline static constexpr const T full_value{FULL_VALUE};
+
+		template <concepts::type_based_numeric_range other>
+		static other::value_type cast(value_type value) noexcept
+			{
+			if constexpr (std::same_as<value_type, other::value_type>)
+				{
+				if constexpr (full_value == other::full_value) { return value; }
+				}
+
+			using tmp_t = std::conditional_t<(std::numeric_limits<value_type>::max() > std::numeric_limits<other::value_type>::max()), value_type, other::value_type > ;
+			tmp_t tmp{(static_cast<tmp_t>(value) / static_cast<tmp_t>(full_value)) * static_cast<tmp_t>(other::full_value)};
+			return static_cast<other::value_type>(tmp);
+			}
+		};
 	}

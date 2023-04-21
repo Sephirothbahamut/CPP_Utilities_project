@@ -8,7 +8,11 @@
 
 namespace utils::math::geometry
 	{
-	struct closest_point_and_distance_t { point position{0.f, 0.f}; float distance{0.f}; };
+	struct closest_point_and_distance_t 
+		{
+		point position{std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN()}; 
+		float distance{std::numeric_limits<float>::infinity()}; 
+		};
 
 	template <typename derived_t>
 	template <concepts::shape other_t>

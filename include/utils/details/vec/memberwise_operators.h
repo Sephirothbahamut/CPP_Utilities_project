@@ -36,6 +36,25 @@ namespace utils::details::vec
 			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 		public:
+			template <auto callback>
+			utils_cuda_available derived_t& for_each()
+				{
+				for (size_t i{0}; i < derived().size(); i++)
+					{
+					callback(derived()[i]);
+					}
+				return derived();
+				}
+			template <auto callback>
+			utils_cuda_available derived_t for_each_to_new() const
+				{
+				nonref_derived_t ret;
+				for (size_t i{0}; i < derived().size(); i++)
+					{
+					ret[i] = callback(derived()[i]);
+					}
+				return ret;
+				}
 		};
 
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t>
