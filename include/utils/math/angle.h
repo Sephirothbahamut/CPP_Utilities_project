@@ -29,6 +29,40 @@ namespace utils::math::angle
 	using degd = deg<double>;
 	using radd = rad<double>;
 
+	namespace common
+		{
+		enum class direction
+			{
+			rr, ur, up, ul, ll, dl, dw, dr,
+			right      = rr,
+			up_right   = ur,
+			up_left    = ul,
+			left       = ll,
+			down_left  = dl,
+			down       = dw,
+			down_right = dr
+			};
+		enum class hex_flat_top
+			{
+			ur, up, ul, dl, dw, dr,
+			up_right   = ur,
+			up_left    = ul,
+			down_left  = dl,
+			down       = dw,
+			down_right = dr
+			};
+		enum class hex_pointy_top
+			{
+			rr, ur, ul, ll, dl, dr,
+			right      = rr,
+			up_right   = ur,
+			up_left    = ul,
+			left       = ll,
+			down_left  = dl,
+			down_right = dr
+			};
+		};
+
 	namespace concepts
 		{
 		template <typename T>
@@ -46,7 +80,11 @@ namespace utils::math::angle
 			value_type value{ 0.f };
 
 			base() = default;
-			base(value_type value) : value{ value } {}
+			base(value_type value) : value{value} {}
+
+			base(common::direction      dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{8} )} {}
+			base(common::hex_flat_top   dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{6} )} {}
+			base(common::hex_pointy_top dir) : value{(full_angle_value / T{12}) + (static_cast<T>(dir) * (full_angle_value / T{6}))} {}
 			
 			// template <value_type other_full_angle>
 			// base(const base<value_type, other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
