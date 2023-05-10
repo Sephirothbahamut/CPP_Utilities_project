@@ -140,10 +140,24 @@ namespace utils::math::angle
 
 			constexpr base  operator-()const noexcept { return base{ value + half_angle }.clamp(); }
 
+			/// <summary>
+			/// Distance within a full angle. Disregards differences larger than one full angle.
+			/// </summary>
+			/// <param name="a"></param>
+			/// <param name="b"></param>
+			/// <returns></returns>
 			static constexpr base min_distance(const base a, const base b) noexcept
 				{
-				T d{(b.value - a.value) % 360};
-				return d < -half_angle ? d + full_angle : d > half_angle ? d - full_angle : d;
+				if constexpr (std::is_integral_v<value_type>)
+					{
+					T d{(b.value - a.value) % full_angle};
+					return d < -half_angle ? d + full_angle : d > half_angle ? d - full_angle : d;
+					}
+				else if constexpr (std::is_floating_point_v<value_type>)
+					{
+					T d{std::modf((b.value - a.value), full_angle)};
+					return d < -half_angle ? d + full_angle : d > half_angle ? d - full_angle : d;
+					}
 				}
 
 			constexpr value_type normalize_in_range(base min, base max) const noexcept
