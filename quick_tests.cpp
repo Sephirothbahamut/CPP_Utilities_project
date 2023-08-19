@@ -74,4 +74,6 @@ int main()
 	//	{
 	//	std::cout << opt.value();
 	//	}
+
+	aabb.contains(p);
 	}

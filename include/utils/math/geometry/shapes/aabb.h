@@ -13,10 +13,10 @@ namespace utils::math
 			{
 			switch (index)
 				{
-				case 0: return geometry::edge_ref{ul(), ur()};
-				case 1: return geometry::edge_ref{ur(), dr()};
-				case 2: return geometry::edge_ref{dr(), dl()};
-				case 3: return geometry::edge_ref{dl(), ul()};
+				case 0:          return geometry::edge_ref{ul(), ur()};
+				case 1:          return geometry::edge_ref{ur(), dr()};
+				case 2:          return geometry::edge_ref{dr(), dl()};
+				case 3: default: return geometry::edge_ref{dl(), ul()};
 				}
 			}};
 		}
@@ -27,10 +27,10 @@ namespace utils::math
 			{
 			switch (index)
 				{
-				case 0: return geometry::segment{ul(), ur()};
-				case 1: return geometry::segment{ur(), dr()};
-				case 2: return geometry::segment{dr(), dl()};
-				case 3: return geometry::segment{dl(), ul()};
+				case 0:          return geometry::segment{ul(), ur()};
+				case 1:          return geometry::segment{ur(), dr()};
+				case 2:          return geometry::segment{dr(), dl()};
+				case 3: default: return geometry::segment{dl(), ul()};
 				}
 			}};
 		}

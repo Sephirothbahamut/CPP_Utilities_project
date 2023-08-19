@@ -441,7 +441,7 @@ namespace utils::math
 		float                distance_min    (const geometry::point& b) const noexcept;
 		bool                 intersects      (const geometry::point& other) const noexcept;
 		std::optional<vec2f> intersection    (const geometry::point& other) const noexcept;
-		//bool                 contains        (const geometry::point& other) const noexcept;
+		bool                 contains        (const geometry::point& other) const noexcept;
 
 		geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::segment& other) const noexcept;
 		bool                 intersects      (const geometry::segment& other) const noexcept;

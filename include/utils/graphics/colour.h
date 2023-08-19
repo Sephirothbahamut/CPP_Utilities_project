@@ -94,7 +94,7 @@ namespace utils::graphics::colour
 		{
 		public:
 			inline static constexpr const size_t static_size{HAS_ALPHA ? 4 : 3};
-			using derived_t = rgb<T, static_size>;
+			using derived_t = rgb<T, HAS_ALPHA>;
 
 			inline static constexpr const bool has_alpha = HAS_ALPHA;
 			using range = utils::math::type_based_numeric_range<T>;

@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <vector>
+#include <optional>
 
 namespace utils::containers::multithreading
 	{
@@ -33,10 +34,21 @@ namespace utils::containers::multithreading
 
 			std::vector<T>& swap_and_get()
 				{
-				std::unique_lock lock{ queues_access_mutex };
 				consumer_data.clear();
-				std::swap(producer_data, consumer_data);
+				if (true)
+					{
+					std::unique_lock lock{queues_access_mutex};
+					std::swap(producer_data, consumer_data);
+					}
 				return consumer_data;
+				}
+
+			std::optional<value_type> get()
+				{
+				if (consumer_data.empty()) { return std::nullopt; }
+				auto ret{std::move(consumer_data.back())};
+				consumer_data.pop_back();
+				return std::move(ret);
 				}
 
 		protected:

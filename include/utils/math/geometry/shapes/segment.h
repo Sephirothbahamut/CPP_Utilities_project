@@ -68,7 +68,7 @@ namespace utils::math::geometry
 
 			inline vec2f vector() const noexcept { return b - a; }
 
-			inline vec2f closest_vertex(const vec2f& point) const noexcept { return distance_min(a) < distance_min(b) ? a : b; }
+			inline vec2f closest_vertex(const vec2f& point) const noexcept { return point.distance_min(a) < point.distance_min(b) ? a : b; }
 
 			inline side_t point_side(const vec2f& point) const noexcept
 				{
