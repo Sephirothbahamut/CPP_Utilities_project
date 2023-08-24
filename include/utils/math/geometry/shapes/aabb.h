@@ -6,8 +6,8 @@
 
 namespace utils::math
 	{
-	template <typename T>
-	auto rect<T>::get_edges() noexcept
+	template <>
+	inline auto rect<float>::get_edges() noexcept
 		{
 		return utils::index_range{0, 4, [this](size_t index)
 			{
@@ -20,8 +20,8 @@ namespace utils::math
 				}
 			}};
 		}
-	template <typename T>
-	auto rect<T>::get_edges() const noexcept
+	template <>
+	inline auto rect<float>::get_edges() const noexcept
 		{
 		return utils::index_range{0, 4, [this](size_t index)
 			{
@@ -35,8 +35,8 @@ namespace utils::math
 			}};
 		}
 
-	template <typename T>
-	rect<T>& rect<T>::scale_self    (const float      & scaling    ) noexcept
+	template <>
+	inline rect<float>& rect<float>::scale_self    (const float      & scaling    ) noexcept
 		{
 		ll *= scaling;
 		up *= scaling;
@@ -44,8 +44,10 @@ namespace utils::math
 		dw *= scaling;
 		return *this; 
 		}
-	template <typename T>
-	rect<T>& rect<T>::rotate_self   (const angle::radf& rotation   ) noexcept { return *this; }
-	template <typename T>
-	rect<T>& rect<T>::translate_self(const vec2f      & translation) noexcept { pos() += translation; return *this; }
+
+	template <>
+	inline rect<float>& rect<float>::rotate_self   (const angle::radf& rotation   ) noexcept { return *this; }
+
+	template <>
+	inline rect<float>& rect<float>::translate_self(const vec2f      & translation) noexcept { pos() += translation; return *this; }
 	}

@@ -85,6 +85,12 @@ namespace utils::math
 		if (intersects(other)) { return other; }
 		}
 
+	//template <typename T>
+	//bool rect<T>::contains(const geometry::point& other) const noexcept
+	//	{
+	//	return other.x >= ll && other.x <= rr && other.y >= up && other.y <= dw;
+	//	}
+
 	//TODO From here on I copied polygon functions that rely on get_edges(), should be possible to optimize
 
 	template <typename T>
@@ -152,11 +158,11 @@ namespace utils::math
 	template <typename T>
 	inline bool rect<T>::contains(const geometry::aabb& other) const noexcept
 		{
-		return contains(other.ul()) 
-			&& contains(other.ur()) 
-			&& contains(other.dr()) 
-			&& contains(other.dl())
-			&& !intersects(other);
+		return contains(other.ul())
+			&& contains(other.ur())
+			&& contains(other.dr())
+			&& contains(other.dl());
+			//&& !intersects(other); //TODO understand why I added this, if no reason, delete
 		}
 
 	template <typename T>

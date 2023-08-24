@@ -38,9 +38,9 @@ namespace utils::math::geometry
 	template <concepts::shape other_t>
 	std::optional<point> shape_base<derived_t>::intersection(const other_t& b) const noexcept { return derived().intersects(b) ? std::optional<point>{derived().closest_point_to(b)} : std::nullopt; };
 
-	template <typename derived_t>
-	template <concepts::shape other_t>
-	bool shape_base<derived_t>::contains(const other_t& b) const noexcept { return false; };
+	//template <typename derived_t>
+	//template <concepts::shape other_t>
+	//bool shape_base<derived_t>::contains(const other_t& b) const noexcept { return false; };
 
 	template <typename derived_t>
 	template <concepts::shape other_t>

@@ -441,7 +441,7 @@ namespace utils::math
 		float                distance_min    (const geometry::point& b) const noexcept;
 		bool                 intersects      (const geometry::point& other) const noexcept;
 		std::optional<vec2f> intersection    (const geometry::point& other) const noexcept;
-		bool                 contains        (const geometry::point& other) const noexcept;
+		//bool                 contains        (const geometry::point& other) const noexcept;
 
 		geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::segment& other) const noexcept;
 		bool                 intersects      (const geometry::segment& other) const noexcept;
@@ -472,7 +472,8 @@ namespace utils::math
 
 		rect<T> bounding_box() const noexcept { return *this; }
 
-		bool contains(vec2<nonref_value_type> point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
+		template <std::convertible_to<nonref_value_type> point_value_type>
+		bool contains(const vec2<point_value_type>& point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
 		};
 	}
 
