@@ -382,6 +382,9 @@
     <ClInclude Include="include\utils\third_party\jc_voronoi.h">
       <Filter>Utils\third_party</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\bezier.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
