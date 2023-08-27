@@ -8,16 +8,6 @@
 
 #include "CppUnitTest.h"
 
-namespace Microsoft
-	{
-	namespace VisualStudio
-		{
-		namespace CppUnitTestFramework
-			{
-			}
-		}
-	}
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using civ = utils::oop::counting_invalidating_move;
@@ -27,6 +17,16 @@ struct test_struct : civ
 	test_struct(int v) : v{v} {}
 	int v;
 	};
+
+namespace Microsoft
+	{
+	namespace VisualStudio
+		{
+		namespace CppUnitTestFramework
+			{
+			}
+		}
+	}
 
 namespace Tests
 	{
@@ -86,6 +86,9 @@ namespace Tests
 				Assert::AreEqual(size_t{6}, test_struct::count());
 
 				auto h2_2{h2};
+
+				auto address{&*h2};
+
 				h2.reset();
 
 				Assert::AreEqual(size_t{5}, test_struct::count());
@@ -95,6 +98,7 @@ namespace Tests
 
 				auto h2_3{op.emplace(3)};
 
+				Assert::AreEqual(static_cast<void*>(address), static_cast<void*>(&*h2_3));
 				Assert::AreEqual(size_t{6}, test_struct::count());
 				}
 		};
