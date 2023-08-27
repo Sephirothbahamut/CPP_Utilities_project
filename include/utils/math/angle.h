@@ -8,7 +8,6 @@
 
 #include "constants.h"
 #include "../math/math.h"
-#include "../console/colour.h"
 #include "../template_wrappers.h"
 
 //TODO write test cases
@@ -244,34 +243,34 @@ namespace utils::math
 		}
 	}
 
-namespace utils::output
-	{
-	namespace typeless
-		{
-		template <std::floating_point T, T full_angle_value>
-		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
-			{
-			namespace ucc = utils::console::colour;
-
-			utils::output::operator<<(os, ucc::value); //TODO why doesn't work without explicit operator<<?
-
-			//os << ucc::value;
-			if constexpr (full_angle_value == 2.f * constants::PIf) { os << (angle.value / constants::PIf); }
-			else { os << angle.value; }
-
-			utils::output::operator<<(os, ucc::type); //TODO why doesn't work without explicit operator<<?
-			if      constexpr (full_angle_value == T{360})               { os << "deg"; }
-			else if constexpr (full_angle_value == 2.f * constants::PIf) { os << "pirad"; }
-			else                                               { os << "/" << full_angle_value; }
-			return os;
-			}
-		}
-	
-	template <std::floating_point T, T full_angle_value>
-	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
-		{
-		namespace ucc = utils::console::colour;
-		utils::output::typeless::operator<<(os, angle); 
-		return os << "_" << typeid(T).name();
-		}
-	}
+//namespace utils::output
+//	{
+//	namespace typeless
+//		{
+//		template <std::floating_point T, T full_angle_value>
+//		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
+//			{
+//			namespace ucc = utils::console::colour;
+//
+//			utils::output::operator<<(os, ucc::value); //TODO why doesn't work without explicit operator<<?
+//
+//			//os << ucc::value;
+//			if constexpr (full_angle_value == 2.f * constants::PIf) { os << (angle.value / constants::PIf); }
+//			else { os << angle.value; }
+//
+//			utils::output::operator<<(os, ucc::type); //TODO why doesn't work without explicit operator<<?
+//			if      constexpr (full_angle_value == T{360})               { os << "deg"; }
+//			else if constexpr (full_angle_value == 2.f * constants::PIf) { os << "pirad"; }
+//			else                                               { os << "/" << full_angle_value; }
+//			return os;
+//			}
+//		}
+//	
+//	template <std::floating_point T, T full_angle_value>
+//	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::angle::base<T, full_angle_value>& angle)
+//		{
+//		namespace ucc = utils::console::colour;
+//		utils::output::typeless::operator<<(os, angle); 
+//		return os << "_" << typeid(T).name();
+//		}
+//	}

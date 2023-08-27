@@ -7,6 +7,7 @@
 #include "aabb.h"
 
 #include <iostream>
+
 namespace utils::math::geometry
 	{
 	class polygon : public shape_base<polygon>
@@ -30,7 +31,7 @@ namespace utils::math::geometry
 					{
 					std::cout << "asd";
 					}
-				vecref2f vr{vertices[0]};
+
 				//For future me: do NOT capture vertices by reference, it wouldn't exist outside of this scope :)
 				return utils::index_range{0, vertices.size(), [vertices](size_t index) -> geometry::edge_ref { return {vertices[index], vertices[(index + 1) % vertices.size()]}; }};
 				}

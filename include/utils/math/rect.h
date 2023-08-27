@@ -479,44 +479,44 @@ namespace utils::math
 
 
 
-namespace utils::output
-	{
-	namespace typeless
-		{
-		template <typename T>
-		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::rect<T>& aabb)
-			{
-			namespace ucc = utils::console::colour;
-
-			os  << ucc::brace << "(" 
-				<< ucc::type << "left"  << ucc::separ << ": " << ucc::value << aabb.ll << ucc::separ << ", "
-				<< ucc::type << "up"    << ucc::separ << ": " << ucc::value << aabb.up << ucc::separ << ", "
-				<< ucc::type << "right" << ucc::separ << ": " << ucc::value << aabb.rr << ucc::separ << ", "
-				<< ucc::type << "down"  << ucc::separ << ": " << ucc::value << aabb.dw << ucc::separ
-				<< ucc::brace << ")";
-			return os;
-			}
-		}
-
-	template <typename T>
-	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::rect<T>& aabb)
-		{
-		namespace ucc = utils::console::colour;
-		os << ucc::type << "rect" << ucc::brace << "<" << ucc::type << typeid(T).name() << ucc::brace << ">";
-		return utils::output::typeless::operator<<(os, aabb);
-		}
-
-	//TODO understand why not working
-	template <typename T> 
-	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::x_proxy& proxy) { return os << static_cast<T>(proxy); }
-	template <typename T> 
-	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::y_proxy& proxy) { return os << static_cast<T>(proxy); }
-	template <typename T> 
-	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::p_proxy& proxy) { return os << static_cast<utils::math::vec2<T>>(proxy); }
-	template <typename T> 
-	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::w_proxy& proxy) { return os << static_cast<T>(proxy); }
-	template <typename T> 
-	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::h_proxy& proxy) { return os << static_cast<T>(proxy); }
-	template <typename T> 
-	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::s_proxy& proxy) { return os << static_cast<utils::math::vec2<T>>(proxy); }
-	}
+//namespace utils::output
+//	{
+//	namespace typeless
+//		{
+//		template <typename T>
+//		inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::rect<T>& aabb)
+//			{
+//			namespace ucc = utils::console::colour;
+//
+//			os  << ucc::brace << "(" 
+//				<< ucc::type << "left"  << ucc::separ << ": " << ucc::value << aabb.ll << ucc::separ << ", "
+//				<< ucc::type << "up"    << ucc::separ << ": " << ucc::value << aabb.up << ucc::separ << ", "
+//				<< ucc::type << "right" << ucc::separ << ": " << ucc::value << aabb.rr << ucc::separ << ", "
+//				<< ucc::type << "down"  << ucc::separ << ": " << ucc::value << aabb.dw << ucc::separ
+//				<< ucc::brace << ")";
+//			return os;
+//			}
+//		}
+//
+//	template <typename T>
+//	inline ::std::ostream& operator<<(::std::ostream& os, const utils::math::rect<T>& aabb)
+//		{
+//		namespace ucc = utils::console::colour;
+//		os << ucc::type << "rect" << ucc::brace << "<" << ucc::type << typeid(T).name() << ucc::brace << ">";
+//		return utils::output::typeless::operator<<(os, aabb);
+//		}
+//
+//	//TODO understand why not working
+//	template <typename T> 
+//	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::x_proxy& proxy) { return os << static_cast<T>(proxy); }
+//	template <typename T> 
+//	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::y_proxy& proxy) { return os << static_cast<T>(proxy); }
+//	template <typename T> 
+//	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::p_proxy& proxy) { return os << static_cast<utils::math::vec2<T>>(proxy); }
+//	template <typename T> 
+//	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::w_proxy& proxy) { return os << static_cast<T>(proxy); }
+//	template <typename T> 
+//	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::h_proxy& proxy) { return os << static_cast<T>(proxy); }
+//	template <typename T> 
+//	inline ::std::ostream& operator<<(::std::ostream& os, const typename utils::math::rect<T>::s_proxy& proxy) { return os << static_cast<utils::math::vec2<T>>(proxy); }
+//	}

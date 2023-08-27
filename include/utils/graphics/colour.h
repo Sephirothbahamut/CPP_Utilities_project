@@ -7,7 +7,6 @@
 
 #include "../compilation/warnings.h"
 #include "../math/angle.h"
-#include "../console/colour.h"
 #include "../template_wrappers.h"
 
 #include "../details/vec/common.h"
@@ -44,8 +43,11 @@ namespace utils::graphics::colour
 
 	namespace concepts
 		{
+		template <typename T, bool has_alpha = false>
+		concept rgb = std::same_as<T, colour::rgb<typename T::value_type, false>>;
+
 		template <typename T>
-		concept rgb = std::same_as<T, colour::rgb<typename T::value_type, T::has_alpha>>;
+		concept rgba = rgb<T, true>;
 
 		template <typename T>
 		concept hsv = std::same_as<T, colour::hsv<typename T::value_type, T::has_alpha>>;
@@ -89,8 +91,8 @@ namespace utils::graphics::colour
 	rgb :
 		public details::rgb_named<T, HAS_ALPHA>,
 		public utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb<T, HAS_ALPHA>, rgb<utils::remove_cvref_t<T>, HAS_ALPHA>>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb<T, HAS_ALPHA>, rgb<utils::remove_cvref_t<T>, HAS_ALPHA>>>,
-		public utils::details::vec::output<details::colour_name, rgb<T, HAS_ALPHA>>
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb<T, HAS_ALPHA>, rgb<utils::remove_cvref_t<T>, HAS_ALPHA>>>//,
+		//public utils::details::vec::output<details::colour_name, rgb<T, HAS_ALPHA>>
 		{
 		public:
 			inline static constexpr const size_t static_size{HAS_ALPHA ? 4 : 3};
@@ -325,35 +327,34 @@ namespace utils::graphics::colour
 		if constexpr ( has_alpha) { return {r, g, b, details::alpha_field<T>::a}; }
 		}
 	};
-	
 
-namespace utils::output
-	{
-	namespace typeless
-		{
-		template <typename T, size_t SIZE>
-		inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE>& colour)
-			{
-			namespace ucc = utils::console::colour;
-
-			os << ucc::brace << "(";
-
-			if constexpr (SIZE >= 1) { os                       << ucc::foreground::red   << std::to_string(colour[0]); }
-			if constexpr (SIZE >= 2) { os << ucc::separ << ", " << ucc::foreground::green << std::to_string(colour[1]); }
-			if constexpr (SIZE >= 3) { os << ucc::separ << ", " << ucc::foreground::blue  << std::to_string(colour[2]); }
-			if constexpr (SIZE >= 4) { os << ucc::separ << ", " << ucc::foreground::white << std::to_string(colour[3]); }
-
-			os << ucc::brace << ")";
-
-			return os;
-			}
-		}
-
-	template <typename T, size_t SIZE>
-	inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE>& colour)
-		{
-		namespace ucc = utils::console::colour;
-		os << ucc::type << "rgb" << SIZE << typeid(T).name();
-		return utils::output::typeless::operator<<(os, colour);
-		}
-	}
+//namespace utils::output
+//	{
+//	namespace typeless
+//		{
+//		template <typename T, size_t SIZE>
+//		inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE>& colour)
+//			{
+//			namespace ucc = utils::console::colour;
+//
+//			os << ucc::brace << "(";
+//
+//			if constexpr (SIZE >= 1) { os                       << ucc::foreground::red   << std::to_string(colour[0]); }
+//			if constexpr (SIZE >= 2) { os << ucc::separ << ", " << ucc::foreground::green << std::to_string(colour[1]); }
+//			if constexpr (SIZE >= 3) { os << ucc::separ << ", " << ucc::foreground::blue  << std::to_string(colour[2]); }
+//			if constexpr (SIZE >= 4) { os << ucc::separ << ", " << ucc::foreground::white << std::to_string(colour[3]); }
+//
+//			os << ucc::brace << ")";
+//
+//			return os;
+//			}
+//		}
+//
+//	template <typename T, size_t SIZE>
+//	inline ::std::ostream& operator<<(::std::ostream& os, const utils::graphics::colour::rgb<T, SIZE>& colour)
+//		{
+//		namespace ucc = utils::console::colour;
+//		os << ucc::type << "rgb" << SIZE << typeid(T).name();
+//		return utils::output::typeless::operator<<(os, colour);
+//		}
+//	}

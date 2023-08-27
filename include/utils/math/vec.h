@@ -235,15 +235,15 @@ namespace utils::math
 			
 			//special case for vec of references
 			template <concepts::vec other_t>
-				//requires
-				//	(
-				//	utils::concepts::reference<value_type> && other_t::static_size == static_size &&
-				//		(
-				//		((!utils::concepts::reference<other_t::value_type>) && std::same_as<typename other_t::value_type, utils::remove_cvref_t<value_type>>) 
-				//		||
-				//		(( utils::concepts::reference<other_t::value_type>) && std::same_as<typename other_t::value_type, value_type>)
-				//		)
-				//	)
+				requires
+					(
+					utils::concepts::reference<value_type> && other_t::static_size == static_size &&
+						(
+						((!utils::concepts::reference<typename other_t::value_type>) && std::same_as<typename other_t::value_type, utils::remove_cvref_t<value_type>>)
+						||
+						(( utils::concepts::reference<typename other_t::value_type>) && std::same_as<typename other_t::value_type, value_type>)
+						)
+					)
 			utils_cuda_available constexpr vec(      other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](      auto&... values) -> std::array<value_type, size> { return {                        values ...}; }, other.array)}} {}
 
 			template <concepts::vec other_t>

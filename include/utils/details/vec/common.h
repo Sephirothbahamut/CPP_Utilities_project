@@ -2,10 +2,8 @@
 
 #include <array>
 #include <concepts>
-
-#include "../../output/std_containers.h"
 #include "../../compilation/CUDA.h"
-#include "../../console/colour.h"
+#include "../../memory.h"
 
 namespace utils::details::vec
 	{
@@ -84,14 +82,14 @@ namespace utils::details::vec
 		};
 	}
 
-namespace utils::output
-	{
-	namespace typeless
-		{
-		template <utils::details::vec::concepts::array T>
-		inline ::std::ostream& operator<<(::std::ostream& os, const T& container)
-			{
-			return utils::output::typeless::operator<<(os, container.array);
-			}
-		}
-	}
+//namespace utils::output
+//	{
+//	namespace typeless
+//		{
+//		template <utils::details::vec::concepts::array T>
+//		inline ::std::ostream& operator<<(::std::ostream& os, const T& container)
+//			{
+//			return utils::output::typeless::operator<<(os, container.array);
+//			}
+//		}
+//	}

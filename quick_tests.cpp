@@ -34,15 +34,17 @@
 
 #include "include/utils/math/geometry/voronoi/voronoi.h"
 
-using civ = utils::oop::counting_invalidating_move;
-
-struct test_struct : civ
-	{
-	test_struct(int v) : v{v} {}
-	int v;
-	};
+//using civ = utils::oop::counting_invalidating_move;
+//
+//struct test_struct : civ
+//	{
+//	test_struct(int v) : v{v} {}
+//	int v;
+//	};
 int main()
 	{
+	utils::console::initializer console_initializer;
+
 	using namespace utils::output;
 
 	utils::math::geometry::circle circ{.center{0.f, 0.f}, .radius{5.f}};
@@ -76,4 +78,13 @@ int main()
 	//	}
 
 	aabb.contains(p);
+
+	std::cout << utils::console::colour::restore_defaults << std::endl;
+	for (size_t i = 0; i < 256; i++)
+		{
+		std::cout << utils::console::colour::foreground{utils::graphics::colour::rgb_u{0, i, 255 - i}};
+		std::cout << utils::console::colour::background{utils::graphics::colour::rgb_u{0, 255 - i, i}};
+		std::cout << "#";
+		}
+	std::cout << utils::console::colour::restore_defaults << std::endl;
 	}

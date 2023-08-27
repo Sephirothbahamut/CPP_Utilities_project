@@ -4,7 +4,7 @@
 
 #include "common.h"
 #include "../../template_wrappers.h"
-#include "../../console/colour.h"
+#include "../../output/std_containers.h"
 
 namespace utils::details::vec
 	{
@@ -22,13 +22,13 @@ namespace utils::details::vec
 		}
 	}
 
-namespace utils::output
-	{
-	template <utils::details::vec::concepts::output T>
-	inline ::std::ostream& operator<<(::std::ostream& os, const T& container)
-		{
-		namespace ucc = utils::console::colour;
-		os << ucc::type << T::name << T::static_size << typeid(typename T::value_type).name();
-		return utils::output::typeless::operator<<(os, container);
-		}
-	}
+//namespace utils::output
+//	{
+//	template <utils::details::vec::concepts::output T>
+//	inline ::std::ostream& operator<<(::std::ostream& os, const T& container)
+//		{
+//		namespace ucc = utils::console::colour;
+//		os << ucc::type << T::name << T::static_size << typeid(typename T::value_type).name();
+//		return utils::output::typeless::operator<<(os, container);
+//		}
+//	}

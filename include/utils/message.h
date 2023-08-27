@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 #include <iomanip>
+#include <string_view>
 
 #include "console/colour.h"
 
@@ -31,7 +32,7 @@ namespace utils
 			inline static message wrn(std::string&& string = "") noexcept { return {msg_t::wrn, std::move(string), std::chrono::system_clock::now()}; }
 			inline static message err(std::string&& string = "") noexcept { return {msg_t::err, std::move(string), std::chrono::system_clock::now()}; }
 
-			inline const char* out_type() const noexcept
+			inline constexpr std::string_view out_type() const noexcept
 				{
 				switch (type)
 					{
@@ -43,7 +44,7 @@ namespace utils
 					default: return "[This error code should be impossible to get]";
 					}
 				}
-			inline const char* out_type_verbose() const noexcept
+			inline constexpr std::string_view out_type_verbose() const noexcept
 				{
 				switch (type)
 					{
@@ -55,20 +56,20 @@ namespace utils
 					default: return "[This error code should be impossible to get]";
 					}
 				}
-			inline utils::console::colour::foreground_t out_type_color() const noexcept
+			inline constexpr utils::graphics::colour::base out_type_color() const noexcept
 				{
 				switch (type)
 					{
-					case message::msg_t::log: return utils::console::colour::foreground::white;
-					case message::msg_t::dgn: return utils::console::colour::foreground::magenta;
-					case message::msg_t::inf: return utils::console::colour::foreground::cyan;
-					case message::msg_t::wrn: return utils::console::colour::foreground::yellow;
-					case message::msg_t::err: return utils::console::colour::foreground::red;
-					default: return utils::console::colour::foreground::red;
+					case message::msg_t::log: return utils::graphics::colour::base::white;
+					case message::msg_t::dgn: return utils::graphics::colour::base::magenta;
+					case message::msg_t::inf: return utils::graphics::colour::base::cyan;
+					case message::msg_t::wrn: return utils::graphics::colour::base::yellow;
+					case message::msg_t::err: return utils::graphics::colour::base::red;
+					default: return utils::graphics::colour::base::red;
 					}
 				}
 
-			inline std::chrono::time_point<std::chrono::system_clock> get_timestamp() const noexcept { return time; }
+			inline constexpr std::chrono::time_point<std::chrono::system_clock> get_timestamp() const noexcept { return time; }
 
 		private:
 			inline message(msg_t type, std::string&& string, std::chrono::time_point<std::chrono::system_clock> time) noexcept
@@ -85,7 +86,7 @@ namespace utils
 			std::string string{};
 			std::chrono::time_point<std::chrono::system_clock> time;
 
-			inline static std::string filter_last_newline(const std::string& string) noexcept
+			inline static constexpr std::string filter_last_newline(const std::string& string) noexcept
 				{
 				if (string.length() > 0 && string[string.length() - 1] == '\n') { return string.substr(0, string.length() - 1); }
 				else { return string; }
@@ -95,65 +96,66 @@ namespace utils
 				{
 				using namespace utils::output;
 
-				if constexpr (message_output_style == message_output_style_t::on_line)
+				//Data line
+				if constexpr (message_output_style == message_output_style_t::tag_as_separator)
 					{
-
-					size_t beg = 0;
-					size_t end = m.string.find_first_of('\n', beg);
-					if (end == std::string::npos) { end = m.string.length(); }
-
-					//First line
-					os << utils::console::colour::foreground::dark_white << std::setw(18) << m.time.time_since_epoch().count() << ' ';
-
-					os << m.out_type_color() << m.out_type();
-
-					os << utils::console::colour::foreground::dark_white << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
-
-					//Other lines
-					while (true)
-						{
-						if (end == m.string.length()) { break; }
-						else
-							{
-							beg = end + 1;
-							end = m.string.find_first_of('\n', beg);
-							if (end == std::string::npos) { end = m.string.length(); }
-							}
-
-						os << std::setw(24) << m.out_type_color() << '|';
-						os << utils::console::colour::foreground::dark_white << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
-						}
-
-					return os;
-					}
-				else if constexpr (message_output_style == message_output_style_t::tag_as_separator)
-					{
-					size_t beg = 0;
-					size_t end = m.string.find_first_of('\n', beg);
-					if (end == std::string::npos) { end = m.string.length(); }
-
-					//Data line
 					os << "_________________________________\n";
-					os << m.out_type_color() << ' ' << std::left << std::setw(12) << m.out_type_verbose() << ' ' << std::right << std::setw(18) << m.time.time_since_epoch().count() << '\n';
-					//First line
-					os << utils::console::colour::foreground::dark_white << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+					os << ' ';
 
-					//Other lines
-					while (true)
+					os << utils::console::colour::background{utils::console::colour::colour_8::dark  (m.out_type_color())};
+					os << utils::console::colour::foreground{utils::console::colour::colour_8::bright(utils::graphics::colour::base::white)};
+					os << std::left << m.out_type_verbose();
+					os << utils::console::colour::restore_defaults;
+
+					for (size_t i = 0; i < (12 - m.out_type_verbose().length()); i++) { os << ' '; }
+
+					os << ' ' << std::right << std::setw(18) << m.time.time_since_epoch().count() << '\n';
+					}
+
+				//First line
+
+				bool first_line{true};
+
+				size_t beg = 0;
+				size_t end = m.string.find_first_of('\n', beg);
+				if (end == std::string::npos) { end = m.string.length(); }
+
+				os << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+
+				//Lines
+				while (end < m.string.length())
+					{
+					if constexpr (message_output_style == message_output_style_t::on_line)
 						{
-						if (end == m.string.length()) { break; }
-						else
-							{
-							beg = end + 1;
-							end = m.string.find_first_of('\n', beg);
-							if (end == std::string::npos) { end = m.string.length(); }
-							}
+						os << " ";
+						os << utils::console::colour::background{utils::console::colour::colour_8::dark(m.out_type_color())};
+						os << utils::console::colour::foreground{utils::console::colour::colour_8::bright(utils::graphics::colour::base::white)};
+						os << std::left << m.out_type();
+						os << utils::console::colour::restore_defaults;
+						os << " ";
 
-						os << std::string_view(m.string).substr(beg, end - beg) << '\n';
+						if (first_line)
+							{
+							os << utils::console::colour::foreground{utils::console::colour::colour_8::dark(utils::graphics::colour::base::white)};
+							os << std::setw(18) << m.time.time_since_epoch().count() << ' ';
+							os << utils::console::colour::restore_defaults;
+							first_line = false;
+							}
+						else 
+							{
+							for (size_t i = 0; i < 18 - 2; i++) { os << ' '; }
+							os << "| ";
+							}
 						}
 
-					return os;
+					os << std::string_view(m.string).substr(beg, end - beg) << '\n';
+
+					beg = end + 1;
+					end = m.string.find_first_of('\n', beg);
+					if (end == std::string::npos) { end = m.string.length(); }
 					}
+
+				return os;
 				}
 
 		};
