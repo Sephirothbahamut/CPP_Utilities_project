@@ -87,4 +87,20 @@ int main()
 		std::cout << "#";
 		}
 	std::cout << utils::console::colour::restore_defaults << std::endl;
+
+	utils::globals::logger.log("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.err("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.wrn("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.dgn("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.inf("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.flush();
+
+	utils::message::output_style = utils::message::output_style_t::tag_as_separator;
+	std::cout << utils::console::colour::restore_defaults << std::endl;
+
+	utils::globals::logger.log("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.err("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.wrn("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.dgn("Hello wolrd\nhow are you\ni'm alright thanks");
+	utils::globals::logger.inf("Hello wolrd\nhow are you\ni'm alright thanks");
 	}

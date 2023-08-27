@@ -75,46 +75,12 @@ namespace utils::console::colour
 	struct foreground : details::colour<T>
 		{
 		constexpr foreground(const T& data) noexcept : details::colour<T>{data} {}; 
-		
-		static const foreground<colour_8> black     ;
-		static const foreground<colour_8> white     ;
-		static const foreground<colour_8> red       ;
-		static const foreground<colour_8> green     ;
-		static const foreground<colour_8> blue      ;
-		static const foreground<colour_8> yellow    ;
-		static const foreground<colour_8> cyan      ;
-		static const foreground<colour_8> magenta   ;
-		static const foreground<colour_8> dk_black  ;
-		static const foreground<colour_8> dk_white  ;
-		static const foreground<colour_8> dk_red    ;
-		static const foreground<colour_8> dk_green  ;
-		static const foreground<colour_8> dk_blue   ;
-		static const foreground<colour_8> dk_yellow ;
-		static const foreground<colour_8> dk_cyan   ;
-		static const foreground<colour_8> dk_magenta;
 		};
 
 	template <details::concepts::colour_data_t T>
 	struct background : details::colour<T>
 		{ 
 		constexpr background(const T& data) noexcept : details::colour<T>{data} {}; 
-		
-		static const background<colour_8> black     ;
-		static const background<colour_8> white     ;
-		static const background<colour_8> red       ;
-		static const background<colour_8> green     ;
-		static const background<colour_8> blue      ;
-		static const background<colour_8> yellow    ;
-		static const background<colour_8> cyan      ;
-		static const background<colour_8> magenta   ;
-		static const background<colour_8> dk_black  ;
-		static const background<colour_8> dk_white  ;
-		static const background<colour_8> dk_red    ;
-		static const background<colour_8> dk_green  ;
-		static const background<colour_8> dk_blue   ;
-		static const background<colour_8> dk_yellow ;
-		static const background<colour_8> dk_cyan   ;
-		static const background<colour_8> dk_magenta;
 		};
 
 	namespace concepts
@@ -189,41 +155,6 @@ namespace utils::console::colour
 	inline constexpr colour_8 colour_8::dk_cyan    = {colour_8::dark  (utils::graphics::colour::base::cyan   )};
 	inline constexpr colour_8 colour_8::dk_magenta = {colour_8::dark  (utils::graphics::colour::base::magenta)};
 	
-	inline constexpr foreground<colour_8> foreground<colour_8>::black     {colour_8::black  };
-	inline constexpr foreground<colour_8> foreground<colour_8>::white     {colour_8::white  };
-	inline constexpr foreground<colour_8> foreground<colour_8>::red       {colour_8::red    };
-	inline constexpr foreground<colour_8> foreground<colour_8>::green     {colour_8::green  };
-	inline constexpr foreground<colour_8> foreground<colour_8>::blue      {colour_8::blue   };
-	inline constexpr foreground<colour_8> foreground<colour_8>::yellow    {colour_8::yellow };
-	inline constexpr foreground<colour_8> foreground<colour_8>::cyan      {colour_8::cyan   };
-	inline constexpr foreground<colour_8> foreground<colour_8>::magenta   {colour_8::magenta};
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_black  {colour_8::black  };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_white  {colour_8::white  };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_red    {colour_8::red    };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_green  {colour_8::green  };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_blue   {colour_8::blue   };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_yellow {colour_8::yellow };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_cyan   {colour_8::cyan   };
-	inline constexpr foreground<colour_8> foreground<colour_8>::dk_magenta{colour_8::magenta};
-
-	inline constexpr background<colour_8> background<colour_8>::black     {colour_8::black  };
-	inline constexpr background<colour_8> background<colour_8>::white     {colour_8::white  };
-	inline constexpr background<colour_8> background<colour_8>::red       {colour_8::red    };
-	inline constexpr background<colour_8> background<colour_8>::green     {colour_8::green  };
-	inline constexpr background<colour_8> background<colour_8>::blue      {colour_8::blue   };
-	inline constexpr background<colour_8> background<colour_8>::yellow    {colour_8::yellow };
-	inline constexpr background<colour_8> background<colour_8>::cyan      {colour_8::cyan   };
-	inline constexpr background<colour_8> background<colour_8>::magenta   {colour_8::magenta};
-	inline constexpr background<colour_8> background<colour_8>::dk_black  {colour_8::black  };
-	inline constexpr background<colour_8> background<colour_8>::dk_white  {colour_8::white  };
-	inline constexpr background<colour_8> background<colour_8>::dk_red    {colour_8::red    };
-	inline constexpr background<colour_8> background<colour_8>::dk_green  {colour_8::green  };
-	inline constexpr background<colour_8> background<colour_8>::dk_blue   {colour_8::blue   };
-	inline constexpr background<colour_8> background<colour_8>::dk_yellow {colour_8::yellow };
-	inline constexpr background<colour_8> background<colour_8>::dk_cyan   {colour_8::cyan   };
-	inline constexpr background<colour_8> background<colour_8>::dk_magenta{colour_8::magenta};
-
-
 	inline static constexpr foreground<colour_8> brace     {colour_8::bright(utils::graphics::colour::base::black)};
 	inline static constexpr foreground<colour_8> separ     {colour_8::dark  (utils::graphics::colour::base::white)};
 	inline static constexpr foreground<colour_8> value     {colour_8::bright(utils::graphics::colour::base::white)};

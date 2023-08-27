@@ -12,15 +12,15 @@
 
 namespace utils
 	{
-	enum class message_output_style_t { on_line, tag_as_separator };
-
-	inline constexpr message_output_style_t message_output_style = message_output_style_t::on_line;
 
 	class message
 		{
 		enum class msg_t { log, dgn, inf, wrn, err };
 
 		public:
+			enum class output_style_t { on_line, tag_as_separator };
+			inline static output_style_t output_style = output_style_t::on_line;
+
 			message(const message& copy) = default;
 			message& operator=(const message& copy) = default;
 			message(message&& move) = default;
@@ -96,8 +96,10 @@ namespace utils
 				{
 				using namespace utils::output;
 
+				constexpr size_t timestamp_digits{std::numeric_limits<decltype(m.time.time_since_epoch().count())>::digits10};
+
 				//Data line
-				if constexpr (message_output_style == message_output_style_t::tag_as_separator)
+				if (output_style == output_style_t::tag_as_separator)
 					{
 					os << "_________________________________\n";
 					os << ' ';
@@ -109,23 +111,23 @@ namespace utils
 
 					for (size_t i = 0; i < (12 - m.out_type_verbose().length()); i++) { os << ' '; }
 
-					os << ' ' << std::right << std::setw(18) << m.time.time_since_epoch().count() << '\n';
+					os << ' ' << std::right << std::setw(timestamp_digits) << m.time.time_since_epoch().count() << '\n';
 					}
 
 				//First line
 
 				bool first_line{true};
 
-				size_t beg = 0;
-				size_t end = m.string.find_first_of('\n', beg);
-				if (end == std::string::npos) { end = m.string.length(); }
-
-				os << ' ' << std::string_view(m.string).substr(beg, end - beg) << '\n';
+				size_t index_beg = 0;
 
 				//Lines
-				while (end < m.string.length())
+				while (index_beg < m.string.size())
 					{
-					if constexpr (message_output_style == message_output_style_t::on_line)
+					size_t index_end = m.string.find_first_of('\n', index_beg);
+					if (index_end == std::string::npos) { index_end = m.string.size(); }
+					else { index_end++; }
+
+					if (output_style == output_style_t::on_line)
 						{
 						os << " ";
 						os << utils::console::colour::background{utils::console::colour::colour_8::dark(m.out_type_color())};
@@ -137,25 +139,24 @@ namespace utils
 						if (first_line)
 							{
 							os << utils::console::colour::foreground{utils::console::colour::colour_8::dark(utils::graphics::colour::base::white)};
-							os << std::setw(18) << m.time.time_since_epoch().count() << ' ';
+							os << std::right << std::setw(timestamp_digits) << m.time.time_since_epoch().count();
 							os << utils::console::colour::restore_defaults;
+
 							first_line = false;
 							}
 						else 
 							{
-							for (size_t i = 0; i < 18 - 2; i++) { os << ' '; }
-							os << "| ";
+							for (size_t i = 0; i < timestamp_digits - 1; i++) { os << ' '; }
+							os << "|";
 							}
 						}
 
-					os << std::string_view(m.string).substr(beg, end - beg) << '\n';
+					os << ' ' << std::string_view(m.string).substr(index_beg, index_end - index_beg);
 
-					beg = end + 1;
-					end = m.string.find_first_of('\n', beg);
-					if (end == std::string::npos) { end = m.string.length(); }
+					index_beg = index_end;
 					}
 
-				return os;
+				return os << "\n";
 				}
 
 		};

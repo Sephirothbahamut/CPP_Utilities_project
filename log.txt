@@ -1,0 +1,50 @@
+ [47m[97m[LOG][0m [37m 16931072298720376[0m Hello wolrd
+ [47m[97m[LOG][0m                  | how are you
+ [47m[97m[LOG][0m                  | i'm alright thanks
+
+ [41m[97m[ERR][0m [37m 16931072298720480[0m Hello wolrd
+ [41m[97m[ERR][0m                  | how are you
+ [41m[97m[ERR][0m                  | i'm alright thanks
+
+ [43m[97m[WRN][0m [37m 16931072298720535[0m Hello wolrd
+ [43m[97m[WRN][0m                  | how are you
+ [43m[97m[WRN][0m                  | i'm alright thanks
+
+ [45m[97m[DGN][0m [37m 16931072298720576[0m Hello wolrd
+ [45m[97m[DGN][0m                  | how are you
+ [45m[97m[DGN][0m                  | i'm alright thanks
+
+ [46m[97m[INF][0m [37m 16931072298720631[0m Hello wolrd
+ [46m[97m[INF][0m                  | how are you
+ [46m[97m[INF][0m                  | i'm alright thanks
+
+_________________________________
+ [47m[97m[LOG][0m         16931072298791224
+ Hello wolrd
+ how are you
+ i'm alright thanks
+
+_________________________________
+ [41m[97m[ERROR][0m       16931072298791292
+ Hello wolrd
+ how are you
+ i'm alright thanks
+
+_________________________________
+ [43m[97m[WARNING][0m     16931072298791322
+ Hello wolrd
+ how are you
+ i'm alright thanks
+
+_________________________________
+ [45m[97m[DIAGNOSTIC][0m  16931072298791359
+ Hello wolrd
+ how are you
+ i'm alright thanks
+
+_________________________________
+ [46m[97m[INFO][0m        16931072298791404
+ Hello wolrd
+ how are you
+ i'm alright thanks
+
