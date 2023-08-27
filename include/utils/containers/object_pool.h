@@ -26,7 +26,7 @@ namespace utils::containers::details
 		typename Allocator = std::allocator<T>
 		>
 		requires (enable_raw || enable_unique || enable_shared)
-	class object_pool_details
+	class object_pool_details //templated namespace, do not instantiate
 		{
 		public:
 			using value_type        = T;
@@ -146,7 +146,7 @@ namespace utils::containers::details
 					}
 
 				inline auto& get_refcount(utils::observer_ptr<slot_t> slot_ptr) noexcept
-					requires(use_refcount)
+					requires(use_refcount) //TODO merge condition with the next function
 					{
 					auto refcount_index{slot_ptr - std::addressof(arr[0])};
 					return refcount[refcount_index];
@@ -885,7 +885,7 @@ namespace utils::containers::details
 			
 				private:
 					handle_bare free_slot_handle;
-					utils::observer_ptr<segment_t> last_segment_ptr{this};
+					utils::observer_ptr<segment_t> last_segment_ptr{this}; //TODO check if this is always == to free_slot_handle.segment_ptr
 
 					template <typename ...Args>
 					inline handle_raw emplace_inner(Args&&... args)
