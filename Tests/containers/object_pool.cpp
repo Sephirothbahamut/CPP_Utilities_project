@@ -156,20 +156,41 @@ namespace Tests
 					utils::containers::object_pool<test_struct, 8, false, false, true> op;
 
 					auto h0{op.make_shared(0)};
-					auto h1_to_move_from{op.make_shared(0)};
-
-					Assert::AreEqual(size_t{2}, test_struct::count());
 
 					if (true)
 						{
-						auto h2{op.make_shared(1)};
-						auto h1_1{std::move(h1_to_move_from)};
-						auto h0_1{h0};
+						auto h1_to_move_from{op.make_shared(1)};
+						auto h2_to_keep_alive{op.make_shared(2)};
+						auto h2_to_move_from{h2_to_keep_alive};
 
 						Assert::AreEqual(size_t{3}, test_struct::count());
-						Assert::AreEqual(uint8_t{2}, h0_1.use_count());
-						Assert::AreEqual(uint8_t{0}, h1_to_move_from.use_count());
-						Assert::AreEqual(uint8_t{1}, h1_1.use_count());
+						Assert::AreEqual(uint8_t{2}, h2_to_keep_alive.use_count());
+
+						if (true)
+							{
+							auto h3{op.make_shared(3)};
+
+							Assert::AreEqual(size_t{4}, test_struct::count());
+
+							auto h1_1{std::move(h1_to_move_from)};
+
+							Assert::ExpectException<std::exception>([&]() { h1_to_move_from.value(); });
+							Assert::AreEqual(false, h1_to_move_from.has_value());
+
+							if (true)
+								{
+								auto h2_1{std::move(h2_to_move_from)};
+
+								Assert::AreEqual(uint8_t{2}, h2_to_keep_alive.use_count());
+								}
+							Assert::AreEqual(uint8_t{1}, h2_to_keep_alive.use_count());
+
+							auto h0_1{h0};
+
+							Assert::AreEqual(uint8_t{2}, h0_1.use_count());
+
+							Assert::AreEqual(uint8_t{1}, h1_1.use_count());
+							}
 						}
 
 					Assert::AreEqual(size_t{1}, test_struct::count());

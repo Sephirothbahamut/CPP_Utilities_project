@@ -103,4 +103,6 @@ int main()
 	utils::globals::logger.wrn("Hello wolrd\nhow are you\ni'm alright thanks");
 	utils::globals::logger.dgn("Hello wolrd\nhow are you\ni'm alright thanks");
 	utils::globals::logger.inf("Hello wolrd\nhow are you\ni'm alright thanks");
+
+	return 0;
 	}
