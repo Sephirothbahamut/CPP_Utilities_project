@@ -13,6 +13,11 @@
 //TODO finish tests
 //TODO const, reverse and reverse const iterators
 
+namespace utils::containers
+	{
+	enum class object_pool_handle_version { raw, unique, shared };
+	}
+
 namespace utils::containers::details
 	{
 	template
@@ -114,7 +119,8 @@ namespace utils::containers::details
 						}
 					arr[segment_size - 1].free_slot_handle = {this, nullptr};
 					}
-				~segment_t()
+				~segment_t() { clear(); }
+				void clear() 
 					{
 					for (size_t i = 0; i < segment_size; i++)
 						{
@@ -366,6 +372,12 @@ namespace utils::containers::details
 						{
 						this->free_slot_handle.segment_ptr = this;
 						this->free_slot_handle.slot_ptr = this->arr.data();
+						}
+
+					void clear()
+						{
+						segment_t::clear();
+						segment_t::next_segment.reset();
 						}
 
 					/// <summary>
@@ -839,11 +851,22 @@ namespace utils::containers::details
 								}
 						};
 			
-					template <typename ...Args>
-					inline handle_raw emplace(Args&&... args)
+					template <object_pool_handle_version object_pool_handle_version = object_pool_handle_version::raw, typename ...Args>
+					inline auto emplace(Args&&... args)
 						requires (enabled_raw)
 						{
-						return emplace_inner(std::forward<Args>(args)...);
+						if constexpr (object_pool_handle_version == object_pool_handle_version::raw)
+							{
+							return emplace_inner(std::forward<Args>(args)...);
+							}
+						else if constexpr (object_pool_handle_version == object_pool_handle_version::unique)
+							{
+							return make_unique(std::forward<Args>(args)...);
+							}
+						else if constexpr (object_pool_handle_version == object_pool_handle_version::shared)
+							{
+							return make_shared(std::forward<Args>(args)...);
+							}
 						}
 			
 					template <typename ...Args>

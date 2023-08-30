@@ -130,6 +130,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\beta\containers\hive\pool.h" />
+    <ClInclude Include="include\utils\beta\containers\multihandled_default.h" />
+    <ClInclude Include="include\utils\beta\containers\resource_manager.h" />
     <ClInclude Include="include\utils\clock.h" />
     <ClInclude Include="include\utils\compilation\compiler.h" />
     <ClInclude Include="include\utils\compilation\CUDA.h" />

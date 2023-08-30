@@ -1,5 +1,6 @@
 #pragma once
 #include "../shapes.h"
+#include "../../../compilation/warnings.h"
 
 namespace utils::math::geometry
 	{
@@ -48,6 +49,10 @@ namespace utils::math::geometry
 		return contains(other.a) && contains(other.b);
 		}
 
+	//TODO someday
+	utils_disable_warnings_begin
+	utils_disable_warning_msvc(4100)
+
 	inline vec2f                circle::closest_point_to(const aabb& other) const noexcept { return {}; } //TODO
 	inline vec2f                circle::distance_min    (const aabb& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::intersects      (const aabb& other) const noexcept { return {}; } //TODO
@@ -65,4 +70,5 @@ namespace utils::math::geometry
 	inline bool                 circle::intersects      (const circle& other) const noexcept { return {}; } //TODO
 	inline std::optional<vec2f> circle::intersection    (const circle& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::contains        (const circle& other) const noexcept { return {}; } //TODO
+	utils_disable_warnings_end
 	}

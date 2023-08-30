@@ -253,8 +253,8 @@ namespace Tests
 					auto sh62{sh6};
 
 					auto uq7{op.make_unique(7)};
-					auto uq8{op.make_unique(8)};
-					auto uq9{op.make_unique(9)};
+					auto uq8{op.emplace<decltype(op)::handle_version::unique>(8)};
+					auto uq9{op.emplace<decltype(op)::handle_version::shared>(9)};
 
 					Assert::AreEqual(size_t{10}, test_struct::count());
 					}

@@ -16,8 +16,8 @@
 #include "include/utils/containers/matrix.h"
 #include "include/utils/logger.h"
 
-#include "include/utils/containers/handled_container.h"
-#include "include/utils/containers/multihandled.h"
+//#include "include/utils/containers/handled_container.h"
+//#include "include/utils/containers/multihandled.h"
 
 #include "include/utils/containers/hive/next.h"
 #include "include/utils/containers/linked_vector.h"
@@ -34,6 +34,10 @@
 
 #include "include/utils/math/geometry/voronoi/voronoi.h"
 
+#include "include/utils/thread_pool.h"
+
+#include "include/utils/beta/containers/multihandled_default.h"
+
 //using civ = utils::oop::counting_invalidating_move;
 //
 //struct test_struct : civ
@@ -41,8 +45,54 @@
 //	test_struct(int v) : v{v} {}
 //	int v;
 //	};
+
+struct angry_type
+	{
+	angry_type(int i, float f) {}
+	};
+
+
 int main()
 	{
+	utils::containers::multihandled_default<angry_type> md{5, 2.f};
+
+	auto u{md.make_unique(3, 2.f)};
+
+	try
+		{
+		md.emplace_in_handle(u, 3, 2.f);
+		}
+	catch (const std::exception& e)
+		{
+		std::cout << e.what();
+		}
+
+	utils::containers::multihandled_default<angry_type>::handle_shared s{md.clone_default<utils::containers::object_pool_handle_version::shared>()};
+
+	md.emplace_in_handle(s, 55, 32.f);
+
+	try
+		{
+		md.emplace_in_handle(s, 55, 32.f);
+		}
+	catch (const std::exception& e)
+		{
+		std::cout << e.what();
+		}
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
 	utils::console::initializer console_initializer;
 
 	using namespace utils::output;
