@@ -391,6 +391,9 @@
     <ClInclude Include="include\utils\beta\containers\multihandled_default.h">
       <Filter>Beta\containers</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\name.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

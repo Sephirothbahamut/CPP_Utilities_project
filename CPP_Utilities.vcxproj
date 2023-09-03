@@ -219,6 +219,7 @@
     <ClInclude Include="include\utils\matrix_interface.h" />
     <ClInclude Include="include\utils\memory.h" />
     <ClInclude Include="include\utils\message.h" />
+    <ClInclude Include="include\utils\name.h" />
     <ClInclude Include="include\utils\one_time_tasks.h" />
     <ClInclude Include="include\utils\oop\counting.h" />
     <ClInclude Include="include\utils\oop\disable_move_copy.h" />

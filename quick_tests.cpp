@@ -38,6 +38,8 @@
 
 #include "include/utils/beta/containers/multihandled_default.h"
 
+#include "include/utils/name.h"
+
 //using civ = utils::oop::counting_invalidating_move;
 //
 //struct test_struct : civ
@@ -50,7 +52,6 @@ struct angry_type
 	{
 	angry_type(int i, float f) {}
 	};
-
 
 int main()
 	{
