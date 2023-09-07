@@ -39,7 +39,7 @@ namespace Tests
 
 				if (true)
 					{
-					utils::containers::object_pool<test_struct, 8, true, false, false> op;
+					utils::containers::object_pool<test_struct, 8, utils::containers::object_pool_handle_version::raw> op;
 
 					auto h0{op.emplace(0)};
 
@@ -73,7 +73,7 @@ namespace Tests
 				{
 				test_struct::reset();
 
-				utils::containers::object_pool<test_struct, 8, true, false, false> op;
+				utils::containers::object_pool<test_struct, 8, utils::containers::object_pool_handle_version::raw> op;
 
 				auto h0{op.emplace(0)};
 				auto h1{op.emplace(1)};
@@ -112,7 +112,7 @@ namespace Tests
 
 				if (true)
 					{
-					utils::containers::object_pool<test_struct, 8, false, true, false> op;
+					utils::containers::object_pool<test_struct, 8, utils::containers::object_pool_handle_version::unique> op;
 
 					auto h0{op.make_unique(0)};
 
@@ -153,7 +153,7 @@ namespace Tests
 
 				if (true)
 					{
-					utils::containers::object_pool<test_struct, 8, false, false, true> op;
+					utils::containers::object_pool<test_struct, 8, utils::containers::object_pool_handle_version::shared> op;
 
 					auto h0{op.make_shared(0)};
 
@@ -223,7 +223,12 @@ namespace Tests
 
 				if (true)
 					{
-					utils::containers::object_pool<test_struct, 8, true, true, true> op;
+					utils::containers::object_pool
+						<
+						test_struct, 8,
+						utils::flags<utils::containers::object_pool_handle_version>::all()
+						>
+					op;
 
 					auto h0{op.make_unique(0)};
 
@@ -253,8 +258,8 @@ namespace Tests
 					auto sh62{sh6};
 
 					auto uq7{op.make_unique(7)};
-					auto uq8{op.emplace<decltype(op)::handle_version::unique>(8)};
-					auto uq9{op.emplace<decltype(op)::handle_version::shared>(9)};
+					auto uq8{op.emplace<utils::containers::object_pool_handle_version::unique>(8)};
+					auto uq9{op.emplace<utils::containers::object_pool_handle_version::shared>(9)};
 
 					Assert::AreEqual(size_t{10}, test_struct::count());
 					}

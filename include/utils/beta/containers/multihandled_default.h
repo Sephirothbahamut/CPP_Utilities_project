@@ -19,10 +19,10 @@ namespace utils::containers
 	class multihandled_default
 		{
 		private:
-			class inner_container_t : public utils::containers::object_pool<T, inner_size, true, false, false>
+			class inner_container_t : public utils::containers::object_pool<T, inner_size, utils::containers::object_pool_handle_version::raw>
 				{
 				private:
-					using inner_inner_container_t = utils::containers::object_pool<T, inner_size, true, false, false>;
+					using inner_inner_container_t = utils::containers::object_pool<T, inner_size, utils::containers::object_pool_handle_version::raw>;
 
 				public:
 					/// <summary>
@@ -55,7 +55,13 @@ namespace utils::containers
 						}
 				};
 
-			using handles_container_t = utils::containers::object_pool<typename inner_container_t::handle_rawnique, inner_size, true, true, true>;
+			using handles_container_t = utils::containers::object_pool
+				<
+				typename inner_container_t::handle_rawnique, inner_size,
+				utils::containers::object_pool_handle_version::raw |
+				utils::containers::object_pool_handle_version::unique |
+				utils::containers::object_pool_handle_version::shared
+				>;
 
 		private:
 			inner_container_t   inner_container;

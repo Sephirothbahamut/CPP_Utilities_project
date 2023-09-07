@@ -8,6 +8,7 @@
 #include <type_traits>
 
 #include "../memory.h"
+#include "../flags.h"
 #include "../compilation/debug.h"
 
 //TODO finish tests
@@ -15,7 +16,32 @@
 
 namespace utils::containers
 	{
-	enum class object_pool_handle_version { raw, unique, shared };
+	enum class object_pool_handle_version : uint8_t
+		{
+		raw    = 0b00000001, 
+		unique = 0b00000010, 
+		shared = 0b00000100
+		};
+
+	inline constexpr flags<object_pool_handle_version> operator|(object_pool_handle_version bit0, object_pool_handle_version bit1) noexcept
+		{
+		return flags<object_pool_handle_version>(bit0) | bit1;
+		}
+
+	inline constexpr  flags<object_pool_handle_version> operator&(object_pool_handle_version bit0, object_pool_handle_version bit1) noexcept
+		{
+		return flags<object_pool_handle_version>(bit0) & bit1;
+		}
+
+	inline constexpr  flags<object_pool_handle_version> operator^(object_pool_handle_version bit0, object_pool_handle_version bit1) noexcept
+		{
+		return flags<object_pool_handle_version>(bit0) ^ bit1;
+		}
+
+	inline constexpr flags<object_pool_handle_version> operator~(object_pool_handle_version bits) noexcept
+		{
+		return ~(flags<object_pool_handle_version>(bits));
+		}
 	}
 
 namespace utils::containers::details
@@ -24,13 +50,10 @@ namespace utils::containers::details
 		<
 		typename T,
 		size_t segment_size = 8,
-		bool enable_raw    = true,
-		bool enable_unique = true,
-		bool enable_shared = true,
+		flags<object_pool_handle_version> HANDLE_VERSION_FLAGS = flags<object_pool_handle_version>::all(),
 		std::unsigned_integral refcount_value_T = uint8_t,
 		typename Allocator = std::allocator<T>
 		>
-		requires (enable_raw || enable_unique || enable_shared)
 	class object_pool_details //templated namespace, do not instantiate
 		{
 		public:
@@ -42,9 +65,10 @@ namespace utils::containers::details
 			using iterator_category = std::random_access_iterator_tag;
 			using difference_type   = ptrdiff_t ;
 
-			inline static constexpr const bool enabled_raw   {enable_raw   };
-			inline static constexpr const bool enabled_unique{enable_unique};
-			inline static constexpr const bool enabled_shared{enable_shared};
+			inline static constexpr flags<object_pool_handle_version> handle_version_flags = HANDLE_VERSION_FLAGS;
+			inline static constexpr const bool enabled_raw   {handle_version_flags.has(object_pool_handle_version::raw   )};
+			inline static constexpr const bool enabled_unique{handle_version_flags.has(object_pool_handle_version::unique)};
+			inline static constexpr const bool enabled_shared{handle_version_flags.has(object_pool_handle_version::shared)};
 
 			class first_segment_t;
 
@@ -55,7 +79,7 @@ namespace utils::containers::details
 			// unique handles alone imply complete absence of refcount and unique bitsets (if an element exists, an unique handle to it must exist somewhere in the program)
 			// raw and unique together require unique bitset to keep track of which elements are owned and which aren't
 			inline static constexpr const bool use_refcount      = enabled_shared;
-			inline static constexpr const bool use_unique_bitset = enable_raw && enable_unique && !enable_shared;
+			inline static constexpr const bool use_unique_bitset = enabled_raw && enabled_unique && !enabled_shared;
 
 			using refcount_value_type = std::conditional_t<use_refcount, refcount_value_T, std::conditional_t<use_unique_bitset, typename std::bitset<segment_size>::reference, void>>;
 
@@ -329,7 +353,7 @@ namespace utils::containers::details
 						if constexpr (utils::compilation::debug)
 							{
 							bool tmp{false};
-							if (!enable_shared) { tmp = true; }
+							if (!enabled_shared) { tmp = true; }
 							if constexpr (enabled_shared) { if (!has_shared_ownership()) { tmp = true; } }
 							if (tmp)
 								{
@@ -850,10 +874,9 @@ namespace utils::containers::details
 								return false;
 								}
 						};
-			
+
 					template <object_pool_handle_version object_pool_handle_version = object_pool_handle_version::raw, typename ...Args>
 					inline auto emplace(Args&&... args)
-						requires (enabled_raw)
 						{
 						if constexpr (object_pool_handle_version == object_pool_handle_version::raw)
 							{
@@ -961,18 +984,14 @@ namespace utils::containers
 	///		The maximum amount of shared handles to the same resource is std::numeric_limits  refcount_value_T  ::max() - 1. 
 	///		The last value is reserved as special value for unique handles if unique handles are enabled.
 	/// </param>
-	/// <param name="enable_raw"   ></param>
-	/// <param name="enable_unique"></param>
-	/// <param name="enable_shared"></param>
+	/// <param name="handle_version_flags"></param>
 	template
 		<
 		typename T,
 		size_t segment_size = 8,
-		bool enable_raw    = true,
-		bool enable_unique = true,
-		bool enable_shared = true,
+		flags<object_pool_handle_version> handle_version_flags = flags<object_pool_handle_version>::all(),
 		std::unsigned_integral refcount_value_T = uint8_t,
 		typename Allocator = std::allocator<T>
 		>
-	using object_pool = details::object_pool_details<T, segment_size, enable_raw, enable_unique, enable_shared, refcount_value_T, Allocator>::first_segment_t;
+	using object_pool = details::object_pool_details<T, segment_size, handle_version_flags, refcount_value_T, Allocator>::first_segment_t;
 	}
