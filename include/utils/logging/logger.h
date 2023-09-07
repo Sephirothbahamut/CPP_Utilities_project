@@ -7,9 +7,9 @@
 #include <concepts>
 
 #include "message.h"
-#include "containers/multithreading/self_consuming_queue.h"
+#include "../containers/multithreading/self_consuming_queue.h"
 
-namespace utils
+namespace utils::logging
 	{
 	template <typename T>
 	class logger
@@ -24,7 +24,7 @@ namespace utils
 			logger           (      logger&& move) noexcept = default; //could make those (running is already a flag for the instance being alive or not) but I'm lazy
 			logger& operator=(      logger&& move) noexcept = default; //could make those (running is already a flag for the instance being alive or not) but I'm lazy
 
-			//Push messages begin
+#pragma region Push messages begin
 			void operator<<(const value_type& message) noexcept { push(message); }
 			void operator()(const value_type& message) noexcept { push(message); }
 
@@ -43,13 +43,13 @@ namespace utils
 				{
 				message_queue.flush();
 				}
-			//Push messages end
 
-			void inf(std::string&& string) noexcept requires std::same_as<T, utils::message> { push(utils::message::inf(std::move(string))); }
-			void log(std::string&& string) noexcept requires std::same_as<T, utils::message> { push(utils::message::log(std::move(string))); }
-			void dgn(std::string&& string) noexcept requires std::same_as<T, utils::message> { push(utils::message::dgn(std::move(string))); }
-			void err(std::string&& string) noexcept requires std::same_as<T, utils::message> { push(utils::message::err(std::move(string))); }
-			void wrn(std::string&& string) noexcept requires std::same_as<T, utils::message> { push(utils::message::wrn(std::move(string))); }
+			constexpr void inf(const string::concepts::stringlike auto& string) noexcept requires(concepts::message<value_type>) { push(value_type::inf(string)); }
+			constexpr void log(const string::concepts::stringlike auto& string) noexcept requires(concepts::message<value_type>) { push(value_type::log(string)); }
+			constexpr void dgn(const string::concepts::stringlike auto& string) noexcept requires(concepts::message<value_type>) { push(value_type::dgn(string)); }
+			constexpr void err(const string::concepts::stringlike auto& string) noexcept requires(concepts::message<value_type>) { push(value_type::err(string)); }
+			constexpr void wrn(const string::concepts::stringlike auto& string) noexcept requires(concepts::message<value_type>) { push(value_type::wrn(string)); }
+#pragma endregion Push messages end
 
 		protected:
 			std::ofstream file;
@@ -63,21 +63,11 @@ namespace utils
 					},
 				[this](std::vector<T>& elements)
 					{
-					if constexpr (std::same_as<T, utils::message>)
+					if constexpr (concepts::message<T>)
 						{
-						//TODO reimplement get_timestamp in some way for the sorting
-						//std::sort(elements.begin(), elements.end(), [](const utils::message& a, const utils::message& b) { return a.get_timestamp().time_since_epoch().count() < b.get_timestamp().time_since_epoch().count(); });
+						std::sort(elements.begin(), elements.end());
 						}
 					}
 				};
 		};
 	}
-
-#ifndef UTILS_NO_GLOBALS
-#ifndef UTILS_LOGGER_NO_GLOBALS
-namespace utils::globals
-	{
-	inline utils::logger<utils::message> logger;
-	}
-#endif
-#endif
