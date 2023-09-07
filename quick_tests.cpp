@@ -55,6 +55,13 @@ struct angry_type
 
 int main()
 	{
+	utils::name hello{"hello"};
+	utils::name world{"world"};
+
+	std::unordered_map<utils::name, std::string> map;
+	
+
+
 	utils::containers::multihandled_default<angry_type> md{5, 2.f};
 
 	auto u{md.make_unique(3, 2.f)};
