@@ -60,7 +60,6 @@ namespace utils
 
 		private:
 			id_t id;
-		public:
 			inline static names_database names_database;
 		};
 	
