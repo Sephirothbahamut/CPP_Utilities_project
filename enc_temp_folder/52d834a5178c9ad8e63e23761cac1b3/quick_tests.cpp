@@ -56,6 +56,11 @@ struct angry_type
 
 int main()
 	{
+	static_assert(utils::string::concepts::stringlike<std::string, char>);
+	static_assert(utils::string::concepts::stringlike<      char*, char>);
+	static_assert(utils::string::concepts::stringlike<const char*, char>);
+	static_assert(utils::string::concepts::stringlike<decltype("hello world"), char>);
+
 	utils::name hello{"hello"};
 
 	std::unordered_map<utils::name, int> map;
@@ -67,6 +72,7 @@ int main()
 	std::cout << map[hello];
 	std::cout << map["world"];
 	std::cout << ((hello == "halo") ? "true" : "false");
+	auto& tmp{utils::name::names_database};
 	std::cout << std::endl;
 
 	utils::containers::multihandled_default<angry_type> md{5, 2.f};

@@ -2,16 +2,7 @@
 
 #include <iostream>
 #include <stdexcept>
-
 #include "../graphics/colour.h"
-
-namespace utils::console
-	{
-	struct initializer
-		{
-		initializer() noexcept;
-		};
-	}
 
 namespace utils::console::colour
 	{
@@ -160,15 +151,3 @@ namespace utils::console::colour
 	inline static constexpr foreground<colour_8> value     {colour_8::bright(utils::graphics::colour::base::white)};
 	inline static constexpr foreground<colour_8> type      {colour_8::dark  (utils::graphics::colour::base::green)};
 	}
-
-#ifdef utils_implementation
-#include <Windows.h>
-
-namespace utils::console
-	{
-	initializer::initializer() noexcept
-		{
-		SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_INPUT);
-		}
-	}
-#endif

@@ -68,6 +68,9 @@
     <Filter Include="Utils\math\geometry\voronoi">
       <UniqueIdentifier>{82807980-9518-4b95-bad1-ca61d34ad983}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\logging">
+      <UniqueIdentifier>{0d52f7aa-5da0-4fa6-b725-8620c21c5253}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -122,12 +125,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\memory.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\message.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\logger.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\id_pool.h">
@@ -393,6 +390,18 @@
     </ClInclude>
     <ClInclude Include="include\utils\name.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\string.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\console\initializer.h">
+      <Filter>Utils\console</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\logging\message.h">
+      <Filter>Utils\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\logging\logger.h">
+      <Filter>Utils\logging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

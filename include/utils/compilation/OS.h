@@ -1,9 +1,9 @@
 #pragma once
 
 #if defined(_WIN32)
-    #define utils_os_windows
+    #define utils_compilation_os_windows
 #elif defined(__linux__) 
-	#define utils_os_linux
+	#define utils_compilation_os_linux
 #endif
 
 namespace utils::compilation
@@ -11,9 +11,9 @@ namespace utils::compilation
 	enum class os_t { Windows, Linux };
 
 	inline constexpr os_t os
-#ifdef _WIN32
+#ifdef utils_compilation_os_windows
 		{os_t::Windows};
-#elif __linux__
+#elif utils_compilation_os_linux
 		{OS::Linux};
 #else
 #error Compilation target OS not recognized.

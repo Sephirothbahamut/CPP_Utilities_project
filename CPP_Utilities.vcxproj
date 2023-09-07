@@ -139,6 +139,7 @@
     <ClInclude Include="include\utils\compilation\OS.h" />
     <ClInclude Include="include\utils\compilation\warnings.h" />
     <ClInclude Include="include\utils\concepts.h" />
+    <ClInclude Include="include\utils\console\initializer.h" />
     <ClInclude Include="include\utils\console\io.h" />
     <ClInclude Include="include\utils\console\colour.h" />
     <ClInclude Include="include\utils\construct.h" />
@@ -180,7 +181,8 @@
     <ClInclude Include="include\utils\graphics\colour.h" />
     <ClInclude Include="include\utils\id_pool.h" />
     <ClInclude Include="include\utils\index_range.h" />
-    <ClInclude Include="include\utils\logger.h" />
+    <ClInclude Include="include\utils\logging\logger.h" />
+    <ClInclude Include="include\utils\logging\message.h" />
     <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\average.h" />
     <ClInclude Include="include\utils\math\constants.h" />
@@ -218,13 +220,13 @@
     <ClInclude Include="include\utils\math\vec3.h" />
     <ClInclude Include="include\utils\matrix_interface.h" />
     <ClInclude Include="include\utils\memory.h" />
-    <ClInclude Include="include\utils\message.h" />
     <ClInclude Include="include\utils\name.h" />
     <ClInclude Include="include\utils\one_time_tasks.h" />
     <ClInclude Include="include\utils\oop\counting.h" />
     <ClInclude Include="include\utils\oop\disable_move_copy.h" />
     <ClInclude Include="include\utils\oop\virtual.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
+    <ClInclude Include="include\utils\string.h" />
     <ClInclude Include="include\utils\third_party\concurrentqueue.h" />
     <ClInclude Include="include\utils\third_party\jc_voronoi.h" />
     <ClInclude Include="include\utils\third_party\magic_enum.h" />
