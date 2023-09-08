@@ -18,30 +18,10 @@ namespace utils::containers
 	{
 	enum class object_pool_handle_version : uint8_t
 		{
-		raw    = 0b00000001, 
-		unique = 0b00000010, 
+		raw    = 0b00000001,
+		unique = 0b00000010,
 		shared = 0b00000100
 		};
-
-	inline constexpr flags<object_pool_handle_version> operator|(object_pool_handle_version bit0, object_pool_handle_version bit1) noexcept
-		{
-		return flags<object_pool_handle_version>(bit0) | bit1;
-		}
-
-	inline constexpr  flags<object_pool_handle_version> operator&(object_pool_handle_version bit0, object_pool_handle_version bit1) noexcept
-		{
-		return flags<object_pool_handle_version>(bit0) & bit1;
-		}
-
-	inline constexpr  flags<object_pool_handle_version> operator^(object_pool_handle_version bit0, object_pool_handle_version bit1) noexcept
-		{
-		return flags<object_pool_handle_version>(bit0) ^ bit1;
-		}
-
-	inline constexpr flags<object_pool_handle_version> operator~(object_pool_handle_version bits) noexcept
-		{
-		return ~(flags<object_pool_handle_version>(bits));
-		}
 	}
 
 namespace utils::containers::details
@@ -50,7 +30,7 @@ namespace utils::containers::details
 		<
 		typename T,
 		size_t segment_size = 8,
-		flags<object_pool_handle_version> HANDLE_VERSION_FLAGS = flags<object_pool_handle_version>::all(),
+		flags<object_pool_handle_version> HANDLE_VERSION_FLAGS = flags<object_pool_handle_version>::full(),
 		std::unsigned_integral refcount_value_T = uint8_t,
 		typename Allocator = std::allocator<T>
 		>
@@ -66,9 +46,9 @@ namespace utils::containers::details
 			using difference_type   = ptrdiff_t ;
 
 			inline static constexpr flags<object_pool_handle_version> handle_version_flags = HANDLE_VERSION_FLAGS;
-			inline static constexpr const bool enabled_raw   {handle_version_flags.has(object_pool_handle_version::raw   )};
-			inline static constexpr const bool enabled_unique{handle_version_flags.has(object_pool_handle_version::unique)};
-			inline static constexpr const bool enabled_shared{handle_version_flags.has(object_pool_handle_version::shared)};
+			inline static constexpr const bool enabled_raw   {handle_version_flags.test(object_pool_handle_version::raw   )};
+			inline static constexpr const bool enabled_unique{handle_version_flags.test(object_pool_handle_version::unique)};
+			inline static constexpr const bool enabled_shared{handle_version_flags.test(object_pool_handle_version::shared)};
 
 			class first_segment_t;
 
@@ -989,7 +969,7 @@ namespace utils::containers
 		<
 		typename T,
 		size_t segment_size = 8,
-		flags<object_pool_handle_version> handle_version_flags = flags<object_pool_handle_version>::all(),
+		flags<object_pool_handle_version> handle_version_flags = flags<object_pool_handle_version>::full(),
 		std::unsigned_integral refcount_value_T = uint8_t,
 		typename Allocator = std::allocator<T>
 		>

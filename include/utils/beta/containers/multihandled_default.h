@@ -57,10 +57,13 @@ namespace utils::containers
 
 			using handles_container_t = utils::containers::object_pool
 				<
-				typename inner_container_t::handle_rawnique, inner_size,
-				utils::containers::object_pool_handle_version::raw |
-				utils::containers::object_pool_handle_version::unique |
-				utils::containers::object_pool_handle_version::shared
+				typename inner_container_t::handle_rawnique, inner_size, 
+				utils::flags
+					{
+					utils::containers::object_pool_handle_version::raw,
+					utils::containers::object_pool_handle_version::unique,
+					utils::containers::object_pool_handle_version::shared
+					}
 				>;
 
 		private:

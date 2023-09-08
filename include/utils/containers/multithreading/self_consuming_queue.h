@@ -23,19 +23,19 @@ namespace utils::containers::multithreading
 			using difference_type = consumable_queue_t::difference_type;
 
 
-			self_consuming_queue(const std::function<void(            T &)>& consume         ) requires(operations == operation_flag_bits::none) : consumable_queue_t{consume}, thread{&self_consuming_queue::consumer, this} {}
+			self_consuming_queue(const std::function<void(            T &)>& consume         ) requires(operations.none()) : consumable_queue_t{consume}, thread{&self_consuming_queue::consumer, this} {}
 			
 			self_consuming_queue(const std::function<void(            T &)>& consume         ,
 				                 const std::function<void(std::vector<T>&)>& pre_consumption ) requires(operations == operation_flag_bits::pre)
-                                                                                             : consumable_queue_t{consume, pre_consumption                  }, thread{&self_consuming_queue::consumer, this} {}
+                                                                                             : consumable_queue_t{consume, pre_consumption             }, thread{&self_consuming_queue::consumer, this} {}
 			
 			self_consuming_queue(const std::function<void(            T &)>& consume         ,
 				                 const std::function<void(std::vector<T>&)>& post_consumption) requires(operations == operation_flag_bits::post)
-                                                                                             : consumable_queue_t{consume, post_consumption                 }, thread{&self_consuming_queue::consumer, this} {}
+                                                                                             : consumable_queue_t{consume, post_consumption            }, thread{&self_consuming_queue::consumer, this} {}
 			
 			self_consuming_queue(const std::function<void(            T &)>& consume         ,
 				                 const std::function<void(std::vector<T>&)>& pre_consumption , 
-				                 const std::function<void(std::vector<T>&)>& post_consumption) requires(operations == (operation_flag_bits::pre | operation_flag_bits::post))
+				                 const std::function<void(std::vector<T>&)>& post_consumption) requires(operations.all())
 				                                                                             : consumable_queue_t{consume, pre_consumption, post_consumption}, thread{&self_consuming_queue::consumer, this} {}
 
 			~self_consuming_queue()

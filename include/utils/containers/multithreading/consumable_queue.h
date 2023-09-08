@@ -47,15 +47,15 @@ namespace utils::containers::multithreading
 				void consume_post(std::vector<T>& elements) { post_consumption(elements); }
 			};
 
-		template <typename T, flags<operation_flag_bits> operations> using get_consume_operation_pre     = std::conditional_t<operations.has(operation_flag_bits::pre    ), consume_operation_pre    <T>, consume_operation_pre_void    <T>>;
-		template <typename T, flags<operation_flag_bits> operations> using get_consume_operation_post    = std::conditional_t<operations.has(operation_flag_bits::post   ), consume_operation_post   <T>, consume_operation_post_void   <T>>;
+		template <typename T, flags<operation_flag_bits> operations> using get_consume_operation_pre     = std::conditional_t<operations.test(operation_flag_bits::pre ), consume_operation_pre    <T>, consume_operation_pre_void    <T>>;
+		template <typename T, flags<operation_flag_bits> operations> using get_consume_operation_post    = std::conditional_t<operations.test(operation_flag_bits::post), consume_operation_post   <T>, consume_operation_post_void   <T>>;
 		}
 
 	template <typename T, flags<operation_flag_bits> operations = flags<operation_flag_bits>{operation_flag_bits::none}>
 	class consumable_queue : 
 		public producer_consumer_queue<T>, 
 		details::consume_operation_current<T>, 
-		details::get_consume_operation_pre<T, operations>, 
+		details::get_consume_operation_pre <T, operations>, 
 		details::get_consume_operation_post<T, operations>
 		{
 		using current_t = details::consume_operation_current <T>;
@@ -72,21 +72,21 @@ namespace utils::containers::multithreading
 			using size_type       = producer_consumer_queue<T>::size_type      ; 
 			using difference_type = producer_consumer_queue<T>::difference_type;
 
-			consumable_queue(const std::function<void(            T &)>& consume         ) requires(operations.has(operation_flag_bits::none)) : current_t {consume} {}
+			consumable_queue(const std::function<void(            T &)>& consume         ) requires(operations.none()) : current_t {consume} {}
 			
 			consumable_queue(const std::function<void(            T &)>& consume         , 
-				             const std::function<void(std::vector<T>&)>& pre_consumption ) requires(operations.has(operation_flag_bits::pre))
+				             const std::function<void(std::vector<T>&)>& pre_consumption ) requires(operations.test(operation_flag_bits::pre))
                                                                                            : current_t {consume         },
 				                                                                             pre_t     {pre_consumption } {}
 			
 			consumable_queue(const std::function<void(            T &)>& consume         , 
-				             const std::function<void(std::vector<T>&)>& post_consumption) requires(operations.has(operation_flag_bits::post))
+				             const std::function<void(std::vector<T>&)>& post_consumption) requires(operations.test(operation_flag_bits::post))
                                                                                            : current_t {consume         },
 				                                                                             post_t    {post_consumption} {}
 			
 			consumable_queue(const std::function<void(            T &)>& consume         , 
 				             const std::function<void(std::vector<T>&)>& pre_consumption , 
-				             const std::function<void(std::vector<T>&)>& post_consumption) requires(operations.has(operation_flag_bits::pre | operation_flag_bits::post))
+				             const std::function<void(std::vector<T>&)>& post_consumption) requires(operations.all())
 				                                                                           : current_t {consume         },
 				                                                                             pre_t     {pre_consumption },
 				                                                                             post_t    {post_consumption} {}

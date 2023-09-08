@@ -56,6 +56,31 @@ struct angry_type
 
 int main()
 	{
+	enum class example_enum
+		{
+		a = 0b00000001,
+		b = 0b00000010,
+		c = 0b00000100,
+		d = 0b00001000
+		};
+	auto f{[](const utils::flags<example_enum>& flags)
+		{
+		std::cout << flags.test(example_enum::a) << std::endl;
+		}};
+
+	utils::flags<example_enum> flags{example_enum::a, example_enum::b};
+	flags |= example_enum::d;
+	flags.flip(example_enum::a);
+	flags.reset(example_enum::b);
+	flags = example_enum::a | flags;
+
+	std::cout << flags.test(example_enum::a) << std::endl;
+	std::cout << flags.test(example_enum::b) << std::endl;
+	std::cout << flags.test(example_enum::c) << std::endl;
+	std::cout << flags.test(example_enum::d) << std::endl;
+
+	f(flags.flip(example_enum::a));
+
 	utils::name hello{"hello"};
 
 	std::unordered_map<utils::name, int> map;
@@ -82,7 +107,7 @@ int main()
 	utils::containers::object_pool
 		<
 		angry_type, 8,
-		utils::flags<utils::containers::object_pool_handle_version>::all()
+		utils::flags<utils::containers::object_pool_handle_version>::full()
 		> op;
 	
 	auto u{md.make_unique(3, 2.f)};
