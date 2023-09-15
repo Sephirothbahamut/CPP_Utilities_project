@@ -44,7 +44,7 @@ namespace utils::graphics::colour
 	namespace concepts
 		{
 		template <typename T, bool has_alpha = false>
-		concept rgb = std::same_as<T, colour::rgb<typename T::value_type, false>>;
+		concept rgb = std::same_as<T, colour::rgb<typename T::value_type, has_alpha>>;
 
 		template <typename T>
 		concept rgba = rgb<T, true>;
@@ -53,7 +53,7 @@ namespace utils::graphics::colour
 		concept hsv = std::same_as<T, colour::hsv<typename T::value_type, T::has_alpha>>;
 
 		template <typename T>
-		concept colour = rgb<T> || hsv<T>;
+		concept colour = rgb<T> || rgba<T> || hsv<T>;
 		}
 
 	namespace details
