@@ -19,21 +19,18 @@ namespace utils
 
 	namespace details
 		{
-		template <typename T>
 		class trackable_base;
 
 		// A pointer to a tracked object. This object lives in the heap and is used to share information with all identifiers about the object moving in memory.
-		template <typename T>
 		class tracker_t
 			{
 			template <typename>
 			friend class tracking_ptr;
-			template <typename>
 			friend class trackable_base;
 
 			public:
 				tracker_t() = default;
-				tracker_t(T* tracked) noexcept : tracked{tracked} {}
+				tracker_t(void* tracked) noexcept : tracked{tracked} {}
 
 				tracker_t(const tracker_t& copy) = delete;
 				tracker_t& operator=(const tracker_t& copy) = delete;
@@ -41,34 +38,33 @@ namespace utils
 				tracker_t(tracker_t&& move) = delete;
 				tracker_t& operator=(tracker_t&& move) = delete;
 
-				T* tracked{nullptr};
+				void* tracked{nullptr};
 			};
 
-		template <typename T>
 		class trackable_base
 			{
 			template <typename>
 			friend class tracking_ptr;
 
 			public:
-				trackable_base(T* ptr) noexcept : tracker{std::make_shared<tracker_t<T>>(ptr)} {}
+				trackable_base(void* ptr) noexcept : tracker{std::make_shared<tracker_t>(ptr)} {}
 
 				trackable_base(const trackable_base& copy) = delete;
 				trackable_base& operator=(const trackable_base& copy) = delete;
 				trackable_base(trackable_base&& move) noexcept = delete;			  //specialized move needs tracked object's address
 				trackable_base& operator=(trackable_base&& move) noexcept = delete; //specialized move needs tracked object's address
 
-				trackable_base(trackable_base&& move, T* my_address) noexcept
+				trackable_base(trackable_base&& move, void* my_address) noexcept
 					//I take the move source's tracker; tracking_ptr that were tracking my source will now track me.
 					: tracker{std::move(move.tracker)}
 					{
 					//Source needs a new tracker pointing at its address, which is still stored in the tracker I stole
-					move.tracker = std::make_shared<tracker_t<T>>(tracker->tracked);
+					move.tracker = std::make_shared<tracker_t>(tracker->tracked);
 
 					//Update my tracker with my address. tracking_ptr following the target of the source now point at me, where the source has moved.
 					tracker->tracked = my_address;
 					}
-				trackable_base& move(trackable_base&& move, T* my_address) noexcept
+				trackable_base& move(trackable_base&& move, void* my_address) noexcept
 					{
 					//I don't exist anymore; my tracker is nullified; tracking_ptr that were tracking me will now point to nullptr, because something else has been moved in my place
 					tracker->tracked = nullptr;
@@ -77,7 +73,7 @@ namespace utils
 					tracker = std::move(move.tracker);
 
 					//Source needs a new tracker pointing at its address, which is still stored in the tracker I stole
-					move.tracker = std::make_shared<tracker_t<T>>(tracker->tracked);
+					move.tracker = std::make_shared<tracker_t>(tracker->tracked);
 
 					//Update my tracker with my address. tracking_ptr following the target of the source now point at me, where the source has moved.
 					tracker->tracked = my_address;
@@ -87,16 +83,16 @@ namespace utils
 				~trackable_base() noexcept { if (tracker) { update_identified(nullptr); } }
 
 			protected:
-				void update_identified(T* ptr) noexcept { tracker->tracked = ptr; }
-				std::shared_ptr<tracker_t<T>> tracker;
+				void update_identified(void* ptr) noexcept { tracker->tracked = ptr; }
+				std::shared_ptr<tracker_t> tracker;
 			};
 		}
 
 	// The inheritance way
 	// The tracked object's address is always this.
-	class trackable : public details::trackable_base<trackable>
+	class trackable : public details::trackable_base
 		{
-		using tup = details::trackable_base<trackable>;
+		using tup = details::trackable_base;
 		public:
 			trackable() noexcept : tup{this} {} //Create a new tracker for myself
 
@@ -109,9 +105,9 @@ namespace utils
 
 	// The wrapper way
 	template <typename T>
-	class trackable_wrapper : public details::trackable_base<T>, public wrapper<T>
+	class trackable_wrapper : public details::trackable_base, public wrapper<T>
 		{
-		using tup = details::trackable_base<T>;
+		using tup = details::trackable_base;
 		public:
 			using wrapper<T>::value_type;
 
@@ -161,8 +157,9 @@ namespace utils
 			//tracking_ptr& operator=(tracker_type& tracked) { tracker = tracked.tracker; return *this; }
 			tracking_ptr           (                  T & tracked) requires(inheritance) : tracker  {tracked.tracker} {}
 			tracking_ptr& operator=(                  T & tracked) requires(inheritance) { tracker = tracked.tracker; return *this; }
-			tracking_ptr           (trackable_wrapper<T>& tracked) requires(wrapped    ) : tracker  {tracked.tracker} {}
-			tracking_ptr& operator=(trackable_wrapper<T>& tracked) requires(wrapped    ) { tracker = tracked.tracker; return *this; }
+
+			template <std::derived_from<value_type> construct_from_t> tracking_ptr           (trackable_wrapper<construct_from_t>& tracked) requires(wrapped    ) : tracker  {tracked.tracker} {}
+			template <std::derived_from<value_type> construct_from_t> tracking_ptr& operator=(trackable_wrapper<construct_from_t>& tracked) requires(wrapped    ) { tracker = tracked.tracker; return *this; }
 
 			tracking_ptr(const tracking_ptr& copy) = default;
 			tracking_ptr& operator=(const tracking_ptr& copy) = default;
@@ -171,10 +168,10 @@ namespace utils
 			tracking_ptr& operator=(tracking_ptr&& move) = default;
 
 
-			const value_type& operator* () const noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type>(*tracker->tracked); }
-			      value_type& operator* ()       noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type>(*tracker->tracked); }
-			const value_type* operator->() const noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type>( tracker->tracked); }
-			      value_type* operator->()       noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type>( tracker->tracked); }
+			const value_type& operator* () const noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type&>(*tracker->tracked); }
+			      value_type& operator* ()       noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type&>(*tracker->tracked); }
+			const value_type* operator->() const noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type*>( tracker->tracked); }
+			      value_type* operator->()       noexcept { if constexpr (compilation::debug) { check_all(); } return static_cast<value_type*>( tracker->tracked); }
 
 			const T* get() const { check_initialized(); return static_cast<T*>(tracker->tracked); }
 			      T* get()       { check_initialized(); return static_cast<T*>(tracker->tracked); }
@@ -185,7 +182,7 @@ namespace utils
 			bool has_value_except() const { check_initialized(); return tracker->tracked; }
 
 		private:
-			std::shared_ptr<details::tracker_t<tracker_type>> tracker{nullptr};
+			std::shared_ptr<details::tracker_t> tracker{nullptr};
 
 			void check_initialized() const
 				{
