@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "../compilation/warnings.h"
+#include "../math/math.h"
 #include "../math/angle.h"
 #include "../template_wrappers.h"
 
@@ -154,7 +155,7 @@ namespace utils::graphics::colour
 				{
 				for (size_t i{0}; i < 3; i++)
 					{
-					this->array[i] = other_t::range::cast<range>(other[i]);
+					this->array[i] = other_t::range::template cast_to<range>(other[i]);
 					}
 				if constexpr (has_alpha)
 					{
@@ -168,7 +169,7 @@ namespace utils::graphics::colour
 				{
 				for (size_t i{0}; i < 3; i++)
 					{
-					this->array[i] = other_t::range::cast<range>(other[i]);
+					this->array[i] = other_t::range::template cast_to<range>(other[i]);
 					}
 				this->a = alpha;
 				}
@@ -212,11 +213,14 @@ namespace utils::graphics::colour
 				case base::cyan   : angle = 180_deg; break;
 				case base::magenta: angle = 300_deg; break;
 				}
-			h = {angle};
+			
+			hsv ret;
+			ret.h = {angle};
 
-			s = max_value; //TODO make correct calculation
-			v = max_value; //TODO make correct calculation
-			if constexpr (has_alpha) { details::alpha_field<T>::a = alpha; }
+			ret.s = max_value; //TODO make correct calculation
+			ret.v = max_value; //TODO make correct calculation
+			if constexpr (has_alpha) { ret.details::alpha_field<T>::a = alpha; }
+			return ret;
 			}
 
 #pragma region fields
@@ -236,9 +240,9 @@ namespace utils::graphics::colour
 		using hsv_t = colour::hsv<floating_t, has_alpha>;
 		hsv_t out;
 
-		floating_t r{range::cast<hsv_t::range>(this->r)};
-		floating_t g{range::cast<hsv_t::range>(this->g)};
-		floating_t b{range::cast<hsv_t::range>(this->b)};
+		floating_t r{range::cast_to<hsv_t::range>(this->r)};
+		floating_t g{range::cast_to<hsv_t::range>(this->g)};
+		floating_t b{range::cast_to<hsv_t::range>(this->b)};
 
 		floating_t min{std::min({r, g, b})};
 		floating_t max{std::max({r, g, b})};

@@ -18,10 +18,10 @@ namespace utils::math::angle
 	class base;
 	
 	template <std::floating_point T = float>
-	using deg = base<T, 360.f>;
+	using deg = base<T, static_cast<T>(360.)>;
 
 	template <std::floating_point T = float>
-	using rad = base<T, T{2.f * constants::PIf}>;
+	using rad = base<T, T{static_cast<T>(2. * constants::PId)}>;
 
 	using degf = deg<float >;
 	using radf = rad<float >;
@@ -79,7 +79,7 @@ namespace utils::math::angle
 			value_type value{ 0.f };
 
 			base() = default;
-			base(value_type value) : value{value} {}
+			base(T value) : value{value} {}
 
 			base(common::direction      dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{8} )} {}
 			base(common::hex_flat_top   dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{6} )} {}

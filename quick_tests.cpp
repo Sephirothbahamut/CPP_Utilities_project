@@ -63,7 +63,9 @@ struct child_type : angry_type
 	int another_i;
 	};
 
-int main()
+#include "include/utils/containers/resource_manager.h"
+
+int mainq()
 	{
 	utils::trackable_wrapper<child_type> child1{1};
 	utils::trackable_wrapper<angry_type> parent1{1, 2.f};
@@ -75,9 +77,9 @@ int main()
 	auto child2{std::move(child1)};
 	auto parent2{std::move(parent1)};
 
-	child1->another_i = -1;
-	child1->i = -1;
-	parent1->i = -1;
+	child1 ->another_i = -1;
+	child1 ->        i = -1;
+	parent1->        i = -1;
 	
 	child1 = utils::trackable_wrapper<child_type>{2};
 	

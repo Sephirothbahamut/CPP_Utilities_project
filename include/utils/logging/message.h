@@ -37,11 +37,11 @@ namespace utils::logging
 				{
 				switch (type)
 					{
-					case message::msg_t::log: return "[LOG]";
-					case message::msg_t::dgn: return "[DGN]";
-					case message::msg_t::inf: return "[INF]";
-					case message::msg_t::wrn: return "[WRN]";
-					case message::msg_t::err: return "[ERR]";
+					case msg_t::log: return "[LOG]";
+					case msg_t::dgn: return "[DGN]";
+					case msg_t::inf: return "[INF]";
+					case msg_t::wrn: return "[WRN]";
+					case msg_t::err: return "[ERR]";
 					default: return "[This error code should be impossible to get]";
 					}
 				}

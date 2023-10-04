@@ -4,11 +4,12 @@
 
 namespace utils::math::geometry
 	{
-	template <size_t order, utils::math::concepts::vec vec_T>
+	template <size_t ORDER, utils::math::concepts::vec vec_T>
 	class bezier_curve
 		{
 		public:
 			using value_type = vec_T;
+			inline static constexpr size_t order{ORDER};
 
 		private:
 			using self_t = bezier_curve<order, vec_T>;
@@ -45,6 +46,11 @@ namespace utils::math::geometry
 			const proxy operator[](float_t t) const noexcept
 				{
 				return {*this, t};
+				}
+
+			 auto closest_point_to(const value_type& point) const noexcept
+				{
+				 struct ret_t { float t; value_type point; };
 				}
 		};
 	}
