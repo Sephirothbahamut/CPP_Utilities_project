@@ -226,7 +226,7 @@ namespace Tests
 					utils::containers::object_pool
 						<
 						test_struct, 8,
-						utils::flags<utils::containers::object_pool_handle_version>::all()
+						utils::flags<utils::containers::object_pool_handle_version>::full()
 						>
 					op;
 
