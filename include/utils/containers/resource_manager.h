@@ -190,6 +190,10 @@ namespace utils::containers
 
 		private:
 			std::unordered_map<identifier_t, value_type> available;
+			//TODO
+			//live container non associativo
+			//available > ptr to live element
+			//flush > smash into live and repoint available
 			
 			struct loaded_t { identifier_t identifier; value_type value; };
 
