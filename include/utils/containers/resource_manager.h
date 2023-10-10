@@ -127,10 +127,6 @@ namespace utils::containers
 			object_pool_t live;
 			inner_handle default_handle;
 			std::unordered_map<identifier_t, inner_handle> available;
-			//TODO
-			//live container non associativo
-			//available > ptr to live element
-			//flush > smash into live and repoint available
 			
 			struct loaded_t { identifier_t identifier; value_type value; };
 
@@ -149,81 +145,3 @@ namespace utils::containers
 				}
 		};
 	}
-
-//struct type_a
-//	{
-//	type_a(std::string filename) : n{static_cast<int>(filename[0])} { std::this_thread::sleep_for(std::chrono::milliseconds(15)); }
-//	int n;
-//	};
-//struct type_b
-//	{
-//	type_b(const utils::containers::resource_manager<type_a>::handle& a) : handlea{a} { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
-//	utils::containers::resource_manager<type_a>::handle handlea;
-//	};
-//
-//#include "../logging/logger.h"
-//using logger_t = utils::logging::logger<utils::logging::message<utils::logging::output_style_t::on_line>>;
-//logger_t logger;
-//
-//void print(const std::string& message) noexcept
-//	{
-//	logger.log(message);
-//	}
-//
-//int main()
-//	{
-//	utils::thread_pool thread_pool{8};
-//	utils::containers::resource_manager<type_a> resource_manager_a{thread_pool, []() { return type_a{"pippo"}; }};
-//	auto default_a_handle{resource_manager_a.get_default()};
-//
-//	utils::containers::resource_manager<type_b> resource_manager_b{thread_pool, [&default_a_handle]() { return type_b{default_a_handle}; }};
-//
-//
-//	while (true)
-//		{
-//		auto result{resource_manager_b.load("rty", [&resource_manager_a]() -> type_b
-//			{
-//			auto result{resource_manager_a.load("asd", []() 
-//				{
-//				print("asd being constructed");
-//				type_a ret{"asd"};
-//				print("asd construction completed");
-//				return ret;
-//				})};
-//
-//			print("rty being constructed");
-//			type_b ret{result};
-//			print("rty construction completed");
-//			return ret;
-//			})};
-//
-//		print("================================= FLUSH ==========================");
-//		resource_manager_a.flush();
-//		resource_manager_b.flush();
-//
-//		if (result == resource_manager_b.get_default())
-//			{
-//			print("main loop, rty is loading");
-//			}
-//		else
-//			{
-//			print("main loop, rty is loaded");
-//			}
-//		if (resource_manager_a.get("asd").is_loading)
-//			{
-//			print("main loop, asd is loading");
-//			}
-//		else
-//			{
-//			print("main loop, asd is loaded");
-//			}
-//
-//		if (!resource_manager_a.get("asd").is_loading &&
-//			!resource_manager_b.get("rty").is_loading)
-//			{
-//			break;
-//			}
-//		}
-//
-//	print("test done!");
-//	}

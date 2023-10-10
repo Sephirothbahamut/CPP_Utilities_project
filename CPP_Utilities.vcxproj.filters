@@ -71,6 +71,12 @@
     <Filter Include="Utils\logging">
       <UniqueIdentifier>{0d52f7aa-5da0-4fa6-b725-8620c21c5253}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\input_system">
+      <UniqueIdentifier>{31f72530-c40d-485a-9273-0c555bc1f868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\input_system\device">
+      <UniqueIdentifier>{56436e34-99b1-4792-a336-6dd2071c2473}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -402,6 +408,15 @@
     </ClInclude>
     <ClInclude Include="include\utils\logging\logger.h">
       <Filter>Utils\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\input_system\common.h">
+      <Filter>Utils\input_system</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\input_system\device\mouse.h">
+      <Filter>Utils\input_system\device</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\input_system\device\common.h">
+      <Filter>Utils\input_system\device</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
