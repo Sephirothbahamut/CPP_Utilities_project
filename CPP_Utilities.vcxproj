@@ -183,6 +183,8 @@
     <ClInclude Include="include\utils\index_range.h" />
     <ClInclude Include="include\utils\input_system\common.h" />
     <ClInclude Include="include\utils\input_system\device\common.h" />
+    <ClInclude Include="include\utils\input_system\device\gamepad.h" />
+    <ClInclude Include="include\utils\input_system\device\keyboard.h" />
     <ClInclude Include="include\utils\input_system\device\mouse.h" />
     <ClInclude Include="include\utils\logging\logger.h" />
     <ClInclude Include="include\utils\logging\message.h" />
