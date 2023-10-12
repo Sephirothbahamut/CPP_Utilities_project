@@ -6,27 +6,103 @@ namespace utils::input_system::device
 	{
 	namespace inputs
 		{
-		template <typename DERIVED_T, input::concepts::input input_T, typename id_T>
-		struct base_crtp
+		namespace details
 			{
-			using derived_t = DERIVED_T;
-			using id_t      = id_T;
-			using input_t   = input_T;
+			template <typename DERIVED_T, input::concepts::input input_T, typename id_T>
+			struct base_crtp;
 
-			constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-			constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
-
-			const input_t& operator[](const id_t& id) const noexcept { return derived()[id]; }
-				    input_t& operator[](const id_t& id)       noexcept { return derived()[id]; }
-
-			void change(manager& manager, const id_t& id, const typename input_t::value_type& new_value) noexcept
+			namespace concepts
 				{
-				operator[](id).change(manager, new_value);
+				template <typename T>
+				concept base = std::derived_from<T, details::base_crtp<typename T::derived_t, typename T::input_t, typename T::id_t>>;
 				}
-			};
+
+			//template <concepts::base inputs_T>
+			//class event_raw_input
+			//	{
+			//	template <typename DERIVED_T, input::concepts::input input_T, typename id_T>
+			//	friend struct base_crtp;
+			//
+			//	public:
+			//		using inputs_t   = inputs_T;
+			//		using id_t       = typename inputs_t::id_t;
+			//		using state_type = typename inputs_t::input_t::state_type;
+			//		using value_type = typename inputs_t::input_t::value_type;
+			//		using callback_signature = on_completion(const id_t& id, const state_type& state);
+			//
+			//		event_raw_input(inputs_t& inputs) : inputs{inputs} { inputs.map(*this); };
+			//		event_raw_input(inputs_t& inputs, std::function<callback_signature> callback) : inputs{inputs}, callback{callback} 
+			//			{
+			//			inputs.map(*this);
+			//			}
+			//		~event_raw_input() { inputs.get().unmap(*this); }
+			//
+			//		std::function<callback_signature> callback;
+			//
+			//	private:
+			//		std::reference_wrapper<inputs_t> inputs;
+			//
+			//		input_system::details::callback_wrapper get_callback_wrapped(const id_t& id, void* input_ptr, const state_type& state) noexcept
+			//			{
+			//			auto callback{this->callback};
+			//			return {static_cast<void*>(this), input_ptr, [callback, id, state]() mutable
+			//				{
+			//				auto result{callback(id, state)};
+			//				//if (result == on_completion::keep) { state.change(state.current); }
+			//				return result;
+			//				}};
+			//			};
+			//	};
+
+			template <typename DERIVED_T, input::concepts::input input_T, typename id_T>
+			class base_crtp
+				{
+				public:
+					using derived_t = DERIVED_T;
+					using id_t      = id_T;
+					using input_t   = input_T;
+					//using event_raw_input_t = event_raw_input<base_crtp<derived_t, input_t, id_t>>;
+
+					constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+					constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+
+					const input_t& operator[](const id_t& id) const noexcept { return derived()[id]; }
+						  input_t& operator[](const id_t& id)       noexcept { return derived()[id]; }
+
+					void change(manager& manager, const id_t& id, const typename input_t::value_type& new_value) noexcept
+						{
+						auto& input{operator[](id)};
+						input.change(manager, new_value);
+						//for (const auto& event : events)
+						//	{
+						//	auto value{input.value()};
+						//	manager.insert(event.get().get_callback_wrapped(id, static_cast<void*>(&input), value));
+						//	}
+						}
+					
+					//void map  (event_raw_input_t& event) noexcept { events.insert(event); }
+					//void unmap(event_raw_input_t& event) noexcept { events.erase (event); }
+
+					//event_raw_input_t bind_debug_callback()
+					//	{
+					//	return event_raw_input_t{*this, [](const id_t& id, const input_t::state_type& state)
+					//		{
+					//		std::cout << utils::enums::enum_name<id_t>(id) << " ";
+					//		if (state.changed()) { std::cout << "(changed)"; }
+					//		else { std::cout << "(unchanged)"; }
+					//		std::cout << " " << state.previous << " > " << state.current << std::endl;
+					//		return utils::input_system::on_completion::remove;
+					//		}};
+					//	}
+
+				private:
+					//using unordered_set_t = input_system::details::reference_wrapper_utils<event_raw_input_t>::unordered_set;
+					//unordered_set_t events;
+				};
+			}
 
 		template <input::concepts::input input_T, size_t SIZE>
-		class static_array : public base_crtp<static_array<input_T, SIZE>, input_T, size_t>
+		class static_array : public details::base_crtp<static_array<input_T, SIZE>, input_T, size_t>
 			{
 			public:
 				using id_t    = size_t;
@@ -44,7 +120,7 @@ namespace utils::input_system::device
 					if constexpr (utils::compilation::debug) { return at(id); }
 					else { return array[id]; }
 					}
-						input_t& at(id_t id)       { return array.at(static_cast<size_t>(id)); }
+				      input_t& at(id_t id)       { return array.at(static_cast<size_t>(id)); }
 				const input_t& at(id_t id) const { return array.at(static_cast<size_t>(id)); }
 
 			private:
@@ -52,7 +128,7 @@ namespace utils::input_system::device
 			};
 
 		template <input::concepts::input input_T, typename id_enum>
-		class static_enum : public base_crtp<static_enum<input_T, id_enum>, input_T, id_enum>
+		class static_enum : public details::base_crtp<static_enum<input_T, id_enum>, input_T, id_enum>
 			{
 			public:
 				using id_t    = id_enum;
@@ -69,7 +145,7 @@ namespace utils::input_system::device
 					if constexpr (utils::compilation::debug) { return at(id); }
 					else { return array[static_cast<size_t>(id)]; }
 					}
-						input_t& at(id_t id)       { return array.at(static_cast<size_t>(id)); }
+				     input_t& at(id_t id)       { return array.at(static_cast<size_t>(id)); }
 				const input_t& at(id_t id) const { return array.at(static_cast<size_t>(id)); }
 		
 			private:
@@ -77,27 +153,31 @@ namespace utils::input_system::device
 			};
 
 		template <input::concepts::input input_T, typename id_T>
-		class dynamic : public base_crtp<dynamic<input_T, id_T>, input_T, id_T>
+		class dynamic : public details::base_crtp<dynamic<input_T, id_T>, input_T, id_T>
 			{
 			public:
 				using id_t    = id_T;
 				using input_t = input_T;
 
-						input_t& operator[](id_t id)       noexcept { return container[id]; }
+				      input_t& operator[](id_t id)       noexcept { return container[id]; }
 				const input_t& operator[](id_t id) const noexcept { return container[id]; }
 
 			private:
 				std::unordered_map<id_t, input_t> container;
 			};
 
+		struct none { using id_t = void; };
+
 		namespace concepts
 			{
 			template <typename T>
-			concept inputs = std::derived_from<T, base_crtp<typename T::derived_t, typename T::input_t, typename T::id_t>>;
+			concept none = std::same_as<T, inputs::none>;
 			template <typename T>
-			concept digital = inputs<T> && std::same_as<typename T::input_t, input::digital>;
+			concept inputs = none<T> || details::concepts::base<T>;
 			template <typename T>
-			concept analog  = inputs<T> && std::same_as<typename T::input_t, input::analog >;
+			concept digital = none<T> || (inputs<T> && std::same_as<typename T::input_t, input::digital>);
+			template <typename T>
+			concept analog  = none<T> || (inputs<T> && std::same_as<typename T::input_t, input::analog >);
 			}
 		}
 
@@ -125,12 +205,35 @@ namespace utils::input_system::device
 			}
 
 		void change_digital(manager& manager, const typename digital_t::id_t& id, const typename digital_t::input_t::value_type& new_value) noexcept
+			requires !inputs::concepts::none<digital_t>
 			{
 			digital.change(manager, id, new_value);
 			}
+
 		void change_analog (manager& manager, const typename analog_t ::id_t& id , const typename analog_t ::input_t::value_type& new_value) noexcept
+			requires !inputs::concepts::none<analog_t >
 			{
 			analog .change(manager, id, new_value);
 			}
+
+		//class debug_callbacks
+		//	{
+		//	friend class base;
+		//	private:
+		//		debug_callbacks(base& device) requires(!inputs::concepts::none<digital_t> && !inputs::concepts::none<analog_t >):
+		//			event_digital{device.digital.bind_debug_callback()},
+		//			event_analog {device.analog .bind_debug_callback()}
+		//			{}
+		//		std::conditional_t<inputs::concepts::none<digital_t>, void, typename digital_t::event_raw_input_t> event_digital;
+		//		std::conditional_t<inputs::concepts::none<analog_t >, void, typename analog_t ::event_raw_input_t> event_analog ;
+		//	};
+		//
+		//debug_callbacks bind_debug_callbacks() noexcept { return debug_callbacks{*this}; }
 		};
 	}
+
+//namespace utils::input_system
+//	{
+//	template <device::inputs::details::concepts::base inputs_t>
+//	using event_raw_input = device::inputs::details::event_raw_input<inputs_t>;
+//	}

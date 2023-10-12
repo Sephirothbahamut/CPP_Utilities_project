@@ -424,6 +424,9 @@
     <ClInclude Include="include\utils\input_system\device\keyboard.h">
       <Filter>Utils\input_system\device</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\hash.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

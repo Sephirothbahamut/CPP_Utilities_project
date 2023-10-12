@@ -179,6 +179,7 @@
     <ClInclude Include="include\utils\flags.h" />
     <ClInclude Include="include\utils\future.h" />
     <ClInclude Include="include\utils\graphics\colour.h" />
+    <ClInclude Include="include\utils\hash.h" />
     <ClInclude Include="include\utils\id_pool.h" />
     <ClInclude Include="include\utils\index_range.h" />
     <ClInclude Include="include\utils\input_system\common.h" />
