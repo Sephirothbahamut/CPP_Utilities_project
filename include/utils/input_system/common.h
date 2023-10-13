@@ -20,7 +20,7 @@ namespace utils::input_system
 	enum class on_completion { remove, keep };
 
 	template <typename T>
-	struct state_base
+	struct state
 		{
 		using value_type = T;
 		T current;
@@ -29,13 +29,39 @@ namespace utils::input_system
 		bool changed() const noexcept { return current != previous; }
 		};
 	
-	namespace event::details
+	namespace concepts
 		{
-		struct root
+		template <typename T>
+		concept state = std::derived_from<T, input_system::state<typename T::value_type>>;
+		}
+
+	namespace event
+		{
+		namespace details
 			{
-			virtual void update() const noexcept = 0;
-			virtual on_completion operator()() const noexcept = 0;
-			};
+			struct root
+				{
+				virtual on_completion operator()() noexcept = 0;
+				};
+			struct mapped_root : root
+				{
+				virtual void push_source(utils::observer_ptr<void> source) noexcept = 0;
+				};
+
+			template <concepts::state STATE_TYPE, typename root_t>
+			struct base : root_t
+				{
+				using state_type = STATE_TYPE;
+				using callback_signature = on_completion(const state_type& state);
+
+				base() = default;
+				base(std::function<callback_signature> callback) : callback{callback} {}
+
+				std::function<callback_signature> callback;
+				};
+			}
+		template <typename T>
+		class mapped;
 		}
 
 	namespace details
@@ -68,7 +94,7 @@ namespace utils::input_system
 		//mappings and events are nodes. Events are the roots of the tree
 		struct node : utils::oop::non_copyable, utils::oop::non_movable 
 			{
-			virtual event::details::root& get_event() noexcept = 0;
+			virtual event::details::mapped_root& event() noexcept = 0;
 			};
 
 		//mappings are branches. The last branch's parent is an event.
@@ -76,9 +102,9 @@ namespace utils::input_system
 			{
 			branch(node& parent) : parent{parent} {}
 
-			virtual event::details::root& get_event() noexcept final override
+			virtual event::details::mapped_root& event() noexcept final override
 				{
-				return parent.get().get_event();
+				return parent.get().event();
 				}
 
 			std::reference_wrapper<node> parent;
@@ -92,127 +118,112 @@ namespace utils::input_system
 		public:
 			void step() noexcept 
 				{
-				auto it{callbacks_keep_set.begin()};
-				while (it != callbacks_keep_set.end())
+				auto it{callbacks_set.begin()};
+				while (it != callbacks_set.end())
 					{
 					const auto& callback{*it};
 					if (callback() == on_completion::remove)
 						{
-						it = callbacks_keep_set.erase(it);
+						it = callbacks_set.erase(it);
 						}
 					else { it++; }
 					}
-
-				while (!callbacks_set.empty())
-					{
-					auto callback{std::move(callbacks_set.extract(callbacks_set.begin()).value())};
-					if (callback() == on_completion::keep)
-						{
-						callbacks_keep_set.insert(std::move(callback));
-						}
-					}
 				}
 
-			void insert(event::details::root& event) noexcept 
-				{
-				auto it{callbacks_keep_set.find(event)};
-				if (it != callbacks_keep_set.end()) { event.update(); }
-				else 
-					{
-					auto result{callbacks_set.insert(event)};
-					if (result.second) { event.update(); } //update first time inserted
-					}
-				}
+			void insert(event::details::root& event) noexcept { callbacks_set.insert(event); }
 
 		private:
 			details::events_observer_set callbacks_set;
-			details::events_observer_set callbacks_keep_set;
 		};
 
 	namespace input
 		{
-		template <typename T>
-		struct base : utils::oop::non_copyable, utils::oop::non_movable
+		namespace details
 			{
-			public:
-				using state_type = state_base<T>;
-				using value_type = typename state_base<T>::value_type;
-				const state_type& value() const noexcept { return _value; }
-				      state_type& value()       noexcept { return _value; }
+			template <typename T>
+			struct base : utils::oop::non_copyable, utils::oop::non_movable
+				{
+				public:
+					using state_type = input_system::state<T>;
+					const state_type& state() const noexcept { return _state; }
+						  state_type& state()       noexcept { return _state; }
 
-				void change(manager& manager, const value_type& new_value) noexcept
-					{
-					_value.change(new_value);
-					for (auto node : nodes) { manager.insert(node.get().get_event()); }
-					}
+					void change(manager& manager, const typename state_type::value_type& new_value) noexcept
+						{
+						for (auto node : nodes) 
+							{
+							auto& event{node.get().event()};
+							event.push_source(this);
+							manager.insert(event); 
+							}
+						//change state AFTER event.push_source, important
+						_state.change(new_value); 
+						}
 
-				void map  (details::node& node) noexcept { nodes.insert(node); }
-				void unmap(details::node& node) noexcept { nodes.erase (node); }
+					void map  (input_system::details::node& node) noexcept { nodes.insert(node); }
+					void unmap(input_system::details::node& node) noexcept { nodes.erase (node); }
 
-			private:
-				state_type _value;
-				details::nodes nodes;
-			};
-		using analog  = base<float>;
-		using digital = base<bool >;
+				private:
+					state_type _state;
+					input_system::details::nodes nodes;
+				};
+			}
+		using analog  = details::base<float>;
+		using digital = details::base<bool >;
 
 		namespace concepts
 			{
 			template <typename T>
-			concept input = std::derived_from<T, base<typename T::value_type>>;
+			concept input = std::derived_from<T, details::base<typename T::state_type::value_type>>;
 			}
 		}
 
 	namespace mapping
 		{
-		template <typename T>
-		struct base : details::branch
+		namespace details
 			{
-			using branch::branch;
-			using state_type = state_base<T>;
-			using value_type = typename state_base<T>::value_type;
-			virtual state_type value() const noexcept = 0;
-			};
+			template <typename T>
+			struct base : input_system::details::branch
+				{
+				using input_system::details::branch::branch;
+				using state_type = input_system::state<T>;
+				virtual state_type state() const noexcept = 0;
+				};
+			}
 
 		namespace button
 			{
-			using base = mapping::base<bool>;
+			using base = details::base<bool>;
 
 			struct device_input : base
 				{
 				std::reference_wrapper<input::digital> input;
 
-				device_input(details::node& parent, input::digital& input) : base{parent}, input{input}
+				device_input(input_system::details::node& parent, input::digital& input) : base{parent}, input{input}
 					{
 					input.map(*this);
 					}
 				~device_input() { input.get().unmap(*this); }
 
-				virtual state_type value() const noexcept final override
-					{
-					return input.get().value();
-					};
+				virtual state_type state() const noexcept final override { return input.get().state(); };
 				};
 			}
 
 		namespace axis1d
 			{
-			using base = mapping::base<float>;
+			using base = details::base<float>;
 
 			struct device_input : base
 				{
 				std::reference_wrapper<input::analog> input;
 
-				device_input(details::node& parent, input::analog& input) : base{parent}, input{input}
+				device_input(input_system::details::node& parent, input::analog& input) : base{parent}, input{input}
 					{
 					input.map(*this);
 					}
 				~device_input() { input.get().unmap(*this); }
 
-				virtual state_type value() const noexcept final override
-					{
-					return input.get().value();
-					};
+				virtual state_type state() const noexcept final override { return input.get().state(); };
 				};
 			}
 
@@ -234,12 +245,12 @@ namespace utils::input_system
 					return *created_obs;
 					}
 
-				virtual state_type value() const noexcept final override
+				virtual state_type state() const noexcept final override
 					{
 					return 
 						{
-						axis_own->value().current  > threshold,
-						axis_own->value().previous > threshold
+						axis_own->state().current  > threshold,
+						axis_own->state().previous > threshold
 						};
 					}
 				};
@@ -271,12 +282,12 @@ namespace utils::input_system
 					return *created_obs;
 					}
 				
-				virtual state_type value() const noexcept final override
+				virtual state_type state() const noexcept final override
 					{
 					return
 						{
-						static_cast<float>(b_own->value().current  - a_own->value().current ),
-						static_cast<float>(b_own->value().previous - a_own->value().previous),
+						static_cast<float>(b_own->state().current  - a_own->state().current ),
+						static_cast<float>(b_own->state().previous - a_own->state().previous),
 						};
 					};
 				};
@@ -284,7 +295,7 @@ namespace utils::input_system
 		
 		namespace axis2d
 			{
-			using base = mapping::base<utils::math::vec2f>;
+			using base = details::base<utils::math::vec2f>;
 		
 			struct from_axes : base
 				{
@@ -310,12 +321,12 @@ namespace utils::input_system
 					return *created_obs;
 					}
 
-				virtual state_type value() const noexcept final override
+				virtual state_type state() const noexcept final override
 					{
 					return
 						{
-						::utils::math::vec2f{x_own->value().current , y_own->value().current },
-						::utils::math::vec2f{x_own->value().previous, y_own->value().previous},
+						::utils::math::vec2f{x_own->state().current , y_own->state().current },
+						::utils::math::vec2f{x_own->state().previous, y_own->state().previous},
 						};
 					};
 				};
@@ -325,22 +336,22 @@ namespace utils::input_system
 	namespace event
 		{
 		template <typename T>
-		class mapped : public details::root, public input_system::details::node
+		class mapped : public details::base<input_system::state<T>, details::mapped_root>, public input_system::details::node
 			{
+			friend class input::details::base<T>;
+			using base = details::base<input_system::state<T>, details::mapped_root>;
 			public:
-				using state_type = state_base<T>;
-				using value_type = typename state_base<T>::value_type;
-				using callback_signature = on_completion(const state_type& state);
+				using state_type         = typename base::state_type;
+				using callback_signature = typename base::callback_signature;
 
 				mapped() = default;
-				mapped(std::function<callback_signature> callback) : callback{callback} {}
+				mapped(std::function<callback_signature> callback) : base{callback} {}
+				std::unique_ptr<mapping::details::base<T>> mapping;
 
-				std::function<callback_signature> callback;
-				std::unique_ptr<mapping::base<T>> mapping;
+				state_type state() const noexcept { return mapping->state(); }
+				virtual event::details::mapped_root& event() noexcept final override { return *this; }
 
-				state_type value() const noexcept { return mapping->value(); }
-
-				template <std::derived_from<mapping::base<T>> T, typename ...Args>
+				template <std::derived_from<mapping::details::base<T>> T, typename ...Args>
 				T& emplace_mapping(Args&& ...args) noexcept
 					{
 					std::unique_ptr<T> created{std::make_unique<T>(*this, std::forward<Args>(args)...)};
@@ -349,18 +360,57 @@ namespace utils::input_system
 					return *created_obs;
 					}
 
-				virtual void update() const noexcept final override { state = value(); }
-				virtual on_completion operator()() const noexcept 
+				virtual on_completion operator()() noexcept final override
 					{
-					auto result{callback(state)};
-					if (result == on_completion::keep) { state.change(state.current); }
-					return result;
+					if (!current_state_sources.empty())  //if not empty, there's a pending in this step
+						{
+						for (const auto& state : states_history)
+							{
+							this->callback(state);
+							}
+						states_history.clear();
+						current_state_sources.clear();
+
+						//NOTE last history state wasn't added to states_history yet.
+						//also only last state's return value matters for keeping
+						auto last_state{state()};
+						auto result{this->callback(last_state)};
+						if (result == on_completion::keep)
+							{
+							last_state.change(last_state.current); //make last_state's current be equal to its previous
+							states_history.push_back(last_state);
+							}
+						return result;
+						}
+					else //if empty, we're calling an event which return was "keep" in previous frames
+						{
+						assert(states_history.size() == 1);
+
+						auto result{this->callback(states_history[0])};
+						if (result == on_completion::remove) { states_history.clear(); }
+						return result;
+						}
 					}
 
 			private:
-				mutable state_type state;
+				virtual void push_source(utils::observer_ptr<void> source) noexcept final override
+					{
+					push_source_inner(source);
+					}
 
-				virtual event::details::root& get_event() noexcept final override { return *this; }
+				std::vector<state_type> states_history;
+				std::vector<utils::observer_ptr<void>> current_state_sources;
+
+				void push_source_inner(utils::observer_ptr<void> source) noexcept
+					{
+					auto it{std::find(current_state_sources.begin(), current_state_sources.end(), source)};
+					if (it != current_state_sources.end())
+						{//source already exists, push current state and add as new source
+						states_history.push_back(state());
+						current_state_sources.clear();
+						}
+					current_state_sources.push_back(source);
+					}
 			};
 		}
 	}

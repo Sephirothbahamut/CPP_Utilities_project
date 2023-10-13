@@ -69,7 +69,7 @@ namespace utils::input_system::device
 					const input_t& operator[](const id_t& id) const noexcept { return derived()[id]; }
 						  input_t& operator[](const id_t& id)       noexcept { return derived()[id]; }
 
-					void change(manager& manager, const id_t& id, const typename input_t::value_type& new_value) noexcept
+					void change(manager& manager, const id_t& id, const typename input_t::state_type::value_type& new_value) noexcept
 						{
 						auto& input{operator[](id)};
 						input.change(manager, new_value);
@@ -193,24 +193,24 @@ namespace utils::input_system::device
 		digital_t digital;
 		analog_t  analog ;
 
-		void change(manager& manager, const typename digital_t::id_t& digital_id, const typename digital_t::input_t::value_type& new_value) noexcept
+		void change(manager& manager, const typename digital_t::id_t& digital_id, const typename digital_t::input_t::state_type::value_type& new_value) noexcept
 			requires different_id_t
 			{
 			change_digital(manager, digital_id, new_value);
 			}
-		void change(manager& manager, const typename analog_t ::id_t& analog_id , const typename analog_t ::input_t::value_type& new_value) noexcept
+		void change(manager& manager, const typename analog_t ::id_t& analog_id , const typename analog_t ::input_t::state_type::value_type& new_value) noexcept
 			requires different_id_t
 			{
 			change_analog (manager, analog_id, new_value);
 			}
 
-		void change_digital(manager& manager, const typename digital_t::id_t& id, const typename digital_t::input_t::value_type& new_value) noexcept
+		void change_digital(manager& manager, const typename digital_t::id_t& id, const typename digital_t::input_t::state_type::value_type& new_value) noexcept
 			requires !inputs::concepts::none<digital_t>
 			{
 			digital.change(manager, id, new_value);
 			}
 
-		void change_analog (manager& manager, const typename analog_t ::id_t& id , const typename analog_t ::input_t::value_type& new_value) noexcept
+		void change_analog (manager& manager, const typename analog_t ::id_t& id , const typename analog_t ::input_t::state_type::value_type& new_value) noexcept
 			requires !inputs::concepts::none<analog_t >
 			{
 			analog .change(manager, id, new_value);
