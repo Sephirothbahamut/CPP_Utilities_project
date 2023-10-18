@@ -194,12 +194,13 @@ namespace utils::input_system::device
 				std::unordered_map<id_t, input_t> container;
 			};
 
-		struct none { using id_t = void; };
+		template <input::concepts::input input_T>
+		struct none { using id_t = size_t; using input_t = input_T; };
 
 		namespace concepts
 			{
 			template <typename T>
-			concept none = std::same_as<T, inputs::none>;
+			concept none = std::same_as<T, inputs::none<typename T::input_t>>;
 			template <typename T>
 			concept inputs = none<T> || details::concepts::base<T>;
 			template <typename T>
@@ -222,12 +223,12 @@ namespace utils::input_system::device
 		analog_t  analog ;
 
 		void change(manager& manager, const typename digital_t::id_t& digital_id, const typename digital_t::input_t::state_type::value_type& new_value) noexcept
-			requires different_id_t
+			requires different_id_t && !inputs::concepts::none<digital_t>
 			{
 			change_digital(manager, digital_id, new_value);
 			}
 		void change(manager& manager, const typename analog_t ::id_t& analog_id , const typename analog_t ::input_t::state_type::value_type& new_value) noexcept
-			requires different_id_t
+			requires different_id_t && !inputs::concepts::none<analog_t >
 			{
 			change_analog (manager, analog_id, new_value);
 			}

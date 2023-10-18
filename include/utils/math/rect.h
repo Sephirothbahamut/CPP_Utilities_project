@@ -359,9 +359,9 @@ namespace utils::math
 		     nonref_value_type  get_center_x()        const noexcept { return ll + (w() / nonref_value_type{2}); }
 		     nonref_value_type  get_center_y()        const noexcept { return up + (h() / nonref_value_type{2}); }
 		vec2<nonref_value_type> get_center  ()        const noexcept { return {get_center_x(), get_center_y()}; }
-		//TODO void    set_center_x(T value) { auto previous_w{get_w()}; }
-		//TODO void    set_center_x(T value)
-		//TODO set_center() 
+		void set_center_x(T value) noexcept { auto half_w{get_w() / nonref_value_type{2}}; ll = value - half_w; rr = value + half_w; }
+		void set_center_y(T value){ auto half_h{get_h() / nonref_value_type{2}}; up = value - half_h; dw = value + half_h; }
+		void set_center(vec2<nonref_value_type> value) noexcept { set_center_x(value.x); set_center_y(value.y); }
 #pragma endregion Accessors
 
 #pragma region Properties

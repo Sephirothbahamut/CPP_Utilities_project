@@ -73,7 +73,7 @@ namespace utils::math
 					}
 
 				template <typename T = float, T f_a_v = 360.f>
-				constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
+				utils_cuda_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
 				
 				// VEC & ANGLE OPERATIONS
 				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
