@@ -2,7 +2,7 @@
 
 #include <array>
 #include <concepts>
-#include "../../compilation/CUDA.h"
+#include "../../compilation/gpu.h"
 #include "../../memory.h"
 
 namespace utils::details::vec
@@ -50,35 +50,35 @@ namespace utils::details::vec
 			using nonref_derived_t        = NONREF_DERIVED_T;
 	
 		private:
-			utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
-			utils_cuda_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
-			utils_cuda_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
+			utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+			utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+			utils_gpu_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
+			utils_gpu_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
 			
 		public:
-			utils_cuda_available constexpr size_t size() const noexcept { return get_arr().size(); }
+			utils_gpu_available constexpr size_t size() const noexcept { return get_arr().size(); }
 
-			utils_cuda_available constexpr const auto data() const noexcept { return get_arr().data(); }
-			utils_cuda_available constexpr       auto data()       noexcept { return get_arr().data(); }
+			utils_gpu_available constexpr const auto data() const noexcept { return get_arr().data(); }
+			utils_gpu_available constexpr       auto data()       noexcept { return get_arr().data(); }
 			 
-			utils_cuda_available constexpr const value_type& operator[](size_t index) const noexcept { return get_arr()   [index]; }
-			utils_cuda_available constexpr       value_type& operator[](size_t index)       noexcept { return get_arr()   [index]; }
-			utils_cuda_available constexpr const value_type& at        (size_t index) const          { return get_arr().at(index); }
-			utils_cuda_available constexpr       value_type& at        (size_t index)                { return get_arr().at(index); }
+			utils_gpu_available constexpr const value_type& operator[](size_t index) const noexcept { return get_arr()   [index]; }
+			utils_gpu_available constexpr       value_type& operator[](size_t index)       noexcept { return get_arr()   [index]; }
+			utils_gpu_available constexpr const value_type& at        (size_t index) const          { return get_arr().at(index); }
+			utils_gpu_available constexpr       value_type& at        (size_t index)                { return get_arr().at(index); }
 			 
-			utils_cuda_available constexpr       iterator  begin()       noexcept { return get_arr(). begin(); }
-			utils_cuda_available constexpr const_iterator  begin() const noexcept { return get_arr(). begin(); }
-			utils_cuda_available constexpr const_iterator cbegin()       noexcept { return get_arr().cbegin(); }
-			utils_cuda_available constexpr       iterator  end  ()       noexcept { return get_arr(). end  (); }
-			utils_cuda_available constexpr const_iterator  end  () const noexcept { return get_arr(). end  (); }
-			utils_cuda_available constexpr const_iterator cend  ()       noexcept { return get_arr().cend  (); }
+			utils_gpu_available constexpr       iterator  begin()       noexcept { return get_arr(). begin(); }
+			utils_gpu_available constexpr const_iterator  begin() const noexcept { return get_arr(). begin(); }
+			utils_gpu_available constexpr const_iterator cbegin()       noexcept { return get_arr().cbegin(); }
+			utils_gpu_available constexpr       iterator  end  ()       noexcept { return get_arr(). end  (); }
+			utils_gpu_available constexpr const_iterator  end  () const noexcept { return get_arr(). end  (); }
+			utils_gpu_available constexpr const_iterator cend  ()       noexcept { return get_arr().cend  (); }
 			 
-			utils_cuda_available constexpr       reverse_iterator  rbegin()       noexcept { return get_arr(). begin(); }
-			utils_cuda_available constexpr const_reverse_iterator  rbegin() const noexcept { return get_arr(). begin(); }
-			utils_cuda_available constexpr const_reverse_iterator crbegin()       noexcept { return get_arr().cbegin(); }
-			utils_cuda_available constexpr       reverse_iterator  rend  ()       noexcept { return get_arr(). end  (); }
-			utils_cuda_available constexpr const_reverse_iterator  rend  () const noexcept { return get_arr(). end  (); }
-			utils_cuda_available constexpr const_reverse_iterator crend  ()       noexcept { return get_arr().cend  (); }
+			utils_gpu_available constexpr       reverse_iterator  rbegin()       noexcept { return get_arr(). begin(); }
+			utils_gpu_available constexpr const_reverse_iterator  rbegin() const noexcept { return get_arr(). begin(); }
+			utils_gpu_available constexpr const_reverse_iterator crbegin()       noexcept { return get_arr().cbegin(); }
+			utils_gpu_available constexpr       reverse_iterator  rend  ()       noexcept { return get_arr(). end  (); }
+			utils_gpu_available constexpr const_reverse_iterator  rend  () const noexcept { return get_arr(). end  (); }
+			utils_gpu_available constexpr const_reverse_iterator crend  ()       noexcept { return get_arr().cend  (); }
 		};
 	}
 

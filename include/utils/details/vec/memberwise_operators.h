@@ -4,7 +4,7 @@
 
 #include "common.h"
 #include "../../memory.h"
-#include "../../compilation/CUDA.h"
+#include "../../compilation/gpu.h"
 
 namespace utils::details::vec
 	{
@@ -32,12 +32,12 @@ namespace utils::details::vec
 			using nonref_derived_t  = common_t::nonref_derived_t;
 			using nonref_value_type = common_t::nonref_value_type;
 		private:
-			utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-			utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+			utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+			utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 		public:
 			template <auto callback>
-			utils_cuda_available derived_t& for_each()
+			utils_gpu_available derived_t& for_each()
 				{
 				for (size_t i{0}; i < derived().size(); i++)
 					{
@@ -46,7 +46,7 @@ namespace utils::details::vec
 				return derived();
 				}
 			template <auto callback>
-			utils_cuda_available derived_t for_each_to_new() const
+			utils_gpu_available derived_t for_each_to_new() const
 				{
 				nonref_derived_t ret;
 				for (size_t i{0}; i < derived().size(); i++)
@@ -58,7 +58,7 @@ namespace utils::details::vec
 		};
 
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t>
-	utils_cuda_available constexpr a_t& operator_scalar_self_assign(a_t& a, const b_t& b) noexcept
+	utils_gpu_available constexpr a_t& operator_scalar_self_assign(a_t& a, const b_t& b) noexcept
 		{
 		for (size_t i{0}; i < a.size(); i++)
 			{
@@ -67,7 +67,7 @@ namespace utils::details::vec
 		return a;
 		}
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t>
-	utils_cuda_available constexpr typename a_t::nonref_derived_t operator_scalar(const a_t& a, const b_t& b) noexcept
+	utils_gpu_available constexpr typename a_t::nonref_derived_t operator_scalar(const a_t& a, const b_t& b) noexcept
 		{
 		typename a_t::nonref_derived_t ret;
 		for (size_t i{0}; i < a.size(); i++)
@@ -78,7 +78,7 @@ namespace utils::details::vec
 		}
 
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t>
-	utils_cuda_available constexpr a_t& operator_vector_self_assign(a_t& a, const b_t& b) noexcept
+	utils_gpu_available constexpr a_t& operator_vector_self_assign(a_t& a, const b_t& b) noexcept
 		{
 		size_t i{0};
 		for (; i < std::min(a.size(), b.size()); i++)
@@ -89,7 +89,7 @@ namespace utils::details::vec
 		}
 
 	template<auto callback, concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t>
-	utils_cuda_available constexpr typename get_larger<a_t, b_t>::type::nonref_derived_t operator_vector(const a_t& a, const b_t& b) noexcept
+	utils_gpu_available constexpr typename get_larger<a_t, b_t>::type::nonref_derived_t operator_vector(const a_t& a, const b_t& b) noexcept
 		{
 		using ret_t = typename get_larger<a_t, b_t>::type::nonref_derived_t;
 		ret_t ret;
@@ -108,42 +108,42 @@ namespace utils::details::vec
 		}
 
 #pragma region scalar
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator+=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a += b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator-=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a -= b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator*=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a *= b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator/=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a /= b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator|=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a |= b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr a_t& operator&=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a &= b; }>(a, b); }
-	//utils_cuda_available template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> constexpr a_t& operator =(a_t& a, const b_t& b) noexcept { for (size_t i{0}; i < a.size(); i++) { a[i] =  b; } return derived(); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr a_t& operator+=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a += b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr a_t& operator-=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a -= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr a_t& operator*=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a *= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr a_t& operator/=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a /= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr a_t& operator|=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a |= b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr a_t& operator&=(      a_t& a, const b_t& b) noexcept { return operator_scalar_self_assign<[](auto& a, const auto& b) { a &= b; }>(a, b); }
+	//utils_gpu_available template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> constexpr a_t& operator =(a_t& a, const b_t& b) noexcept { for (size_t i{0}; i < a.size(); i++) { a[i] =  b; } return derived(); }
 
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator+ (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a + b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator- (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a - b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator* (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a * b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator/ (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a / b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator| (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a | b; }>(a, b); }
-	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_cuda_available constexpr auto operator& (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a & b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr auto operator+ (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a + b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr auto operator- (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a - b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr auto operator* (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a * b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr auto operator/ (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a / b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr auto operator| (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a | b; }>(a, b); }
+	template<concepts::memberwise_operators a_t, concepts::compatible_scalar<a_t> b_t> utils_gpu_available constexpr auto operator& (const a_t& a, const b_t& b) noexcept { return operator_scalar<[](const auto& a, const auto& b) { return a & b; }>(a, b); }
 #pragma endregion scalar
 
 #pragma region self
-	template<concepts::memberwise_operators a_t> utils_cuda_available constexpr a_t::nonref_derived_t operator! (const a_t& a) noexcept { typename a_t::nonref_derived_t ret{a}; for (size_t i{0}; i < a.size(); i++) { ret[i] = !ret[i]; } return ret; }
-	template<concepts::memberwise_operators a_t> utils_cuda_available constexpr a_t::nonref_derived_t operator- (const a_t& a) noexcept { typename a_t::nonref_derived_t ret{a}; for (size_t i{0}; i < a.size(); i++) { ret[i] = -ret[i]; } return ret; }
+	template<concepts::memberwise_operators a_t> utils_gpu_available constexpr a_t::nonref_derived_t operator! (const a_t& a) noexcept { typename a_t::nonref_derived_t ret{a}; for (size_t i{0}; i < a.size(); i++) { ret[i] = !ret[i]; } return ret; }
+	template<concepts::memberwise_operators a_t> utils_gpu_available constexpr a_t::nonref_derived_t operator- (const a_t& a) noexcept { typename a_t::nonref_derived_t ret{a}; for (size_t i{0}; i < a.size(); i++) { ret[i] = -ret[i]; } return ret; }
 #pragma endregion self
 
 #pragma region array
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator+=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a += b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator-=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a -= b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator*=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a *= b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator/=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a /= b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator|=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a |= b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr a_t& operator&=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a &= b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator+ (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a + b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator- (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a - b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator* (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a * b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator/ (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a / b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator| (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a | b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr auto operator& (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a & b; }>(a, b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr bool operator!=(const a_t& a, const b_t& b) noexcept { return !(a == b); }
-	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_cuda_available constexpr bool operator==(const a_t& a, const b_t& b) noexcept
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr a_t& operator+=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a += b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr a_t& operator-=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a -= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr a_t& operator*=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a *= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr a_t& operator/=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a /= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr a_t& operator|=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a |= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr a_t& operator&=(      a_t& a, const b_t& b) noexcept { return operator_vector_self_assign<[](auto& a, const auto& b) { a &= b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr auto operator+ (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a + b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr auto operator- (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a - b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr auto operator* (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a * b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr auto operator/ (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a / b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr auto operator| (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a | b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr auto operator& (const a_t& a, const b_t& b) noexcept { return operator_vector<[](const auto& a, const auto& b) { return a & b; }>(a, b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr bool operator!=(const a_t& a, const b_t& b) noexcept { return !(a == b); }
+	template <concepts::memberwise_operators a_t, concepts::compatible_memberwise<a_t> b_t> utils_gpu_available constexpr bool operator==(const a_t& a, const b_t& b) noexcept
 		{
 		size_t i{0};
 		for (; i < std::min(a.size(), b.size()); i++)
@@ -166,10 +166,10 @@ namespace utils::details::vec
 namespace utils::math
 	{
 	template <utils::details::vec::concepts::array a_t>
-	utils_cuda_available a_t abs(const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::abs(v[i]); } return ret; }
+	utils_gpu_available a_t abs(const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::abs(v[i]); } return ret; }
 
 	template <utils::details::vec::concepts::array a_t>
-	utils_cuda_available inline a_t lerp(const a_t& a, const a_t& b, float t)
+	utils_gpu_available inline a_t lerp(const a_t& a, const a_t& b, float t)
 		{
 		a_t ret;
 		for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = utils::math::lerp(a[i], b[i], t); }
@@ -177,7 +177,7 @@ namespace utils::math
 		}
 
 	template <utils::details::vec::concepts::array a_t>
-	utils_cuda_available inline a_t clamp(const a_t& in, const a_t& min, const a_t& max)
+	utils_gpu_available inline a_t clamp(const a_t& in, const a_t& min, const a_t& max)
 		{
 		a_t ret;
 		for (size_t i = 0; i < a_t::static_size; i++)
@@ -188,7 +188,7 @@ namespace utils::math
 		}
 
 	template <utils::details::vec::concepts::array a_t, utils::details::vec::concepts::compatible_array<a_t> b_t>
-	utils_cuda_available inline a_t min(const a_t& a, const b_t& b)
+	utils_gpu_available inline a_t min(const a_t& a, const b_t& b)
 		{
 		auto ret{a};
 		for (size_t i{0}; i < std::min(a.size(), b.size()); i++) 
@@ -200,7 +200,7 @@ namespace utils::math
 		}
 
 	template <utils::details::vec::concepts::array a_t, utils::details::vec::concepts::compatible_array<a_t> b_t>
-	utils_cuda_available inline a_t max(const a_t& a, const b_t& b)
+	utils_gpu_available inline a_t max(const a_t& a, const b_t& b)
 		{
 		auto ret{a};
 		for (size_t i{0}; i < std::min(a.size(), b.size()); i++)

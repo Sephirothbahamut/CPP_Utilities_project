@@ -30,11 +30,6 @@
 
 #include "include/utils/oop/counting.h"
 
-#include "include/utils/math/geometry/shapes.h"
-#include "include/utils/math/geometry/interactions.h"
-
-#include "include/utils/math/geometry/voronoi/voronoi.h"
-
 #include "include/utils/thread_pool.h"
 
 #include "include/utils/beta/containers/multihandled_default.h"
@@ -65,7 +60,7 @@ struct child_type : angry_type
 
 #include "include/utils/containers/resource_manager.h"
 
-int mainq()
+int main()
 	{
 	utils::trackable_wrapper<child_type> child1{1};
 	utils::trackable_wrapper<angry_type> parent1{1, 2.f};
@@ -175,37 +170,37 @@ int mainq()
 
 	using namespace utils::output;
 
-	utils::math::geometry::circle circ{.center{0.f, 0.f}, .radius{5.f}};
-
-	utils::math::geometry::point p{8.f, 1.f};
-	
-	static_assert(utils::math::geometry::concepts::shape<decltype(p)>);
-
-	auto ret{circ.contains(p)};
-	std::cout << ret << std::endl;
-
-	utils::math::transform2 transform {{0.f, 0.f}, utils::math::angle::degf{90.f}, 2.f};
-	utils::math::transform2 transform2{transform.inverse()};
-
-	auto circ2{circ.transform(transform)};
-	circ.transform_self(transform.inverse());
-
-	std::cout << circ .contains(p) << std::endl;
-	std::cout << circ2.contains(p) << std::endl;
-
-	std::vector<utils::math::vec2f> points{{1.f, 2.f},{5.f, 6.f},{3.f, 2.f},{7.f, 8.f},{8.f, 3.f}};
-	utils::math::geometry::aabb aabb{.ll{0.f}, .up{0.f}, .rr{10.f}, .dw{10.f}};
-	utils::math::geometry::voronoi::graph voronoi{std::views::all(points), aabb};
-	//static_assert(utils::math::geometry::concepts::shape<utils::math::geometry::convex_polygon>);
-	//p.closest_point_and_distance(circ);
-	//std::cout << circ.contains(circ);
-
-	//if (auto opt{circ.collision(p)})
-	//	{
-	//	std::cout << opt.value();
-	//	}
-
-	aabb.contains(p);
+	//utils::math::geometry::circle circ{.center{0.f, 0.f}, .radius{5.f}};
+	//
+	//utils::math::geometry::point p{8.f, 1.f};
+	//
+	//static_assert(utils::math::geometry::concepts::shape<decltype(p)>);
+	//
+	//auto ret{circ.contains(p)};
+	//std::cout << ret << std::endl;
+	//
+	//utils::math::transform2 transform {{0.f, 0.f}, utils::math::angle::degf{90.f}, 2.f};
+	//utils::math::transform2 transform2{transform.inverse()};
+	//
+	//auto circ2{circ.transform(transform)};
+	//circ.transform_self(transform.inverse());
+	//
+	//std::cout << circ .contains(p) << std::endl;
+	//std::cout << circ2.contains(p) << std::endl;
+	//
+	//std::vector<utils::math::vec2f> points{{1.f, 2.f},{5.f, 6.f},{3.f, 2.f},{7.f, 8.f},{8.f, 3.f}};
+	//utils::math::geometry::aabb aabb{.ll{0.f}, .up{0.f}, .rr{10.f}, .dw{10.f}};
+	//utils::math::geometry::voronoi::graph voronoi{std::views::all(points), aabb};
+	////static_assert(utils::math::geometry::concepts::shape<utils::math::geometry::convex_polygon>);
+	////p.closest_point_and_distance(circ);
+	////std::cout << circ.contains(circ);
+	//
+	////if (auto opt{circ.collision(p)})
+	////	{
+	////	std::cout << opt.value();
+	////	}
+	//
+	//aabb.contains(p);
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;
 	for (size_t i = 0; i < 256; i++)

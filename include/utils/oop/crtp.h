@@ -4,6 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "../compilation/gpu.h"
+
 namespace utils::oop
 	{
 	namespace details
@@ -19,11 +21,11 @@ namespace utils::oop
 		friend class details::crtp_concept_friend;
 		protected:
 			using derived_t = derived_T;
-			const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				  derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+			utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+			utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 			//Thanks Alice from the #include discord
-			void unimplemented_interface() const noexcept { static_assert(sizeof(derived_T) && false, "unimplemented CRTP interface"); }
+			utils_gpu_available constexpr void unimplemented_interface() const noexcept { static_assert(sizeof(derived_T) && false, "unimplemented CRTP interface"); }
 		};
 
 	namespace details

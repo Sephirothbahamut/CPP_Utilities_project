@@ -2,7 +2,7 @@
 
 #include "vec.h"
 #include "angle.h"
-#include "geometry/common/root.h"
+//#include "geometry/common/root.h"
 
 namespace utils::math
 	{
@@ -47,16 +47,16 @@ namespace utils::math
 	namespace details
 		{
 		template<class T, typename DERIVED_T>
-		class vec_sized_specialization<T, 2, DERIVED_T> : public geometry::shape_base<DERIVED_T>
+		class vec_sized_specialization<T, 2, DERIVED_T> //: public geometry::shape_base<DERIVED_T>
 			{
 			public:
 				using derived_t = DERIVED_T;
 
 			private:
-				utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
-				utils_cuda_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
-				utils_cuda_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
+				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
+				utils_gpu_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
+				utils_gpu_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
 
 				using arr_t = std::array<T, 2>;
 
@@ -65,7 +65,7 @@ namespace utils::math
 				using value_type = typename arr_t::value_type;
 
 				template<std::floating_point T, T f_a_v>
-				utils_cuda_available  static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
+				utils_gpu_available  static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
 					{
 					auto x{angle.cos() * magnitude};
 					auto y{angle.sin() * magnitude};
@@ -73,18 +73,18 @@ namespace utils::math
 					}
 
 				template <typename T = float, T f_a_v = 360.f>
-				utils_cuda_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
+				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
 				
 				// VEC & ANGLE OPERATIONS
-				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
-				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
-				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
 					{
 					derived().x = derived().x * angle.cos() - derived().y * angle.sin();
 					derived().y = derived().x * angle.sin() + derived().y * angle.cos();
 					return derived(); 
 					}
-				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept
 					{
 					auto nngle{-angle};
 					derived().x = derived().x * nngle.cos() - derived().y * nngle.sin();
@@ -92,57 +92,57 @@ namespace utils::math
 					return derived();
 					}
 
-				template <std::floating_point T, T f_a_v> utils_cuda_available constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
 					{
 					return derived() = {angle.cos() * derived().magnitude(), angle.sin() * derived().magnitude()}; 
 					}
 
 				// OTHER
-				utils_cuda_available constexpr derived_t perpendicular_right           () const noexcept { return { derived().y, -derived().x}; }
-				utils_cuda_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
-				utils_cuda_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
-				utils_cuda_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+				utils_gpu_available constexpr derived_t perpendicular_right           () const noexcept { return { derived().y, -derived().x}; }
+				utils_gpu_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
+				utils_gpu_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
+				utils_gpu_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 
-#pragma region geometry
-
-				using geometry::shape_base<derived_t>::closest_point_and_distance;
-				using geometry::shape_base<derived_t>::closest_point_to;
-				using geometry::shape_base<derived_t>::distance_min;
-				using geometry::shape_base<derived_t>::vector_to;
-				using geometry::shape_base<derived_t>::intersects;
-				using geometry::shape_base<derived_t>::intersection;
-				using geometry::shape_base<derived_t>::contains;
-				using geometry::shape_base<derived_t>::collides_with;
-
-				utils_cuda_available vec2f closest_point_to(const geometry::point         & b) const noexcept;
-				utils_cuda_available vec2f closest_point_to(const geometry::segment       & b) const noexcept;
-				utils_cuda_available vec2f closest_point_to(const geometry::aabb          & b) const noexcept;
-				utils_cuda_available vec2f closest_point_to(const geometry::polygon       & b) const noexcept;
-				utils_cuda_available vec2f closest_point_to(const geometry::convex_polygon& b) const noexcept;
-				utils_cuda_available vec2f closest_point_to(const geometry::circle        & b) const noexcept;
-				utils_cuda_available vec2f closest_point_to(const geometry::capsule       & b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::point         & b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::segment       & b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::aabb          & b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::polygon       & b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::convex_polygon& b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::circle        & b) const noexcept;
-				utils_cuda_available float distance_min    (const geometry::capsule       & b) const noexcept;
-
-				utils_cuda_available bool contains(const geometry::point         & b) const noexcept;
-				utils_cuda_available bool contains(const geometry::segment       & b) const noexcept;
-				utils_cuda_available bool contains(const geometry::aabb          & b) const noexcept;
-				utils_cuda_available bool contains(const geometry::polygon       & b) const noexcept;
-				utils_cuda_available bool contains(const geometry::convex_polygon& b) const noexcept;
-				utils_cuda_available bool contains(const geometry::circle        & b) const noexcept;
-				utils_cuda_available bool contains(const geometry::capsule       & b) const noexcept;
-
-				utils_cuda_available derived_t& scale_self    (const float      & scaling    ) noexcept;
-				utils_cuda_available derived_t& rotate_self   (const angle::radf& rotation   ) noexcept;
-				utils_cuda_available derived_t& translate_self(const vec2f      & translation) noexcept;
-
-				geometry::aabb bounding_box() const noexcept;
-#pragma endregion geometry
+//#pragma region geometry
+//
+//				using geometry::shape_base<derived_t>::closest_point_and_distance;
+//				using geometry::shape_base<derived_t>::closest_point_to;
+//				using geometry::shape_base<derived_t>::distance_min;
+//				using geometry::shape_base<derived_t>::vector_to;
+//				using geometry::shape_base<derived_t>::intersects;
+//				using geometry::shape_base<derived_t>::intersection;
+//				using geometry::shape_base<derived_t>::contains;
+//				using geometry::shape_base<derived_t>::collides_with;
+//
+//				utils_gpu_available vec2f closest_point_to(const geometry::point         & b) const noexcept;
+//				utils_gpu_available vec2f closest_point_to(const geometry::segment       & b) const noexcept;
+//				utils_gpu_available vec2f closest_point_to(const geometry::aabb          & b) const noexcept;
+//				utils_gpu_available vec2f closest_point_to(const geometry::polygon       & b) const noexcept;
+//				utils_gpu_available vec2f closest_point_to(const geometry::convex_polygon& b) const noexcept;
+//				utils_gpu_available vec2f closest_point_to(const geometry::circle        & b) const noexcept;
+//				utils_gpu_available vec2f closest_point_to(const geometry::capsule       & b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::point         & b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::segment       & b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::aabb          & b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::polygon       & b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::convex_polygon& b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::circle        & b) const noexcept;
+//				utils_gpu_available float distance_min    (const geometry::capsule       & b) const noexcept;
+//
+//				utils_gpu_available bool contains(const geometry::point         & b) const noexcept;
+//				utils_gpu_available bool contains(const geometry::segment       & b) const noexcept;
+//				utils_gpu_available bool contains(const geometry::aabb          & b) const noexcept;
+//				utils_gpu_available bool contains(const geometry::polygon       & b) const noexcept;
+//				utils_gpu_available bool contains(const geometry::convex_polygon& b) const noexcept;
+//				utils_gpu_available bool contains(const geometry::circle        & b) const noexcept;
+//				utils_gpu_available bool contains(const geometry::capsule       & b) const noexcept;
+//
+//				utils_gpu_available derived_t& scale_self    (const float      & scaling    ) noexcept;
+//				utils_gpu_available derived_t& rotate_self   (const angle::radf& rotation   ) noexcept;
+//				utils_gpu_available derived_t& translate_self(const vec2f      & translation) noexcept;
+//
+//				geometry::aabb bounding_box() const noexcept;
+//#pragma endregion geometry
 			};
 		}
 	}

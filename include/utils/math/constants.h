@@ -4,7 +4,7 @@
 
 #include <limits>
 
-namespace utils::constants
+namespace utils::math::constants
 	{
 	inline constexpr float  PIf = static_cast<float>(std::numbers::pi);
 	inline constexpr double PId = std::numbers::pi;
@@ -17,5 +17,6 @@ namespace utils::constants
 	inline constexpr double dinf = std::numeric_limits<double>::infinity();
 	inline constexpr float  finf = std::numeric_limits<float >::infinity();
 	inline constexpr float  inf  = finf;
-
+	inline constexpr float  inff = finf;
+	inline constexpr float  infd = dinf;
 	}

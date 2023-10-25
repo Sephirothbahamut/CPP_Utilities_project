@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "../compilation/CUDA.h"
+#include "../compilation/gpu.h"
 
 namespace utils::math
 	{
@@ -103,7 +103,7 @@ namespace utils::math
 		inline static constexpr const T full_value{FULL_VALUE};
 
 		template <concepts::type_based_numeric_range other>
-		utils_cuda_available
+		utils_gpu_available
 		static other::value_type cast_to(value_type value) noexcept
 			{
 			if constexpr (std::same_as<value_type, typename other::value_type>)

@@ -2,12 +2,12 @@
 
 #include "../memory.h"
 #include "vec2.h"
-#include "geometry/common/root.h"
+//#include "geometry/common/root.h"
 
 namespace utils::math
 	{
 	template <typename T = float>
-	struct rect : geometry::shape_base<rect<T>>
+	struct rect //: geometry::shape_base<rect<T>>
 		{
 		using value_type = T;
 		using nonref_value_type = utils::remove_cvref_t<value_type>;
@@ -428,49 +428,49 @@ namespace utils::math
 #pragma endregion Properties
 		
 
-		using geometry::shape_base<rect<T>>::closest_point_and_distance;
-		using geometry::shape_base<rect<T>>::closest_point_to;
-		using geometry::shape_base<rect<T>>::distance_min;
-		using geometry::shape_base<rect<T>>::vector_to;
-		using geometry::shape_base<rect<T>>::intersects;
-		using geometry::shape_base<rect<T>>::intersection;
-		using geometry::shape_base<rect<T>>::contains;
-		using geometry::shape_base<rect<T>>::collides_with;
-		
-		vec2f closest_point_to(const geometry::point& other) const noexcept;
-		float                distance_min    (const geometry::point& b) const noexcept;
-		bool                 intersects      (const geometry::point& other) const noexcept;
-		std::optional<vec2f> intersection    (const geometry::point& other) const noexcept;
-		//bool                 contains        (const geometry::point& other) const noexcept;
-
-		geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::segment& other) const noexcept;
-		bool                 intersects      (const geometry::segment& other) const noexcept;
-		std::optional<vec2f> intersection    (const geometry::segment& other) const noexcept;
-		bool                 contains        (const geometry::segment& other) const noexcept;
-
-		geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::aabb& other) const noexcept;
-		bool                 intersects      (const geometry::aabb& other) const noexcept;
-		std::optional<vec2f> intersection    (const geometry::aabb& other) const noexcept;
-		bool                 contains        (const geometry::aabb& other) const noexcept;
-
-		geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::polygon& other) const noexcept;
-		bool                 intersects      (const geometry::polygon& other) const noexcept;
-		std::optional<vec2f> intersection    (const geometry::polygon& other) const noexcept;
-		bool                 contains        (const geometry::polygon& other) const noexcept;
-
-		geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::circle& other) const noexcept;
-		bool                 intersects      (const geometry::circle& other) const noexcept;
-		std::optional<vec2f> intersection    (const geometry::circle& other) const noexcept;
-		bool                 contains        (const geometry::circle& other) const noexcept;
-
-		auto get_edges()       noexcept;
-		auto get_edges() const noexcept;
-		
-		rect<T>& scale_self    (const float      & scaling    ) noexcept;
-		rect<T>& rotate_self   (const angle::radf& rotation   ) noexcept;
-		rect<T>& translate_self(const vec2f      & translation) noexcept;
-
-		rect<T> bounding_box() const noexcept { return *this; }
+		//using geometry::shape_base<rect<T>>::closest_point_and_distance;
+		//using geometry::shape_base<rect<T>>::closest_point_to;
+		//using geometry::shape_base<rect<T>>::distance_min;
+		//using geometry::shape_base<rect<T>>::vector_to;
+		//using geometry::shape_base<rect<T>>::intersects;
+		//using geometry::shape_base<rect<T>>::intersection;
+		//using geometry::shape_base<rect<T>>::contains;
+		//using geometry::shape_base<rect<T>>::collides_with;
+		//
+		//vec2f closest_point_to(const geometry::point& other) const noexcept;
+		//float                distance_min    (const geometry::point& b) const noexcept;
+		//bool                 intersects      (const geometry::point& other) const noexcept;
+		//std::optional<vec2f> intersection    (const geometry::point& other) const noexcept;
+		////bool                 contains        (const geometry::point& other) const noexcept;
+		//
+		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::segment& other) const noexcept;
+		//bool                 intersects      (const geometry::segment& other) const noexcept;
+		//std::optional<vec2f> intersection    (const geometry::segment& other) const noexcept;
+		//bool                 contains        (const geometry::segment& other) const noexcept;
+		//
+		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::aabb& other) const noexcept;
+		//bool                 intersects      (const geometry::aabb& other) const noexcept;
+		//std::optional<vec2f> intersection    (const geometry::aabb& other) const noexcept;
+		//bool                 contains        (const geometry::aabb& other) const noexcept;
+		//
+		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::polygon& other) const noexcept;
+		//bool                 intersects      (const geometry::polygon& other) const noexcept;
+		//std::optional<vec2f> intersection    (const geometry::polygon& other) const noexcept;
+		//bool                 contains        (const geometry::polygon& other) const noexcept;
+		//
+		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::circle& other) const noexcept;
+		//bool                 intersects      (const geometry::circle& other) const noexcept;
+		//std::optional<vec2f> intersection    (const geometry::circle& other) const noexcept;
+		//bool                 contains        (const geometry::circle& other) const noexcept;
+		//
+		//auto get_edges()       noexcept;
+		//auto get_edges() const noexcept;
+		//
+		//rect<T>& scale_self    (const float      & scaling    ) noexcept;
+		//rect<T>& rotate_self   (const angle::radf& rotation   ) noexcept;
+		//rect<T>& translate_self(const vec2f      & translation) noexcept;
+		//
+		//rect<T> bounding_box() const noexcept { return *this; }
 
 		template <std::convertible_to<nonref_value_type> point_value_type>
 		bool contains(const vec2<point_value_type>& point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }

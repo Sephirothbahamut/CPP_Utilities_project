@@ -3,7 +3,7 @@
 #include <ranges>
 
 #include "math/vec2.h"
-#include "compilation/CUDA.h"
+#include "compilation/gpu.h"
 #include "compilation/debug.h"
 
 namespace utils
@@ -22,10 +22,10 @@ namespace utils
 				static constexpr math::vec2s static_width {static_sizes.x};
 				static constexpr math::vec2s static_height{static_sizes.y};
 
-				utils_cuda_available math::vec2s sizes () const noexcept { return static_sizes; }
-				utils_cuda_available size_t      size  () const noexcept { return static_size ; }
-				utils_cuda_available size_t      width () const noexcept { return static_sizes.x; }
-				utils_cuda_available size_t      height() const noexcept { return static_sizes.y; }
+				utils_gpu_available math::vec2s sizes () const noexcept { return static_sizes; }
+				utils_gpu_available size_t      size  () const noexcept { return static_size ; }
+				utils_gpu_available size_t      width () const noexcept { return static_sizes.x; }
+				utils_gpu_available size_t      height() const noexcept { return static_sizes.y; }
 
 			private:
 			};
@@ -36,16 +36,16 @@ namespace utils
 			public:
 				static constexpr matrix_memory memory_layout{MEMORY_LAYOUT};
 
-				utils_cuda_available matrix_root(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x * sizes.y} {}
+				utils_gpu_available matrix_root(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x * sizes.y} {}
 
-				utils_cuda_available math::vec2s sizes () const noexcept { return _sizes; }
-				utils_cuda_available size_t      size  () const noexcept { return _size ; }
-				utils_cuda_available size_t      width () const noexcept { return _sizes.x; }
-				utils_cuda_available size_t      height() const noexcept { return _sizes.y; }
+				utils_gpu_available math::vec2s sizes () const noexcept { return _sizes; }
+				utils_gpu_available size_t      size  () const noexcept { return _size ; }
+				utils_gpu_available size_t      width () const noexcept { return _sizes.x; }
+				utils_gpu_available size_t      height() const noexcept { return _sizes.y; }
 
 			private:
-				utils_cuda_available math::vec2s _sizes{};
-				utils_cuda_available size_t      _size {};
+				utils_gpu_available math::vec2s _sizes{};
+				utils_gpu_available size_t      _size {};
 			};
 		
 		template<typename DERIVED_T, typename CONTAINER_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
@@ -68,8 +68,8 @@ namespace utils
 
 			protected:
 
-				utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 			public:
 				using matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>::matrix_root;
@@ -79,47 +79,47 @@ namespace utils
 				using matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>::width ;
 				using matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>::height;
 
-				utils_cuda_available size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x, coords.y); }
-				utils_cuda_available size_t get_index(size_t x, size_t y) const noexcept
+				utils_gpu_available size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x, coords.y); }
+				utils_gpu_available size_t get_index(size_t x, size_t y) const noexcept
 					{
 					if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * sizes().x); }
 					else { return y + (x * sizes().y); }
 					}
-				utils_cuda_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % sizes().x; } else { return index / sizes().y; } }
-				utils_cuda_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x; } else { return index % sizes().y; } }
-				utils_cuda_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
+				utils_gpu_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % sizes().x; } else { return index / sizes().y; } }
+				utils_gpu_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x; } else { return index % sizes().y; } }
+				utils_gpu_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
 				
-				utils_cuda_available const_reference operator[](size_type   i     )  const noexcept { return derived().container[i]; }
-				utils_cuda_available       reference operator[](size_type   i     )        noexcept { return derived().container[i]; }
-				utils_cuda_available const_reference operator[](math::vec2s coords) const noexcept { return derived().container[get_index(coords.x, coords.y)];    }
-				utils_cuda_available       reference operator[](math::vec2s coords)       noexcept { return derived().container[get_index(coords.x, coords.y)];    }
-				utils_cuda_available const_reference at(size_type i             ) const { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-				utils_cuda_available       reference at(size_type i             )       { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-				utils_cuda_available const_reference at(size_type x, size_type y) const { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-				utils_cuda_available       reference at(size_type x, size_type y)       { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-				utils_cuda_available const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
-				utils_cuda_available       reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
+				utils_gpu_available const_reference operator[](size_type   i     )  const noexcept { return derived().container[i]; }
+				utils_gpu_available       reference operator[](size_type   i     )        noexcept { return derived().container[i]; }
+				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return derived().container[get_index(coords.x, coords.y)];    }
+				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return derived().container[get_index(coords.x, coords.y)];    }
+				utils_gpu_available const_reference at(size_type i             ) const { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+				utils_gpu_available       reference at(size_type i             )       { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+				utils_gpu_available const_reference at(size_type x, size_type y) const { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+				utils_gpu_available       reference at(size_type x, size_type y)       { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+				utils_gpu_available const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
+				utils_gpu_available       reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
 
-				utils_cuda_available bool is_valid_index(math::vec2s coords      ) const noexcept { return is_valid_index(coords.x, coords.y); }
-				utils_cuda_available bool is_valid_index(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
-				utils_cuda_available bool is_valid_index(size_type i             ) const noexcept { return i < size(); }
+				utils_gpu_available bool is_valid_index(math::vec2s coords      ) const noexcept { return is_valid_index(coords.x, coords.y); }
+				utils_gpu_available bool is_valid_index(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
+				utils_gpu_available bool is_valid_index(size_type i             ) const noexcept { return i < size(); }
 
-				utils_cuda_available const auto begin  () const noexcept { return derived().container.begin  (); }
-				utils_cuda_available       auto begin  ()       noexcept { return derived().container.begin  (); }
-				utils_cuda_available const auto end    () const noexcept { return derived().container.end    (); }
-				utils_cuda_available       auto end    ()       noexcept { return derived().container.end    (); }
-				utils_cuda_available const auto cbegin () const noexcept { return derived().container.cbegin (); }
-				utils_cuda_available       auto cbegin ()       noexcept { return derived().container.cbegin (); }
-				utils_cuda_available const auto cend   () const noexcept { return derived().container.cend   (); }
-				utils_cuda_available       auto cend   ()       noexcept { return derived().container.cend   (); }
-				utils_cuda_available const auto rbegin () const noexcept { return derived().container.rbegin (); }
-				utils_cuda_available       auto rbegin ()       noexcept { return derived().container.rbegin (); }
-				utils_cuda_available const auto rend   () const noexcept { return derived().container.rend   (); }
-				utils_cuda_available       auto rend   ()       noexcept { return derived().container.rend   (); }
-				utils_cuda_available const auto crbegin() const noexcept { return derived().container.crbegin(); }
-				utils_cuda_available       auto crbegin()       noexcept { return derived().container.crbegin(); }
-				utils_cuda_available const auto crend  () const noexcept { return derived().container.crend  (); }
-				utils_cuda_available       auto crend  ()       noexcept { return derived().container.crend  (); }
+				utils_gpu_available const auto begin  () const noexcept { return derived().container.begin  (); }
+				utils_gpu_available       auto begin  ()       noexcept { return derived().container.begin  (); }
+				utils_gpu_available const auto end    () const noexcept { return derived().container.end    (); }
+				utils_gpu_available       auto end    ()       noexcept { return derived().container.end    (); }
+				utils_gpu_available const auto cbegin () const noexcept { return derived().container.cbegin (); }
+				utils_gpu_available       auto cbegin ()       noexcept { return derived().container.cbegin (); }
+				utils_gpu_available const auto cend   () const noexcept { return derived().container.cend   (); }
+				utils_gpu_available       auto cend   ()       noexcept { return derived().container.cend   (); }
+				utils_gpu_available const auto rbegin () const noexcept { return derived().container.rbegin (); }
+				utils_gpu_available       auto rbegin ()       noexcept { return derived().container.rbegin (); }
+				utils_gpu_available const auto rend   () const noexcept { return derived().container.rend   (); }
+				utils_gpu_available       auto rend   ()       noexcept { return derived().container.rend   (); }
+				utils_gpu_available const auto crbegin() const noexcept { return derived().container.crbegin(); }
+				utils_gpu_available       auto crbegin()       noexcept { return derived().container.crbegin(); }
+				utils_gpu_available const auto crend  () const noexcept { return derived().container.crend  (); }
+				utils_gpu_available       auto crend  ()       noexcept { return derived().container.crend  (); }
 			};
 		}
 
@@ -133,7 +133,7 @@ namespace utils
 		public:
 			using container_t = container_T;
 
-			utils_cuda_available matrix_wrapper(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
+			utils_gpu_available matrix_wrapper(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				base_t{},
 				container{container}
 				{
@@ -146,7 +146,7 @@ namespace utils
 					}
 				}
 
-			utils_cuda_available matrix_wrapper(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
+			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
 				container{container}
 				{

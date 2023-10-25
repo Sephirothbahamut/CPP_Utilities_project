@@ -77,6 +77,15 @@
     <Filter Include="Utils\input_system\device">
       <UniqueIdentifier>{56436e34-99b1-4792-a336-6dd2071c2473}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Beta\math">
+      <UniqueIdentifier>{c79bb76f-2ee9-4033-9511-b7f8cda2b0a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Beta\math\geometry">
+      <UniqueIdentifier>{61a82b1a-2df9-427f-b481-8ceab67a6374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Beta\math\geometry\interface">
+      <UniqueIdentifier>{84143c58-685c-4137-8648-6cb350209cbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -292,7 +301,7 @@
     <ClInclude Include="include\utils\oop\disable_move_copy.h">
       <Filter>Utils\oop</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\compilation\CUDA.h">
+    <ClInclude Include="include\utils\compilation\gpu.h">
       <Filter>Utils\compilation</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\details\vec\common.h">
@@ -426,6 +435,39 @@
     </ClInclude>
     <ClInclude Include="include\utils\hash.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\common.h">
+      <Filter>Beta\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\oop\crtp.h">
+      <Filter>Utils\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\bezier.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\capsule.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\circle.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\line.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\point.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\polyline.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\ray.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\segment.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\spline.h">
+      <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

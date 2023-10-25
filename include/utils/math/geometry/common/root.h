@@ -7,7 +7,7 @@
 #include <optional>
 
 #include "../../angle.h"
-#include "../../../compilation/CUDA.h"
+#include "../../../compilation/gpu.h"
 
 namespace utils::math
 	{
@@ -42,8 +42,8 @@ namespace utils::math::geometry
 			{
 			protected:
 				using derived_t = DERIVED_T;
-				utils_cuda_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_cuda_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 			};
 		}
 
