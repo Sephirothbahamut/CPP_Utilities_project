@@ -2,7 +2,6 @@
 
 #include "vec.h"
 #include "angle.h"
-//#include "geometry/common/root.h"
 
 namespace utils::math
 	{
@@ -46,24 +45,15 @@ namespace utils::math
 
 	namespace details
 		{
-		template<class T, typename DERIVED_T>
-		class vec_sized_specialization<T, 2, DERIVED_T> //: public geometry::shape_base<DERIVED_T>
+		template<class T, typename derived_T>
+		class utils_oop_empty_bases vec_sized_specialization<T, 2, derived_T>
 			{
-			public:
-				using derived_t = DERIVED_T;
-
 			private:
+				using derived_t = derived_T;
 				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
-				utils_gpu_available constexpr const auto     & get_arr() const noexcept { return derived().array; }
-				utils_gpu_available constexpr       auto     & get_arr()       noexcept { return derived().array; }
-
-				using arr_t = std::array<T, 2>;
+				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 			public:
-				inline static constexpr const size_t static_size{std::tuple_size_v<arr_t>};
-				using value_type = typename arr_t::value_type;
-
 				template<std::floating_point T, T f_a_v>
 				utils_gpu_available  static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
 					{
@@ -146,5 +136,3 @@ namespace utils::math
 			};
 		}
 	}
-
-#include "geometry/common/begin.h"

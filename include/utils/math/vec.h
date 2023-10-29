@@ -61,7 +61,7 @@ namespace utils::math
 		{
 		inline extern constexpr const char vec_name[]{"vec"};
 
-		template<class T, size_t size, typename DERIVED_T>
+		template<class T, size_t size, typename derived_T>
 		class vec_sized_specialization {};
 
 		#define utils_vec_hell_let_loose
@@ -173,26 +173,24 @@ namespace utils::math
 		}
 
 	template<typename T, size_t size>
-	class
-	#ifdef utils_compiler_msvc
-		//Other compilers make empty bases occupy 0, MSVC doesn't always do that without the following line:
-		__declspec(empty_bases)
-	#endif
-	vec:
+	class utils_oop_empty_bases vec:
 		public details::vec_named<T, size>,
-		public utils::details::vec::common<T, size, vec<T, size>, vec<utils::remove_cvref_t<T>, size>>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec<T, size>, vec<utils::remove_cvref_t<T>, size>>>,
+		public utils::details::vec::common<T, size, vec>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec>>,
 		public utils::details::vec::output<details::vec_name, vec<T, size>>,
 		public details::vec_sized_specialization<T, size, vec<T, size>>
 		{
-		public:
-			using derived_t = vec<T, size>;
-			using common_t = utils::details::vec::common<T, size, vec<T, size>, vec<utils::remove_cvref_t<T>, size>>;
+		template<class T, size_t size, typename derived_T>
+		friend class details::vec_sized_specialization;
+		
+		protected:
+			//using common_t = typename utils::details::vec::common<T, size, vec>;
+			//using self_t = vec<T, size>;
 
-		private:
-			using arr_t = std::array<T, size>;
-
 		public:
+			using common_t = typename utils::details::vec::common<T, size, vec>;
+			using self_t = vec<T, size>;
+
 			inline static constexpr const size_t static_size{size};
 			using value_type              = typename common_t::value_type            ;
 			using size_type               = typename common_t::size_type             ;
@@ -209,7 +207,7 @@ namespace utils::math
 			using nonref_value_type       = typename common_t::nonref_value_type     ;
 
 #pragma region constructors
-			using details::vec_sized_specialization<T, size, derived_t>::vec_sized_specialization;
+			using details::vec_sized_specialization<T, size, self_t>::vec_sized_specialization;
 			
 			utils_gpu_available constexpr vec() noexcept : vec{value_type{0}} {}
 
@@ -270,18 +268,18 @@ namespace utils::math
 			utils_gpu_available constexpr value_type get_length2() const noexcept { value_type ret{0}; for (const auto& element : this->array) { ret += element * element; } return ret; }
 			utils_gpu_available constexpr value_type get_length () const noexcept { return std::sqrt(get_length2()); }
 
-			utils_gpu_available constexpr derived_t& set_length    (value_type value) noexcept { *this = normalize() * value; return *this; }
+			utils_gpu_available constexpr self_t& set_length    (value_type value) noexcept { *this = normalize() * value; return *this; }
 
 			__declspec(property(get = get_length, put = set_length)) value_type length;
 
-			utils_gpu_available constexpr derived_t  normalize     () const noexcept { return get_length() ? *this / get_length() : *this; }
-			utils_gpu_available constexpr derived_t& normalize_self()       noexcept { return *this = normalize(); }
+			utils_gpu_available constexpr self_t  normalize     () const noexcept { return get_length() ? *this / get_length() : *this; }
+			utils_gpu_available constexpr self_t& normalize_self()       noexcept { return *this = normalize(); }
 
 
 #pragma region distances
 			/// <summary> Evaluate distance^2 in the size of this vec. Missing coordinates are considered 0. </summary>
-			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			utils_gpu_available static constexpr value_type distance2(const derived_t& a, const T2& b) noexcept
+			template <utils::details::vec::concepts::compatible_array<self_t> T2>
+			utils_gpu_available static constexpr value_type distance2(const self_t& a, const T2& b) noexcept
 				{
 				value_type ret{0};
 				size_t i{0};
@@ -298,8 +296,8 @@ namespace utils::math
 				}
 
 			/// <summary> Evaluate distance^2 in all the axes of the smaller vec. </summary>
-			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			utils_gpu_available static constexpr value_type distance2_shared(const derived_t& a, const T2& b) noexcept
+			template <utils::details::vec::concepts::compatible_array<self_t> T2>
+			utils_gpu_available static constexpr value_type distance2_shared(const self_t& a, const T2& b) noexcept
 				{
 				value_type ret{0};
 				size_t i{0};
@@ -313,8 +311,8 @@ namespace utils::math
 				}
 
 			/// <summary> Evaluate distance^2 in all the axes of the larger vec. Missing coordinates for the smaller one are considered 0. </summary>
-			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			utils_gpu_available static constexpr value_type distance2_complete(const derived_t& a, const T2& b) noexcept
+			template <utils::details::vec::concepts::compatible_array<self_t> T2>
+			utils_gpu_available static constexpr value_type distance2_complete(const self_t& a, const T2& b) noexcept
 				{
 				value_type ret{0};
 				size_t i{0};
@@ -324,70 +322,70 @@ namespace utils::math
 					ret += tmp * tmp;
 					}
 
-					    if constexpr (a.size() > b.size()) { for (; i < a.size(); i++) { ret += a[i] * a[i]; } }
+				     if constexpr (a.size() > b.size()) { for (; i < a.size(); i++) { ret += a[i] * a[i]; } }
 				else if constexpr (a.size() < b.size()) { for (; i < b.size(); i++) { ret += b[i] * b[i]; } }
 
 				return ret;
 				}
 			/// <summary> Evaluate distance in the size of this vec. Missing coordinates are considered 0. </summary>
-			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			utils_gpu_available static constexpr value_type distance(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance2(a, b)); }
+			template <utils::details::vec::concepts::compatible_array<self_t> T2>
+			utils_gpu_available static constexpr value_type distance(const self_t& a, const T2& b) noexcept { return std::sqrt(distance2(a, b)); }
 
 			/// <summary> Evaluate distance in all the axes of the smaller vec. </summary>
-			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			utils_gpu_available static constexpr value_type distance_shared(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance_shared2(a, b)); }
+			template <utils::details::vec::concepts::compatible_array<self_t> T2>
+			utils_gpu_available static constexpr value_type distance_shared(const self_t& a, const T2& b) noexcept { return std::sqrt(distance_shared2(a, b)); }
 
 			/// <summary> Evaluate distance in all the axes of the larger vec. Missing coordinates for the smaller one are considered 0. </summary>
-			template <utils::details::vec::concepts::compatible_array<derived_t> T2>
-			utils_gpu_available static constexpr value_type distance_complete(const derived_t& a, const T2& b) noexcept { return std::sqrt(distance_complete2(a, b)); }
+			template <utils::details::vec::concepts::compatible_array<self_t> T2>
+			utils_gpu_available static constexpr value_type distance_complete(const self_t& a, const T2& b) noexcept { return std::sqrt(distance_complete2(a, b)); }
 
 #pragma endregion distances
 #pragma region interpolation
 
-			utils_gpu_available static constexpr derived_t slerp_fast(const derived_t& a, const derived_t& b, value_type t) noexcept
+			utils_gpu_available static constexpr self_t slerp_fast(const self_t& a, const self_t& b, value_type t) noexcept
 				{
 				return utils::math::lerp(a, b, t).normalize() * (utils::math::lerp(a.get_length(), b.get_length(), t));
 				}
-			utils_gpu_available static constexpr derived_t tlerp_fast(const derived_t& a, const derived_t& b, value_type t) noexcept
+			utils_gpu_available static constexpr self_t tlerp_fast(const self_t& a, const self_t& b, value_type t) noexcept
 				{
 				return utils::math::lerp(a, b, t).normalize() * std::sqrt(utils::math::lerp(a.get_length2(), b.get_length2(), t));
 				}
-			utils_gpu_available static constexpr derived_t slerp(const derived_t& a, const derived_t& b, value_type t) noexcept //TODO test
+			utils_gpu_available static constexpr self_t slerp(const self_t& a, const self_t& b, value_type t) noexcept //TODO test
 				{
 				value_type dot = utils::math::clamp(vec::dot(a, b), -1.0f, 1.0f);
 				value_type theta = std::acos(dot) * t;
-				derived_t relative_vec = (b - a * dot).normalize();
+				self_t relative_vec = (b - a * dot).normalize();
 				return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 				}
 
 #pragma endregion interpolation
 #pragma region factories
-			utils_gpu_available static constexpr derived_t zero    () noexcept requires(static_size >= 1) { return {value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t zero    () noexcept requires(static_size >= 1) { return {value_type{ 0}}; }
 			
-			utils_gpu_available static constexpr derived_t rr      () noexcept requires(static_size == 1) { return {value_type{ 1}}; }
-			utils_gpu_available static constexpr derived_t ll      () noexcept requires(static_size == 1) { return {value_type{-1}}; }
-			utils_gpu_available static constexpr derived_t rr      () noexcept requires(static_size >  1) { return {value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr derived_t ll      () noexcept requires(static_size >  1) { return {value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr derived_t right   () noexcept requires(static_size >= 1) { return rr(); }
-			utils_gpu_available static constexpr derived_t left    () noexcept requires(static_size >= 1) { return ll(); }
+			utils_gpu_available static constexpr self_t rr      () noexcept requires(static_size == 1) { return {value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t ll      () noexcept requires(static_size == 1) { return {value_type{-1}}; }
+			utils_gpu_available static constexpr self_t rr      () noexcept requires(static_size >  1) { return {value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t ll      () noexcept requires(static_size >  1) { return {value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t right   () noexcept requires(static_size >= 1) { return rr(); }
+			utils_gpu_available static constexpr self_t left    () noexcept requires(static_size >= 1) { return ll(); }
 			
-			utils_gpu_available static constexpr derived_t up      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{-1}}; }
-			utils_gpu_available static constexpr derived_t dw      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{ 1}}; }
-			utils_gpu_available static constexpr derived_t up      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr derived_t dw      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr derived_t down    () noexcept requires(static_size >= 2) { return dw(); }
+			utils_gpu_available static constexpr self_t up      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{-1}}; }
+			utils_gpu_available static constexpr self_t dw      () noexcept requires(static_size == 2) { return {value_type{ 0}, value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t up      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t dw      () noexcept requires(static_size >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t down    () noexcept requires(static_size >= 2) { return dw(); }
 			
-			utils_gpu_available static constexpr derived_t fw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
-			utils_gpu_available static constexpr derived_t bw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
-			utils_gpu_available static constexpr derived_t fw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr derived_t bw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr derived_t forward () noexcept requires(static_size >= 3) { return fw(); }
-			utils_gpu_available static constexpr derived_t backward() noexcept requires(static_size >= 3) { return bw(); }
+			utils_gpu_available static constexpr self_t fw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t bw      () noexcept requires(static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
+			utils_gpu_available static constexpr self_t fw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t bw      () noexcept requires(static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t forward () noexcept requires(static_size >= 3) { return fw(); }
+			utils_gpu_available static constexpr self_t backward() noexcept requires(static_size >= 3) { return bw(); }
 
 #pragma region factories
 				
 			template <concepts::vec b_t>
-			utils_gpu_available static constexpr value_type dot(const derived_t& a, const b_t& b) noexcept
+			utils_gpu_available static constexpr value_type dot(const self_t& a, const b_t& b) noexcept
 				requires std::convertible_to<value_type, typename b_t::value_type>
 				{
 				value_type ret{0}; for (size_t i{0}; i < static_size; i++) 

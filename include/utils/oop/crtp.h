@@ -18,7 +18,7 @@ namespace utils::oop
 	class crtp
 		{
 		template <typename crtp_t>
-		friend class details::crtp_concept_friend;
+		friend struct details::crtp_concept_friend;
 		protected:
 			using derived_t = derived_T;
 			utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }

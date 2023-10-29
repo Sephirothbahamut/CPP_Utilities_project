@@ -1,4 +1,5 @@
-﻿#include <string>
+﻿
+#include <string>
 #include <iostream>
 
 #include "include/utils/memory.h"
@@ -62,6 +63,8 @@ struct child_type : angry_type
 
 int main()
 	{
+	using namespace utils::output;
+
 	utils::trackable_wrapper<child_type> child1{1};
 	utils::trackable_wrapper<angry_type> parent1{1, 2.f};
 	
@@ -150,7 +153,7 @@ int main()
 		}
 	catch (const std::exception& e)
 		{
-		std::cout << e.what();
+		std::cout << e.what() << std::endl;
 		}
 	
 	utils::containers::multihandled_default<angry_type>::handle_shared s{md.clone_default<utils::containers::object_pool_handle_version::shared>()};
@@ -163,7 +166,7 @@ int main()
 		}
 	catch (const std::exception& e)
 		{
-		std::cout << e.what();
+		std::cout << e.what() << std::endl;
 		}
 
 	utils::console::initializer console_initializer;

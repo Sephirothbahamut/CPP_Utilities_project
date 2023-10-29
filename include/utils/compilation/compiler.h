@@ -25,3 +25,11 @@ namespace utils::compilation
 		{compilers::unknown};
 #endif
 	}
+
+
+#ifdef utils_compiler_msvc
+	//Other compilers make empty bases occupy 0, MSVC doesn't always do that without the following line:
+	#define utils_oop_empty_bases __declspec(empty_bases)
+#elif
+	#define utils_oop_empty_bases
+#endif

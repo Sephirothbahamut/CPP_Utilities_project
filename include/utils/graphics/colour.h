@@ -11,7 +11,6 @@
 #include "../template_wrappers.h"
 
 #include "../details/vec/common.h"
-#include "../details/vec/output.h"
 #include "../details/vec/memberwise_operators.h"
 
 // color conversions from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
@@ -91,8 +90,8 @@ namespace utils::graphics::colour
 	#endif
 	rgb :
 		public details::rgb_named<T, HAS_ALPHA>,
-		public utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb<T, HAS_ALPHA>, rgb<utils::remove_cvref_t<T>, HAS_ALPHA>>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb<T, HAS_ALPHA>, rgb<utils::remove_cvref_t<T>, HAS_ALPHA>>>//,
+		public utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb>>//,
 		//public utils::details::vec::output<details::colour_name, rgb<T, HAS_ALPHA>>
 		{
 		public:
