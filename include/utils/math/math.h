@@ -9,26 +9,39 @@
 namespace utils::math
 	{
 	template <typename T>
-	inline bool will_overflow_mult(T a, T b)
+	utils_gpu_available constexpr T sign(T value) noexcept
+		{
+		return value < T{0} ? T{-1} : value > T{0} ? T{1} : T{0};
+		}
+
+	//TODO replace with std::abs when std::abs becomes constexpr conforming to C++23 standard
+	template <typename T>
+	utils_gpu_available constexpr T abs(T value) noexcept
+		{
+		return value < T{0} ? -value : value;
+		}
+
+	template <typename T>
+	utils_gpu_available constexpr bool will_overflow_mult(T a, T b) noexcept
 		{
 		T x = a * b;
 		return (a != 0 && x / a != b);
 		}
 
 	template <typename T, typename oth_t>
-	inline T lerp(T a, oth_t b, float t) { return (a * (1.f - t)) + (b * t); }
+	utils_gpu_available constexpr T lerp(T a, oth_t b, float t) noexcept { return (a * (1.f - t)) + (b * t); }
 
 	template <typename T>
-	inline T inverse_lerp(T a, T b, float t) { return (t - a) / (b - a); }
+	utils_gpu_available constexpr T inverse_lerp(T a, T b, float t) noexcept { return (t - a) / (b - a); }
 
 	template <typename T>
-	inline T map(T from_min, T from_max, T to_min, T to_max, T value)
+	utils_gpu_available constexpr T map(T from_min, T from_max, T to_min, T to_max, T value) noexcept
 		{
 		return lerp(to_min, to_max, inverse_lerp(from_min, from_max, value));
 		}
 
 	template <typename T, char iterations = 2>
-	inline T inv_sqrt(T x)
+	utils_gpu_available constexpr T inv_sqrt(T x) noexcept
 		{//https://stackoverflow.com/questions/11644441/fast-inverse-square-root-on-x64/11644533
 		static_assert(std::is_floating_point<T>::value, "T must be floating point");
 		static_assert(iterations == 1 || iterations == 2, "itarations must equal 1 or 2");
@@ -49,20 +62,20 @@ namespace utils::math
 	//inline void swap(T& a, T& b) { std::swap(a, b); }
 
 	template <std::integral T>
-	constexpr void swap(T& a, T& b) { a ^= b ^= a ^= b; }
+	utils_gpu_available constexpr void swap(T& a, T& b) noexcept { a ^= b ^= a ^= b; }
 
 	template <typename T>
-	constexpr T clamp(const T& in, const T& min, const T& max) { return std::clamp(in, min, max); }
+	utils_gpu_available constexpr T clamp(const T& in, const T& min, const T& max) noexcept { return std::clamp(in, min, max); }
 
 	template <typename ...Ts>
-	constexpr auto min(const Ts& ...values) { return std::min({values...}); }
+	utils_gpu_available constexpr auto min(const Ts& ...values) noexcept { return std::min({values...}); }
 
 	template <typename ...Ts>
-	constexpr auto max(const Ts& ...values) { return std::max({values...}); }
+	utils_gpu_available constexpr auto max(const Ts& ...values) noexcept { return std::max({values...}); }
 
 	template <std::integral to_t, typename from_t>
 	requires (std::integral<from_t> || std::floating_point<from_t>) 
-	to_t cast_clamp(from_t f)
+	utils_gpu_available constexpr to_t cast_clamp(from_t f) noexcept
 		{
 		if constexpr (std::numeric_limits<from_t>::max() > std::numeric_limits<to_t>::max())
 			{

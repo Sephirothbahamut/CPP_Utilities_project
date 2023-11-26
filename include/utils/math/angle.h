@@ -131,9 +131,13 @@ namespace utils::math::angle
 			template <T full_angle_value> constexpr base& operator-=(const base<T, full_angle_value> oth)       noexcept { return *this = *this - oth; }
 			template <T full_angle_value> constexpr bool  operator==(const base<T, full_angle_value> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
 			template <T full_angle_value> constexpr bool  operator!=(const base<T, full_angle_value> oth) const noexcept { return !(*this == oth); }
-
+			
+			constexpr base  operator+ (value_type oth) const noexcept { return { value + oth }; }
+			constexpr base  operator- (value_type oth) const noexcept { return { value - oth }; }
 			constexpr base  operator* (value_type oth) const noexcept { return { value * oth }; }
 			constexpr base  operator/ (value_type oth) const noexcept { return { value / oth }; }
+			constexpr base& operator+=(value_type oth)       noexcept { return *this = *this + oth; }
+			constexpr base& operator-=(value_type oth)       noexcept { return *this = *this - oth; }
 			constexpr base& operator*=(value_type oth)       noexcept { return *this = *this * oth; }
 			constexpr base& operator/=(value_type oth)       noexcept { return *this = *this / oth; }
 

@@ -69,7 +69,7 @@ namespace utils::math
 				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
 				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
 				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
-					{
+					{//TODO check correctness
 					derived().x = derived().x * angle.cos() - derived().y * angle.sin();
 					derived().y = derived().x * angle.sin() + derived().y * angle.cos();
 					return derived(); 

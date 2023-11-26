@@ -38,6 +38,11 @@
 #include "include/utils/name.h"
 
 #include "include/utils/tracking.h"
+#include "include/utils/containers/resource_manager.h"
+
+#include "include/utils/beta/math/geometry/interface/circle.h"
+#include "include/utils/beta/math/geometry/interface/segment.h"
+#include "include/utils/beta/math/geometry/interface/point.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -58,8 +63,6 @@ struct child_type : angry_type
 	child_type(int i) : angry_type{i, 0.f}, another_i{i * 2} {}
 	int another_i;
 	};
-
-#include "include/utils/containers/resource_manager.h"
 
 int main()
 	{
@@ -84,12 +87,6 @@ int main()
 	std::cout << child_tracker          ->another_i << std::endl;
 	std::cout << child_as_parent_tracker->        i << std::endl;
 	std::cout <<          parent_tracker->        i << std::endl;
-
-
-
-
-
-
 
 	enum class example_enum
 		{

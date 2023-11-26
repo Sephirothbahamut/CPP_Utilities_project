@@ -26,25 +26,31 @@ namespace utils::graphics::colour
 		yellow, cyan , magenta, 
 		};
 
-	template <typename T, bool has_alpha>
-	class rgb;
+	namespace details
+		{
+		template <typename T, size_t size>
+		class rgb;
+		}
 
-	using rgb_f  = rgb<float  , false>;
-	using rgb_d  = rgb<double , false>;
-	using rgb_u  = rgb<uint8_t, false>;
-	//using rgb  = rgb<float, 3>; //default 
-	using rgba_f = rgb<float  , true>;
-	using rgba_d = rgb<double , true>;
-	using rgba_u = rgb<uint8_t, true>;
-	using rgba   = rgb<float  , true>;
+	using rgb_f  = details::rgb<float  , 3>;
+	using rgb_d  = details::rgb<double , 3>;
+	using rgb_u  = details::rgb<uint8_t, 3>;
+	//using rgb    = details::rgb<float  , 3>;
+	using rgba_f = details::rgb<float  , 4>;
+	using rgba_d = details::rgb<double , 4>;
+	using rgba_u = details::rgb<uint8_t, 4>;
+	using rgba   = details::rgb<float  , 4>;
 
 	template <std::floating_point T, bool has_alpha>
 	struct hsv;
 
+	using hsv_f  = hsv<float, false>;
+	using hsva_f = hsv<float, true >;
+
 	namespace concepts
 		{
 		template <typename T, bool has_alpha = false>
-		concept rgb = std::same_as<T, colour::rgb<typename T::value_type, has_alpha>>;
+		concept rgb = std::same_as<T, colour::details::rgb<typename T::value_type, has_alpha ? 4 : 3>>;
 
 		template <typename T>
 		concept rgba = rgb<T, true>;
@@ -80,114 +86,119 @@ namespace utils::graphics::colour
 			template<typename T> struct rgb_named<T, true > { union { std::array<T, 4> array; struct { T r, g, b, a; }; }; };
 		utils_disable_warnings_end
 		#endif
+
+			
+		template<typename T, size_t size>
+		class
+		#ifdef utils_compiler_msvc
+				//Other compilers make empty bases occupy 0, MSVC doesn't always do that without the following line:
+				__declspec(empty_bases)
+		#endif
+		rgb :
+			public details::rgb_named<T, size == 4>,
+			public utils::details::vec::common<T, size, rgb>,
+			public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, rgb>>//,
+			//public utils::details::vec::output<details::colour_name, rgb<T, HAS_ALPHA>>
+			{
+			public:
+				inline static constexpr const size_t static_size{size};
+				inline static constexpr const bool has_alpha = static_size == 4;
+
+				using range = utils::math::type_based_numeric_range<T>;
+
+			private:
+				using arr_t = std::array<T, static_size>;
+
+			public:
+				using value_type = typename arr_t::value_type;
+
+	#pragma region constructors
+				constexpr rgb(base base, T components_multiplier = range::full_value, T alpha = range::full_value)
+					{
+					this->r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta);
+					this->g = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan);
+					this->b = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan);
+					if constexpr (has_alpha) { this->a = alpha; }
+					}
+
+				constexpr rgb() noexcept requires(!has_alpha) : details::rgb_named<T, has_alpha>{.r{0}, .g{0}, .b{0}       } {}
+				constexpr rgb() noexcept requires( has_alpha) : details::rgb_named<T, has_alpha>{.r{0}, .g{0}, .b{0}, .a{1}} {}
+
+				template <std::convertible_to<value_type>... Args>
+					requires(sizeof...(Args) == 4 && has_alpha)
+				constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
+			
+				template <std::convertible_to<value_type>... Args>
+					requires(sizeof...(Args) == 3 && has_alpha)
+				constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)..., range::full_value}} {}
+
+				template <std::convertible_to<value_type>... Args>
+					requires(sizeof...(Args) == 3 && !has_alpha)
+				constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
+
+				constexpr rgb(const value_type& value, const value_type& alpha = range::full_value)
+					requires(static_size == 4)
+					{
+					for (size_t i{0}; i < 4; i++)
+						{
+						this->array[i] = value;
+						}
+					this->array[3] = alpha;
+					}
+				constexpr rgb(const value_type& value)
+					requires(static_size <= 3)
+					{
+					for (size_t i{0}; i < static_size; i++)
+						{
+						this->array[i] = value;
+						}
+					}
+
+				template <concepts::rgb other_t>
+				constexpr rgb(const other_t& other)
+					{
+					for (size_t i{0}; i < 3; i++)
+						{
+						this->array[i] = other_t::range::template cast_to<range>(other[i]);
+						}
+					if constexpr (has_alpha)
+						{
+						if constexpr (other_t::has_alpha) { this->a = other.a; }
+						else { this->a = range::full_value; }
+						}
+					}
+				template <concepts::rgb other_t>
+				constexpr rgb(const other_t& other, T alpha)
+					requires(has_alpha)
+					{
+					for (size_t i{0}; i < 3; i++)
+						{
+						this->array[i] = other_t::range::template cast_to<range>(other[i]);
+						}
+					this->a = alpha;
+					}
+	#pragma endregion constructors
+				
+				rgb<T, true> blend(const rgb<T, true>& foreground) noexcept
+					requires(has_alpha)
+					{
+					rgb<T, true> ret;
+					ret.a = 1.f - (1.f - foreground.a) * (1.f - this->a);
+					if (ret.a < 1.0e-6f) { return ret; } // Fully transparent -- r,g,b not important
+					ret.r = foreground.r * foreground.a / ret.a + this->r * this->a * (1.f - foreground.a) / ret.a;
+					ret.g = foreground.g * foreground.a / ret.a + this->g * this->a * (1.f - foreground.a) / ret.a;
+					ret.b = foreground.b * foreground.a / ret.a + this->b * this->a * (1.f - foreground.a) / ret.a;
+					return ret;
+					}
+
+				using hsv_cast_t = colour::hsv<std::conditional_t<std::floating_point<T>, T, float>, has_alpha>;
+				hsv_cast_t hsv() const noexcept;
+			};
 		}
 
-	template<typename T, bool HAS_ALPHA = false>
-	class
-	#ifdef utils_compiler_msvc
-			//Other compilers make empty bases occupy 0, MSVC doesn't always do that without the following line:
-			__declspec(empty_bases)
-	#endif
-	rgb :
-		public details::rgb_named<T, HAS_ALPHA>,
-		public utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, HAS_ALPHA ? 4 : 3, rgb>>//,
-		//public utils::details::vec::output<details::colour_name, rgb<T, HAS_ALPHA>>
-		{
-		public:
-			inline static constexpr const size_t static_size{HAS_ALPHA ? 4 : 3};
-			using derived_t = rgb<T, HAS_ALPHA>;
+	template <typename T, bool has_alpha>
+	using rgb = details::rgb<T, has_alpha ? 4 : 3>;
 
-			inline static constexpr const bool has_alpha = HAS_ALPHA;
-			using range = utils::math::type_based_numeric_range<T>;
-
-		private:
-			using arr_t = std::array<T, static_size>;
-
-		public:
-			using value_type = typename arr_t::value_type;
-
-#pragma region constructors
-			constexpr rgb(base base, T components_multiplier = range::full_value, T alpha = range::full_value)
-				{
-				this->r = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta);
-				this->g = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan);
-				this->b = components_multiplier * (base == base::white || base == base::blue  || base == base::magenta || base == base::cyan);
-				if constexpr (has_alpha) { this->a = alpha; }
-				}
-
-			constexpr rgb() noexcept requires(!has_alpha) : details::rgb_named<T, has_alpha>{.r{0}, .g{0}, .b{0}       } {}
-			constexpr rgb() noexcept requires( has_alpha) : details::rgb_named<T, has_alpha>{.r{0}, .g{0}, .b{0}, .a{1}} {}
-
-			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) == 4 && has_alpha)
-			constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
-			
-			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) == 3 && has_alpha)
-			constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)..., range::full_value}} {}
-
-			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) == 3 && !has_alpha)
-			constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
-
-			constexpr rgb(const value_type& value, const value_type& alpha = range::full_value)
-				requires(static_size == 4)
-				{
-				for (size_t i{0}; i < 4; i++)
-					{
-					this->array[i] = value;
-					}
-				this->array[3] = alpha;
-				}
-			constexpr rgb(const value_type& value)
-				requires(static_size <= 3)
-				{
-				for (size_t i{0}; i < static_size; i++)
-					{
-					this->array[i] = value;
-					}
-				}
-
-			template <concepts::rgb other_t>
-			constexpr rgb(const other_t& other)
-				{
-				for (size_t i{0}; i < 3; i++)
-					{
-					this->array[i] = other_t::range::template cast_to<range>(other[i]);
-					}
-				if constexpr (has_alpha)
-					{
-					if constexpr (other_t::has_alpha) { this->a = other.a; }
-					else { this->a = range::full_value; }
-					}
-				}
-			template <concepts::rgb other_t>
-			constexpr rgb(const other_t& other, T alpha)
-				requires(has_alpha)
-				{
-				for (size_t i{0}; i < 3; i++)
-					{
-					this->array[i] = other_t::range::template cast_to<range>(other[i]);
-					}
-				this->a = alpha;
-				}
-#pragma endregion constructors
-				
-			rgb<T, true> blend(const rgb<T, true>& foreground) noexcept
-				requires(has_alpha)
-				{
-				rgb<T, true> ret;
-				ret.a = 1.f - (1.f - foreground.a) * (1.f - this->a);
-				if (ret.a < 1.0e-6f) { return ret; } // Fully transparent -- r,g,b not important
-				ret.r = foreground.r * foreground.a / ret.a + this->r * this->a * (1.f - foreground.a) / ret.a;
-				ret.g = foreground.g * foreground.a / ret.a + this->g * this->a * (1.f - foreground.a) / ret.a;
-				ret.b = foreground.b * foreground.a / ret.a + this->b * this->a * (1.f - foreground.a) / ret.a;
-				return ret;
-				}
-
-			colour::hsv<std::conditional_t<std::floating_point<T>, T, float>, HAS_ALPHA> hsv() const noexcept;
-		};
 
 	template <std::floating_point T, bool HAS_ALPHA>
 	struct hsv : std::conditional_t<HAS_ALPHA, details::alpha_field<T>, details::empty>
@@ -199,25 +210,30 @@ namespace utils::graphics::colour
 
 		inline static constexpr hsv from(base base, T components_multiplier = max_value, T alpha = max_value)
 			{
-			utils::math::angle::degf angle;
-			using namespace utils::math::angle::literals;
-			switch (base)
-				{
-				case base::black  : angle =   0_deg; break;
-				case base::white  : angle =   0_deg; break;
-				case base::red    : angle =   0_deg; break;
-				case base::green  : angle = 120_deg; break;
-				case base::blue   : angle = 240_deg; break;
-				case base::yellow : angle =  60_deg; break;
-				case base::cyan   : angle = 180_deg; break;
-				case base::magenta: angle = 300_deg; break;
-				}
-			
 			hsv ret;
-			ret.h = {angle};
 
-			ret.s = max_value; //TODO make correct calculation
-			ret.v = max_value; //TODO make correct calculation
+			if (base != base::black && components_multiplier != T{0.f}) 
+				{
+				utils::math::angle::degf angle;
+				using namespace utils::math::angle::literals;
+				switch (base)
+					{
+					case base::black  : angle =   0_deg; break;
+					case base::white  : angle =   0_deg; break;
+					case base::red    : angle =   0_deg; break;
+					case base::green  : angle = 120_deg; break;
+					case base::blue   : angle = 240_deg; break;
+					case base::yellow : angle =  60_deg; break;
+					case base::cyan   : angle = 180_deg; break;
+					case base::magenta: angle = 300_deg; break;
+					}
+			
+				ret.h = {angle};
+
+				ret.s = max_value; //TODO make correct calculation
+				ret.v = max_value; //TODO make correct calculation
+				}
+			else { ret.h = T{0.f}; ret.s = T{0.f}; ret.v = T{0.f}; }
 			if constexpr (has_alpha) { ret.details::alpha_field<T>::a = alpha; }
 			return ret;
 			}
@@ -228,12 +244,13 @@ namespace utils::graphics::colour
 		T v;
 #pragma endregion fields
 
-		rgb<T, HAS_ALPHA> rgb() const noexcept;
+		using rgb_cast_t = rgb<T, has_alpha>;
+		rgb_cast_t rgb() const noexcept;
 		};
 
-
-	template<typename T, bool HAS_ALPHA>
-	hsv<std::conditional_t<std::floating_point<T>, T, float>, HAS_ALPHA> rgb<T, HAS_ALPHA>::hsv() const noexcept
+	
+	template<typename T, size_t size>
+	details::rgb<T, size>::hsv_cast_t details::rgb<T, size>::hsv() const noexcept
 		{//https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
 		using floating_t = std::conditional_t<std::floating_point<T>, T, float>;
 		using hsv_t = colour::hsv<floating_t, has_alpha>;
@@ -295,7 +312,7 @@ namespace utils::graphics::colour
 		}
 
 	template <std::floating_point T, bool has_alpha>
-	rgb<T, has_alpha> hsv<T, has_alpha>::rgb() const noexcept
+	hsv<T, has_alpha>::rgb_cast_t hsv<T, has_alpha>::rgb() const noexcept
 		{
 		if (s == 0)
 			{

@@ -86,6 +86,9 @@
     <Filter Include="Beta\math\geometry\interface">
       <UniqueIdentifier>{84143c58-685c-4137-8648-6cb350209cbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Beta\math\geometry\details">
+      <UniqueIdentifier>{7d89a83c-0814-47c5-8be3-e8a9d9df42ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -468,6 +471,12 @@
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interface\spline.h">
       <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\details\ab_types.h">
+      <Filter>Beta\math\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\details\points_types.h">
+      <Filter>Beta\math\geometry\details</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

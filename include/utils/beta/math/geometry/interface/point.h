@@ -8,49 +8,31 @@ namespace utils::math::geometry::shape::interface
 	struct point : details::base<derived_t>
 		{
 		using crtp = details::base<derived_t>::crtp;
-		utils_gpu_available constexpr const vec2f& value() const noexcept { crtp::unimplemented_interface(); return {}; }
-
-		//common
-		utils_gpu_available constexpr vec2f                     closest_point_to       (const concepts::any auto& other) noexcept { return value(); };
-		utils_gpu_available constexpr vec2f                     vector_to              (const concepts::any auto& other) noexcept { return other.closest_point_to(crtp::derived()) - crtp::derived().value(); };
-		utils_gpu_available constexpr bool                      intersects             (const concepts::any auto& other) noexcept { return crtp::derived().side_of(other) == side::coincident(); };
-
-		//point
-		float distance(const oop::concepts::derived_from_crtp<point> auto& other) noexcept { return (other.vec2f() - derived().vec2f()).magnitude(); };
 		
-		utils_gpu_available constexpr float                     distance_to            (const concepts::point   auto& other) noexcept { return crtp::derived().vector_to(other).length(); };
-		utils_gpu_available constexpr bool                      contains               (const concepts::point   auto& other) noexcept { return crtp::derived().intersects(other); };
-		utils_gpu_available constexpr bool                      collides_with          (const concepts::point   auto& other) noexcept { return crtp::derived().value() == other.value(); };
+		#pragma region common
+			utils_gpu_available constexpr geometry::side            side                (const concepts::any auto& other) const noexcept { return side::out(); }
+			utils_gpu_available constexpr vec2f                     closest_point       (const concepts::any auto& other) const noexcept { return crtp::derived(); }
+			utils_gpu_available constexpr vec2f                     vectorto            (const concepts::any auto& other) const noexcept { return other.closest_point(crtp::derived()) - crtp::derived(); }
+			utils_gpu_available constexpr bool                      intersects          (const concepts::any auto& other) const noexcept { return crtp::derived().distance(other) == 0.f; }
+			utils_gpu_available constexpr bool                      contains            (const concepts::any auto& other) const noexcept { return false; }
+			utils_gpu_available constexpr distance_signed           distance_signed     (const concepts::any auto& other) const noexcept { return crtp::derived().distance(other); }
+		#pragma endregion common
 
-		//segment
-		utils_gpu_available constexpr side                      side_of                (const concepts::segment auto& other) noexcept { return crtp::derived().signed_distance_to(other).side    (); };
-		utils_gpu_available constexpr float                     distance_to            (const concepts::segment auto& other) noexcept { return crtp::derived().signed_distance_to(other).distance(); };
-		utils_gpu_available constexpr signed_distance           signed_distance_to     (const concepts::segment auto& other) noexcept { return {crtp::derived().distance_to(other) * crtp::derived().side_of(other)}; };
-		utils_gpu_available constexpr vec2f                     closest_point_to       (const concepts::segment auto& other) noexcept { return crtp::derived().closest_and_distance(other).closest ; };
-		utils_gpu_available constexpr closest_point_distance_t  closest_and_distance_to(const concepts::segment auto& other) noexcept { return {crtp::derived().closest_point_to(other), crtp::derived().signed_distance(other)}; };
-		utils_gpu_available constexpr closest_points_distance_t closest_pair           (const concepts::segment auto& other) noexcept { return {crtp::derived().closest_point_to(other), other.closest_point_to(crtp::derived()), crtp::derived().signed_distance(other)}; };
-		utils_gpu_available constexpr vec2f                     vector_to              (const concepts::segment auto& other) noexcept { return other.closest_point_to(crtp::derived()) - crtp::derived().closest_point_to(other); };
-		utils_gpu_available constexpr bool                      intersects             (const concepts::segment auto& other) noexcept { return crtp::derived().intersection(other).has_value(); };
-		utils_gpu_available constexpr std::optional<vec2f>      intersection           (const concepts::segment auto& other) noexcept { return crtp::derived().intersects(other) ? crtp::derived().closest_point_to(other) : std::nullopt; };
-		utils_gpu_available constexpr bool                      contains               (const concepts::segment auto& other) noexcept { return other.distance_signed(crtp::derived()) <= 0; };
-		utils_gpu_available constexpr bool                      collides_with          (const concepts::segment auto& other) noexcept { return crtp::derived().intersects(other) || crtp::derived().contains(other); };
+		#pragma region point
+			float distance(const oop::concepts::derived_from_crtp<point> auto& other) const noexcept { return (other.vec2f() - crtp::derived().vec2f()).magnitude(); }
+		
+			utils_gpu_available constexpr float                     distance            (const concepts::point   auto& other) const noexcept { return crtp::derived().vector_to(other).length(); }
+			utils_gpu_available constexpr bool                      collides_with       (const concepts::point   auto& other) const noexcept { return crtp::derived().vec == other.vec; }
+		#pragma endregion point
 		};
 	}
 
-namespace utils::beta::math::geometry::shape
+namespace utils::math::geometry::shape
 	{
-	struct point : utils::math::geometry::shape::interface::point<point>
-		{
-		::utils::math::vec2f vec;
-		utils_gpu_available constexpr const auto value() const noexcept { return vec; }
-		};
+	struct point : utils::math::geometry::shape::interface::point<point>, ::utils::math::vec2f {};
 
 	namespace view
 		{
-		struct point : utils::math::geometry::shape::interface::point<point>
-			{
-			::utils::math::vecref2f vec;
-			utils_gpu_available constexpr const auto& value() const noexcept { return vec; }
-			};
+		struct point : utils::math::geometry::shape::interface::point<point>, ::utils::math::vecref2f {};
 		}
 	}
