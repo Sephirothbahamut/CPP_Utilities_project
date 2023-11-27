@@ -214,7 +214,7 @@ namespace utils::graphics::colour
 
 			if (base != base::black && components_multiplier != T{0.f}) 
 				{
-				utils::math::angle::degf angle;
+				utils::math::angle::degf angle{0.f};
 				using namespace utils::math::angle::literals;
 				switch (base)
 					{

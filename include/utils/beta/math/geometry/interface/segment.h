@@ -18,7 +18,7 @@ namespace utils::math::geometry::shape::interface
 				const utils::math::vec2f b_a{b()   - a()};
 				const utils::math::vec2f p_a{other - a()};
 				float h{utils::math::vec2f::dot(p_a, b_a) / utils::math::vec2f::dot(b_a, b_a)};
-				return (p_a - (b_a * h));
+				return (p_a - (b_a * h)).length;
 				}
 			utils_gpu_available constexpr distance_signed distance_signed(const concepts::point auto& other) const noexcept { return default_distance_signed(other); }
 			

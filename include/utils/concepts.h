@@ -26,13 +26,13 @@ namespace utils::concepts
 	concept any_of_undecorated = (same_as_undecorated<T, U> || ...);
 
 	template <typename T>
-	concept trivially_copyable      = requires(T) { std::is_trivially_copyable_v     <T>; };
+	concept trivially_copyable      = requires(T t) { std::is_trivially_copyable_v     <T>; };
 
 	template <typename T>
-	concept trivially_constructible = requires(T) { std::is_trivially_constructible_v<T>; };
+	concept trivially_constructible = requires(T t) { std::is_trivially_constructible_v<T>; };
 
 	template <typename T>
-	concept default_constructible   = requires(T) { std::is_default_constructible_v  <T>; };
+	concept default_constructible   = requires(T t) { std::is_default_constructible_v  <T>; };
 
 	template <typename T>
 	concept iterable_non_const = requires(T t)

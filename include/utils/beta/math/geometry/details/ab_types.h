@@ -46,7 +46,7 @@ namespace utils::math::geometry::shape::details
 				//previous version, mathematically equivalent I think maybe perhaps, idk, i'm not into maths
 				//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-a-point-and-a-line-segment-in-c/
 				const vec2f delta{b() - a()};
-				return ((point.x - a.x) * delta.x + (point.y - a.y) * delta.y) / (delta.x * delta.x + delta.y * delta.y);
+				return ((other.x - a().x) * delta.x + (other.y - a().y) * delta.y) / (delta.x * delta.x + delta.y * delta.y);
 				}
 
 			template <bool clamp_a, bool clamp_b>
@@ -56,7 +56,7 @@ namespace utils::math::geometry::shape::details
 				const float t{projected_percent(other)};
 				if constexpr (clamp_a) { if (t < 0.f) { return a(); } }
 				if constexpr (clamp_b) { if (t > 1.f) { return b(); } }
-				return {a.x + t * delta.x, a.y + t * delta.y};
+				return {a().x + t * delta.x, a().y + t * delta.y};
 				}
 
 			#pragma region point

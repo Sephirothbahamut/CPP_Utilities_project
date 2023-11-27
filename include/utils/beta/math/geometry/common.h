@@ -21,9 +21,8 @@ namespace utils::math::geometry
 
 	class side
 		{
-		friend class geometry::side;
 		public:
-			utils_gpu_available constexpr side() = default;
+			constexpr side() = default; // No need to specify utils_gpu_available for defaults
 			utils_gpu_available constexpr side(float value) : _value{value < math::constants::epsilonf ? -1.f : value > math::constants::epsilonf ? 1.f : 0.f }  {}
 
 			utils_gpu_available static consteval side left      () noexcept { return {-1.f}; }
