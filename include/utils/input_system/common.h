@@ -338,7 +338,7 @@ namespace utils::input_system
 		template <typename T>
 		class mapped : public details::base<input_system::state<T>, details::mapped_root>, public input_system::details::node
 			{
-			friend class input::details::base<T>;
+			friend struct input::details::base<T>;
 			using base = details::base<input_system::state<T>, details::mapped_root>;
 			public:
 				using state_type         = typename base::state_type;

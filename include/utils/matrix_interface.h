@@ -19,11 +19,11 @@ namespace utils
 				static constexpr matrix_memory memory_layout{MEMORY_LAYOUT};
 				static constexpr math::vec2s static_sizes {WIDTH, HEIGHT};
 				static constexpr size_t      static_size  {static_sizes.x * static_sizes.y};
-				static constexpr math::vec2s static_width {static_sizes.x};
-				static constexpr math::vec2s static_height{static_sizes.y};
+				static constexpr size_t      static_width {static_sizes.x};
+				static constexpr size_t      static_height{static_sizes.y};
 
-				utils_gpu_available math::vec2s sizes () const noexcept { return static_sizes; }
-				utils_gpu_available size_t      size  () const noexcept { return static_size ; }
+				utils_gpu_available math::vec2s sizes () const noexcept { return static_sizes  ; }
+				utils_gpu_available size_t      size  () const noexcept { return static_size   ; }
 				utils_gpu_available size_t      width () const noexcept { return static_sizes.x; }
 				utils_gpu_available size_t      height() const noexcept { return static_sizes.y; }
 
@@ -44,8 +44,8 @@ namespace utils
 				utils_gpu_available size_t      height() const noexcept { return _sizes.y; }
 
 			private:
-				utils_gpu_available math::vec2s _sizes{};
-				utils_gpu_available size_t      _size {};
+				math::vec2s _sizes{};
+				size_t      _size {};
 			};
 		
 		template<typename DERIVED_T, typename CONTAINER_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
@@ -55,6 +55,7 @@ namespace utils
 				using derived_t = DERIVED_T;
 
 				using container_t            = CONTAINER_T;
+
 				using value_type             = container_t::value_type;
 				using size_type              = container_t::size_type;
 				using reference              = container_t::reference;
@@ -62,9 +63,9 @@ namespace utils
 				using pointer                = container_t::pointer;
 				using const_pointer          = container_t::const_pointer;
 				using iterator               = container_t::iterator;
-				using const_iterator         = container_t::const_iterator;
+				//using const_iterator         = container_t::const_iterator;
 				using reverse_iterator       = container_t::reverse_iterator;
-				using const_reverse_iterator = container_t::const_reverse_iterator;
+				//using const_reverse_iterator = container_t::const_reverse_iterator;
 
 			protected:
 
@@ -89,16 +90,16 @@ namespace utils
 				utils_gpu_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x; } else { return index % sizes().y; } }
 				utils_gpu_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
 				
-				utils_gpu_available const_reference operator[](size_type   i     )  const noexcept { return derived().container[i]; }
-				utils_gpu_available       reference operator[](size_type   i     )        noexcept { return derived().container[i]; }
+				utils_gpu_available const_reference operator[](size_type   i     ) const noexcept { return derived().container[i]; }
+				utils_gpu_available       reference operator[](size_type   i     )       noexcept { return derived().container[i]; }
 				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return derived().container[get_index(coords.x, coords.y)];    }
 				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return derived().container[get_index(coords.x, coords.y)];    }
-				utils_gpu_available const_reference at(size_type i             ) const { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-				utils_gpu_available       reference at(size_type i             )       { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-				utils_gpu_available const_reference at(size_type x, size_type y) const { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-				utils_gpu_available       reference at(size_type x, size_type y)       { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-				utils_gpu_available const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
-				utils_gpu_available       reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
+				                    const_reference at(size_type i             ) const { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+				                          reference at(size_type i             )       { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+				                    const_reference at(size_type x, size_type y) const { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+				                          reference at(size_type x, size_type y)       { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+				                    const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
+				                          reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
 
 				utils_gpu_available bool is_valid_index(math::vec2s coords      ) const noexcept { return is_valid_index(coords.x, coords.y); }
 				utils_gpu_available bool is_valid_index(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
@@ -137,30 +138,70 @@ namespace utils
 				base_t{},
 				container{container}
 				{
-				if constexpr (utils::compilation::debug)
-					{
-					if (container.size() != base_t::size())
-						{
-						throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
-						}
-					}
+				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
+				//	{
+				//	if (container.size() != base_t::size())
+				//		{
+				//		throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
+				//		}
+				//	}
 				}
 
 			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
 				container{container}
 				{
-				if constexpr (utils::compilation::debug)
-					{
-					if (container.size() != base_t::size())
-						{
-						throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
-						}
-					}
+				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
+				//	{
+				//	if (container.size() != base_t::size())
+				//		{
+				//		throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
+				//		}
+				//	}
 				}
 
 		private:
 			container_t& container;
+		};
+	template<typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
+	class matrix_observer : public details::matrix_crtp<matrix_observer<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>
+		{
+		// Requires container to be an observer type like a view or pointer
+		private:
+			using self_t = matrix_observer<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
+			using base_t = details::matrix_crtp<self_t, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
+			friend class base_t;
+		public:
+			using container_t = container_T;
+
+			utils_gpu_available matrix_observer(container_T container) requires(WIDTH != 0 && HEIGHT != 0) :
+				base_t{},
+				container{container}
+				{
+				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
+				//	{
+				//	if (container.size() != base_t::size())
+				//		{
+				//		throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
+				//		}
+				//	}
+				}
+
+			utils_gpu_available matrix_observer(utils::math::vec2s sizes, container_T container) requires(WIDTH == 0 && HEIGHT == 0) :
+				base_t{sizes},
+				container{container}
+				{
+				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
+				//	{
+				//	if (container.size() != base_t::size())
+				//		{
+				//		throw std::length_error{"The size of the provided container doesn't match the size of the matrix you're trying to create."};
+				//		}
+				//	}
+				}
+
+		private:
+			container_t container;
 		};
 	}
 

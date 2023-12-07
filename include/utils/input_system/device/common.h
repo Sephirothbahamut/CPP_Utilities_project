@@ -9,7 +9,7 @@ namespace utils::input_system::device
 		namespace details
 			{
 			template <typename DERIVED_T, input::concepts::input input_T, typename id_T>
-			struct base_crtp;
+			class base_crtp;
 
 			namespace concepts
 				{
@@ -33,7 +33,7 @@ namespace utils::input_system::device
 			class event_raw_input : public event::details::base<evaluate_state_type<inputs_T>, event::details::root>, public utils::oop::non_copyable, public utils::oop::non_movable
 				{
 				template <typename DERIVED_T, input::concepts::input input_T, typename id_T>
-				friend struct base_crtp;
+				friend class base_crtp;
 				using base = event::details::base<evaluate_state_type<inputs_T>, event::details::root>;
 				public:
 					using inputs_t   = inputs_T;
@@ -247,7 +247,7 @@ namespace utils::input_system::device
 
 		class debug_callbacks
 			{
-			friend class base;
+			friend struct base;
 			private:
 				debug_callbacks(base& device) requires(!inputs::concepts::none<digital_t> && !inputs::concepts::none<analog_t >):
 					event_digital{device.digital.bind_debug_callback()},

@@ -13,10 +13,10 @@ namespace utils::math::geometry::shape::interface
 		#pragma region point
 			utils_gpu_available constexpr float distance(const concepts::point auto& other) const noexcept
 				{// from shadertoy example linked below
-				const utils::math::vec2f b_a{b()   - a()};
-				const utils::math::vec2f p_a{other - a()};
+				const utils::math::vec2f b_a{crtp::b()   - crtp::a()};
+				const utils::math::vec2f p_a{other - crtp::a()};
 				float h{std::max(utils::math::vec2f::dot(p_a, b_a) / utils::math::vec2f::dot(b_a, b_a), 0.f)};
-				return (p_a - (b_a * h)).length;
+				return (p_a - (b_a * h)).get_length();
 				}
 			utils_gpu_available constexpr distance_signed distance_signed(const concepts::point auto& other) const noexcept { return details::base<derived_t>::default_distance_signed(other); }
 

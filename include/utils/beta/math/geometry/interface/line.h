@@ -11,7 +11,7 @@ namespace utils::math::geometry::shape::interface
 		using crtp = details::base<derived_t>::crtp;
 
 		#pragma region point
-			utils_gpu_available constexpr float distance(const concepts::point auto& other) const noexcept { details::base<derived_t>::default_distance(); }
+			utils_gpu_available constexpr float distance(const concepts::point auto& other) const noexcept { crtp::default_distance(); }
 			utils_gpu_available constexpr distance_signed distance_signed(const concepts::point auto& other) const noexcept { return some_significant_name_ive_yet_to_figure_out(other); }
 
 			utils_gpu_available constexpr vec2f closest_point(const concepts::point auto& other) noexcept { return closest_point_custom_clamp<false, false>(other); }
