@@ -29,10 +29,10 @@ namespace utils::math::geometry::shape::interface
 
 namespace utils::math::geometry::shape
 	{
-	struct point : utils::math::geometry::shape::interface::point<point>, ::utils::math::vec2f {};
+	struct point : utils::math::geometry::shape::interface::point<point>, ::utils::math::vec2f { using ::utils::math::vec2f::vec2f; };
 
 	namespace view
 		{
-		struct point : utils::math::geometry::shape::interface::point<point>, ::utils::math::vecref2f {};
+		struct point : utils::math::geometry::shape::interface::point<point>, ::utils::math::vecref2f { using ::utils::math::vecref2f::vecref2f; };
 		}
 	}

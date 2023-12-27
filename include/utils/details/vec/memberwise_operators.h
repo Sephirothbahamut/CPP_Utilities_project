@@ -167,6 +167,12 @@ namespace utils::math
 	utils_gpu_available a_t abs(const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::abs(v[i]); } return ret; }
 
 	template <utils::details::vec::concepts::array a_t>
+	utils_gpu_available a_t floor(const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::floor(v[i]); } return ret; }
+	
+	template <utils::details::vec::concepts::array a_t>
+	utils_gpu_available a_t ceil(const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::ceil(v[i]); } return ret; }
+
+	template <utils::details::vec::concepts::array a_t>
 	utils_gpu_available inline a_t lerp(const a_t& a, const a_t& b, float t)
 		{
 		a_t ret;

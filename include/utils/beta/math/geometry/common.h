@@ -103,7 +103,7 @@ namespace utils::math::geometry
 					
 					utils_gpu_available constexpr side                      default_side                (const concepts::any auto& other) const noexcept { return crtp::derived().distance_signed(other).side    (); }
 					utils_gpu_available constexpr float                     default_distance            (const concepts::any auto& other) const noexcept { return crtp::derived().distance_signed(other).distance(); }
-					utils_gpu_available constexpr distance_signed           default_distance_signed     (const concepts::any auto& other) const noexcept { return {crtp::derived().distance(other) * crtp::derived().side_of(other)}; }
+					utils_gpu_available constexpr geometry::distance_signed default_distance_signed     (const concepts::any auto& other) const noexcept { return {crtp::derived().distance(other) * crtp::derived().side_of(other)}; }
 					utils_gpu_available constexpr vec2f                     default_closest_point       (const concepts::any auto& other) const noexcept { return crtp::derived().closest_and_distance(other).closest ; }
 					utils_gpu_available constexpr closest_point_distance_t  default_closest_and_distance(const concepts::any auto& other) const noexcept { return {crtp::derived().closest_point(other), crtp::derived().distance_signed(other)}; }
 					utils_gpu_available constexpr closest_points_distance_t default_closest_pair        (const concepts::any auto& other) const noexcept { return {crtp::derived().closest_point(other), other.closest_point(crtp::derived()), crtp::derived().distance_signed(other)}; }
@@ -126,7 +126,7 @@ namespace utils::math::geometry
 				public:
 					utils_gpu_available constexpr side                      side                (const concepts::any auto& other) const noexcept { return default_side                  (other); }
 					utils_gpu_available constexpr float                     distance            (const concepts::any auto& other) const noexcept { return other_distance                (other); }
-					utils_gpu_available constexpr distance_signed           distance_signed     (const concepts::any auto& other) const noexcept { return default_distance_signed       (other); }
+					utils_gpu_available constexpr geometry::distance_signed distance_signed     (const concepts::any auto& other) const noexcept { return default_distance_signed       (other); }
 					utils_gpu_available constexpr vec2f                     closest_point       (const concepts::any auto& other) const noexcept { return default_closest_point         (other); }
 					utils_gpu_available constexpr closest_point_distance_t  closest_and_distance(const concepts::any auto& other) const noexcept { return default_closest_and_distance  (other); }
 					utils_gpu_available constexpr closest_points_distance_t closest_pair        (const concepts::any auto& other) const noexcept { return other_closest_pair_inverted   (other); }

@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "../compilation/warnings.h"
+#include "../compilation/gpu.h"
 #include "../math/math.h"
 #include "../math/angle.h"
 #include "../template_wrappers.h"
@@ -82,8 +83,8 @@ namespace utils::graphics::colour
 			utils_disable_warning_clang("-Wgnu-anonymous-struct")
 			utils_disable_warning_clang("-Wnested-anon-types")
 			utils_disable_warning_gcc("-Wpedantic")
-			template<typename T> struct rgb_named<T, false> { union { std::array<T, 3> array; struct { T r, g, b;    }; }; };
-			template<typename T> struct rgb_named<T, true > { union { std::array<T, 4> array; struct { T r, g, b, a; }; }; };
+			template<typename T> struct rgb_named<T, false> { union { std::array<T, 3> array{0, 0, 0   }; struct { T r, g, b;    }; }; };
+			template<typename T> struct rgb_named<T, true > { union { std::array<T, 4> array{0, 0, 0, 1}; struct { T r, g, b, a; }; }; };
 		utils_disable_warnings_end
 		#endif
 
@@ -121,22 +122,21 @@ namespace utils::graphics::colour
 					if constexpr (has_alpha) { this->a = alpha; }
 					}
 
-				constexpr rgb() noexcept requires(!has_alpha) : details::rgb_named<T, has_alpha>{.r{0}, .g{0}, .b{0}       } {}
-				constexpr rgb() noexcept requires( has_alpha) : details::rgb_named<T, has_alpha>{.r{0}, .g{0}, .b{0}, .a{1}} {}
+				utils_gpu_available constexpr rgb() noexcept = default;
 
 				template <std::convertible_to<value_type>... Args>
 					requires(sizeof...(Args) == 4 && has_alpha)
-				constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
+				utils_gpu_available constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
 			
 				template <std::convertible_to<value_type>... Args>
 					requires(sizeof...(Args) == 3 && has_alpha)
-				constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)..., range::full_value}} {}
+				utils_gpu_available constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)..., range::full_value}} {}
 
 				template <std::convertible_to<value_type>... Args>
 					requires(sizeof...(Args) == 3 && !has_alpha)
-				constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
+				utils_gpu_available constexpr rgb(const Args&... args) : details::rgb_named<T, has_alpha>{.array{static_cast<value_type>(args)...}} {}
 
-				constexpr rgb(const value_type& value, const value_type& alpha = range::full_value)
+				utils_gpu_available constexpr rgb(const value_type& value, const value_type& alpha = range::full_value)
 					requires(static_size == 4)
 					{
 					for (size_t i{0}; i < 4; i++)
@@ -145,7 +145,7 @@ namespace utils::graphics::colour
 						}
 					this->array[3] = alpha;
 					}
-				constexpr rgb(const value_type& value)
+				utils_gpu_available constexpr rgb(const value_type& value)
 					requires(static_size <= 3)
 					{
 					for (size_t i{0}; i < static_size; i++)
@@ -155,7 +155,7 @@ namespace utils::graphics::colour
 					}
 
 				template <concepts::rgb other_t>
-				constexpr rgb(const other_t& other)
+				utils_gpu_available constexpr rgb(const other_t& other)
 					{
 					for (size_t i{0}; i < 3; i++)
 						{
@@ -168,7 +168,7 @@ namespace utils::graphics::colour
 						}
 					}
 				template <concepts::rgb other_t>
-				constexpr rgb(const other_t& other, T alpha)
+				utils_gpu_available constexpr rgb(const other_t& other, T alpha)
 					requires(has_alpha)
 					{
 					for (size_t i{0}; i < 3; i++)
@@ -179,7 +179,7 @@ namespace utils::graphics::colour
 					}
 	#pragma endregion constructors
 				
-				rgb<T, true> blend(const rgb<T, true>& foreground) noexcept
+				utils_gpu_available constexpr rgb<T, true> blend(const rgb<T, true>& foreground) noexcept
 					requires(has_alpha)
 					{
 					rgb<T, true> ret;
@@ -192,7 +192,7 @@ namespace utils::graphics::colour
 					}
 
 				using hsv_cast_t = colour::hsv<std::conditional_t<std::floating_point<T>, T, float>, has_alpha>;
-				hsv_cast_t hsv() const noexcept;
+				utils_gpu_available hsv_cast_t hsv() const noexcept;
 			};
 		}
 
@@ -208,7 +208,7 @@ namespace utils::graphics::colour
 		inline static constexpr bool has_alpha{HAS_ALPHA};
 		using range = utils::math::type_based_numeric_range<T>;
 
-		inline static constexpr hsv from(base base, T components_multiplier = max_value, T alpha = max_value)
+		utils_gpu_available static constexpr hsv from(base base, T components_multiplier = max_value, T alpha = max_value)
 			{
 			hsv ret;
 
@@ -250,7 +250,7 @@ namespace utils::graphics::colour
 
 	
 	template<typename T, size_t size>
-	details::rgb<T, size>::hsv_cast_t details::rgb<T, size>::hsv() const noexcept
+	utils_gpu_available details::rgb<T, size>::hsv_cast_t details::rgb<T, size>::hsv() const noexcept
 		{//https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
 		using floating_t = std::conditional_t<std::floating_point<T>, T, float>;
 		using hsv_t = colour::hsv<floating_t, has_alpha>;
@@ -312,7 +312,7 @@ namespace utils::graphics::colour
 		}
 
 	template <std::floating_point T, bool has_alpha>
-	hsv<T, has_alpha>::rgb_cast_t hsv<T, has_alpha>::rgb() const noexcept
+	utils_gpu_available hsv<T, has_alpha>::rgb_cast_t hsv<T, has_alpha>::rgb() const noexcept
 		{
 		if (s == 0)
 			{

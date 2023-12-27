@@ -260,6 +260,8 @@
     <ClInclude Include="include\utils\wrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\utils\console\initializer.cpp" />
+    <ClCompile Include="include\utils\console\io.cpp" />
     <ClCompile Include="quick_tests.cpp" />
     <ClCompile Include="quick_test_libs_implementation.cpp" />
   </ItemGroup>

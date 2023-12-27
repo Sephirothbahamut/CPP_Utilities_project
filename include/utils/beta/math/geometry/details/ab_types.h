@@ -10,14 +10,14 @@ namespace utils::math::geometry::shape::details
 			{
 			using crtp = details::base<derived_t>;
 
-			utils_gpu_available constexpr const auto& a() const noexcept { return crtp::derived::a(); }
-			utils_gpu_available constexpr const auto& b() const noexcept { return crtp::derived::b(); }
+			utils_gpu_available constexpr const auto& a() const noexcept { return crtp::derived().a(); }
+			utils_gpu_available constexpr const auto& b() const noexcept { return crtp::derived().b(); }
 		
-			utils_gpu_available constexpr float length2() const noexcept { return vec2f::distance2(crtp::derived().a(), crtp::derived().b()); }
-			utils_gpu_available constexpr float length () const noexcept { return vec2f::distance (crtp::derived().a(), crtp::derived().b()); }
+			utils_gpu_available constexpr float length2() const noexcept { return vec2f::distance2(a(), b()); }
+			utils_gpu_available constexpr float length () const noexcept { return vec2f::distance (a(), b()); }
 		
-			utils_gpu_available constexpr const vec2f& operator[](const size_t& index) const noexcept { return index == 0 ? crtp::derived().a() : crtp::derived().b(); }
-			utils_gpu_available constexpr       vec2f& operator[](const size_t& index)       noexcept { return index == 0 ? crtp::derived().a() : crtp::derived().b(); }
+			utils_gpu_available constexpr const vec2f& operator[](const size_t& index) const noexcept { return index == 0 ? a() : b(); }
+			utils_gpu_available constexpr       vec2f& operator[](const size_t& index)       noexcept { return index == 0 ? a() : b(); }
 		
 			/// <summary> Unit vector from a towards b. </summary>
 			utils_gpu_available constexpr vec2f forward() const noexcept { return (b() - a()).normalize(); }
@@ -60,7 +60,7 @@ namespace utils::math::geometry::shape::details
 				}
 
 			#pragma region point
-				utils_gpu_available constexpr geometry::side       side           (const concepts::point auto& other) const noexcept { return {some_significant_name_ive_yet_to_figure_out(other)}; }
+				utils_gpu_available constexpr geometry::side       side_of        (const concepts::point auto& other) const noexcept { return {some_significant_name_ive_yet_to_figure_out(other)}; }
 
 				utils_gpu_available constexpr bool                 contains       (const concepts::point auto& other) const noexcept { return distance(other) == 0; }
 				utils_gpu_available constexpr bool                 intersects     (const concepts::point auto& other) const noexcept { return distance(other) == 0; }
@@ -70,6 +70,7 @@ namespace utils::math::geometry::shape::details
 
 		struct data
 			{
+			data(const ::utils::math::vec2f& point_a, const ::utils::math::vec2f& point_b) : point_a{point_a}, point_b{point_b} {}
 			::utils::math::vec2f point_a;
 			::utils::math::vec2f point_b;
 			utils_gpu_available constexpr const auto& a() const noexcept { return point_a; }

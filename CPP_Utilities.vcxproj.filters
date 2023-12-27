@@ -486,5 +486,11 @@
     <ClCompile Include="quick_test_libs_implementation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\utils\console\initializer.cpp">
+      <Filter>Utils\console</Filter>
+    </ClCompile>
+    <ClCompile Include="include\utils\console\io.cpp">
+      <Filter>Utils\console</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

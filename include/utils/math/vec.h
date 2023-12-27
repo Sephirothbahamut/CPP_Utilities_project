@@ -172,26 +172,26 @@ namespace utils::math
 		#endif
 		}
 
-	template<typename T, size_t size>
+	template<typename T, size_t SIZE>
 	class utils_oop_empty_bases vec:
-		public details::vec_named<T, size>,
-		public utils::details::vec::common<T, size, vec>,
-		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, size, vec>>,
-		public utils::details::vec::output<details::vec_name, vec<T, size>>,
-		public details::vec_sized_specialization<T, size, vec<T, size>>
+		public details::vec_named<T, SIZE>,
+		public utils::details::vec::common<T, SIZE, vec>,
+		public utils::details::vec::memberwise_operators<utils::details::vec::common<T, SIZE, vec>>,
+		public utils::details::vec::output<details::vec_name, vec<T, SIZE>>,
+		public details::vec_sized_specialization<T, SIZE, vec<T, SIZE>>
 		{
-		template<class T, size_t size, typename derived_T>
+		template<class T, size_t SIZE, typename derived_T>
 		friend class details::vec_sized_specialization;
 		
 		protected:
-			//using common_t = typename utils::details::vec::common<T, size, vec>;
-			//using self_t = vec<T, size>;
+			//using common_t = typename utils::details::vec::common<T, SIZE, vec>;
+			//using self_t = vec<T, SIZE>;
 
 		public:
-			using common_t = typename utils::details::vec::common<T, size, vec>;
-			using self_t = vec<T, size>;
+			using common_t = typename utils::details::vec::common<T, SIZE, vec>;
+			using self_t = vec<T, SIZE>;
 
-			inline static constexpr const size_t static_size{size};
+			inline static constexpr const size_t static_size{SIZE};
 			using value_type              = typename common_t::value_type            ;
 			using size_type               = typename common_t::size_type             ;
 			using difference_type         = typename common_t::difference_type       ;
@@ -207,24 +207,24 @@ namespace utils::math
 			using nonref_value_type       = typename common_t::nonref_value_type     ;
 
 #pragma region constructors
-			using details::vec_sized_specialization<T, size, self_t>::vec_sized_specialization;
+			using details::vec_sized_specialization<T, SIZE, self_t>::vec_sized_specialization;
 			
 			utils_gpu_available constexpr vec() noexcept : vec{value_type{0}} {}
 
 			//special case for vec of references
 			template <std::same_as<utils::remove_cvref_t<value_type>>... Args>
-				requires(utils::concepts::reference<value_type> && sizeof...(Args) == static_size)
-			utils_gpu_available constexpr vec(Args&... args) noexcept : details::vec_named<T, size>{.array{args...}} {}
+				requires(utils::concepts::reference<value_type> && sizeof...(Args) == SIZE)
+			utils_gpu_available constexpr vec(Args&... args) noexcept : details::vec_named<T, SIZE>{.array{args...}} {}
 
 			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) >= static_size)
-			utils_gpu_available constexpr vec(const Args&... args) noexcept : details::vec_named<T, size>{.array{static_cast<value_type>(args)...}} {}
+				requires(sizeof...(Args) >= SIZE)
+			utils_gpu_available constexpr vec(const Args&... args) noexcept : details::vec_named<T, SIZE>{.array{static_cast<value_type>(args)...}} {}
 
 			template <std::convertible_to<value_type>... Args>
-				requires(sizeof...(Args) < static_size)
-			utils_gpu_available constexpr vec(const Args&... args) noexcept : details::vec_named<T, size>{.array{static_cast<value_type>(args)...}}
+				requires(sizeof...(Args) < SIZE)
+			utils_gpu_available constexpr vec(const Args&... args) noexcept : details::vec_named<T, SIZE>{.array{static_cast<value_type>(args)...}}
 				{
-				for (size_t i = sizeof...(Args); i < static_size; i++)
+				for (size_t i = sizeof...(Args); i < SIZE; i++)
 					{
 					if constexpr (sizeof...(Args)) { this->array[i] = this->array[sizeof...(Args) - 1]; }
 					else { this->array[i] = T{0}; }
@@ -235,29 +235,29 @@ namespace utils::math
 			template <concepts::vec other_t>
 				requires
 					(
-					utils::concepts::reference<value_type> && other_t::static_size == static_size &&
+					utils::concepts::reference<value_type> && other_t::static_size == SIZE &&
 						(
 						((!utils::concepts::reference<typename other_t::value_type>) && std::same_as<typename other_t::value_type, utils::remove_cvref_t<value_type>>)
 						||
 						(( utils::concepts::reference<typename other_t::value_type>) && std::same_as<typename other_t::value_type, value_type>)
 						)
 					)
-			utils_gpu_available constexpr vec(      other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](      auto&... values) -> std::array<value_type, size> { return {                        values ...}; }, other.array)}} {}
+			utils_gpu_available constexpr vec(      other_t& other) noexcept : details::vec_named<T, SIZE>{.array{std::apply([](      auto&... values) -> std::array<value_type, SIZE> { return {                        values ...}; }, other.array)}} {}
 
 			template <concepts::vec other_t>
-				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size == static_size)
-			utils_gpu_available constexpr vec(const other_t& other) noexcept : details::vec_named<T, size>{.array{std::apply([](const auto&... values) -> std::array<value_type, size> { return {static_cast<value_type>(values)...}; }, other.array)}} {}
+				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size == SIZE)
+			utils_gpu_available constexpr vec(const other_t& other) noexcept : details::vec_named<T, SIZE>{.array{std::apply([](const auto&... values) -> std::array<value_type, SIZE> { return {static_cast<value_type>(values)...}; }, other.array)}} {}
 			
 			template <concepts::vec other_t>
-				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size != static_size && utils::concepts::default_constructible<value_type>)
+				requires(std::convertible_to<typename other_t::value_type, value_type> && other_t::static_size != SIZE && utils::concepts::default_constructible<value_type>)
 			utils_gpu_available constexpr vec(const other_t& other, value_type default_value = value_type{0}) noexcept
 				{
 				size_t i{0};
-				for (; i < std::min(static_size, other_t::static_size); i++)
+				for (; i < std::min(SIZE, other_t::static_size); i++)
 					{
 					this->array[i] = static_cast<value_type>(other[i]);
 					}
-				for (size_t i = other.size(); i < static_size; i++)
+				for (size_t i = other.size(); i < SIZE; i++)
 					{
 					if constexpr (other_t::static_size) { this->array[i] = default_value; }
 					else { this->array[i] = default_value; }
@@ -283,14 +283,14 @@ namespace utils::math
 				{
 				value_type ret{0};
 				size_t i{0};
-				for (; i < std::min({static_size, a.size(), b.size()}); i++)
+				for (; i < std::min({SIZE, a.size(), b.size()}); i++)
 					{
 					value_type tmp{a[i] - b[i]};
 					ret += tmp * tmp;
 					}
 					
-				     if /*constepxr*/ (a.size() > b.size()) { for (; i < std::min(static_size, a.size()); i++) { ret += a[i] * a[i]; } } //TODO check why no conxtexpr
-				else if /*constepxr*/ (a.size() < b.size()) { for (; i < std::min(static_size, b.size()); i++) { ret += b[i] * b[i]; } } //TODO check why no conxtexpr
+				     if /*constepxr*/ (a.size() > b.size()) { for (; i < std::min(SIZE, a.size()); i++) { ret += a[i] * a[i]; } } //TODO check why no conxtexpr
+				else if /*constepxr*/ (a.size() < b.size()) { for (; i < std::min(SIZE, b.size()); i++) { ret += b[i] * b[i]; } } //TODO check why no conxtexpr
 
 				return ret;
 				}
