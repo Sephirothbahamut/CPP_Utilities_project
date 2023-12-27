@@ -197,12 +197,24 @@ namespace utils::math::angle
 	
 	namespace literals
 		{
-		inline degf operator""_deg  (         long double value) noexcept { return angle::degf{static_cast<float>(value)}; }
-		inline degf operator""_deg  (unsigned long long   value) noexcept { return angle::degf{static_cast<float>(value)}; }
-		inline radf operator""_rad  (         long double value) noexcept { return angle::radf{static_cast<float>(value)}; }
-		inline radf operator""_rad  (unsigned long long   value) noexcept { return angle::radf{static_cast<float>(value)}; }
-		inline radf operator""_radpi(         long double value) noexcept { return angle::radf{static_cast<float>(value) * constants::PIf}; }
-		inline radf operator""_radpi(unsigned long long   value) noexcept { return angle::radf{static_cast<float>(value) * constants::PIf}; }
+		inline degf operator""_deg   (         long double value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		inline degf operator""_deg   (unsigned long long   value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		inline degf operator""_degf  (         long double value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		inline degf operator""_degf  (unsigned long long   value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		inline degd operator""_degd  (         long double value) noexcept { return angle::degd{                    value                  }; }
+		inline degd operator""_degd  (unsigned long long   value) noexcept { return angle::degd{static_cast<double>(value)                 }; }
+		inline radf operator""_rad   (         long double value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		inline radf operator""_rad   (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		inline radf operator""_radf  (         long double value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		inline radf operator""_radf  (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		inline radd operator""_radd  (         long double value) noexcept { return angle::radd{                    value                  }; }
+		inline radd operator""_radd  (unsigned long long   value) noexcept { return angle::radd{static_cast<double>(value)                 }; }
+		inline radf operator""_radpi (         long double value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		inline radf operator""_radpi (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		inline radf operator""_radfpi(         long double value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		inline radf operator""_radfpi(unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		inline radd operator""_raddpi(         long double value) noexcept { return angle::radd{                    value  * constants::PId}; }
+		inline radd operator""_raddpi(unsigned long long   value) noexcept { return angle::radd{static_cast<double>(value) * constants::PId}; }
 		}
 	}
 
