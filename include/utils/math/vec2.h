@@ -66,21 +66,26 @@ namespace utils::math
 				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
 				
 				// VEC & ANGLE OPERATIONS
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret += angle; return ret; }
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept { auto ret{derived()}; ret -= angle; return ret; }
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept 
-					{//TODO check correctness
-					derived().x = derived().x * angle.cos() - derived().y * angle.sin();
-					derived().y = derived().x * angle.sin() + derived().y * angle.cos();
-					return derived(); 
-					}
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept 
 					{
-					auto nngle{-angle};
-					derived().x = derived().x * nngle.cos() - derived().y * nngle.sin();
-					derived().y = derived().x * nngle.sin() + derived().y * nngle.cos();
-					return derived();
+					return
+						{
+						derived().x * angle.cos() - derived().y * angle.sin(),
+						derived().x * angle.sin() + derived().y * angle.cos()
+						};
 					}
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept
+					{
+					const auto nngle{-angle};
+					return
+						{
+						derived().x * nngle.cos() - derived().y * nngle.sin(),
+						derived().x * nngle.sin() + derived().y * nngle.cos()
+						};
+					}
+
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept { return derived() = derived() + angle; }
+				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept { return derived() = derived() - angle; }
 
 				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
 					{
