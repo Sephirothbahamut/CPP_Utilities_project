@@ -77,11 +77,13 @@ namespace utils::containers
 			      reference operator[](coords_type coords)             noexcept { return _arr[get_index(coords.x, coords.y)]; }
 			const_reference at(size_type i)              const { if (i >= size()) { throw std::out_of_range{ "Matrix access out of bounds." }; } return operator[](i); }
 			      reference at(size_type i)                    { if (i >= size()) { throw std::out_of_range{ "Matrix access out of bounds." }; } return operator[](i); }
-			const_reference at(size_type x, size_type y) const { if (x >= width() || y >= height()) { throw std::out_of_range{ "Matrix access out of bounds." }; } return operator[]({ x, y }); }
-			      reference at(size_type x, size_type y)       { if (x >= width() || y >= height()) { throw std::out_of_range{ "Matrix access out of bounds." }; } return operator[]({ x, y }); }
+			const_reference at(size_type x, size_type y) const { if (!validate_coords(x, y)) { throw std::out_of_range{ "Matrix access out of bounds." }; } return operator[]({ x, y }); }
+			      reference at(size_type x, size_type y)       { if (!validate_coords(x, y)) { throw std::out_of_range{ "Matrix access out of bounds." }; } return operator[]({ x, y }); }
 			const_reference at(coords_type coords)       const { return at(coords.x, coords.y); }
 			      reference at(coords_type coords)             { return at(coords.x, coords.y); }
 
+			bool validate_coords(size_type x, size_type y) const noexcept { return x < width() && y < height(); }
+			bool validate_coords(coords_type coords      ) const noexcept { return validate_coords(coords.x, coords.y); }
 			// Arithmetic
 
 			/*static T cross(const matrix_dyn& a, const matrix_dyn& b) noexcept { }//TODO
