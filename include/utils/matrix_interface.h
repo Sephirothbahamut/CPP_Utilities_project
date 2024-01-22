@@ -162,10 +162,11 @@ namespace utils
 				//	}
 				}
 
-		private:
-			std::reference_wrapper<container_t> _container;
 			utils_gpu_available constexpr const container_t& container() const noexcept { return _container.get(); }
 			utils_gpu_available constexpr       container_t& container()       noexcept { return _container.get(); }
+
+		private:
+			std::reference_wrapper<container_t> _container;
 		};
 
 	template <typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
@@ -206,10 +207,11 @@ namespace utils
 				//	}
 				}
 
-		private:
-			container_t _container;
 			utils_gpu_available constexpr const container_t& container() const noexcept { return _container; }
 			utils_gpu_available constexpr       container_t& container()       noexcept { return _container; }
+
+		private:
+			container_t _container;
 		};
 
 	template <typename T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
