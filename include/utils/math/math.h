@@ -8,6 +8,12 @@
 
 namespace utils::math
 	{
+	namespace concepts
+		{
+		template <typename T>
+		concept number = std::integral<T> || std::floating_point<T>;
+		};
+
 	template <typename T>
 	utils_gpu_available constexpr T sign(T value) noexcept
 		{

@@ -204,6 +204,7 @@
     <ClInclude Include="include\utils\math\angle.h" />
     <ClInclude Include="include\utils\math\average.h" />
     <ClInclude Include="include\utils\math\constants.h" />
+    <ClInclude Include="include\utils\math\ranged.h" />
     <ClInclude Include="include\utils\math\easings.h" />
     <ClInclude Include="include\utils\math\geometry\bezier.h" />
     <ClInclude Include="include\utils\math\geometry\common\begin.h" />

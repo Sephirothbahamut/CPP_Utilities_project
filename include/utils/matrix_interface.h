@@ -48,7 +48,7 @@ namespace utils
 				size_t      _size {};
 			};
 		
-		template<typename DERIVED_T, typename CONTAINER_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
+		template <typename DERIVED_T, typename CONTAINER_T, size_t WIDTH, size_t HEIGHT, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
 		class matrix_crtp : matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>
 			{
 			public:
@@ -94,16 +94,16 @@ namespace utils
 				utils_gpu_available       reference operator[](size_type   i     )       noexcept { return derived().container[i]; }
 				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return derived().container[get_index(coords.x, coords.y)];    }
 				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return derived().container[get_index(coords.x, coords.y)];    }
-				                    const_reference at(size_type i             ) const { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-				                          reference at(size_type i             )       { if (!is_valid_index(i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
-				                    const_reference at(size_type x, size_type y) const { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-				                          reference at(size_type x, size_type y)       { if (!is_valid_index(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+				                    const_reference at(size_type i             ) const { if (!validate_index (i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+				                          reference at(size_type i             )       { if (!validate_index (i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
+				                    const_reference at(size_type x, size_type y) const { if (!validate_coords(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
+				                          reference at(size_type x, size_type y)       { if (!validate_coords(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
 				                    const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
 				                          reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
 
-				utils_gpu_available bool is_valid_index(math::vec2s coords      ) const noexcept { return is_valid_index(coords.x, coords.y); }
-				utils_gpu_available bool is_valid_index(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
-				utils_gpu_available bool is_valid_index(size_type i             ) const noexcept { return i < size(); }
+				utils_gpu_available bool validate_coords(math::vec2s coords      ) const noexcept { return validate_coords(coords.x, coords.y); }
+				utils_gpu_available bool validate_coords(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
+				utils_gpu_available bool validate_index (size_type i             ) const noexcept { return i < size(); }
 
 				utils_gpu_available const auto begin  () const noexcept { return derived().container.begin  (); }
 				utils_gpu_available       auto begin  ()       noexcept { return derived().container.begin  (); }
@@ -124,17 +124,18 @@ namespace utils
 			};
 		}
 
-	template<typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
-	class matrix_wrapper : public details::matrix_crtp<matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>
+	template <typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
+	class matrix_observer : public details::matrix_crtp<matrix_observer<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>
 		{
 		private:
-			using self_t = matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
+			using self_t = matrix_observer<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
 			using base_t = details::matrix_crtp<self_t, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
 			friend class base_t;
+
 		public:
 			using container_t = container_T;
 
-			utils_gpu_available matrix_wrapper(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
+			utils_gpu_available matrix_observer(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				base_t{},
 				container{container}
 				{
@@ -147,7 +148,7 @@ namespace utils
 				//	}
 				}
 
-			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
+			utils_gpu_available matrix_observer(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
 				container{container}
 				{
@@ -163,18 +164,20 @@ namespace utils
 		private:
 			container_t& container;
 		};
-	template<typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
-	class matrix_observer : public details::matrix_crtp<matrix_observer<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>
+
+	template <typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
+	class matrix_wrapper : public details::matrix_crtp<matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>
 		{
 		// Requires container to be an observer type like a view or pointer
 		private:
-			using self_t = matrix_observer<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
+			using self_t = matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
 			using base_t = details::matrix_crtp<self_t, container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>;
 			friend class base_t;
+
 		public:
 			using container_t = container_T;
 
-			utils_gpu_available matrix_observer(container_T container) requires(WIDTH != 0 && HEIGHT != 0) :
+			utils_gpu_available matrix_wrapper(const container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				base_t{},
 				container{container}
 				{
@@ -187,7 +190,7 @@ namespace utils
 				//	}
 				}
 
-			utils_gpu_available matrix_observer(utils::math::vec2s sizes, container_T container) requires(WIDTH == 0 && HEIGHT == 0) :
+			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
 				container{container}
 				{
@@ -202,6 +205,20 @@ namespace utils
 
 		private:
 			container_t container;
+		};
+
+	template <typename T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
+	struct matrix : matrix_wrapper<std::array<T, WIDTH * HEIGHT>, WIDTH, HEIGHT, MEMORY_LAYOUT>
+		{
+		using wrapper_t = std::array<T, WIDTH* HEIGHT>;
+		matrix(const math::vec2s& sizes) : wrapper_t{sizes, {}} {}
+		};
+
+	template <typename T, matrix_memory MEMORY_LAYOUT>
+	struct matrix<T, 0, 0, MEMORY_LAYOUT> : matrix_wrapper<std::vector<T>, 0, 0, MEMORY_LAYOUT>
+		{
+		using wrapper_t = matrix_wrapper<std::vector<T>, 0, 0, MEMORY_LAYOUT>;
+		matrix(const math::vec2s& sizes) : wrapper_t{sizes, std::vector<T>(sizes.x * sizes.y)} {}
 		};
 	}
 

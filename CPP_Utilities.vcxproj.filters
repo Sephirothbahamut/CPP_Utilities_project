@@ -478,6 +478,9 @@
     <ClInclude Include="include\utils\beta\math\geometry\details\points_types.h">
       <Filter>Beta\math\geometry\details</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\ranged.h">
+      <Filter>Utils\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
