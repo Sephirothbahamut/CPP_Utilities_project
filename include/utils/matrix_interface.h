@@ -68,9 +68,10 @@ namespace utils
 				//using const_reverse_iterator = container_t::const_reverse_iterator;
 
 			protected:
-
-				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+				utils_gpu_available constexpr const derived_t  & derived  () const noexcept { return static_cast<const derived_t&>(*this); }
+				utils_gpu_available constexpr       derived_t  & derived  ()       noexcept { return static_cast<      derived_t&>(*this); }
+				utils_gpu_available constexpr const container_t& container() const noexcept { return derived().container(); }
+				utils_gpu_available constexpr       container_t& container()       noexcept { return derived().container(); }
 
 			public:
 				using matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>::matrix_root;
@@ -90,10 +91,10 @@ namespace utils
 				utils_gpu_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x; } else { return index % sizes().y; } }
 				utils_gpu_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
 				
-				utils_gpu_available const_reference operator[](size_type   i     ) const noexcept { return derived().container[i]; }
-				utils_gpu_available       reference operator[](size_type   i     )       noexcept { return derived().container[i]; }
-				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return derived().container[get_index(coords.x, coords.y)];    }
-				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return derived().container[get_index(coords.x, coords.y)];    }
+				utils_gpu_available const_reference operator[](size_type   i     ) const noexcept { return container()[i]; }
+				utils_gpu_available       reference operator[](size_type   i     )       noexcept { return container()[i]; }
+				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return container()[get_index(coords.x, coords.y)];    }
+				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return container()[get_index(coords.x, coords.y)];    }
 				                    const_reference at(size_type i             ) const { if (!validate_index (i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
 				                          reference at(size_type i             )       { if (!validate_index (i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
 				                    const_reference at(size_type x, size_type y) const { if (!validate_coords(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
@@ -105,22 +106,22 @@ namespace utils
 				utils_gpu_available bool validate_coords(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
 				utils_gpu_available bool validate_index (size_type i             ) const noexcept { return i < size(); }
 
-				utils_gpu_available const auto begin  () const noexcept { return derived().container.begin  (); }
-				utils_gpu_available       auto begin  ()       noexcept { return derived().container.begin  (); }
-				utils_gpu_available const auto end    () const noexcept { return derived().container.end    (); }
-				utils_gpu_available       auto end    ()       noexcept { return derived().container.end    (); }
-				utils_gpu_available const auto cbegin () const noexcept { return derived().container.cbegin (); }
-				utils_gpu_available       auto cbegin ()       noexcept { return derived().container.cbegin (); }
-				utils_gpu_available const auto cend   () const noexcept { return derived().container.cend   (); }
-				utils_gpu_available       auto cend   ()       noexcept { return derived().container.cend   (); }
-				utils_gpu_available const auto rbegin () const noexcept { return derived().container.rbegin (); }
-				utils_gpu_available       auto rbegin ()       noexcept { return derived().container.rbegin (); }
-				utils_gpu_available const auto rend   () const noexcept { return derived().container.rend   (); }
-				utils_gpu_available       auto rend   ()       noexcept { return derived().container.rend   (); }
-				utils_gpu_available const auto crbegin() const noexcept { return derived().container.crbegin(); }
-				utils_gpu_available       auto crbegin()       noexcept { return derived().container.crbegin(); }
-				utils_gpu_available const auto crend  () const noexcept { return derived().container.crend  (); }
-				utils_gpu_available       auto crend  ()       noexcept { return derived().container.crend  (); }
+				utils_gpu_available const auto begin  () const noexcept { return container().begin  (); }
+				utils_gpu_available       auto begin  ()       noexcept { return container().begin  (); }
+				utils_gpu_available const auto end    () const noexcept { return container().end    (); }
+				utils_gpu_available       auto end    ()       noexcept { return container().end    (); }
+				utils_gpu_available const auto cbegin () const noexcept { return container().cbegin (); }
+				utils_gpu_available       auto cbegin ()       noexcept { return container().cbegin (); }
+				utils_gpu_available const auto cend   () const noexcept { return container().cend   (); }
+				utils_gpu_available       auto cend   ()       noexcept { return container().cend   (); }
+				utils_gpu_available const auto rbegin () const noexcept { return container().rbegin (); }
+				utils_gpu_available       auto rbegin ()       noexcept { return container().rbegin (); }
+				utils_gpu_available const auto rend   () const noexcept { return container().rend   (); }
+				utils_gpu_available       auto rend   ()       noexcept { return container().rend   (); }
+				utils_gpu_available const auto crbegin() const noexcept { return container().crbegin(); }
+				utils_gpu_available       auto crbegin()       noexcept { return container().crbegin(); }
+				utils_gpu_available const auto crend  () const noexcept { return container().crend  (); }
+				utils_gpu_available       auto crend  ()       noexcept { return container().crend  (); }
 			};
 		}
 
@@ -137,7 +138,7 @@ namespace utils
 
 			utils_gpu_available matrix_observer(container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				base_t{},
-				container{container}
+				_container{container}
 				{
 				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
 				//	{
@@ -150,7 +151,7 @@ namespace utils
 
 			utils_gpu_available matrix_observer(utils::math::vec2s sizes, container_T& container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
-				container{container}
+				_container{container}
 				{
 				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
 				//	{
@@ -162,7 +163,9 @@ namespace utils
 				}
 
 		private:
-			container_t& container;
+			std::reference_wrapper<container_t> _container;
+			utils_gpu_available constexpr const container_t& container() const noexcept { return _container.get(); }
+			utils_gpu_available constexpr       container_t& container()       noexcept { return _container.get(); }
 		};
 
 	template <typename container_T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
@@ -179,7 +182,7 @@ namespace utils
 
 			utils_gpu_available matrix_wrapper(const container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				base_t{},
-				container{container}
+				_container{container}
 				{
 				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
 				//	{
@@ -192,7 +195,7 @@ namespace utils
 
 			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
-				container{container}
+				_container{container}
 				{
 				//if constexpr (utils::compilation::debug && !utils::compilation::gpu::device)
 				//	{
@@ -204,7 +207,9 @@ namespace utils
 				}
 
 		private:
-			container_t container;
+			container_t _container;
+			utils_gpu_available constexpr const container_t& container() const noexcept { return _container; }
+			utils_gpu_available constexpr       container_t& container()       noexcept { return _container; }
 		};
 
 	template <typename T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
