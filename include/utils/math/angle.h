@@ -78,12 +78,12 @@ namespace utils::math::angle
 
 			value_type value{ 0.f };
 
-			base() = default;
-			base(T value) : value{value} {}
+			utils_gpu_available constexpr base() = default;
+			utils_gpu_available constexpr base(T value) : value{value} {}
 
-			base(common::direction      dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{8} )} {}
-			base(common::hex_flat_top   dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{6} )} {}
-			base(common::hex_pointy_top dir) : value{(full_angle_value / T{12}) + (static_cast<T>(dir) * (full_angle_value / T{6}))} {}
+			utils_gpu_available constexpr base(common::direction      dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{8} )} {}
+			utils_gpu_available constexpr base(common::hex_flat_top   dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{6} )} {}
+			utils_gpu_available constexpr base(common::hex_pointy_top dir) : value{(full_angle_value / T{12}) + (static_cast<T>(dir) * (full_angle_value / T{6}))} {}
 			
 			// template <value_type other_full_angle>
 			// base(const base<value_type, other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
@@ -91,13 +91,13 @@ namespace utils::math::angle
 			// base<value_type, full_angle_value>(const base<value_type, full_angle_value>& src) : value{src.value} {}
 
 			template <value_type other_full_angle>
-			operator base<value_type, other_full_angle>() const noexcept
+			utils_gpu_available constexpr operator base<value_type, other_full_angle>() const noexcept
 				{
 				if constexpr (other_full_angle == full_angle) { return {value}; }
 				else { return {(value / full_angle) * other_full_angle}; }
 				}
 
-			base clamp() const noexcept
+			utils_gpu_available constexpr base clamp() const noexcept
 				{
 				if constexpr (full_angle == 1.f) { return {value - std::floor(value)}; }
 				else
@@ -107,7 +107,7 @@ namespace utils::math::angle
 					return { new_value };
 					}
 				}
-			base& clamp_self()       noexcept { *this = clamp(); return *this; }
+			utils_gpu_available constexpr base& clamp_self()       noexcept { *this = clamp(); return *this; }
 
 			// Shouldn't be needed because...
 			//template <value_type other_full_angle> base  operator+ (const base<other_full_angle> oth) const noexcept { return {value + static_cast<base<full_angle>>(oth).value}; }
@@ -125,23 +125,23 @@ namespace utils::math::angle
 			//bool operator!=(const base oth) const noexcept { return !(*this == oth); }
 
 			// ...except it doesn't automatically cast, so here we go...
-			template <T full_angle_value> constexpr base  operator+ (const base<T, full_angle_value> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <T full_angle_value> constexpr base  operator- (const base<T, full_angle_value> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <T full_angle_value> constexpr base& operator+=(const base<T, full_angle_value> oth)       noexcept { return *this = *this + oth; }
-			template <T full_angle_value> constexpr base& operator-=(const base<T, full_angle_value> oth)       noexcept { return *this = *this - oth; }
-			template <T full_angle_value> constexpr bool  operator==(const base<T, full_angle_value> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
-			template <T full_angle_value> constexpr bool  operator!=(const base<T, full_angle_value> oth) const noexcept { return !(*this == oth); }
+			template <T full_angle_value> utils_gpu_available constexpr base  operator+ (const base<T, full_angle_value> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
+			template <T full_angle_value> utils_gpu_available constexpr base  operator- (const base<T, full_angle_value> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
+			template <T full_angle_value> utils_gpu_available constexpr base& operator+=(const base<T, full_angle_value> oth)       noexcept { return *this = *this + oth; }
+			template <T full_angle_value> utils_gpu_available constexpr base& operator-=(const base<T, full_angle_value> oth)       noexcept { return *this = *this - oth; }
+			template <T full_angle_value> utils_gpu_available constexpr bool  operator==(const base<T, full_angle_value> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
+			template <T full_angle_value> utils_gpu_available constexpr bool  operator!=(const base<T, full_angle_value> oth) const noexcept { return !(*this == oth); }
 			
-			constexpr base  operator+ (value_type oth) const noexcept { return { value + oth }; }
-			constexpr base  operator- (value_type oth) const noexcept { return { value - oth }; }
-			constexpr base  operator* (value_type oth) const noexcept { return { value * oth }; }
-			constexpr base  operator/ (value_type oth) const noexcept { return { value / oth }; }
-			constexpr base& operator+=(value_type oth)       noexcept { return *this = *this + oth; }
-			constexpr base& operator-=(value_type oth)       noexcept { return *this = *this - oth; }
-			constexpr base& operator*=(value_type oth)       noexcept { return *this = *this * oth; }
-			constexpr base& operator/=(value_type oth)       noexcept { return *this = *this / oth; }
+			utils_gpu_available constexpr base  operator+ (value_type oth) const noexcept { return { value + oth }; }
+			utils_gpu_available constexpr base  operator- (value_type oth) const noexcept { return { value - oth }; }
+			utils_gpu_available constexpr base  operator* (value_type oth) const noexcept { return { value * oth }; }
+			utils_gpu_available constexpr base  operator/ (value_type oth) const noexcept { return { value / oth }; }
+			utils_gpu_available constexpr base& operator+=(value_type oth)       noexcept { return *this = *this + oth; }
+			utils_gpu_available constexpr base& operator-=(value_type oth)       noexcept { return *this = *this - oth; }
+			utils_gpu_available constexpr base& operator*=(value_type oth)       noexcept { return *this = *this * oth; }
+			utils_gpu_available constexpr base& operator/=(value_type oth)       noexcept { return *this = *this / oth; }
 
-			constexpr base  operator-()const noexcept { return base{ value + half_angle }.clamp(); }
+			utils_gpu_available constexpr base  operator-()const noexcept { return base{ value + half_angle }.clamp(); }
 
 			/// <summary>
 			/// Distance within a full angle. Disregards differences larger than one full angle.
@@ -149,7 +149,7 @@ namespace utils::math::angle
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			static constexpr base min_distance(const base a, const base b) noexcept
+			utils_gpu_available static constexpr base min_distance(const base a, const base b) noexcept
 				{
 				if constexpr (std::is_integral_v<value_type>)
 					{
@@ -163,7 +163,7 @@ namespace utils::math::angle
 					}
 				}
 
-			constexpr value_type normalize_in_range(base min, base max) const noexcept
+			utils_gpu_available constexpr value_type normalize_in_range(base min, base max) const noexcept
 				{
 				min.clamp();
 				max.clamp();
@@ -182,39 +182,39 @@ namespace utils::math::angle
 				}
 
 	#pragma region Trigonometry
-			inline        constexpr value_type sin  (                          ) const noexcept { return std::sin(rad_value()); }
-			inline        constexpr value_type cos  (                          ) const noexcept { return std::cos(rad_value()); }
-			inline        constexpr value_type tan  (                          ) const noexcept { return std::tan(rad_value()); }
-			inline static constexpr base       asin (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::asin(n)} }; }
-			inline static constexpr base       acos (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::acos(n)} }; }
-			inline static constexpr base       atan (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::atan(n)} }; }
-			inline static constexpr base       atan2(value_type a, value_type b)       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::atan2(a, b)} }; }
+			utils_gpu_available inline        constexpr value_type sin  (                          ) const noexcept { return std::sin(rad_value()); }
+			utils_gpu_available inline        constexpr value_type cos  (                          ) const noexcept { return std::cos(rad_value()); }
+			utils_gpu_available inline        constexpr value_type tan  (                          ) const noexcept { return std::tan(rad_value()); }
+			utils_gpu_available inline static constexpr base       asin (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::asin(n)} }; }
+			utils_gpu_available inline static constexpr base       acos (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::acos(n)} }; }
+			utils_gpu_available inline static constexpr base       atan (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::atan(n)} }; }
+			utils_gpu_available inline static constexpr base       atan2(value_type a, value_type b)       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::atan2(a, b)} }; }
 	#pragma endregion Trigonometry
 
 		private:
-			constexpr value_type rad_value() const noexcept { return static_cast<base<value_type, 2.f * constants::PIf>>(*this).value; }
+			utils_gpu_available constexpr value_type rad_value() const noexcept { return static_cast<base<value_type, 2.f * constants::PIf>>(*this).value; }
 		};
 	
 	namespace literals
 		{
-		inline degf operator""_deg   (         long double value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
-		inline degf operator""_deg   (unsigned long long   value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
-		inline degf operator""_degf  (         long double value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
-		inline degf operator""_degf  (unsigned long long   value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
-		inline degd operator""_degd  (         long double value) noexcept { return angle::degd{static_cast<double>(value)                 }; }
-		inline degd operator""_degd  (unsigned long long   value) noexcept { return angle::degd{static_cast<double>(value)                 }; }
-		inline radf operator""_rad   (         long double value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
-		inline radf operator""_rad   (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
-		inline radf operator""_radf  (         long double value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
-		inline radf operator""_radf  (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
-		inline radd operator""_radd  (         long double value) noexcept { return angle::radd{static_cast<double>(value)                 }; }
-		inline radd operator""_radd  (unsigned long long   value) noexcept { return angle::radd{static_cast<double>(value)                 }; }
-		inline radf operator""_radpi (         long double value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
-		inline radf operator""_radpi (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
-		inline radf operator""_radfpi(         long double value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
-		inline radf operator""_radfpi(unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
-		inline radd operator""_raddpi(         long double value) noexcept { return angle::radd{static_cast<double>(value) * constants::PId}; }
-		inline radd operator""_raddpi(unsigned long long   value) noexcept { return angle::radd{static_cast<double>(value) * constants::PId}; }
+		utils_gpu_available inline degf operator""_deg   (         long double value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline degf operator""_deg   (unsigned long long   value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline degf operator""_degf  (         long double value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline degf operator""_degf  (unsigned long long   value) noexcept { return angle::degf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline degd operator""_degd  (         long double value) noexcept { return angle::degd{static_cast<double>(value)                 }; }
+		utils_gpu_available inline degd operator""_degd  (unsigned long long   value) noexcept { return angle::degd{static_cast<double>(value)                 }; }
+		utils_gpu_available inline radf operator""_rad   (         long double value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline radf operator""_rad   (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline radf operator""_radf  (         long double value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline radf operator""_radf  (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value)                 }; }
+		utils_gpu_available inline radd operator""_radd  (         long double value) noexcept { return angle::radd{static_cast<double>(value)                 }; }
+		utils_gpu_available inline radd operator""_radd  (unsigned long long   value) noexcept { return angle::radd{static_cast<double>(value)                 }; }
+		utils_gpu_available inline radf operator""_radpi (         long double value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		utils_gpu_available inline radf operator""_radpi (unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		utils_gpu_available inline radf operator""_radfpi(         long double value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		utils_gpu_available inline radf operator""_radfpi(unsigned long long   value) noexcept { return angle::radf{static_cast<float> (value) * constants::PIf}; }
+		utils_gpu_available inline radd operator""_raddpi(         long double value) noexcept { return angle::radd{static_cast<double>(value) * constants::PId}; }
+		utils_gpu_available inline radd operator""_raddpi(unsigned long long   value) noexcept { return angle::radd{static_cast<double>(value) * constants::PId}; }
 		}
 	}
 
@@ -226,7 +226,7 @@ namespace utils::math
 	//	return { utils::lerp(a.value, b.value, t) };
 	//	}
 	template <utils::math::angle::concepts::angle angle_t>
-	inline constexpr angle_t clamp(angle_t in, angle_t min_in, angle_t max_in)
+	utils_gpu_available inline constexpr angle_t clamp(angle_t in, angle_t min_in, angle_t max_in)
 		{
 		const angle_t min{min_in.clamp()};
 		const angle_t max{max_in.clamp()};
@@ -249,13 +249,13 @@ namespace utils::math
 	
 	namespace trigonometry
 		{
-		template <math::angle::concepts::angle T> inline constexpr float                                      sin  (const T& a      ) noexcept { return a.sin(); }
-		template <math::angle::concepts::angle T> inline constexpr float                                      cos  (const T& a      ) noexcept { return a.cos(); }
-		template <math::angle::concepts::angle T> inline constexpr float                                      tan  (const T& a      ) noexcept { return a.tan        (    ); }
-		template <std ::floating_point         T> inline constexpr math::angle::base<T, 2.f * constants::PIf> asin (float n         ) noexcept { return angle::rad<T>::asin (n   ); }
-		template <std ::floating_point         T> inline constexpr math::angle::base<T, 2.f * constants::PIf> acos (float n         ) noexcept { return angle::rad<T>::acos (n   ); }
-		template <std ::floating_point         T> inline constexpr math::angle::base<T, 2.f * constants::PIf> atan (float n         ) noexcept { return angle::rad<T>::atan (n   ); }
-		template <std ::floating_point         T> inline constexpr math::angle::base<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return angle::rad<T>::atan2(a, b); }
+		template <math::angle::concepts::angle T> utils_gpu_available inline constexpr float                                      sin  (const T& a      ) noexcept { return a.sin(); }
+		template <math::angle::concepts::angle T> utils_gpu_available inline constexpr float                                      cos  (const T& a      ) noexcept { return a.cos(); }
+		template <math::angle::concepts::angle T> utils_gpu_available inline constexpr float                                      tan  (const T& a      ) noexcept { return a.tan        (    ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> asin (float n         ) noexcept { return angle::rad<T>::asin (n   ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> acos (float n         ) noexcept { return angle::rad<T>::acos (n   ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> atan (float n         ) noexcept { return angle::rad<T>::atan (n   ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return angle::rad<T>::atan2(a, b); }
 		}
 	}
 

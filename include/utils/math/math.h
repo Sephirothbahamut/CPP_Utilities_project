@@ -73,11 +73,17 @@ namespace utils::math
 	template <typename T>
 	utils_gpu_available constexpr T clamp(const T& in, const T& min, const T& max) noexcept { return std::clamp(in, min, max); }
 
-	template <typename ...Ts>
-	utils_gpu_available constexpr auto min(const Ts& ...values) noexcept { return std::min({values...}); }
+	//template <typename ...Ts>
+	//utils_gpu_available constexpr auto min(const Ts& ...values) noexcept { return std::min({values...}); }
 
-	template <typename ...Ts>
-	utils_gpu_available constexpr auto max(const Ts& ...values) noexcept { return std::max({values...}); }
+	template <typename T>
+	utils_gpu_available constexpr T min(const T& a, const T& b) noexcept { return a < b ? a : b; }
+
+	//template <typename ...Ts>
+	//utils_gpu_available constexpr auto max(const Ts& ...values) noexcept { return std::max({values...}); }
+
+	template <typename T>
+	utils_gpu_available constexpr T max(const T& a, const T& b) noexcept { return a > b ? a : b; }
 
 	template <std::integral to_t, typename from_t>
 	requires (std::integral<from_t> || std::floating_point<from_t>) 

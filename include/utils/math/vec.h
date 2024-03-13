@@ -170,6 +170,35 @@ namespace utils::math
 	#pragma endregion fields
 				};
 		#endif
+
+		struct pair_sizes_t
+			{
+			size_t a{0};
+			size_t b{0};
+			size_t min{0};
+			};
+
+		template <typename a_T, typename b_T>
+		consteval pair_sizes_t pair_sizes(const a_T& a, const b_T& b) noexcept
+			{
+			return
+				{
+				.a{a_T::static_size},
+				.b{b_T::static_size},
+				.min{utils::math::min(a_T::static_size, b_T::static_size)}
+				};
+			}
+
+		template <typename a_T, typename b_T>
+		consteval pair_sizes_t pair_sizes() noexcept
+			{
+			return
+				{
+				.a{a_T::static_size},
+				.b{b_T::static_size},
+				.min{utils::math::min(a_T::static_size, b_T::static_size)}
+				};
+			}
 		}
 
 	template<typename T, size_t SIZE>
@@ -253,7 +282,7 @@ namespace utils::math
 			utils_gpu_available constexpr vec(const other_t& other, value_type default_value = value_type{0}) noexcept
 				{
 				size_t i{0};
-				for (; i < std::min(SIZE, other_t::static_size); i++)
+				for (; i < utils::math::min(SIZE, other_t::static_size); i++)
 					{
 					this->array[i] = static_cast<value_type>(other[i]);
 					}
@@ -281,16 +310,18 @@ namespace utils::math
 			template <utils::details::vec::concepts::compatible_array<self_t> T2>
 			utils_gpu_available static constexpr value_type distance2(const self_t& a, const T2& b) noexcept
 				{
+				constexpr auto sizes{details::pair_sizes<self_t, T2>()};
+
 				value_type ret{0};
 				size_t i{0};
-				for (; i < std::min({SIZE, a.size(), b.size()}); i++)
+				for (; i < sizes.min; i++)
 					{
 					value_type tmp{a[i] - b[i]};
 					ret += tmp * tmp;
 					}
 					
-				     if /*constepxr*/ (a.size() > b.size()) { for (; i < std::min(SIZE, a.size()); i++) { ret += a[i] * a[i]; } } //TODO check why no conxtexpr
-				else if /*constepxr*/ (a.size() < b.size()) { for (; i < std::min(SIZE, b.size()); i++) { ret += b[i] * b[i]; } } //TODO check why no conxtexpr
+				     if constexpr (sizes.a > sizes.b) { for (; i < utils::math::min(SIZE, sizes.a); i++) { ret += a[i] * a[i]; } }
+				else if constexpr (sizes.a < sizes.b) { for (; i < utils::math::min(SIZE, sizes.b); i++) { ret += b[i] * b[i]; } }
 
 				return ret;
 				}
@@ -299,9 +330,12 @@ namespace utils::math
 			template <utils::details::vec::concepts::compatible_array<self_t> T2>
 			utils_gpu_available static constexpr value_type distance2_shared(const self_t& a, const T2& b) noexcept
 				{
+				constexpr auto sizes{details::pair_sizes<self_t, T2>()};
+
 				value_type ret{0};
 				size_t i{0};
-				for (; i < std::min(a.size(), b.size()); i++)
+
+				for (; i < sizes.min; i++)
 					{
 					value_type tmp{a[i] - b[i]};
 					ret += tmp * tmp;
@@ -314,16 +348,19 @@ namespace utils::math
 			template <utils::details::vec::concepts::compatible_array<self_t> T2>
 			utils_gpu_available static constexpr value_type distance2_complete(const self_t& a, const T2& b) noexcept
 				{
+				constexpr auto sizes{details::pair_sizes<self_t, T2>()};
+
 				value_type ret{0};
 				size_t i{0};
-				for (; i < std::min(a.size(), b.size()); i++)
+
+				for (; i < sizes.min; i++)
 					{
 					value_type tmp{a[i] - b[i]};
 					ret += tmp * tmp;
 					}
 
-				     if constexpr (a.size() > b.size()) { for (; i < a.size(); i++) { ret += a[i] * a[i]; } }
-				else if constexpr (a.size() < b.size()) { for (; i < b.size(); i++) { ret += b[i] * b[i]; } }
+				     if constexpr (sizes.a > sizes.b) { for (; i < sizes.a; i++) { ret += a[i] * a[i]; } }
+				else if constexpr (sizes.a < sizes.b) { for (; i < sizes.b; i++) { ret += b[i] * b[i]; } }
 
 				return ret;
 				}

@@ -178,16 +178,39 @@ namespace utils::graphics::colour
 					this->a = alpha;
 					}
 	#pragma endregion constructors
-				
-				utils_gpu_available constexpr rgb<T, true> blend(const rgb<T, true>& foreground) noexcept
+
+				utils_gpu_available constexpr rgb<T, 4> blend(const rgb<T, 4>& foreground) const noexcept
 					requires(has_alpha)
 					{
-					rgb<T, true> ret;
+					rgb<T, 4> ret;
 					ret.a = 1.f - (1.f - foreground.a) * (1.f - this->a);
 					if (ret.a < 1.0e-6f) { return ret; } // Fully transparent -- r,g,b not important
 					ret.r = foreground.r * foreground.a / ret.a + this->r * this->a * (1.f - foreground.a) / ret.a;
 					ret.g = foreground.g * foreground.a / ret.a + this->g * this->a * (1.f - foreground.a) / ret.a;
 					ret.b = foreground.b * foreground.a / ret.a + this->b * this->a * (1.f - foreground.a) / ret.a;
+					return ret;
+					}
+				utils_gpu_available constexpr rgb<T, 4> blend(const rgb<T, 4>& foreground) const noexcept
+					requires(!has_alpha)
+					{
+					rgb<T, 4> ret;
+					ret.a = 1.f - (1.f - foreground.a);
+					if (ret.a < 1.0e-6f) { return ret; } // Fully transparent -- r,g,b not important
+					ret.r = foreground.r * foreground.a / ret.a + this->r * (1.f - foreground.a) / ret.a;
+					ret.g = foreground.g * foreground.a / ret.a + this->g * (1.f - foreground.a) / ret.a;
+					ret.b = foreground.b * foreground.a / ret.a + this->b * (1.f - foreground.a) / ret.a;
+					return ret;
+					}
+				utils_gpu_available constexpr rgb<T, 4> test_blend(const rgb<T, 4>& foreground) const noexcept
+					requires(has_alpha)
+					{
+					rgb<T, 4> ret;
+					ret.a = utils::math::min(1.f, this->a + foreground.a);
+					const float remaining_a{1.f - foreground.a};
+					const float background_a{utils::math::min(remaining_a, this->a)};
+					ret.r = (foreground.r * foreground.a) + (background_a * this->r);
+					ret.g = (foreground.g * foreground.a) + (background_a * this->g);
+					ret.b = (foreground.b * foreground.a) + (background_a * this->b);
 					return ret;
 					}
 

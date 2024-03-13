@@ -18,9 +18,9 @@ namespace utils
 			public:
 				static constexpr matrix_memory memory_layout{MEMORY_LAYOUT};
 				static constexpr math::vec2s static_sizes {WIDTH, HEIGHT};
-				static constexpr size_t      static_size  {static_sizes.x * static_sizes.y};
-				static constexpr size_t      static_width {static_sizes.x};
-				static constexpr size_t      static_height{static_sizes.y};
+				static constexpr size_t      static_size  {WIDTH * HEIGHT};
+				static constexpr size_t      static_width {WIDTH };
+				static constexpr size_t      static_height{HEIGHT};
 
 				utils_gpu_available math::vec2s sizes () const noexcept { return static_sizes  ; }
 				utils_gpu_available size_t      size  () const noexcept { return static_size   ; }
@@ -181,7 +181,7 @@ namespace utils
 		public:
 			using container_t = container_T;
 
-			utils_gpu_available matrix_wrapper(const container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
+			utils_gpu_available constexpr matrix_wrapper(const container_T& container) requires(WIDTH != 0 && HEIGHT != 0) :
 				base_t{},
 				_container{container}
 				{
@@ -217,15 +217,19 @@ namespace utils
 	template <typename T, size_t WIDTH = 0, size_t HEIGHT = 0, matrix_memory MEMORY_LAYOUT = matrix_memory::width_first>
 	struct matrix : matrix_wrapper<std::array<T, WIDTH * HEIGHT>, WIDTH, HEIGHT, MEMORY_LAYOUT>
 		{
-		using wrapper_t = std::array<T, WIDTH* HEIGHT>;
-		matrix(const math::vec2s& sizes) : wrapper_t{sizes, {}} {}
+		using container_t = std::array<T, WIDTH* HEIGHT>;
+		using wrapper_t = matrix_wrapper<container_t, WIDTH, HEIGHT, MEMORY_LAYOUT>;
+
+		template <typename ...Args>
+		utils_gpu_available constexpr matrix(Args&&... args) : wrapper_t{container_t{std::forward<Args>(args)...}} {}
 		};
 
 	template <typename T, matrix_memory MEMORY_LAYOUT>
 	struct matrix<T, 0, 0, MEMORY_LAYOUT> : matrix_wrapper<std::vector<T>, 0, 0, MEMORY_LAYOUT>
 		{
-		using wrapper_t = matrix_wrapper<std::vector<T>, 0, 0, MEMORY_LAYOUT>;
-		matrix(const math::vec2s& sizes) : wrapper_t{sizes, std::vector<T>(sizes.x * sizes.y)} {}
+		using container_t = std::vector<T>;
+		using wrapper_t = matrix_wrapper<container_t, 0, 0, MEMORY_LAYOUT>;
+		matrix(const math::vec2s& sizes) : wrapper_t{sizes, container_t(sizes.x * sizes.y)} {}
 		};
 	}
 
