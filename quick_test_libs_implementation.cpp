@@ -3,4 +3,4 @@
 //#include "include/utils/math/geometry/voronoi/voronoi.h"
 
 #define utils_implementation
-#include "include/utils/console/initializer.h"
+//#include "include/utils/console/initializer.h"

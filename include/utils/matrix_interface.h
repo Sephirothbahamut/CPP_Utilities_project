@@ -193,6 +193,11 @@ namespace utils
 				//		}
 				//	}
 				}
+			
+			utils_gpu_available constexpr matrix_wrapper(const utils::math::vec2s& sizes) requires(WIDTH == 0 && HEIGHT == 0) :
+				base_t{sizes},
+				_container(sizes.x * sizes.y)
+				{}
 
 			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T container) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
@@ -207,8 +212,10 @@ namespace utils
 				//	}
 				}
 
-			utils_gpu_available constexpr const container_t& container() const noexcept { return _container; }
-			utils_gpu_available constexpr       container_t& container()       noexcept { return _container; }
+			utils_gpu_available constexpr const container_t       & container() const noexcept { return _container; }
+			utils_gpu_available constexpr       container_t       & container()       noexcept { return _container; }
+			utils_gpu_available constexpr const base_t::value_type* data     () const noexcept { return container().data(); }
+			utils_gpu_available constexpr       base_t::value_type* data     ()       noexcept { return container().data(); }
 
 		private:
 			container_t _container;
@@ -230,6 +237,9 @@ namespace utils
 		using container_t = std::vector<T>;
 		using wrapper_t = matrix_wrapper<container_t, 0, 0, MEMORY_LAYOUT>;
 		matrix(const math::vec2s& sizes) : wrapper_t{sizes, container_t(sizes.x * sizes.y)} {}
+
+		template <class range_t>
+		matrix(const math::vec2s& sizes, const range_t& range) : wrapper_t{sizes, container_t(range.begin(), range.end())} {}
 		};
 	}
 

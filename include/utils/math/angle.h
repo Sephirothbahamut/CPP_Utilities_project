@@ -257,7 +257,7 @@ namespace utils::math
 		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> atan (float n         ) noexcept { return angle::rad<T>::atan (n   ); }
 		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return angle::rad<T>::atan2(a, b); }
 		}
-	}
+	} 
 
 //namespace utils::output
 //	{

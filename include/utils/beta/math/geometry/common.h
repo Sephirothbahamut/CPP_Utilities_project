@@ -25,6 +25,13 @@ namespace utils::math::geometry
 			constexpr side() = default; // No need to specify utils_gpu_available for defaults
 			utils_gpu_available constexpr side(float value) : _value{value < math::constants::epsilonf ? -1.f : value > math::constants::epsilonf ? 1.f : 0.f }  {}
 
+			utils_gpu_available constexpr bool is_exactly_left      () const noexcept { return _value <  0.f; }
+			utils_gpu_available constexpr bool is_exactly_coincident() const noexcept { return _value == 0.f; }
+			utils_gpu_available constexpr bool is_exactly_right     () const noexcept { return _value >  0.f; }
+			utils_gpu_available constexpr bool is_left              () const noexcept { return _value <  -utils::math::constants::epsilonf; }
+			utils_gpu_available constexpr bool is_coincident        () const noexcept { return _value >= -utils::math::constants::epsilonf && _value <= utils::math::constants::epsilonf; }
+			utils_gpu_available constexpr bool is_right             () const noexcept { return _value >   utils::math::constants::epsilonf; }
+
 			utils_gpu_available static consteval side left      () noexcept { return {-1.f}; }
 			utils_gpu_available static consteval side right     () noexcept { return { 1.f}; }
 			utils_gpu_available static consteval side coincident() noexcept { return { 0.f}; }
@@ -40,16 +47,23 @@ namespace utils::math::geometry
 	utils_gpu_available constexpr float  operator* (const float& f, const side& side) noexcept { return f * side.value(); }
 	utils_gpu_available constexpr float& operator*=(      float& f, const side& side) noexcept { return f = f * side.value(); }
 	utils_gpu_available constexpr bool   operator==(      float& f, const side& side) noexcept { return (math::sign(f) == math::sign(side.value())) || (f == 0.f && side.value() == 0.f); }
-
+	
 	struct distance_signed
 		{
-		float value;
+		float value{std::numeric_limits<float>::infinity()};
 		utils_gpu_available constexpr float distance() const noexcept { return math::abs(value); }
 		utils_gpu_available constexpr side  side    () const noexcept { return {value}; }
 		utils_gpu_available constexpr distance_signed operator-() const noexcept { return {-value}; }
 		};
 
-	struct closest_point_distance_t  { vec2f closest; distance_signed distance_signed; };
+	struct closest_point_distance_t  
+		{ 
+		vec2f closest; distance_signed distance_signed; 
+		utils_gpu_available static constexpr closest_point_distance_t pick_closest(const closest_point_distance_t& a, const closest_point_distance_t& b) noexcept
+			{
+			return a.distance_signed.distance() < b.distance_signed.distance() ? a : b;
+			}
+		};
 	struct closest_points_distance_t 
 		{
 		vec2f closest_in_source; 
@@ -103,7 +117,7 @@ namespace utils::math::geometry
 					
 					utils_gpu_available constexpr side                      default_side                (const concepts::any auto& other) const noexcept { return crtp::derived().distance_signed(other).side    (); }
 					utils_gpu_available constexpr float                     default_distance            (const concepts::any auto& other) const noexcept { return crtp::derived().distance_signed(other).distance(); }
-					utils_gpu_available constexpr geometry::distance_signed default_distance_signed     (const concepts::any auto& other) const noexcept { return {crtp::derived().distance(other) * crtp::derived().side_of(other)}; }
+					utils_gpu_available constexpr geometry::distance_signed default_distance_signed     (const concepts::any auto& other) const noexcept { return {.value{crtp::derived().distance(other) * crtp::derived().side_of(other)}}; }
 					utils_gpu_available constexpr vec2f                     default_closest_point       (const concepts::any auto& other) const noexcept { return crtp::derived().closest_and_distance(other).closest ; }
 					utils_gpu_available constexpr closest_point_distance_t  default_closest_and_distance(const concepts::any auto& other) const noexcept { return {crtp::derived().closest_point(other), crtp::derived().distance_signed(other)}; }
 					utils_gpu_available constexpr closest_points_distance_t default_closest_pair        (const concepts::any auto& other) const noexcept { return {crtp::derived().closest_point(other), other.closest_point(crtp::derived()), crtp::derived().distance_signed(other)}; }

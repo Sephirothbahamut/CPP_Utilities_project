@@ -30,10 +30,18 @@ namespace utils::math::geometry::shape::interface
 
 namespace utils::math::geometry::shape
 	{
-	struct segment : utils::math::geometry::shape::interface::segment<segment>, utils::math::geometry::shape::details::ab_types::view {};
+	struct segment : utils::math::geometry::shape::interface::segment<segment>, utils::math::geometry::shape::details::ab_types::data 
+		{
+		using utils::math::geometry::shape::details::ab_types::data::data;
+		utils_gpu_available segment(const ::utils::math::vecref2f& a, const ::utils::math::vecref2f& b) : utils::math::geometry::shape::details::ab_types::data{a, b} {}
+		};
 
 	namespace view
 		{
-		struct segment : utils::math::geometry::shape::interface::segment<segment>, utils::math::geometry::shape::details::ab_types::data {};
+		struct segment : utils::math::geometry::shape::interface::segment<segment>, utils::math::geometry::shape::details::ab_types::view 
+			{
+			using utils::math::geometry::shape::details::ab_types::view::view;
+			utils_gpu_available segment(const ::utils::math::vecref2f& a, const ::utils::math::vecref2f& b) : utils::math::geometry::shape::details::ab_types::view{a, b} {}
+			};
 		}
 	}
