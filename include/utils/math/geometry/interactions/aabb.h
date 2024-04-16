@@ -80,7 +80,7 @@ namespace utils::math
 		}
 
 	template <typename T>
-	std::optional<vec2f> rect<T>::intersection(const geometry::point& other) const noexcept
+	std::optional<vec2f> rect<T>::intersection_with(const geometry::point& other) const noexcept
 		{
 		if (intersects(other)) { return other; }
 		}
@@ -115,11 +115,11 @@ namespace utils::math
 		return false;
 		}
 	template <typename T>
-	inline std::optional<vec2f> rect<T>::intersection(const geometry::segment& other) const noexcept
+	inline std::optional<vec2f> rect<T>::intersection_with(const geometry::segment& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{geometry::segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{geometry::segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -147,11 +147,11 @@ namespace utils::math
 		return false;
 		}
 	template <typename T>
-	inline std::optional<vec2f> rect<T>::intersection(const geometry::aabb& other) const noexcept
+	inline std::optional<vec2f> rect<T>::intersection_with(const geometry::aabb& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{geometry::segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{geometry::segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -186,11 +186,11 @@ namespace utils::math
 		return false;
 		}
 	template <typename T>
-	inline std::optional<vec2f> rect<T>::intersection(const geometry::polygon& other) const noexcept
+	inline std::optional<vec2f> rect<T>::intersection_with(const geometry::polygon& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{geometry::segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{geometry::segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}

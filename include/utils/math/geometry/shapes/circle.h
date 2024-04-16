@@ -28,7 +28,7 @@ namespace utils::math::geometry
 			using shape_base<circle>::distance_min;
 			using shape_base<circle>::vector_to;
 			using shape_base<circle>::intersects;
-			using shape_base<circle>::intersection;
+			using shape_base<circle>::intersection_with;
 			using shape_base<circle>::contains;
 			using shape_base<circle>::collides_with;
 			
@@ -37,25 +37,25 @@ namespace utils::math::geometry
 			
 			vec2f                closest_point_to(const segment& other) const noexcept;
 			bool                 intersects      (const segment& other) const noexcept;
-			std::optional<vec2f> intersection    (const segment& other) const noexcept;
+			std::optional<vec2f> intersection_with(const segment& other) const noexcept;
 			bool                 contains        (const segment& other) const noexcept;
 			
 			vec2f                closest_point_to(const aabb   & other) const noexcept;
 			vec2f                distance_min    (const aabb   & other) const noexcept;
 			bool                 intersects      (const aabb   & other) const noexcept;
-			std::optional<vec2f> intersection    (const aabb   & other) const noexcept;
+			std::optional<vec2f> intersection_with(const aabb   & other) const noexcept;
 			bool                 contains        (const aabb   & other) const noexcept;
 			
 			vec2f                closest_point_to(const polygon& other) const noexcept;
 			vec2f                distance_min    (const polygon& other) const noexcept;
 			bool                 intersects      (const polygon& other) const noexcept;
-			std::optional<vec2f> intersection    (const polygon& other) const noexcept;
+			std::optional<vec2f> intersection_with(const polygon& other) const noexcept;
 			bool                 contains        (const polygon& other) const noexcept;
 			
 			vec2f                closest_point_to(const circle & other) const noexcept;
 			vec2f                distance_min    (const circle & other) const noexcept;
 			bool                 intersects      (const circle & other) const noexcept;
-			std::optional<vec2f> intersection    (const circle & other) const noexcept;
+			std::optional<vec2f> intersection_with(const circle & other) const noexcept;
 			bool                 contains        (const circle & other) const noexcept;
 			
 			inline circle& scale_self    (const float      & scaling    ) noexcept { center.scale_self (scaling    ); radius *= scaling; return *this; };

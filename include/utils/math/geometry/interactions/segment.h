@@ -41,7 +41,7 @@ namespace utils::math::geometry
 		return intersects_line(other) && other.intersects_line(*this);
 		}
 
-	inline std::optional<vec2f> segment::intersection(const segment& other) const noexcept
+	inline std::optional<vec2f> segment::intersection_with(const segment& other) const noexcept
 		{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 		vec2f s1, s2;
 		s1.x = b.x - a.x;
@@ -78,12 +78,12 @@ namespace utils::math::geometry
 		return intersects(segment{other.ul(), other.ur()}) || intersects(segment{other.ur(), other.dr()}) || intersects(segment{other.dr(), other.dl()}) || intersects(segment{other.dl(), other.ul()});
 		}
 
-	inline std::optional<vec2f> segment::intersection(const aabb& other) const noexcept
+	inline std::optional<vec2f> segment::intersection_with(const aabb& other) const noexcept
 		{//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-		if (auto opt{intersection(segment{other.ul(), other.ur()})}) { return opt; }
-		if (auto opt{intersection(segment{other.ur(), other.dr()})}) { return opt; }
-		if (auto opt{intersection(segment{other.dr(), other.dl()})}) { return opt; }
-		return       intersection(segment{other.dl(), other.ul()});
+		if (auto opt{intersection_with(segment{other.ul(), other.ur()})}) { return opt; }
+		if (auto opt{intersection_with(segment{other.ur(), other.dr()})}) { return opt; }
+		if (auto opt{intersection_with(segment{other.dr(), other.dl()})}) { return opt; }
+		return       intersection_with(segment{other.dl(), other.ul()});
 		}
 
 	inline bool segment::contains(const aabb& other) const noexcept
@@ -115,11 +115,11 @@ namespace utils::math::geometry
 		return false;
 		}
 
-	inline std::optional<vec2f> segment::intersection(const polygon& other) const noexcept
+	inline std::optional<vec2f> segment::intersection_with(const polygon& other) const noexcept
 		{
 		for (const auto& edge : other.get_edges())
 			{
-			if (auto opt{intersection(segment{edge})}) { return opt; }
+			if (auto opt{intersection_with(segment{edge})}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -144,7 +144,7 @@ namespace utils::math::geometry
 		return distance_min(other.center) < other.radius;
 		}
 
-	inline std::optional<vec2f> segment::intersection(const circle& other) const noexcept
+	inline std::optional<vec2f> segment::intersection_with(const circle& other) const noexcept
 		{
 		//TODO
 		return std::nullopt;

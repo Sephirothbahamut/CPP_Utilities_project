@@ -78,7 +78,7 @@ namespace utils::math::geometry
 			std::optional<point> intersects(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
-			std::optional<point> intersection(const other_t& b) const noexcept;
+			std::optional<point> intersection_with(const other_t& b) const noexcept;
 
 			template <concepts::shape other_t>
 			bool contains(const other_t& b) const noexcept;

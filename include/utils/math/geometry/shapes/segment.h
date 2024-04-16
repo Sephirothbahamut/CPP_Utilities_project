@@ -101,7 +101,7 @@ namespace utils::math::geometry
 			using shape_base<segment>::distance_min;
 			using shape_base<segment>::vector_to;
 			using shape_base<segment>::intersects;
-			using shape_base<segment>::intersection;
+			using shape_base<segment>::intersection_with;
 			using shape_base<segment>::contains;
 			using shape_base<segment>::collides_with;
 
@@ -111,22 +111,22 @@ namespace utils::math::geometry
 
 			closest_point_and_distance_t closest_point_and_distance(const segment& other) const noexcept;
 			bool                 intersects      (const segment& other) const noexcept;
-			std::optional<vec2f> intersection    (const segment& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const segment& other) const noexcept;
 			bool                 contains        (const segment& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const aabb& other) const noexcept;
 			bool                 intersects      (const aabb& other) const noexcept;
-			std::optional<vec2f> intersection    (const aabb& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const aabb& other) const noexcept;
 			bool                 contains        (const aabb& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const polygon& other) const noexcept;
 			bool                 intersects      (const polygon& other) const noexcept;
-			std::optional<vec2f> intersection    (const polygon& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const polygon& other) const noexcept;
 			bool                 contains        (const polygon& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const circle& other) const noexcept;
 			bool                 intersects      (const circle& other) const noexcept;
-			std::optional<vec2f> intersection    (const circle& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const circle& other) const noexcept;
 			bool                 contains        (const circle& other) const noexcept;
 			
 			inline segment& scale_self    (const float      & scaling    ) noexcept { a.scale_self    (scaling    ); b.scale_self    (scaling    ); return *this; }

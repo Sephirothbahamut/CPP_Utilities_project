@@ -36,7 +36,7 @@ namespace utils::math::geometry
 
 	template <typename derived_t>
 	template <concepts::shape other_t>
-	std::optional<point> shape_base<derived_t>::intersection(const other_t& b) const noexcept { return derived().intersects(b) ? std::optional<point>{derived().closest_point_to(b)} : std::nullopt; };
+	std::optional<point> shape_base<derived_t>::intersection_with(const other_t& b) const noexcept { return derived().intersects(b) ? std::optional<point>{derived().closest_point_to(b)} : std::nullopt; };
 
 	//template <typename derived_t>
 	//template <concepts::shape other_t>
@@ -48,7 +48,7 @@ namespace utils::math::geometry
 		{
 		/*if constexpr (!  hollow)*/ { if (derived().contains(b)) { return true; } }
 		/*if constexpr (!b.hollow)*/ { if (b.contains(derived())) { return true; } }
-		return derived().intersection(b).has_value();
+		return derived().intersection_with(b).has_value();
 		};
 
 	template <typename derived_t> derived_t shape_base<derived_t>::scale    (const float      & scaling    ) const noexcept { auto ret{derived()}; ret.scale_self    (scaling    ); return ret; }

@@ -41,5 +41,5 @@
 
 namespace utils::console
 	{
-	char get_ch() noexcept { return _getch(); }
+	char get_ch() noexcept { return static_cast<char>(_getch()); }
 	}

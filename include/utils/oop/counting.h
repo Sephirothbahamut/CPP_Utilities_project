@@ -50,11 +50,11 @@ namespace utils::oop
 			counting() noexcept { _count++; }
 			~counting() noexcept { _count--; }
 
-			counting(const counting& copy) noexcept { _count++; }
-			counting& operator=(const counting& copy) noexcept = default;
+			counting(const counting&) noexcept { _count++; }
+			counting& operator=(const counting&) noexcept = default;
 
-			counting(counting&& move) noexcept { _count++; }
-			counting& operator=(counting&& move) noexcept = default;
+			counting(counting&&) noexcept { _count++; }
+			counting& operator=(counting&&) noexcept = default;
 
 			static void reset() { _count = 0; }
 

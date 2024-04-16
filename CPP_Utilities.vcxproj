@@ -119,7 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +135,7 @@
     <ClInclude Include="include\utils\beta\math\geometry\common.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\ab_types.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\points_types.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\bezier.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\capsule.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\circle.h" />

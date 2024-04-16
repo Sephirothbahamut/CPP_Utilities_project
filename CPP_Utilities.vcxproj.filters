@@ -481,6 +481,9 @@
     <ClInclude Include="include\utils\math\ranged.h">
       <Filter>Utils\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions.h">
+      <Filter>Beta\math\geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

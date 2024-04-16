@@ -42,7 +42,7 @@
 #include "include/utils/containers/resource_manager.h"
 
 #include "include/utils/beta/math/geometry/interface/circle.h"
-#include "include/utils/beta/math/geometry/interface/segment.h"
+//#include "include/utils/beta/math/geometry/interface/segment.h"
 #include "include/utils/beta/math/geometry/interface/point.h"
 
 //using civ = utils::oop::counting_invalidating_move;
@@ -171,37 +171,49 @@ int main()
 
 	using namespace utils::output;
 
-	//utils::math::geometry::circle circ{.center{0.f, 0.f}, .radius{5.f}};
-	//
-	//utils::math::geometry::point p{8.f, 1.f};
-	//
-	//static_assert(utils::math::geometry::concepts::shape<decltype(p)>);
-	//
-	//auto ret{circ.contains(p)};
-	//std::cout << ret << std::endl;
-	//
-	//utils::math::transform2 transform {{0.f, 0.f}, utils::math::angle::degf{90.f}, 2.f};
-	//utils::math::transform2 transform2{transform.inverse()};
-	//
-	//auto circ2{circ.transform(transform)};
-	//circ.transform_self(transform.inverse());
-	//
-	//std::cout << circ .contains(p) << std::endl;
-	//std::cout << circ2.contains(p) << std::endl;
-	//
-	//std::vector<utils::math::vec2f> points{{1.f, 2.f},{5.f, 6.f},{3.f, 2.f},{7.f, 8.f},{8.f, 3.f}};
-	//utils::math::geometry::aabb aabb{.ll{0.f}, .up{0.f}, .rr{10.f}, .dw{10.f}};
-	//utils::math::geometry::voronoi::graph voronoi{std::views::all(points), aabb};
-	////static_assert(utils::math::geometry::concepts::shape<utils::math::geometry::convex_polygon>);
-	////p.closest_point_and_distance(circ);
-	////std::cout << circ.contains(circ);
-	//
-	////if (auto opt{circ.collision(p)})
-	////	{
-	////	std::cout << opt.value();
-	////	}
-	//
-	//aabb.contains(p);
+	utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
+	utils::math::geometry::shape::point point{0.f, 1.f};
+	//utils::math::geometry::shape::segment segment{point, point};
+
+	using variant_t = std::variant
+		<
+		utils::math::geometry::shape::point,
+		utils::math::geometry::shape::circle//,
+		//utils::math::geometry::shape::segment//,
+		>;
+	std::vector<variant_t> shapes;
+	shapes.emplace_back(utils::math::geometry::shape::point {0.f, 0.1f});
+	shapes.emplace_back(utils::math::geometry::shape::circle{{0.f, 0.f}, 5.f});
+	//shapes.emplace_back(utils::math::geometry::shape::segment{{.5f, -1.f}, {.5f, 1.f}});
+
+	for (const auto& shape_a : shapes)
+		{
+		for (const auto& shape_b : shapes)
+			{
+			bool collides{false};
+
+			std::visit([&](const auto& shape_a)
+				{
+				std::visit([&](const auto& shape_b)
+					{
+					using a_shape_t = std::remove_reference<decltype(shape_a)>::type;
+					using b_shape_t = std::remove_reference<decltype(shape_b)>::type;
+					
+					shape_a.contains             (shape_b);
+					shape_a.distance             (shape_b);
+					shape_a.side_of              (shape_b);
+					shape_a.closest_pair         (shape_b);
+					shape_a.closest_point_to     (shape_b);
+					shape_a.closest_with_distance(shape_b);
+
+					shape_a.intersects           (shape_b);
+					shape_a.intersection_with    (shape_b);
+					shape_a.collides_with        (shape_b);
+					}, shape_b);
+				}, shape_a);
+			}
+		}
+
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;
 	for (size_t i = 0; i < 256; i++)

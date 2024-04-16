@@ -13,10 +13,10 @@ namespace utils::math::geometry::shape::interface
 		using utils::math::geometry::shape::details::points_types::interface<derived_t>::get_edges;
 
 		#pragma region any
-		utils_gpu_available constexpr closest_point_distance_t  closest_and_distance(const concepts::any auto& other) const noexcept
+		utils_gpu_available constexpr closest_point_with_distance_t  closest_and_distance(const concepts::any auto& other) const noexcept
 			{
-			closest_point_distance_t closest_current;
-			for (const auto& edge : get_edges()) { closest_current = closest_point_distance_t::pick_closest(closest_current, edge.closest_and_distance(other)); }
+			closest_point_with_distance_t closest_current;
+			for (const auto& edge : get_edges()) { closest_current = closest_point_with_distance_t::pick_closest(closest_current, edge.closest_and_distance(other)); }
 			return closest_current;
 			}
 		#pragma endregion any

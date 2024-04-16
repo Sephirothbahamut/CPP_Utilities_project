@@ -96,8 +96,8 @@ namespace utils
 		public:
 			trackable() noexcept : tup{this} {} //Create a new tracker for myself
 
-			trackable(const trackable& copy) noexcept : tup{this} {} //Create a new tracker for myself
-			trackable& operator=(const trackable& copy) noexcept { return *this; } //No need to create a new tracker; it already exists and points to my current self.
+			trackable(const trackable&) noexcept : tup{this} {} //Create a new tracker for myself
+			trackable& operator=(const trackable&) noexcept { return *this; } //No need to create a new tracker; it already exists and points to my current self.
 
 			trackable(trackable&& move) noexcept : tup{std::move(move), this} {}
 			trackable& operator=(trackable&& move) noexcept { tup::move(std::move(move), this); return *this; }

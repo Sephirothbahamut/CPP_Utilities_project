@@ -5,58 +5,67 @@ namespace utils::math::geometry::shape::details
 	{
 	namespace ab_types
 		{
+		struct data
+			{
+			data(const ::utils::math::vec2f& point_a, const ::utils::math::vec2f& point_b) : a{point_a}, b{point_b} {}
+			::utils::math::vec2f a;
+			::utils::math::vec2f b;
+			};
+		struct view
+			{
+			::utils::math::vecref2f a;
+			::utils::math::vecref2f b;
+			};
+
 		template <typename derived_t>
 		struct interface : details::base<derived_t>
 			{
-			using crtp = details::base<derived_t>;
-
-			utils_gpu_available constexpr const auto& a() const noexcept { return crtp::derived().a(); }
-			utils_gpu_available constexpr const auto& b() const noexcept { return crtp::derived().b(); }
+			using crtp = details::base<derived_t>::crtp;
 		
-			utils_gpu_available constexpr float length2() const noexcept { return vec2f::distance2(a(), b()); }
-			utils_gpu_available constexpr float length () const noexcept { return vec2f::distance (a(), b()); }
+			utils_gpu_available constexpr float length2() const noexcept { return vec2f::distance2(crtp::derived().a, crtp::derived().b); }
+			utils_gpu_available constexpr float length () const noexcept { return vec2f::distance (crtp::derived().a, crtp::derived().b); }
 		
-			utils_gpu_available constexpr const vec2f& operator[](const size_t& index) const noexcept { return index == 0 ? a() : b(); }
-			utils_gpu_available constexpr       vec2f& operator[](const size_t& index)       noexcept { return index == 0 ? a() : b(); }
+			utils_gpu_available constexpr const vec2f& operator[](const size_t& index) const noexcept { return index == 0 ? crtp::derived().a : crtp::derived().b; }
+			utils_gpu_available constexpr       vec2f& operator[](const size_t& index)       noexcept { return index == 0 ? crtp::derived().a : crtp::derived().b; }
 		
 			/// <summary> Unit vector from a towards b. </summary>
-			utils_gpu_available constexpr vec2f forward() const noexcept { return (b() - a()).normalize(); }
+			utils_gpu_available constexpr vec2f forward() const noexcept { return (crtp::derived().b - crtp::derived().a).normalize(); }
 			/// <summary> Unit vector perpendicular on the left from a to b. </summary>
 			utils_gpu_available constexpr vec2f perpendicular_right() const noexcept { return forward().perpendicular_right(); }
 			/// <summary> Unit vector perpendicular on the right from a to b. </summary>
 			utils_gpu_available constexpr vec2f perpendicular_left()  const noexcept { return forward().perpendicular_left (); }
 			
-			utils_gpu_available constexpr vec2f closest_vertex(const concepts::point auto& other) const noexcept { return other.distance(a()) < other.distance_min(b()) ? a() : b(); }
+			utils_gpu_available constexpr vec2f closest_vertex(const concepts::point auto& other) const noexcept { return other.distance(crtp::derived().a) < other.distance_min(crtp::derived().b) ? crtp::derived().a : crtp::derived().b; }
 
 			utils_gpu_available constexpr float some_significant_name_ive_yet_to_figure_out(const concepts::point auto& other) const noexcept
 				{
-				//signed distance from line in proportion to the distance between a and b, idk, i'm not a math guy
-				//enough alone to get the sign for side, but needs to be divided by (a-b).length to get the signed distance
-				return ((other.x - a().x) * (b().y - a().y)) - ((b().x - a().x) * (other.y - a().y));
+				//signed distance from line in proportion to the distance between crtp::derived().a and crtp::derived().b, idk, i'm not crtp::derived().a math guy
+				//enough alone to get the sign for side, but needs to be divided by (crtp::derived().a-crtp::derived().b).length to get the signed distance
+				return ((other.x - crtp::derived().a.x) * (crtp::derived().b.y - crtp::derived().a.y)) - ((crtp::derived().b.x - crtp::derived().a.x) * (other.y - crtp::derived().a.y));
 				}
 
-			/// <summary> Projecting point to the line that goes through a-b, at what percentage of the segment a-b it lies. <0 is before a, >1 is after b, proportionally to the a-b distance </summary>
+			/// <summary> Projecting point to the line that goes through a-b, at what percentage of the segment a-b it lies. < 0 is before a, > 1 is after b, proportionally to the a-b distance </summary>
 			utils_gpu_available constexpr float projected_percent(const concepts::point    auto& other) const noexcept
 				{
 				//from shadertoy version, mathematically equivalent I think maybe perhaps, idk, i'm not into maths
-				//const utils::math::vec2f b_a{b()   - a()};
-				//const utils::math::vec2f p_a{other - a()};
+				//const utils::math::vec2f b_a{crtp::derived().b   - crtp::derived().a};
+				//const utils::math::vec2f p_a{other - crtp::derived().a};
 				//return utils::math::vec2f::dot(p_a, b_a) / utils::math::vec2f::dot(b_a, b_a);
 
 				//previous version, mathematically equivalent I think maybe perhaps, idk, i'm not into maths
-				//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-a-point-and-a-line-segment-in-c/
-				const vec2f delta{b() - a()};
-				return ((other.x - a().x) * delta.x + (other.y - a().y) * delta.y) / (delta.x * delta.x + delta.y * delta.y);
+				//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-crtp::derived().a-point-and-crtp::derived().a-line-segment-in-c/
+				const vec2f delta{crtp::derived().b - crtp::derived().a};
+				return ((other.x - crtp::derived().a.x) * delta.x + (other.y - crtp::derived().a.y) * delta.y) / (delta.x * delta.x + delta.y * delta.y);
 				}
 
 			template <bool clamp_a, bool clamp_b>
 			utils_gpu_available constexpr vec2f closest_point_custom_clamp(const concepts::point auto& other) noexcept
 				{
-				const vec2f delta{b() - a()};
+				const vec2f delta{crtp::derived().b - crtp::derived().a};
 				const float t{projected_percent(other)};
-				if constexpr (clamp_a) { if (t < 0.f) { return a(); } }
-				if constexpr (clamp_b) { if (t > 1.f) { return b(); } }
-				return {a().x + t * delta.x, a().y + t * delta.y};
+				if constexpr (clamp_a) { if (t < 0.f) { return crtp::derived().a; } }
+				if constexpr (clamp_b) { if (t > 1.f) { return crtp::derived().b; } }
+				return {crtp::derived().a.x + t * delta.x, crtp::derived().a.y + t * delta.y};
 				}
 
 			#pragma region point
@@ -64,24 +73,8 @@ namespace utils::math::geometry::shape::details
 
 				utils_gpu_available constexpr bool                 contains       (const concepts::point auto& other) const noexcept { return distance(other) == 0; }
 				utils_gpu_available constexpr bool                 intersects     (const concepts::point auto& other) const noexcept { return distance(other) == 0; }
-				utils_gpu_available constexpr std::optional<vec2f> intersection   (const concepts::point auto& other) const noexcept { return intersects(other) ? other.vec : std::nullopt; }
+				utils_gpu_available constexpr std::optional<vec2f> intersection_with   (const concepts::point auto& other) const noexcept { return intersects(other) ? other.vec : std::nullopt; }
 			#pragma endregion point
-			};
-
-		struct data
-			{
-			data(const ::utils::math::vec2f& point_a, const ::utils::math::vec2f& point_b) : point_a{point_a}, point_b{point_b} {}
-			::utils::math::vec2f point_a;
-			::utils::math::vec2f point_b;
-			utils_gpu_available constexpr const auto& a() const noexcept { return point_a; }
-			utils_gpu_available constexpr const auto& b() const noexcept { return point_b; }
-			};
-		struct view
-			{
-			::utils::math::vecref2f point_a;
-			::utils::math::vecref2f point_b;
-			utils_gpu_available constexpr const auto& a() const noexcept { return point_a; }
-			utils_gpu_available constexpr const auto& b() const noexcept { return point_b; }
 			};
 		}
 	}

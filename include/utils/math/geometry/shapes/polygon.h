@@ -73,33 +73,33 @@ namespace utils::math::geometry
 			using shape_base<polygon>::distance_min;
 			using shape_base<polygon>::vector_to;
 			using shape_base<polygon>::intersects;
-			using shape_base<polygon>::intersection;
+			using shape_base<polygon>::intersection_with;
 			using shape_base<polygon>::contains;
 			using shape_base<polygon>::collides_with;
 
 			closest_point_and_distance_t closest_point_and_distance(const point& other) const noexcept;
 			bool                 intersects      (const point& other) const noexcept;
-			std::optional<vec2f> intersection    (const point& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const point& other) const noexcept;
 			bool                 contains        (const point& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const segment& other) const noexcept;
 			bool                 intersects      (const segment& other) const noexcept;
-			std::optional<vec2f> intersection    (const segment& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const segment& other) const noexcept;
 			bool                 contains        (const segment& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const aabb& other) const noexcept;
 			bool                 intersects      (const aabb& other) const noexcept;
-			std::optional<vec2f> intersection    (const aabb& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const aabb& other) const noexcept;
 			bool                 contains        (const aabb& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const polygon& other) const noexcept;
 			bool                 intersects      (const polygon& other) const noexcept;
-			std::optional<vec2f> intersection    (const polygon& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const polygon& other) const noexcept;
 			bool                 contains        (const polygon& other) const noexcept;
 
 			closest_point_and_distance_t closest_point_and_distance(const circle& other) const noexcept;
 			bool                 intersects      (const circle& other) const noexcept;
-			std::optional<vec2f> intersection    (const circle& other) const noexcept;
+			std::optional<vec2f> intersection_with    (const circle& other) const noexcept;
 			bool                 contains        (const circle& other) const noexcept;
 	
 			inline polygon& scale_self    (const float      & scaling    ) noexcept { for(auto& vertex : get_vertices()) { vertex.scale_self    (scaling    ); } return *this; }

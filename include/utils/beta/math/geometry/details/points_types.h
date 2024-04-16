@@ -15,7 +15,6 @@ namespace utils::math::geometry::shape::details
 			{
 			using crtp = details::base<derived_t>;
 
-			utils_gpu_available constexpr const auto& get_points() const noexcept { return crtp::derived().get_points(); }
 			//template <typename vert_T> 
 			class edges_view : public std::ranges::view_interface<utils::math::geometry::shape::view::segment>
 				{
@@ -59,20 +58,20 @@ namespace utils::math::geometry::shape::details
 				private:
 				};
 
-			utils_gpu_available constexpr edges_view get_edges() const noexcept { return edges_view{get_points()}; }
+			utils_gpu_available constexpr edges_view get_edges() const noexcept { return edges_view{derived_t::points}; }
 			};
 
 		struct data
 			{
 			utils_gpu_available data(std::initializer_list<utils::math::vec2f> points) : points{points} {}
 			std::vector<utils::math::vec2f> points;
-			utils_gpu_available constexpr const auto& get_points() const noexcept { return points; }
+			utils_gpu_available constexpr const auto& get_vertices() const noexcept { return points; }
 			};
 
 		struct view
 			{
 			std::span<utils::math::vec2f> points;
-			utils_gpu_available constexpr const auto& get_points() const noexcept { return points; }
+			utils_gpu_available constexpr const auto& get_vertices() const noexcept { return points; }
 			};
 		}
 	}

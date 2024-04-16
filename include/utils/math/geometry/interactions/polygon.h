@@ -23,11 +23,11 @@ namespace utils::math::geometry
 		return false;
 		}
 
-	inline std::optional<vec2f> polygon::intersection(const point& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection_with(const point& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -91,11 +91,11 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	inline std::optional<vec2f> polygon::intersection(const segment& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection_with(const segment& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -119,11 +119,11 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	inline std::optional<vec2f> polygon::intersection(const aabb& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection_with(const aabb& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -161,11 +161,11 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	inline std::optional<vec2f> polygon::intersection(const polygon& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection_with(const polygon& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}
@@ -204,11 +204,11 @@ namespace utils::math::geometry
 			}
 		return false;
 		}
-	inline std::optional<vec2f> polygon::intersection(const circle& other) const noexcept
+	inline std::optional<vec2f> polygon::intersection_with(const circle& other) const noexcept
 		{
 		for (const auto& edge : get_edges())
 			{
-			if (auto opt{segment{edge}.intersection(other)}) { return opt; }
+			if (auto opt{segment{edge}.intersection_with(other)}) { return opt; }
 			}
 		return std::nullopt;
 		}

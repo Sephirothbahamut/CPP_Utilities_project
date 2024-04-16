@@ -38,7 +38,7 @@ namespace utils::math::geometry
 		return false;
 		}
 		
-	inline std::optional<vec2f> circle::intersection(const segment& other) const noexcept
+	inline std::optional<vec2f> circle::intersection_with(const segment& other) const noexcept
 		{
 		//TODO
 		return std::nullopt;
@@ -56,19 +56,19 @@ namespace utils::math::geometry
 	inline vec2f                circle::closest_point_to(const aabb& other) const noexcept { return {}; } //TODO
 	inline vec2f                circle::distance_min    (const aabb& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::intersects      (const aabb& other) const noexcept { return {}; } //TODO
-	inline std::optional<vec2f> circle::intersection    (const aabb& other) const noexcept { return {}; } //TODO
+	inline std::optional<vec2f> circle::intersection_with    (const aabb& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::contains        (const aabb& other) const noexcept { return {}; } //TODO
 	
 	inline vec2f                circle::closest_point_to(const polygon& other) const noexcept { return {}; } //TODO
 	inline vec2f                circle::distance_min    (const polygon& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::intersects      (const polygon& other) const noexcept { return {}; } //TODO
-	inline std::optional<vec2f> circle::intersection    (const polygon& other) const noexcept { return {}; } //TODO
+	inline std::optional<vec2f> circle::intersection_with    (const polygon& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::contains        (const polygon& other) const noexcept { return {}; } //TODO
 	
 	inline vec2f                circle::closest_point_to(const circle& other) const noexcept { return {}; } //TODO
 	inline vec2f                circle::distance_min    (const circle& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::intersects      (const circle& other) const noexcept { return {}; } //TODO
-	inline std::optional<vec2f> circle::intersection    (const circle& other) const noexcept { return {}; } //TODO
+	inline std::optional<vec2f> circle::intersection_with    (const circle& other) const noexcept { return {}; } //TODO
 	inline bool                 circle::contains        (const circle& other) const noexcept { return {}; } //TODO
 	utils_disable_warnings_end
 	}

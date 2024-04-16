@@ -18,9 +18,9 @@ namespace utils::math::geometry::shape::interface
 				float h{std::max(utils::math::vec2f::dot(p_a, b_a) / utils::math::vec2f::dot(b_a, b_a), 0.f)};
 				return (p_a - (b_a * h)).get_length();
 				}
-			utils_gpu_available constexpr geometry::distance_signed distance_signed(const concepts::point auto& other) const noexcept { return details::base<derived_t>::default_distance_signed(other); }
+			utils_gpu_available constexpr geometry::distance_t distance_t(const concepts::point auto& other) const noexcept { return details::base<derived_t>::default_distance_signed(other); }
 
-			utils_gpu_available constexpr vec2f closest_point(const concepts::point auto& other) noexcept { return closest_point_custom_clamp<true, false>(other); }
+			utils_gpu_available constexpr vec2f closest_point_to(const concepts::point auto& other) noexcept { return closest_point_custom_clamp<true, false>(other); }
 		#pragma endregion point
 		};
 	}
