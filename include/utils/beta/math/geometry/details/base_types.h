@@ -32,27 +32,30 @@ namespace utils::math::geometry
 			{
 			create() = delete;
 
-			utils_gpu_available static consteval ends_t open    (bool infinite_a = false, bool infinite_b = false) noexcept { return ends_t{.infinite_a{infinite_a}, .infinite_b{infinite_b}, .open{true }}; }
-			utils_gpu_available static consteval ends_t infinite(                                                ) noexcept { return ends_t{.infinite_a{true      }, .infinite_b{true      }, .open{true }}; }
-			utils_gpu_available static consteval ends_t closed  (                                                ) noexcept { return ends_t{.infinite_a{false     }, .infinite_b{false     }, .open{false}}; }
+			utils_gpu_available static consteval ends_t open    (bool finite_a = false, bool finite_b = false) noexcept { return ends_t{.finite_a{finite_a}, .finite_b{finite_b}, .open{true }}; }
+			utils_gpu_available static consteval ends_t infinite(                                            ) noexcept { return ends_t{.finite_a{true    }, .finite_b{true    }, .open{true }}; }
+			utils_gpu_available static consteval ends_t closed  (                                            ) noexcept { return ends_t{.finite_a{false   }, .finite_b{false   }, .open{false}}; }
 			};
 
-		bool infinite_a;
-		bool infinite_b;
+		bool finite_a;
+		bool finite_b;
 		bool open;
 
 		utils_gpu_available inline constexpr bool is_open      () const noexcept { return open; }
 		utils_gpu_available inline constexpr bool is_closed    () const noexcept { return !is_open(); }
-		utils_gpu_available inline constexpr bool is_a_infinite() const noexcept { return is_open() && infinite_a; }
-		utils_gpu_available inline constexpr bool is_b_infinite() const noexcept { return is_open() && infinite_b; }
-		utils_gpu_available inline constexpr bool is_finite    () const noexcept { return (!infinite_a) && (!infinite_b); }
+		utils_gpu_available inline constexpr bool is_a_infinite() const noexcept { return is_open() && !finite_a; }
+		utils_gpu_available inline constexpr bool is_b_infinite() const noexcept { return is_open() && !finite_b; }
+		utils_gpu_available inline constexpr bool is_a_finite  () const noexcept { return is_open() &&  finite_a; }
+		utils_gpu_available inline constexpr bool is_b_finite  () const noexcept { return is_open() &&  finite_b; }
+		utils_gpu_available inline constexpr bool is_finite    () const noexcept { return is_closed() || (finite_a && finite_b); }
+		utils_gpu_available inline constexpr bool is_infinite  () const noexcept { return !is_finite(); }
 		};
 
 	class side
 		{
 		public:
 			constexpr side() = default; // No need to specify utils_gpu_available for defaults
-			utils_gpu_available constexpr side(float value) : _value{value < math::constants::epsilonf ? -1.f : value > math::constants::epsilonf ? 1.f : 0.f }  {}
+			utils_gpu_available constexpr side(float value) : _value{value < -math::constants::epsilonf ? -1.f : value > math::constants::epsilonf ? 1.f : 0.f }  {}
 
 			struct create
 				{
@@ -143,9 +146,9 @@ namespace utils::math::geometry
 
 			template <typename T> concept ab       = any<T> && (T::static_shape_id == shapes_enum::ab      );
 
-			template <typename T> concept line     = ab<T> && (T::ends == ends_t::create::open(true , true ));
-			template <typename T> concept ray      = ab<T> && (T::ends == ends_t::create::open(false, true ));
-			template <typename T> concept segment  = ab<T> && (T::ends == ends_t::create::open(false, false));
+			template <typename T> concept line     = ab<T> && (T::ends == ends_t::create::open(false, false));
+			template <typename T> concept ray      = ab<T> && (T::ends == ends_t::create::open(true , false));
+			template <typename T> concept segment  = ab<T> && (T::ends == ends_t::create::open(true , true ));
 
 			template <typename T> concept polyline = any<T> && (T::static_shape_id == shapes_enum::polyline);
 			template <typename T> concept polygon  = polyline<T> && (T::ends == ends_t::create::closed());

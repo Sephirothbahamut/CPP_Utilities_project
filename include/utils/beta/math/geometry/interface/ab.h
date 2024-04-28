@@ -50,7 +50,8 @@ namespace utils::math::geometry::shape::interface
 				{
 				//signed distance from line in proportion to the distance between derived().a and derived().b, idk, i'm not a math guy
 				//enough alone to get the sign for side, but needs to be divided by (derived().a-derived().b).length to get the signed distance
-				return ((other.x - derived().a.x) * (derived().b.y - derived().a.y)) - ((derived().b.x - derived().a.x) * (other.y - derived().a.y));
+				const float ret{((derived().b.x - derived().a.x) * (other.y - derived().a.y)) - ((other.x - derived().a.x) * (derived().b.y - derived().a.y))};
+				return ret;
 				}
 
 			template <bool clamp_a, bool clamp_b>
@@ -77,9 +78,9 @@ namespace utils::math::geometry::shape
 		::utils::math::vec2f b;
 		};
 
-	using line    = ab<ends_t::create::open(true , true )>;
-	using ray     = ab<ends_t::create::open(false, true )>;
-	using segment = ab<ends_t::create::open(false, false)>;
+	using line    = ab<ends_t::create::open(false, false)>;
+	using ray     = ab<ends_t::create::open(true , false)>;
+	using segment = ab<ends_t::create::open(true , true )>;
 
 	namespace view
 		{
@@ -93,8 +94,8 @@ namespace utils::math::geometry::shape
 			::utils::math::vecref2f b;
 			};
 		
-		using line    = ab<ends_t::create::open(true , true )>;
-		using ray     = ab<ends_t::create::open(false, true )>;
-		using segment = ab<ends_t::create::open(false, false)>;
+		using line    = ab<ends_t::create::open(false, false)>;
+		using ray     = ab<ends_t::create::open(true , false)>;
+		using segment = ab<ends_t::create::open(true , true )>;
 		}
 	}

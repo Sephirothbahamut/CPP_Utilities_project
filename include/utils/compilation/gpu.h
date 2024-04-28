@@ -34,11 +34,11 @@ namespace utils::compilation::gpu
 #endif
 	}
 
-#ifdef __NVCC__
-#define utils_gpu_available __device__ __host__
-#define utils_is_gpu
-#define utils_if_gpu(x) x
+#if defined __NVCC__ || defined __HCC__
+	#define utils_gpu_available __device__ __host__
+	#define utils_is_gpu
+	#define utils_if_gpu(x) x
 #else
-#define utils_gpu_available
-#define utils_if_gpu(x)
+	#define utils_gpu_available
+	#define utils_if_gpu(x)
 #endif

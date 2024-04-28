@@ -41,47 +41,6 @@ namespace utils::math::geometry::interactions
 		//utils_gpu_available constexpr bool                         other_collides_with        (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { return  b.collides_with       (a); }
 		}
 
-	namespace common
-		{
-		namespace common
-			{
-			utils_gpu_available constexpr bool collides_with(const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept
-				{
-				return contains(a, b) || intersects(a, b);
-				}
-
-			utils_gpu_available constexpr vec2f closest_point_to(const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept
-				{
-				return closest_point_of(b, a);
-				}
-
-			//utils_gpu_available constexpr side                          side_of              (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			//utils_gpu_available constexpr float                         distance             (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			
-			//utils_gpu_available constexpr geometry::signed_distance_t   distance_signed      (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			////utils_gpu_available constexpr vec2f                         closest_point_to     (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			utils_gpu_available constexpr closest_point_with_distance_t closest_with_distance(const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			utils_gpu_available constexpr closest_pair_with_distance_t  closest_pair         (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			utils_gpu_available constexpr vec2f                         vector_to            (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			//utils_gpu_available constexpr bool                          intersects           (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			//utils_gpu_available constexpr std::optional<vec2f>          intersection_with    (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			//utils_gpu_available constexpr bool                          contains             (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			////utils_gpu_available constexpr bool                          collides_with        (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
-			}
-
-		namespace point
-			{
-			utils_gpu_available constexpr geometry::side side_of(const shape::concepts::any auto& a, const shape::concepts::point auto& b) noexcept
-				{
-				return {distance(a, b)};
-				}
-			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::any auto& a, const shape::concepts::point auto& b) noexcept
-				{
-				return {distance(a, b)};
-				}
-			}
-		}
-
 	namespace point
 		{
 		namespace common
@@ -161,28 +120,43 @@ namespace utils::math::geometry::interactions
 
 			utils_gpu_available constexpr vec2f closest_point_of(const shape::concepts::point auto& a, const shape::concepts::ab auto& b) noexcept
 				{
-				return b.closest_point_to_custom_clamp<decltype(b)::static_side.is_a_finite(), decltype(b)::static_side.is_b_finite()>(a);
+				constexpr ends_t ends{std::remove_cvref_t<decltype(b)>::static_ends};
+				return b.closest_point_to_custom_clamp<ends.is_a_finite(), ends.is_b_finite()>(a);
 				}
 
 			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::point auto& a, const shape::concepts::ab auto& b) noexcept
 				{ //TODO check left/right sign
 				const float tmp{b.some_significant_name_ive_yet_to_figure_out(a)};
-				return {tmp / b.length()};
+				const float length{shape::segment{b.a, b.b}.length()}; //needs finite length
+
+				constexpr ends_t ends{std::remove_cvref_t<decltype(b)>::static_ends};
+				if constexpr (!ends.is_infinite())
+					{
+					const float projected_percent{b.projected_percent(a)};
+					if constexpr (ends.is_a_finite())
+						{
+						if (projected_percent < 0.f) { return {utils::math::vec2f::distance(a, b.a) * geometry::side{tmp}}; }
+						}
+					if constexpr (ends.is_b_finite())
+						{
+						if (projected_percent > 1.f) { return {utils::math::vec2f::distance(a, b.b) * geometry::side{tmp}}; }
+						}
+					}
+
+				return {tmp / length}; 
 				}
 
 			utils_gpu_available constexpr float distance(const shape::concepts::point auto& a, const shape::concepts::ab auto& b) noexcept
 				{
-				if constexpr (decltype(a)::static_ends.is_finite())
-					{
-					const utils::math::vec2f b_a{b.b - b.a};
-					const utils::math::vec2f p_a{a   - b.a};
-					const float h{utils::math::vec2f::dot(p_a, b_a) / utils::math::vec2f::dot(b_a, b_a)};
-					return (p_a - (b_a * h)).length;
-					}
-				else
-					{
-					return distance_signed(a, b).absolute();
-					}
+				constexpr ends_t ends{std::remove_cvref_t<decltype(b)>::static_ends};
+
+				const utils::math::vec2f b_a{b.b - b.a};
+				const utils::math::vec2f p_a{a   - b.a};
+				float h{utils::math::vec2f::dot(p_a, b_a) / utils::math::vec2f::dot(b_a, b_a)};
+				if constexpr (ends.is_a_finite()) { h = utils::math::max(h, 0.f); }
+				if constexpr (ends.is_b_finite()) { h = utils::math::min(h, 1.f); }
+
+				return (p_a - (b_a * h)).length;
 				}
 			}
 
@@ -359,10 +333,6 @@ namespace utils::math::geometry::interactions
 			}
 		#pragma endregion segment*/
 		}
-	
-	using namespace common::common ;
-	using namespace common::point  ;
-
 
 	using namespace point::common  ;
 	using namespace point::point   ;
@@ -385,4 +355,48 @@ namespace utils::math::geometry::interactions
 	//using namespace polyline::point;
 	//using namespace bezier  ::point;
 	//using namespace polygon ::point;
+
+
+	namespace common
+		{
+		namespace common
+			{
+			utils_gpu_available constexpr bool collides_with(const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept
+				{
+				return interactions::contains(a, b) || interactions::intersects(a, b);
+				}
+
+			utils_gpu_available constexpr vec2f closest_point_to(const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept
+				{
+				return interactions::closest_point_of(b, a);
+				}
+
+			//utils_gpu_available constexpr side                          side_of              (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			//utils_gpu_available constexpr float                         distance             (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			
+			//utils_gpu_available constexpr geometry::signed_distance_t   distance_signed      (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			////utils_gpu_available constexpr vec2f                         closest_point_to     (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			utils_gpu_available constexpr closest_point_with_distance_t closest_with_distance(const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			utils_gpu_available constexpr closest_pair_with_distance_t  closest_pair         (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			utils_gpu_available constexpr vec2f                         vector_to            (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			//utils_gpu_available constexpr bool                          intersects           (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			//utils_gpu_available constexpr std::optional<vec2f>          intersection_with    (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			//utils_gpu_available constexpr bool                          contains             (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			////utils_gpu_available constexpr bool                          collides_with        (const shape::concepts::any auto& a, const shape::concepts::any auto& b) noexcept { utils::concepts::unimplemented_specialization<decltype(a)>(); }
+			}
+
+		namespace point
+			{
+			utils_gpu_available constexpr geometry::side side_of(const shape::concepts::any auto& a, const shape::concepts::point auto& b) noexcept
+				{
+				return {interactions::distance(a, b)};
+				}
+			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::any auto& a, const shape::concepts::point auto& b) noexcept
+				{
+				return {interactions::distance(a, b)};
+				}
+			}
+		}
+	using namespace common::common;
+	using namespace common::point;
 	}

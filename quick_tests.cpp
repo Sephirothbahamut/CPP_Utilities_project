@@ -216,11 +216,10 @@ int main()
 		{
 		std::visit([&](const auto& shape)
 			{
-			std::cout << point.distance_signed(shape).value;
+			std::cout << point.distance_signed(shape).value << std::endl;
 			}, shape);
 		}
 
-	std::cout << utils::console::colour::restore_defaults << std::endl;
 	std::cout << "utils::math::rect<float>: " << sizeof(utils::math::rect<float>) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
 	std::cout << "utils::math::vec2f:       " << sizeof(utils::math::vec2f) << std::endl;
@@ -229,6 +228,11 @@ int main()
 	std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
 	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::segment) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
+
+	utils::math::geometry::shape::point testpt{10.f, 0.f};
+	utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
+
+	std::cout << testpt.distance_signed(testsg).value << std::endl;
 
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;
@@ -256,6 +260,8 @@ int main()
 	logger.wrn("Hello wolrd\nhow are you\ni'm alright thanks");
 	logger.dgn("Hello wolrd\nhow are you\ni'm alright thanks");
 	logger.inf("Hello wolrd\nhow are you\ni'm alright thanks");
+
+	std::cout << "Terminating program" << std::endl;
 
 	return 0;
 	}
