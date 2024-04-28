@@ -41,9 +41,7 @@
 #include "include/utils/tracking.h"
 #include "include/utils/containers/resource_manager.h"
 
-#include "include/utils/beta/math/geometry/interface/circle.h"
-//#include "include/utils/beta/math/geometry/interface/segment.h"
-#include "include/utils/beta/math/geometry/interface/point.h"
+#include "include/utils/beta/math/geometry/all.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -173,46 +171,64 @@ int main()
 
 	utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
 	utils::math::geometry::shape::point point{0.f, 1.f};
-	//utils::math::geometry::shape::segment segment{point, point};
+	utils::math::geometry::shape::segment segment{point, point};
 
 	using variant_t = std::variant
 		<
 		utils::math::geometry::shape::point,
-		utils::math::geometry::shape::circle//,
-		//utils::math::geometry::shape::segment//,
+		utils::math::geometry::shape::circle,
+		utils::math::geometry::shape::segment
 		>;
 	std::vector<variant_t> shapes;
 	shapes.emplace_back(utils::math::geometry::shape::point {0.f, 0.1f});
 	shapes.emplace_back(utils::math::geometry::shape::circle{{0.f, 0.f}, 5.f});
-	//shapes.emplace_back(utils::math::geometry::shape::segment{{.5f, -1.f}, {.5f, 1.f}});
+	shapes.emplace_back(utils::math::geometry::shape::segment{{.5f, -1.f}, {.5f, 1.f}});
 
-	for (const auto& shape_a : shapes)
+	//for (const auto& shape_a : shapes)
+	//	{
+	//	for (const auto& shape_b : shapes)
+	//		{
+	//		bool collides{false};
+	//
+	//		std::visit([&](const auto& shape_a)
+	//			{
+	//			std::visit([&](const auto& shape_b)
+	//				{
+	//				using a_shape_t = std::remove_reference<decltype(shape_a)>::type;
+	//				using b_shape_t = std::remove_reference<decltype(shape_b)>::type;
+	//				
+	//				//shape_a.contains             (shape_b);
+	//				//shape_a.distance             (shape_b);
+	//				//shape_a.side_of              (shape_b);
+	//				//shape_a.closest_pair         (shape_b);
+	//				//shape_a.closest_point_to     (shape_b);
+	//				//shape_a.closest_with_distance(shape_b);
+	//				//
+	//				//shape_a.intersects           (shape_b);
+	//				//shape_a.intersection_with    (shape_b);
+	//				//shape_a.collides_with        (shape_b);
+	//				}, shape_b);
+	//			}, shape_a);
+	//		}
+	//	}
+
+	for (const auto& shape : shapes)
 		{
-		for (const auto& shape_b : shapes)
+		std::visit([&](const auto& shape)
 			{
-			bool collides{false};
-
-			std::visit([&](const auto& shape_a)
-				{
-				std::visit([&](const auto& shape_b)
-					{
-					using a_shape_t = std::remove_reference<decltype(shape_a)>::type;
-					using b_shape_t = std::remove_reference<decltype(shape_b)>::type;
-					
-					shape_a.contains             (shape_b);
-					shape_a.distance             (shape_b);
-					shape_a.side_of              (shape_b);
-					shape_a.closest_pair         (shape_b);
-					shape_a.closest_point_to     (shape_b);
-					shape_a.closest_with_distance(shape_b);
-
-					shape_a.intersects           (shape_b);
-					shape_a.intersection_with    (shape_b);
-					shape_a.collides_with        (shape_b);
-					}, shape_b);
-				}, shape_a);
-			}
+			std::cout << point.distance_signed(shape).value;
+			}, shape);
 		}
+
+	std::cout << utils::console::colour::restore_defaults << std::endl;
+	std::cout << "utils::math::rect<float>: " << sizeof(utils::math::rect<float>) << std::endl;
+	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
+	std::cout << "utils::math::vec2f:       " << sizeof(utils::math::vec2f) << std::endl;
+	std::cout << "expected:                 " << (sizeof(float) * 2) << std::endl;
+	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::circle) << std::endl;
+	std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
+	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::segment) << std::endl;
+	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
 
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;

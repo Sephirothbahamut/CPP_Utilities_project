@@ -218,4 +218,28 @@ namespace utils::math
 
 		return ret;
 		}
+
+	
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T clamp(const T& in, const utils::details::vec::concepts::compatible_scalar<T> auto& min, const utils::details::vec::concepts::compatible_scalar<T> auto& max)
+		{
+		T ret;
+		for (size_t i = 0; i < in.size(); i++)
+			{
+			ret[i] = utils::math::clamp(in[i], min[i], max[i]);
+			}
+		return ret;
+		}
+
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T min(const T& a, const utils::details::vec::concepts::compatible_scalar<T> auto& b)
+		{
+		return utils::details::vec::operator_scalar<[](const auto& a, const auto& b) { return std::min(a, b); }>(a, b);
+		}
+
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T max(const T& a, const utils::details::vec::concepts::compatible_scalar<T> auto& b)
+		{
+		return utils::details::vec::operator_scalar<[](const auto& a, const auto& b) { return std::max(a, b); }>(a, b);
+		}
 	}

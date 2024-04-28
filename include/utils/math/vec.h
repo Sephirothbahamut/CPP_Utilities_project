@@ -211,7 +211,7 @@ namespace utils::math
 		{
 		template<class T, size_t SIZE, typename derived_T>
 		friend class details::vec_sized_specialization;
-		
+
 		protected:
 			//using common_t = typename utils::details::vec::common<T, SIZE, vec>;
 			//using self_t = vec<T, SIZE>;
@@ -219,6 +219,8 @@ namespace utils::math
 		public:
 			using common_t = typename utils::details::vec::common<T, SIZE, vec>;
 			using self_t = vec<T, SIZE>;
+
+			using common_t::derived;
 
 			inline static constexpr const size_t static_size{SIZE};
 			using value_type              = typename common_t::value_type            ;

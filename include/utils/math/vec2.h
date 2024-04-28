@@ -97,47 +97,6 @@ namespace utils::math
 				utils_gpu_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
 				utils_gpu_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
 				utils_gpu_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
-
-//#pragma region geometry
-//
-//				using geometry::shape_base<derived_t>::closest_point_and_distance;
-//				using geometry::shape_base<derived_t>::closest_point_to;
-//				using geometry::shape_base<derived_t>::distance_min;
-//				using geometry::shape_base<derived_t>::vector_to;
-//				using geometry::shape_base<derived_t>::intersects;
-//				using geometry::shape_base<derived_t>::intersection;
-//				using geometry::shape_base<derived_t>::contains;
-//				using geometry::shape_base<derived_t>::collides_with;
-//
-//				utils_gpu_available vec2f closest_point_to(const geometry::point         & b) const noexcept;
-//				utils_gpu_available vec2f closest_point_to(const geometry::segment       & b) const noexcept;
-//				utils_gpu_available vec2f closest_point_to(const geometry::aabb          & b) const noexcept;
-//				utils_gpu_available vec2f closest_point_to(const geometry::polygon       & b) const noexcept;
-//				utils_gpu_available vec2f closest_point_to(const geometry::convex_polygon& b) const noexcept;
-//				utils_gpu_available vec2f closest_point_to(const geometry::circle        & b) const noexcept;
-//				utils_gpu_available vec2f closest_point_to(const geometry::capsule       & b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::point         & b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::segment       & b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::aabb          & b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::polygon       & b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::convex_polygon& b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::circle        & b) const noexcept;
-//				utils_gpu_available float distance_min    (const geometry::capsule       & b) const noexcept;
-//
-//				utils_gpu_available bool contains(const geometry::point         & b) const noexcept;
-//				utils_gpu_available bool contains(const geometry::segment       & b) const noexcept;
-//				utils_gpu_available bool contains(const geometry::aabb          & b) const noexcept;
-//				utils_gpu_available bool contains(const geometry::polygon       & b) const noexcept;
-//				utils_gpu_available bool contains(const geometry::convex_polygon& b) const noexcept;
-//				utils_gpu_available bool contains(const geometry::circle        & b) const noexcept;
-//				utils_gpu_available bool contains(const geometry::capsule       & b) const noexcept;
-//
-//				utils_gpu_available derived_t& scale_self    (const float      & scaling    ) noexcept;
-//				utils_gpu_available derived_t& rotate_self   (const angle::radf& rotation   ) noexcept;
-//				utils_gpu_available derived_t& translate_self(const vec2f      & translation) noexcept;
-//
-//				geometry::aabb bounding_box() const noexcept;
-//#pragma endregion geometry
 			};
 		}
 	}

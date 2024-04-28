@@ -439,7 +439,7 @@
     <ClInclude Include="include\utils\hash.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\common.h">
+    <ClInclude Include="include\utils\beta\math\geometry\all.h">
       <Filter>Beta\math\geometry</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\oop\crtp.h">
@@ -454,35 +454,35 @@
     <ClInclude Include="include\utils\beta\math\geometry\interface\circle.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interface\line.h">
-      <Filter>Beta\math\geometry\interface</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interface\point.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interface\polyline.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interface\ray.h">
-      <Filter>Beta\math\geometry\interface</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interface\segment.h">
-      <Filter>Beta\math\geometry\interface</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interface\spline.h">
       <Filter>Beta\math\geometry\interface</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\details\ab_types.h">
-      <Filter>Beta\math\geometry\details</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\details\points_types.h">
-      <Filter>Beta\math\geometry\details</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\ranged.h">
       <Filter>Utils\math</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interactions.h">
       <Filter>Beta\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h">
+      <Filter>Beta\math\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\ab.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\aabb.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\oop\conditional_inheritance.h">
+      <Filter>Utils\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\all.h">
+      <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

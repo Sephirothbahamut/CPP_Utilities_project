@@ -1,0 +1,7 @@
+#include "point.h   "
+#include "ab.h      "
+#include "polyline.h"
+#include "circle.h  "
+#include "capsule.h "
+#include "bezier.h  "
+#include "spline.h  "

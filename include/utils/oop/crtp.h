@@ -16,7 +16,8 @@ namespace utils::oop
 		struct crtp_concept_friend;
 		}
 
-	template <typename derived_T>
+	
+	template <typename derived_T, typename unique_t = void>
 	class crtp
 		{
 		template <typename crtp_t>
@@ -39,7 +40,7 @@ namespace utils::oop
 	namespace concepts
 		{
 		template <typename T>
-		concept crtp = std::derived_from<T, utils::oop::crtp<typename details::crtp_concept_friend<T>::derived_t>>;
+		concept crtp = (std::derived_from<T, utils::oop::crtp<typename details::crtp_concept_friend<T>::derived_t>>);
 
 		template <typename T, template <typename> class parent_crtp_T>
 		concept derived_from_crtp = crtp<parent_crtp_T<T>> && std::derived_from<T, parent_crtp_T<T>>;

@@ -5,6 +5,13 @@
 
 namespace utils::concepts
 	{
+	template <typename whatever>
+	void unimplemented_specialization() 
+		{
+		//Thanks Alice from the #include discord
+		static_assert(sizeof(whatever) && false, "Required template/concept specialization missing"); 
+		}
+
 	template <typename T>
 	concept number = std::floating_point<T> || std::integral<T>;
 

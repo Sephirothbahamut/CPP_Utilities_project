@@ -1,44 +1,93 @@
 #pragma once
 
-#include "../common.h"
-#include "../details/points_types.h"
+#include <span>
+
+#include "../details/base_types.h"
 
 namespace utils::math::geometry::shape::interface
 	{
-	template <typename derived_t>
-	struct polyline : utils::math::geometry::shape::details::points_types::interface<derived_t>
+	template <typename derived_T, ends_t ends>
+	struct polyline : utils::math::geometry::shape::details::base<derived_T, shapes_enum::polyline>
 		{
-		using crtp = details::base<derived_t>::crtp;
-		using utils::math::geometry::shape::details::points_types::interface<derived_t>::get_points;
-		using utils::math::geometry::shape::details::points_types::interface<derived_t>::get_edges;
+		protected:
+			using derived_t = derived_T;
+			utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
+			utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
-		#pragma region any
-		utils_gpu_available constexpr closest_point_with_distance_t  closest_and_distance(const concepts::any auto& other) const noexcept
-			{
-			closest_point_with_distance_t closest_current;
-			for (const auto& edge : get_edges()) { closest_current = closest_point_with_distance_t::pick_closest(closest_current, edge.closest_and_distance(other)); }
-			return closest_current;
-			}
-		#pragma endregion any
-		#pragma region    point
-		#pragma endregion point
+		public:
+
+			inline static constexpr ends_t static_ends = ends;
+
+			template <typename vert_T> 
+			class edges_view : public std::ranges::view_interface<utils::math::geometry::shape::view::segment>
+				{
+				public:
+					using vert_t = vert_T;
+					using span_t = std::span<vert_t>;
+					using edge_t = std::conditional_t<std::is_const_v<vert_t>, typename utils::math::geometry::shape::segment, typename utils::math::geometry::shape::view::segment>;
+
+					class iterator
+						{
+						public:
+							using iterator_category = std::contiguous_iterator_tag;
+							using difference_type   = std::ptrdiff_t;
+							using value_type        = edge_t;
+							using pointer           = value_type*;
+							using reference         = value_type&;
+
+							utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span} {}
+
+							utils_gpu_available constexpr value_type operator*() const noexcept { return edge_t{span[index], span[index_next()]}; }
+
+							utils_gpu_available constexpr iterator& operator++(   ) noexcept { index++; return *this; }
+							utils_gpu_available           iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
+
+							utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
+							utils_gpu_available friend constexpr bool operator!= (const iterator& a, const iterator& b) noexcept { return a.index != b.index || a.span.begin() != b.span.begin(); };
+
+						private:
+							span_t span;
+							size_t index{0};
+							utils_gpu_available size_t index_next() const noexcept 
+								{
+								if constexpr (static_ends.is_closed())
+									{
+									return (index + 1) & span.size();
+									}
+								else 
+									{
+									return index + 1; 
+									}
+								}
+						};
+
+					utils_gpu_available constexpr edges_view(span_t span) : span{span} {}
+
+					span_t span;
+
+					utils_gpu_available constexpr auto begin() const noexcept { return iterator{span, 0}; }
+					utils_gpu_available constexpr auto end  () const noexcept { return iterator{span, span.size() - 1}; }
+			};
+
+		utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<const vec2f>{derived().points}; }
+		utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<      vec2f>{derived().points}; }
 		};
 	}
 
 namespace utils::math::geometry::shape
 	{
-	struct polyline : utils::math::geometry::shape::interface::polyline<polyline>, utils::math::geometry::shape::details::points_types::data
+	struct polyline : utils::math::geometry::shape::interface::polyline<polyline>
 		{
-		using utils::math::geometry::shape::details::points_types::data::data;
-		utils_gpu_available polyline(std::initializer_list<utils::math::vec2f> points) : utils::math::geometry::shape::details::points_types::data{points} {}
+		utils_gpu_available polyline(std::initializer_list<utils::math::vec2f> vertices) : vertices(vertices) {}
+		std::vector<vec2f> vertices;
 		};
 
 	namespace view
 		{
-		struct polyline : utils::math::geometry::shape::interface::polyline<polyline>, utils::math::geometry::shape::details::points_types::view
+		struct polyline : utils::math::geometry::shape::interface::polyline<polyline>
 			{
-			using utils::math::geometry::shape::details::points_types::view::view;
-			utils_gpu_available polyline(std::span<utils::math::vec2f> span) : utils::math::geometry::shape::details::points_types::view{span} {}
+			utils_gpu_available polyline(std::span<utils::math::vec2f> vertices) : vertices(vertices) {}
+			std::span<utils::math::vec2f> vertices;
 			};
 		}
 	}
