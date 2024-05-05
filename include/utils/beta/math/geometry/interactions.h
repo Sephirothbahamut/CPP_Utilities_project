@@ -169,12 +169,12 @@ namespace utils::math::geometry::interactions
 				float found_distance{utils::math::constants::finf};
 				shape::segment found;
 
-				for (const auto& edge : b.get_edges())
+				for (const auto& edge : edges)
 					{
-					const float candidate_distance{distance(a, edge)};
-					if (found_distance < candidate_distance)
+					const float candidate_distance{interactions::point::ab::distance(a, edge)};
+					if (candidate_distance < found_distance)
 						{
-						candidate_distance = found_distance;
+						found_distance = candidate_distance;
 						found = edge;
 						}
 					}
@@ -191,8 +191,8 @@ namespace utils::math::geometry::interactions
 
 				for (const auto& edge : b.get_edges())
 					{
-					const vec2f candidate{closest_point_of(a, edge)};
-					const float candidate_distance{distance(a, edge)};
+					const vec2f candidate{interactions::point::ab::closest_point_of(a, edge)};
+					const float candidate_distance{interactions::point::ab::distance(a, edge)};
 					if (candidate_distance < found_distance)
 						{
 						found_distance = candidate_distance;
@@ -205,7 +205,7 @@ namespace utils::math::geometry::interactions
 
 			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::point auto& a, const shape::concepts::polyline auto& b) noexcept
 				{
-				return distance_signed(a, closest_segment_of(a, b));
+				return interactions::point::ab::distance_signed(a, closest_segment_of(a, b));
 				}
 
 			utils_gpu_available constexpr float distance(const shape::concepts::point auto& a, const shape::concepts::polyline auto& b) noexcept
@@ -216,7 +216,7 @@ namespace utils::math::geometry::interactions
 
 		namespace polygon
 			{
-			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::point auto& a, const shape::concepts::polyline auto& b) noexcept
+			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::point auto& a, const shape::concepts::polygon auto& b) noexcept
 				{
 				//From inigo quilez's example https://www.shadertoy.com/view/wdBXRW
 				//Sidenote: why are graphics programmers scared of using longer more explanatory variable names? Why d and s when you can type distance and sign?

@@ -229,10 +229,13 @@ int main()
 	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::segment) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
 
-	utils::math::geometry::shape::point testpt{10.f, 0.f};
-	utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
+	const utils::math::geometry::shape::point testpt{10.f, 0.f};
+	const utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
+	const utils::math::geometry::shape::polyline testpoly{{15.f, 0.f}, {20.f, 10.f}, {18.f, 20.f}};
+	const utils::math::geometry::shape::view::polyline<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
 
-	std::cout << testpt.distance_signed(testsg).value << std::endl;
+	std::cout << testpt.distance_signed(testpoly).value << std::endl;
+	std::cout << testpt.distance_signed(testpolyview).value << std::endl;
 
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;

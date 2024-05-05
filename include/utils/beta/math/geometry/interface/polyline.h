@@ -15,7 +15,6 @@ namespace utils::math::geometry::shape::interface
 			utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 		public:
-
 			inline static constexpr ends_t static_ends = ends;
 
 			template <typename vert_T> 
@@ -35,7 +34,7 @@ namespace utils::math::geometry::shape::interface
 							using pointer           = value_type*;
 							using reference         = value_type&;
 
-							utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span} {}
+							utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span}, index{index} {}
 
 							utils_gpu_available constexpr value_type operator*() const noexcept { return edge_t{span[index], span[index_next()]}; }
 
@@ -43,7 +42,7 @@ namespace utils::math::geometry::shape::interface
 							utils_gpu_available           iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
 
 							utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
-							utils_gpu_available friend constexpr bool operator!= (const iterator& a, const iterator& b) noexcept { return a.index != b.index || a.span.begin() != b.span.begin(); };
+							utils_gpu_available friend constexpr auto operator<=>(const iterator& a, const iterator& b) noexcept { return a.index <=> b.index; }
 
 						private:
 							span_t span;
@@ -69,8 +68,8 @@ namespace utils::math::geometry::shape::interface
 					utils_gpu_available constexpr auto end  () const noexcept { return iterator{span, span.size() - 1}; }
 			};
 
-		utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<const vec2f>{derived().points}; }
-		utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<      vec2f>{derived().points}; }
+		utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<const vec2f>{derived().vertices}; }
+		utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<      vec2f>{derived().vertices}; }
 		};
 	}
 
@@ -84,10 +83,13 @@ namespace utils::math::geometry::shape
 
 	namespace view
 		{
-		struct polyline : utils::math::geometry::shape::interface::polyline<polyline>
+		template <bool const_vertices = false> //T must be span<vec2f> or span<const vec2f>
+		struct polyline : utils::math::geometry::shape::interface::polyline<polyline<const_vertices>>
 			{
-			utils_gpu_available polyline(std::span<utils::math::vec2f> vertices) : vertices(vertices) {}
-			std::span<utils::math::vec2f> vertices;
+			using vertex_t = std::conditional_t<const_vertices, const vec2f, vec2f>;
+			using span_t   = std::span<vertex_t>;
+			utils_gpu_available polyline(span_t vertices) : vertices(vertices) {}
+			span_t vertices;
 			};
 		}
 	}
