@@ -1,6 +1,4 @@
-﻿
-
-#include <string>
+﻿#include <string>
 #include <iostream>
 
 #include "include/utils/memory.h"
@@ -53,7 +51,7 @@
 
 struct angry_type
 	{
-	angry_type(int i, float f) : i{i} {}
+	angry_type(int i, float) : i{i} {}
 	int i;
 	};
 
@@ -169,21 +167,21 @@ int main()
 
 	using namespace utils::output;
 
-	utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
-	utils::math::geometry::shape::point point{0.f, 1.f};
-	utils::math::geometry::shape::segment segment{point, point};
-
-	using variant_t = std::variant
-		<
-		utils::math::geometry::shape::point,
-		utils::math::geometry::shape::circle,
-		utils::math::geometry::shape::segment
-		>;
-	std::vector<variant_t> shapes;
-	shapes.emplace_back(utils::math::geometry::shape::point {0.f, 0.1f});
-	shapes.emplace_back(utils::math::geometry::shape::circle{{0.f, 0.f}, 5.f});
-	shapes.emplace_back(utils::math::geometry::shape::segment{{.5f, -1.f}, {.5f, 1.f}});
-
+	//utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
+	//utils::math::geometry::shape::point point{0.f, 1.f};
+	//utils::math::geometry::shape::segment segment{point, point};
+	//
+	//using variant_t = std::variant
+	//	<
+	//	utils::math::geometry::shape::point,
+	//	utils::math::geometry::shape::circle,
+	//	utils::math::geometry::shape::segment
+	//	>;
+	//std::vector<variant_t> shapes;
+	//shapes.emplace_back(utils::math::geometry::shape::point {0.f, 0.1f});
+	//shapes.emplace_back(utils::math::geometry::shape::circle{{0.f, 0.f}, 5.f});
+	//shapes.emplace_back(utils::math::geometry::shape::segment{{.5f, -1.f}, {.5f, 1.f}});
+	//
 	//for (const auto& shape_a : shapes)
 	//	{
 	//	for (const auto& shape_b : shapes)
@@ -211,14 +209,14 @@ int main()
 	//			}, shape_a);
 	//		}
 	//	}
-
-	for (const auto& shape : shapes)
-		{
-		std::visit([&](const auto& shape)
-			{
-			std::cout << point.distance_signed(shape).value << std::endl;
-			}, shape);
-		}
+	//
+	//for (const auto& shape : shapes)
+	//	{
+	//	std::visit([&](const auto& shape)
+	//		{
+	//		std::cout << point.distance_signed(shape).value << std::endl;
+	//		}, shape);
+	//	}
 
 	std::cout << "utils::math::rect<float>: " << sizeof(utils::math::rect<float>) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
@@ -226,16 +224,58 @@ int main()
 	std::cout << "expected:                 " << (sizeof(float) * 2) << std::endl;
 	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::circle) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
-	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::segment) << std::endl;
+	std::cout << "segment:                   " << sizeof(utils::math::geometry::shape::segment) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
+	std::cout << "bezier:                   " << sizeof(utils::math::geometry::shape::bezier<3>) << std::endl;
+	std::cout << "expected:                 " << (sizeof(float) * 8) << std::endl;
 
 	const utils::math::geometry::shape::point testpt{10.f, 0.f};
 	const utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
-	const utils::math::geometry::shape::polyline testpoly{{15.f, 0.f}, {20.f, 10.f}, {18.f, 20.f}};
-	const utils::math::geometry::shape::view::polyline<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
+	const utils::math::geometry::shape::polygon testpoly{{15.f, -5.f}, {20.f, 0.f}, {15.f, 5.f}};
+	const utils::math::geometry::shape::view::polygon<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
+	const utils::math::geometry::shape::bezier<3> testcurve{utils::math::vec2f{10.f, 10.f}, utils::math::vec2f{200.f, 10.f}, utils::math::vec2f{300.f, 100.f}, utils::math::vec2f{50.f, 150.f}};
 
-	std::cout << testpt.distance_signed(testpoly).value << std::endl;
+	utils::math::geometry::shape::glyph testglyph;
+	testglyph.vertices.emplace_back( 32.f,  32.f);
+	testglyph.vertices.emplace_back(128.f,  32.f);
+	testglyph.vertices.emplace_back(256.f, 128.f);
+	testglyph.vertices.emplace_back(128.f, 224.f);
+	testglyph.vertices.emplace_back( 32.f, 224.f);
+	testglyph.curves_indices.emplace_back(1);
+
+	testglyph.for_each<[](const auto& shape)
+		{
+		if constexpr (std::same_as<std::remove_cvref_t<decltype(shape)>, utils::math::geometry::shape::segment>)
+			{
+			std::cout << "segment\n";
+			}
+		else if constexpr (std::same_as<std::remove_cvref_t<decltype(shape)>, utils::math::geometry::shape::bezier<2>>)
+			{
+			std::cout << "curve\n";
+			}
+		}>();
+
+	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpt)>);
+	static_assert(utils::math::geometry::shape::concepts::point<decltype(testpt)>);
+
+	static_assert(utils::math::geometry::shape::concepts::any<decltype(testsg)>);
+	static_assert(utils::math::geometry::shape::concepts::ab<decltype(testsg)>);
+	static_assert(utils::math::geometry::shape::concepts::segment<decltype(testsg)>);
+
+	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpoly)>);
+	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpolyview)>);
+	
+	static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpoly)>);
+	static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpolyview)>);
+
+	static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpoly)>);
+	static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpolyview)>);
+
+	static_assert(utils::math::geometry::shape::concepts::bezier<decltype(testcurve)>);
+
+	std::cout << testpt.distance_signed(testpoly    ).value << std::endl;
 	std::cout << testpt.distance_signed(testpolyview).value << std::endl;
+	std::cout << testpt.distance_signed(testcurve   ).value << std::endl;
 
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;

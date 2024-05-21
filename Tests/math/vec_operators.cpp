@@ -233,7 +233,7 @@ namespace Tests
 			TEST_METHOD(minmax)
 				{
 				utils::math::vec<float, 2> a{2.f, 3.f};
-				utils::math::vec<float, 3> b{3.f, 1.f};
+				utils::math::vec<float, 2> b{3.f, 1.f};
 
 				utils::math::vec<float, 2> ret;
 

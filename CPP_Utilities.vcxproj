@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/D "WIN32_LEAN_AND_MEAN" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,6 +121,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/D "WIN32_LEAN_AND_MEAN" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,16 +136,23 @@
     <ClInclude Include="include\utils\beta\containers\resource_manager.h" />
     <ClInclude Include="include\utils\beta\math\geometry\all.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h" />
-    <ClInclude Include="include\utils\beta\math\geometry\interactions.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\all.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\all.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\bezier.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\polyline.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\simple.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\aabb.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\ab.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\all.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\bezier.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\capsule.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\circle.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interface\path.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\point.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\polyline.h" />
-    <ClInclude Include="include\utils\beta\math\geometry\interface\spline.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interface\glyph.h" />
     <ClInclude Include="include\utils\clock.h" />
     <ClInclude Include="include\utils\compilation\compiler.h" />
     <ClInclude Include="include\utils\compilation\gpu.h" />

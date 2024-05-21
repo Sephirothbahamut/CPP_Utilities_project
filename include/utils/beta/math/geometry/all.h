@@ -4,7 +4,7 @@
 
 #include "interface/all.h"
 
-#include "interactions.h"
+#include "interactions/all.h"
 
 namespace utils::math::geometry::shape::details
 	{

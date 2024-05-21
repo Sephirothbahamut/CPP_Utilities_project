@@ -1,15 +1,12 @@
 #pragma once
 
 #include <span>
+#include <variant>
 
 #include "../details/base_types.h"
 #include "point.h"
+#include "bezier.h"
 #include "ab.h"
-
-namespace utils::math::geometry
-	{
-	using closest_segment_with_distance_t = closest_with_distance_t<shape::segment>;
-	}
 
 namespace utils::math::geometry::shape::interface
 	{
@@ -58,7 +55,7 @@ namespace utils::math::geometry::shape::interface
 								{
 								if constexpr (static_ends.is_closed())
 									{
-									return (index + 1) % span.size();
+									return (index + 1) & span.size();
 									}
 								else 
 									{
@@ -72,11 +69,7 @@ namespace utils::math::geometry::shape::interface
 					span_t span;
 
 					utils_gpu_available constexpr auto begin() const noexcept { return iterator{span, 0}; }
-					utils_gpu_available constexpr auto end  () const noexcept 
-						{
-						if constexpr (static_ends.is_closed()) { return iterator{span, span.size()    }; }
-						else                                   { return iterator{span, span.size() - 1}; }
-						}
+					utils_gpu_available constexpr auto end  () const noexcept { return iterator{span, span.size() - 1}; }
 			};
 
 		utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<const vec2f>{derived().vertices}; }

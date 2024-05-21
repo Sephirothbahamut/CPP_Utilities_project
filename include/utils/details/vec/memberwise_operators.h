@@ -175,12 +175,27 @@ namespace utils::math
 	
 	template <utils::details::vec::concepts::array a_t>
 	utils_gpu_available a_t ceil(const a_t& v) noexcept { a_t ret; for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = std::ceil(v[i]); } return ret; }
+	
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T pow(const T& a, const utils::details::vec::concepts::compatible_scalar<T> auto& b)
+		{
+		return utils::details::vec::operator_scalar<[](const auto& a, const auto& b) { return std::pow(a, b); }>(a, b);
+		}
+
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T pow(const T& a, const utils::details::vec::concepts::compatible_array<T> auto& b)
+		{
+		return utils::details::vec::operator_vector<[](const auto& a, const auto& b) { return std::pow(a, b); }>(a, b);
+		}
 
 	template <utils::details::vec::concepts::array a_t>
 	utils_gpu_available inline a_t lerp(const a_t& a, const a_t& b, float t)
 		{
 		a_t ret;
-		for (size_t i{0}; i < a_t::static_size; i++) { ret[i] = utils::math::lerp(a[i], b[i], t); }
+		for (size_t i = 0; i < a_t::static_size; i++)
+			{
+			ret[i] = utils::math::lerp(a[i], b[i], t);
+			}
 		return ret;
 		}
 
@@ -195,28 +210,16 @@ namespace utils::math
 		return ret;
 		}
 
-	template <utils::details::vec::concepts::array a_t, utils::details::vec::concepts::compatible_array<a_t> b_t>
-	utils_gpu_available inline a_t min(const a_t& a, const b_t& b)
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T min(const T& a, const T& b)
 		{
-		auto ret{a};
-		for (size_t i{0}; i < std::min(a.size(), b.size()); i++) 
-			{
-			ret[i] = std::min(a[i], b[i]);
-			} 
-
-		return ret;
+		return utils::details::vec::operator_vector<[](const auto& a, const auto& b) { return utils::math::min(a, b); }>(a, b);
 		}
 
-	template <utils::details::vec::concepts::array a_t, utils::details::vec::concepts::compatible_array<a_t> b_t>
-	utils_gpu_available inline a_t max(const a_t& a, const b_t& b)
+	template <utils::details::vec::concepts::array T>
+	utils_gpu_available inline T max(const T& a, const T& b)
 		{
-		auto ret{a};
-		for (size_t i{0}; i < std::min(a.size(), b.size()); i++)
-			{
-			ret[i] = std::max(a[i], b[i]);
-			}
-
-		return ret;
+		return utils::details::vec::operator_vector<[](const auto& a, const auto& b) { return utils::math::max(a, b); }>(a, b);
 		}
 
 	

@@ -23,7 +23,9 @@ namespace utils::math::geometry
 		polygon, //polyline specialization
 
 		bezier,
-		spline
+		spline,
+
+		glyph
 		};
 	
 	struct ends_t
@@ -33,13 +35,15 @@ namespace utils::math::geometry
 			create() = delete;
 
 			utils_gpu_available static consteval ends_t open    (bool finite_a = false, bool finite_b = false) noexcept { return ends_t{.finite_a{finite_a}, .finite_b{finite_b}, .open{true }}; }
-			utils_gpu_available static consteval ends_t infinite(                                            ) noexcept { return ends_t{.finite_a{true    }, .finite_b{true    }, .open{true }}; }
-			utils_gpu_available static consteval ends_t closed  (                                            ) noexcept { return ends_t{.finite_a{false   }, .finite_b{false   }, .open{false}}; }
+			utils_gpu_available static consteval ends_t infinite(                                            ) noexcept { return ends_t{.finite_a{false   }, .finite_b{false   }, .open{true }}; }
+			utils_gpu_available static consteval ends_t closed  (                                            ) noexcept { return ends_t{.finite_a{true    }, .finite_b{true    }, .open{false}}; }
 			};
 
 		bool finite_a;
 		bool finite_b;
 		bool open;
+
+		utils_gpu_available inline constexpr bool operator==(const ends_t& other) const noexcept = default;
 
 		utils_gpu_available inline constexpr bool is_open      () const noexcept { return open; }
 		utils_gpu_available inline constexpr bool is_closed    () const noexcept { return !is_open(); }
@@ -109,16 +113,23 @@ namespace utils::math::geometry
 		utils_gpu_available constexpr auto operator== (const signed_distance_t& other) const noexcept { return value ==  other.value; }
 		};
 
-	struct closest_point_with_distance_t  
+	template <typename T>
+	struct closest_with_distance_t  
 		{ 
-		vec2f closest; 
-		signed_distance_t distance;
+		T closest{};
+		signed_distance_t distance{utils::math::constants::finf};
 
-		utils_gpu_available static constexpr closest_point_with_distance_t pick_closest(const closest_point_with_distance_t& a, const closest_point_with_distance_t& b) noexcept
+		utils_gpu_available static constexpr closest_with_distance_t<T> pick_closest(const closest_with_distance_t<T>& a, const closest_with_distance_t<T>& b) noexcept
 			{
 			return a.distance.absolute() < b.distance.absolute() ? a : b;
 			}
+		utils_gpu_available static constexpr closest_with_distance_t<T> pick_closest_raw(const closest_with_distance_t<T>& a, const closest_with_distance_t<T>& b) noexcept
+			{
+			return a.distance.value < b.distance.value ? a : b;
+			}
 		};
+	
+	using closest_point_with_distance_t = closest_with_distance_t<vec2f>;
 
 	struct closest_pair_with_distance_t 
 		{
@@ -137,7 +148,7 @@ namespace utils::math::geometry
 
 		namespace concepts
 			{
-			template <typename T> concept any = std::derived_from<T, details::base<T, T::static_shape_id>>;
+			template <typename T> concept any = std::derived_from<std::remove_cvref_t<T>, details::base<std::remove_cvref_t<T>, std::remove_cvref_t<T>::static_shape_id>>;
 
 			template <typename T> concept point    = any<T> && (T::static_shape_id == shapes_enum::point   );
 			template <typename T> concept circle   = any<T> && (T::static_shape_id == shapes_enum::circle  );
@@ -146,15 +157,17 @@ namespace utils::math::geometry
 
 			template <typename T> concept ab       = any<T> && (T::static_shape_id == shapes_enum::ab      );
 
-			template <typename T> concept line     = ab<T> && (T::ends == ends_t::create::open(false, false));
-			template <typename T> concept ray      = ab<T> && (T::ends == ends_t::create::open(true , false));
-			template <typename T> concept segment  = ab<T> && (T::ends == ends_t::create::open(true , true ));
+			template <typename T> concept line     = ab<T> && (T::static_ends == ends_t::create::open(false, false));
+			template <typename T> concept ray      = ab<T> && (T::static_ends == ends_t::create::open(true , false));
+			template <typename T> concept segment  = ab<T> && (T::static_ends == ends_t::create::open(true , true ));
 
-			template <typename T> concept polyline = any<T> && (T::static_shape_id == shapes_enum::polyline);
-			template <typename T> concept polygon  = polyline<T> && (T::ends == ends_t::create::closed());
+			template <typename T> concept polyline      = any<T> && (T::static_shape_id == shapes_enum::polyline);
+			template <typename T> concept polyline_open = polyline<T> && (T::static_ends.is_open());
+			template <typename T> concept polygon       = polyline<T> && (T::static_ends.is_closed());
 
 			template <typename T> concept bezier   = any<T> && (T::static_shape_id == shapes_enum::bezier  );
 			template <typename T> concept spline   = any<T> && (T::static_shape_id == shapes_enum::spline  );
+			template <typename T> concept glyph    = any<T> && (T::static_shape_id == shapes_enum::glyph   );
 			}
 
 		namespace interface

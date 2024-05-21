@@ -13,7 +13,7 @@ namespace utils::math::geometry::shape::interface
 			utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<derived_t&>(*this); }
 
 		public:
-			inline static constexpr ends_t static_ends = ends;
+			inline static constexpr ends_t static_ends{ends};
 		
 			utils_gpu_available constexpr float length2() const noexcept { return static_ends.is_finite() ? vec2f::distance2(derived().a, derived().b) : utils::math::constants::finf; }
 			utils_gpu_available constexpr float length () const noexcept { return static_ends.is_finite() ? vec2f::distance (derived().a, derived().b) : utils::math::constants::finf; }
@@ -51,7 +51,7 @@ namespace utils::math::geometry::shape::interface
 				//signed distance from line in proportion to the distance between derived().a and derived().b, idk, i'm not a math guy
 				//enough alone to get the sign for side, but needs to be divided by (derived().a-derived().b).length to get the signed distance
 				const float ret{((derived().b.x - derived().a.x) * (other.y - derived().a.y)) - ((other.x - derived().a.x) * (derived().b.y - derived().a.y))};
-				return ret;
+				return -ret;
 				}
 
 			template <bool clamp_a, bool clamp_b>

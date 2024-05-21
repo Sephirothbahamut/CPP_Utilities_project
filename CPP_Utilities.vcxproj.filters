@@ -89,6 +89,12 @@
     <Filter Include="Beta\math\geometry\details">
       <UniqueIdentifier>{7d89a83c-0814-47c5-8be3-e8a9d9df42ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Beta\math\geometry\interactions">
+      <UniqueIdentifier>{e20f1537-33cb-47db-9c35-9240088fd0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Beta\math\geometry\interactions\point">
+      <UniqueIdentifier>{1a38e1a3-c307-4fde-a13b-81b71e6916f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -460,14 +466,11 @@
     <ClInclude Include="include\utils\beta\math\geometry\interface\polyline.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interface\spline.h">
+    <ClInclude Include="include\utils\beta\math\geometry\interface\glyph.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\ranged.h">
       <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions.h">
-      <Filter>Beta\math\geometry</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h">
       <Filter>Beta\math\geometry\details</Filter>
@@ -482,6 +485,30 @@
       <Filter>Utils\oop</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interface\all.h">
+      <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\bezier.h">
+      <Filter>Beta\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h">
+      <Filter>Beta\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h">
+      <Filter>Beta\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\simple.h">
+      <Filter>Beta\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\all.h">
+      <Filter>Beta\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\polyline.h">
+      <Filter>Beta\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\all.h">
+      <Filter>Beta\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\interface\path.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
   </ItemGroup>
