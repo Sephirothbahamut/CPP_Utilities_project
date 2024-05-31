@@ -136,6 +136,7 @@
     <ClInclude Include="include\utils\beta\containers\resource_manager.h" />
     <ClInclude Include="include\utils\beta\math\geometry\all.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\group.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\all.h" />
@@ -152,7 +153,7 @@
     <ClInclude Include="include\utils\beta\math\geometry\interface\path.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\point.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interface\polyline.h" />
-    <ClInclude Include="include\utils\beta\math\geometry\interface\glyph.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\interface\mixed.h" />
     <ClInclude Include="include\utils\clock.h" />
     <ClInclude Include="include\utils\compilation\compiler.h" />
     <ClInclude Include="include\utils\compilation\gpu.h" />

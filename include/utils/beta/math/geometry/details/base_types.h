@@ -25,7 +25,7 @@ namespace utils::math::geometry
 		bezier,
 		spline,
 
-		glyph
+		mixed
 		};
 	
 	struct ends_t
@@ -167,25 +167,11 @@ namespace utils::math::geometry
 
 			template <typename T> concept bezier   = any<T> && (T::static_shape_id == shapes_enum::bezier  );
 			template <typename T> concept spline   = any<T> && (T::static_shape_id == shapes_enum::spline  );
-			template <typename T> concept glyph    = any<T> && (T::static_shape_id == shapes_enum::glyph   );
+			template <typename T> concept mixed    = any<T> && (T::static_shape_id == shapes_enum::mixed   );
 			}
 
-		namespace interface
-			{
-			template <typename derived_t> struct circle;
-			template <typename derived_t> struct capsule;
-
-			template <typename derived_t, ends_t ends> struct ab;
-				template <typename derived_t> using line    = ab<derived_t, ends_t::create::open(true , true )>;
-				template <typename derived_t> using ray     = ab<derived_t, ends_t::create::open(false, true )>;
-				template <typename derived_t> using segment = ab<derived_t, ends_t::create::open(false, false)> ;
-
-			template <typename derived_t, ends_t ends = ends_t::create::open()> struct polyline;
-				template <typename derived_t> using polygon = polyline<derived_t, ends_t::create::closed()>;
-
-			template <typename derived_t> struct bezier  ;
-			template <typename derived_t> struct spline  ;
-			}
+		struct aabb;
+		struct point;
 
 		namespace details
 			{
@@ -225,7 +211,7 @@ namespace utils::math::geometry
 					utils_gpu_available constexpr derived_t& translate_self(const vec2f      & translation) noexcept;
 					utils_gpu_available constexpr derived_t& transform_self(const transform2 & transform  ) noexcept;
 
-				utils_gpu_available constexpr rect<float> aabb() const noexcept;
+					utils_gpu_available constexpr aabb bounding_box() const noexcept;
 				};
 			}
 		}

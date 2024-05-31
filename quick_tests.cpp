@@ -40,6 +40,7 @@
 #include "include/utils/containers/resource_manager.h"
 
 #include "include/utils/beta/math/geometry/all.h"
+#include "include/utils/beta/math/geometry/group.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -224,36 +225,39 @@ int main()
 	std::cout << "expected:                 " << (sizeof(float) * 2) << std::endl;
 	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::circle) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
-	std::cout << "segment:                   " << sizeof(utils::math::geometry::shape::segment) << std::endl;
+	std::cout << "segment:                  " << sizeof(utils::math::geometry::shape::segment) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
-	std::cout << "bezier:                   " << sizeof(utils::math::geometry::shape::bezier<3>) << std::endl;
+	std::cout << "bezier:                   " << sizeof(utils::math::geometry::shape::bezier<4>) << std::endl;
 	std::cout << "expected:                 " << (sizeof(float) * 8) << std::endl;
 
 	const utils::math::geometry::shape::point testpt{10.f, 0.f};
 	const utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
 	const utils::math::geometry::shape::polygon testpoly{{15.f, -5.f}, {20.f, 0.f}, {15.f, 5.f}};
 	const utils::math::geometry::shape::view::polygon<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
-	const utils::math::geometry::shape::bezier<3> testcurve{utils::math::vec2f{10.f, 10.f}, utils::math::vec2f{200.f, 10.f}, utils::math::vec2f{300.f, 100.f}, utils::math::vec2f{50.f, 150.f}};
+	const utils::math::geometry::shape::bezier<4> testcurve{utils::math::vec2f{10.f, 10.f}, utils::math::vec2f{200.f, 10.f}, utils::math::vec2f{300.f, 100.f}, utils::math::vec2f{50.f, 150.f}};
 
-	utils::math::geometry::shape::glyph testglyph;
-	testglyph.vertices.emplace_back( 32.f,  32.f);
-	testglyph.vertices.emplace_back(128.f,  32.f);
-	testglyph.vertices.emplace_back(256.f, 128.f);
-	testglyph.vertices.emplace_back(128.f, 224.f);
-	testglyph.vertices.emplace_back( 32.f, 224.f);
-	testglyph.curves_indices.emplace_back(1);
+	utils::math::geometry::shape::mixed testglyph;
+	testglyph.add_first_vertex({ 32.f,  32.f});
+	testglyph.add_segment     ({128.f,  32.f});
+	testglyph.add_segment     ({256.f, 128.f});
+	testglyph.add_segment     ({128.f, 224.f});
+	testglyph.add_segment     ({ 32.f, 224.f});
 
-	testglyph.for_each<[](const auto& shape)
+	utils::math::geometry::group<false> group;
+	group.add(testglyph);
+	group.add(testsg);
+
+	group.for_each([](const auto& shape)
 		{
-		if constexpr (std::same_as<std::remove_cvref_t<decltype(shape)>, utils::math::geometry::shape::segment>)
+		if constexpr (utils::math::geometry::shape::concepts::segment<std::remove_cvref_t<decltype(shape)>>)
 			{
-			std::cout << "segment\n";
+			std::cout << "segment\n\t" << shape.a << ", " << shape.b << std::endl;
 			}
-		else if constexpr (std::same_as<std::remove_cvref_t<decltype(shape)>, utils::math::geometry::shape::bezier<2>>)
+		else if constexpr (utils::math::geometry::shape::concepts::mixed<std::remove_cvref_t<decltype(shape)>>)
 			{
-			std::cout << "curve\n";
+			std::cout << "mixed\n\tvertices count: " << shape.vertices.size() << std::endl;
 			}
-		}>();
+		});
 
 	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpt)>);
 	static_assert(utils::math::geometry::shape::concepts::point<decltype(testpt)>);

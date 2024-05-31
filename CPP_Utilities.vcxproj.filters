@@ -466,7 +466,7 @@
     <ClInclude Include="include\utils\beta\math\geometry\interface\polyline.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interface\glyph.h">
+    <ClInclude Include="include\utils\beta\math\geometry\interface\mixed.h">
       <Filter>Beta\math\geometry\interface</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\ranged.h">
@@ -510,6 +510,9 @@
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\interface\path.h">
       <Filter>Beta\math\geometry\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\group.h">
+      <Filter>Beta\math\geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -671,14 +671,14 @@ namespace utils::math::geometry::interactions
 					}
 
 				//"Signed distance from bezier curves only implemented quadratic and cubic curves";
-				return {};
+				return {utils::math::constants::finf};
 				}
 			utils_gpu_available constexpr float distance(const shape::concepts::point auto& a, const shape::concepts::bezier auto& b) noexcept
 				{
 				if constexpr (b.control_points.extent == std::dynamic_extent)
 					{
-					if (b.control_points.size() == 2) {}
-					else if (b.control_points.size() == 3)
+					if (b.control_points.size() == 3) {}
+					else if (b.control_points.size() == 4)
 						{
 						return details::cubic_bezier_dis(a, b.control_points[0], b.control_points[1], b.control_points[2], b.control_points[3]);
 						}
@@ -692,7 +692,7 @@ namespace utils::math::geometry::interactions
 					}
 
 				//"Signed distance from bezier curves only implemented quadratic and cubic curves";
-				return {};
+				return {utils::math::constants::finf};
 				}
 
 			utils_gpu_available constexpr geometry::signed_distance_t distance_signed(const shape::concepts::point auto& a, const shape::concepts::bezier auto& b) noexcept
