@@ -86,54 +86,6 @@ namespace utils::math
 			template<typename T> struct vec_named<T, 4> { union { std::array<T, 4> array; struct { T x, y, z, w; }; }; };
 		utils_disable_warnings_end
 
-		#elif defined utils_vec_standard_compliant
-			// Standard compliant version but doesn't behave as expected in some cases like the previously mentioned offsetof(y)
-
-			template <typename T, size_t size>
-			struct vec_named { std::array<T, size> array; };
-
-			//Note: use for field with [[no_unique_address]]
-			template <class T, class DERIVED_T, size_t index>
-			struct array_element_alias 
-				{
-				auto operator=(std::convertible_to<T> auto&& b) -> T& { return reinterpret_cast<DERIVED_T*>(this)->data[index] = static_cast<decltype(b)&&>(b); }
-	
-				operator T&() { return reinterpret_cast<DERIVED_T*>(this)->data[index]; }
-	
-				operator T const&() const { return reinterpret_cast<DERIVED_T*>(this)->data[index]; }
-				};
-	
-			template<typename T> 
-			struct vec_named<T, 1>
-				{
-				[[no_unique_address]] array_element_alias<T, vec1<T>, 0> x{};
-				std::array<T, 1> array;
-				};
-			template<typename T>
-			struct vec_named<T, 2>
-				{
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 0> x{};
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 1> y{};
-				std::array<T, 2> array;
-				};
-			template<typename T>
-			struct vec_named<T, 3>
-				{
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 0> x{};
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 1> y{};
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 2> z{};
-				std::array<T, 3> array;
-				};
-			template<typename T>
-			struct vec_named<T, 4>
-				{
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 0> x{};
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 1> y{};
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 2> z{};
-				[[no_unique_address]] array_element_alias<T, vec2<T>, 3> w{};
-				std::array<T, 4> array;
-				};
-
 		#elif defined utils_vec_ms_properties
 			// This version uses MSVC's properties language extension, which is also supported by clang, but not supported by gcc.
 			// Still doesn't behave as expected in some cases like the previously mentioned offsetof(y)

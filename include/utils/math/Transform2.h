@@ -5,8 +5,6 @@
 #include "angle.h"
 #include "vec2.h"
 
-//TODO write test cases
-
 namespace utils::math
 	{
 	class transform2

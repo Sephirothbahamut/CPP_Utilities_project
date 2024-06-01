@@ -1,8 +1,0 @@
-#include "point.h   "
-#include "ab.h      "
-#include "aabb.h    "
-#include "polyline.h"
-#include "circle.h  "
-#include "capsule.h "
-#include "bezier.h  "
-#include "mixed.h   "

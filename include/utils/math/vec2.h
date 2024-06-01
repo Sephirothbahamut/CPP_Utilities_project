@@ -2,6 +2,7 @@
 
 #include "vec.h"
 #include "angle.h"
+#include "../beta/math/geometry/details/base_types.h"
 
 namespace utils::math
 	{
@@ -46,7 +47,7 @@ namespace utils::math
 	namespace details
 		{
 		template<class T, typename derived_T>
-		class utils_oop_empty_bases vec_sized_specialization<T, 2, derived_T>
+		class utils_oop_empty_bases vec_sized_specialization<T, 2, derived_T> : public utils::math::geometry::shape::interface<derived_T>
 			{
 			private:
 				using derived_t = derived_T;
@@ -54,8 +55,7 @@ namespace utils::math
 				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
 
 			public:
-				template<std::floating_point T, T f_a_v>
-				utils_gpu_available  static constexpr derived_t from(const math::angle::base<T, f_a_v>& angle, T magnitude = 1) noexcept
+				utils_gpu_available  static constexpr derived_t from(const math::angle::concepts::angle auto& angle, T magnitude = 1) noexcept
 					{
 					auto x{angle.cos() * magnitude};
 					auto y{angle.sin() * magnitude};
@@ -66,7 +66,7 @@ namespace utils::math
 				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
 				
 				// VEC & ANGLE OPERATIONS
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator+ (const math::angle::base<T, f_a_v>& angle) const noexcept 
+				utils_gpu_available constexpr derived_t  operator+ (const math::angle::concepts::angle auto& angle) const noexcept
 					{
 					return
 						{
@@ -74,7 +74,7 @@ namespace utils::math
 						derived().x * angle.sin() + derived().y * angle.cos()
 						};
 					}
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t  operator- (const math::angle::base<T, f_a_v>& angle) const noexcept
+				utils_gpu_available constexpr derived_t  operator- (const math::angle::concepts::angle auto& angle) const noexcept
 					{
 					const auto nngle{-angle};
 					return
@@ -84,10 +84,9 @@ namespace utils::math
 						};
 					}
 
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator+=(const math::angle::base<T, f_a_v>& angle)       noexcept { return derived() = derived() + angle; }
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator-=(const math::angle::base<T, f_a_v>& angle)       noexcept { return derived() = derived() - angle; }
-
-				template <std::floating_point T, T f_a_v> utils_gpu_available constexpr derived_t& operator= (const math::angle::base<T, f_a_v>& angle)       noexcept
+				utils_gpu_available constexpr derived_t& operator+=(const math::angle::concepts::angle auto& angle) noexcept { return derived() = derived() + angle; }
+				utils_gpu_available constexpr derived_t& operator-=(const math::angle::concepts::angle auto& angle) noexcept { return derived() = derived() - angle; }
+				utils_gpu_available constexpr derived_t& operator= (const math::angle::concepts::angle auto& angle) noexcept
 					{
 					return derived() = {angle.cos() * derived().magnitude(), angle.sin() * derived().magnitude()}; 
 					}
@@ -97,6 +96,16 @@ namespace utils::math
 				utils_gpu_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
 				utils_gpu_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
 				utils_gpu_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+
+				#pragma region geometry shape methods
+					inline static constexpr geometry::storage::type static_storage_type{geometry::storage::get_type<value_type>};
+					utils_gpu_available constexpr derived_t& scale_self    (const float      & scaling    ) noexcept;
+					utils_gpu_available constexpr derived_t& rotate_self   (const angle::degf& rotation   ) noexcept;
+					utils_gpu_available constexpr derived_t& translate_self(const vec2f      & translation) noexcept;
+					utils_gpu_available constexpr derived_t& transform_self(const transform2 & transform  ) noexcept;
+
+					utils_gpu_available constexpr rect<float> bounding_box() const noexcept;
+				#pragma endregion geometry shape methods
 			};
 		}
 	}

@@ -2,6 +2,10 @@
 
 namespace utils::oop
 	{
+	struct non_constructible
+		{
+		inline non_constructible() = delete;
+		};
 	struct non_copyable
 		{
 		inline  non_copyable() {}

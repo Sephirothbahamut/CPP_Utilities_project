@@ -473,6 +473,17 @@ namespace utils::math
 
 		template <std::convertible_to<nonref_value_type> point_value_type>
 		bool contains(const vec2<point_value_type>& point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
+
+		
+		#pragma region geometry shape methods
+			inline static constexpr geometry::storage::type static_storage_type{geometry::storage::get_type<value_type>};
+			utils_gpu_available constexpr rect<value_type>& scale_self    (const float      & scaling    ) noexcept;
+			utils_gpu_available constexpr rect<value_type>& rotate_self   (const angle::degf& rotation   ) noexcept;
+			utils_gpu_available constexpr rect<value_type>& translate_self(const vec2f      & translation) noexcept;
+			utils_gpu_available constexpr rect<value_type>& transform_self(const transform2 & transform  ) noexcept;
+
+			utils_gpu_available constexpr rect<float> bounding_box() const noexcept;
+		#pragma endregion geometry shape methods
 		};
 	}
 
