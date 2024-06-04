@@ -7,22 +7,22 @@ namespace utils::math::geometry::shape
 	{
 	namespace generic
 		{
-		template <storage::type storage_type, ends ends>
-		struct ab : utils::math::geometry::shape::interface<ab<storage_type, ends>>
+		template <storage::type storage_type, geometry::ends ends>
+		struct ab
 			{
 			public:
 				using self_t = ab<storage_type, ends>;
 				inline static constexpr storage::type static_storage_type{storage_type};
-				inline static constexpr ends_t static_ends{ends};
+				inline static constexpr geometry::ends static_ends{ends};
+				using vertex_type = storage::single<static_storage_type, shape::point>;
+				vertex_type a;
+				vertex_type b;
 
-				storage::single<static_storage, shape::point> a;
-				storage::single<static_storage, shape::point> b;
+				utils_gpu_available constexpr float length2() const noexcept { return static_ends.is_finite() ? shape::point::distance2(vec2f{a}, vec2f{b}) : utils::math::constants::finf; }
+				utils_gpu_available constexpr float length () const noexcept { return static_ends.is_finite() ? shape::point::distance (vec2f{a}, vec2f{b}) : utils::math::constants::finf; }
 
-				utils_gpu_available constexpr float length2() const noexcept { return static_ends.is_finite() ? shape::point::distance2(a, b) : utils::math::constants::finf; }
-				utils_gpu_available constexpr float length () const noexcept { return static_ends.is_finite() ? shape::point::distance (a, b) : utils::math::constants::finf; }
-
-				utils_gpu_available constexpr const vec2f& operator[](const size_t& index) const noexcept { return index == 0 ? a : b; }
-				utils_gpu_available constexpr       vec2f& operator[](const size_t& index)       noexcept { return index == 0 ? a : b; }
+				utils_gpu_available constexpr vec2f        operator[](const size_t& index) const noexcept { return index == 0 ? a : b; }
+				utils_gpu_available constexpr vertex_type& operator[](const size_t& index)       noexcept { return index == 0 ? a : b; }
 
 				/// <summary> Vector from a towards b. </summary>
 				utils_gpu_available constexpr vec2f a_to_b() const noexcept { return b - a; }
@@ -33,7 +33,8 @@ namespace utils::math::geometry::shape
 				/// <summary> Unit vector perpendicular on the right from a to b. </summary>
 				utils_gpu_available constexpr vec2f perpendicular_left () const noexcept { return forward().perpendicular_left (); }
 
-				utils_gpu_available constexpr shape::point closest_vertex(const concepts::point auto& other) const noexcept { return other.distance(a) < other.distance_min(b) ? a : b; }
+				utils_gpu_available constexpr vec2f        closest_vertex(const concepts::point auto& other) const noexcept { return other.distance(a) < other.distance_min(b) ? a : b; }
+				utils_gpu_available constexpr vertex_type& closest_vertex(const concepts::point auto& other) const noexcept { return other.distance(a) < other.distance_min(b) ? a : b; }
 			
 				/// <summary> Projecting point to the line that goes through a-b, at what percentage of the segment a-b it lies. < 0 is before a, > 1 is after b, proportionally to the a-b distance </summary>
 				utils_gpu_available constexpr float projected_percent(const concepts::point    auto& other) const noexcept
@@ -66,12 +67,20 @@ namespace utils::math::geometry::shape
 					if constexpr (clamp_b) { if (t > 1.f) { return b; } }
 					return {a.x + t * delta.x, a.y + t * delta.y};
 					}
+				
+				#pragma region geometry shape methods
+					utils_gpu_available constexpr self_t  scale         (const float                    & scaling    ) const noexcept { auto ret{*this}; return ret.scale_self    (scaling    ); }
+					utils_gpu_available constexpr self_t  rotate        (const angle::base<float, 360.f>& rotation   ) const noexcept { auto ret{*this}; return ret.rotate_self   (rotation   ); }
+					utils_gpu_available constexpr self_t  translate     (const vec<float, 2>            & translation) const noexcept { auto ret{*this}; return ret.translate_self(translation); }
+					utils_gpu_available constexpr self_t  transform     (const utils::math::transform2  & transform  ) const noexcept { auto ret{*this}; return ret.transform_self(transform  ); }
 
-				utils_gpu_available constexpr self_t& scale_self    (const float      & scaling    ) noexcept;
-				utils_gpu_available constexpr self_t& rotate_self   (const angle::degf& rotation   ) noexcept;
-				utils_gpu_available constexpr self_t& translate_self(const vec2f      & translation) noexcept;
-				utils_gpu_available constexpr self_t& transform_self(const transform2 & transform  ) noexcept;
-				utils_gpu_available constexpr shape::owner::aabb bounding_box() const noexcept;
+					utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept;
+					utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept;
+					utils_gpu_available constexpr self_t& translate_self(const vec<float, 2>            & translation) noexcept;
+					utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept;
+
+					utils_gpu_available constexpr rect<float> bounding_box() const noexcept;
+				#pragma endregion geometry shape methods
 			};
 
 		template <storage::type storage_type> using line    = ab<storage_type, ends::create::open(false, false)>;

@@ -2,25 +2,26 @@
 
 namespace utils::compilation::gpu
 	{
-	//The macro __HIPCC__ is set if either __HCC__ or __CUDACC__ is defined.
+	//Note: the macro __HIPCC__ is set if either __HCC__ or __CUDACC__ is defined.
+
 	inline constexpr bool device
 #if defined(__HIPCC__) || defined(__NVCC__)
 		{true};
 #else
-	{false};
+		{false};
 #endif
 
 	inline constexpr bool CUDA
 #ifdef __NVCC__
 		{true};
 #else
-	{false};
+		{false};
 #endif
 	inline constexpr bool HIP
 #ifdef __HCC__
 		{true};
 #else
-	{false};
+		{false};
 #endif
 
 	enum class target_t { nvcc, hip, none };

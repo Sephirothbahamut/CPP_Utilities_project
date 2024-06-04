@@ -86,7 +86,7 @@ namespace utils::math
 	utils_gpu_available constexpr T max(const T& a, const T& b) noexcept { return a > b ? a : b; }
 
 	template <std::integral to_t, typename from_t>
-	requires (std::integral<from_t> || std::floating_point<from_t>) 
+	requires (concepts::number<from_t>) 
 	utils_gpu_available constexpr to_t cast_clamp(from_t f) noexcept
 		{
 		if constexpr (std::numeric_limits<from_t>::max() > std::numeric_limits<to_t>::max())

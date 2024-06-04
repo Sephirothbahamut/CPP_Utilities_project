@@ -2,10 +2,13 @@
 
 #include "vec.h"
 #include "angle.h"
-#include "../beta/math/geometry/details/base_types.h"
 
 namespace utils::math
 	{
+	struct transform2;
+	template <typename T>
+	struct rect;
+
 	template <typename T> 
 	using vec2 = vec<T, 2>;
 	
@@ -47,7 +50,7 @@ namespace utils::math
 	namespace details
 		{
 		template<class T, typename derived_T>
-		class utils_oop_empty_bases vec_sized_specialization<T, 2, derived_T> : public utils::math::geometry::shape::interface<derived_T>
+		class utils_oop_empty_bases vec_sized_specialization<T, 2, derived_T>
 			{
 			private:
 				using derived_t = derived_T;
@@ -98,13 +101,17 @@ namespace utils::math
 				utils_gpu_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 
 				#pragma region geometry shape methods
-					inline static constexpr geometry::storage::type static_storage_type{geometry::storage::get_type<value_type>};
-					utils_gpu_available constexpr derived_t& scale_self    (const float      & scaling    ) noexcept;
-					utils_gpu_available constexpr derived_t& rotate_self   (const angle::degf& rotation   ) noexcept;
-					utils_gpu_available constexpr derived_t& translate_self(const vec2f      & translation) noexcept;
-					utils_gpu_available constexpr derived_t& transform_self(const transform2 & transform  ) noexcept;
+					utils_gpu_available constexpr derived_t  scale         (const float                    & scaling    ) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.scale_self    (scaling    ); }
+					utils_gpu_available constexpr derived_t  rotate        (const angle::base<float, 360.f>& rotation   ) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.rotate_self   (rotation   ); }
+					utils_gpu_available constexpr derived_t  translate     (const vec<float, 2>            & translation) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.translate_self(translation); }
+					utils_gpu_available constexpr derived_t  transform     (const utils::math::transform2  & transform  ) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.transform_self(transform  ); }
 
-					utils_gpu_available constexpr rect<float> bounding_box() const noexcept;
+					utils_gpu_available constexpr derived_t& scale_self    (const float                    & scaling    ) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
+					utils_gpu_available constexpr derived_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
+					utils_gpu_available constexpr derived_t& translate_self(const vec<float, 2>            & translation) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
+					utils_gpu_available constexpr derived_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
+
+					utils_gpu_available constexpr rect<float> bounding_box() const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
 				#pragma endregion geometry shape methods
 			};
 		}

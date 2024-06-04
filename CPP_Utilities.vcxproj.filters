@@ -316,7 +316,7 @@
     <ClInclude Include="include\utils\compilation\gpu.h">
       <Filter>Utils\compilation</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\details\vec\common.h">
+    <ClInclude Include="include\utils\details\vec\base.h">
       <Filter>Utils\details\vec</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\details\vec\memberwise_operators.h">
@@ -546,6 +546,18 @@
     </ClInclude>
     <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\aabb.h">
       <Filter>Beta\math\geometry\shape\implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\details\root.h">
+      <Filter>Beta\math\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\data.h">
+      <Filter>Utils\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\definitions.h">
+      <Filter>Utils\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\details\vec\all.h">
+      <Filter>Utils\details\vec</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

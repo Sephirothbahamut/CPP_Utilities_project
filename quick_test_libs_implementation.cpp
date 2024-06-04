@@ -4,3 +4,8 @@
 
 #define utils_implementation
 //#include "include/utils/console/initializer.h"
+
+
+//#include "include/utils/beta/math/geometry/shape/implementation/aabb.h"
+//#include "include/utils/beta/math/geometry/shape/implementation/point.h"
+//#include "include/utils/beta/math/geometry/shape/implementation/ab.h"

@@ -23,21 +23,21 @@ namespace utils
 					template <utils::string::concepts::stringlike<char_t> T>
 					id_t emplace(const T& string) noexcept
 						{
-						auto id{id_pool.get()};
-						auto ret{string_to_id.emplace(std::piecewise_construct, std::forward_as_tuple(string), std::forward_as_tuple(id))};
+						auto new_id{id_pool.get()};
+						auto ret{string_to_id.emplace(std::piecewise_construct, std::forward_as_tuple(string), std::forward_as_tuple(new_id))};
 						if (!ret.second)//if was not emplaced, something already existed with that key
 							{
-							id_pool.release(id);
+							id_pool.release(new_id);
 							return ret.first->second;
 							}
 						else
 							{
 							id_to_string.emplace_back(ret.first->first);
-							return id;
+							return new_id;
 							}
 						}
 
-					types::view operator[](id_t id) const noexcept { return id_to_string[id]; }
+					types::view operator[](id_t in_id) const noexcept { return id_to_string[in_id]; }
 
 				private:
 					std::vector<typename types::view> id_to_string;

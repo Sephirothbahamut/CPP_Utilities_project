@@ -9,8 +9,8 @@ namespace utils::containers::multithreading
 	{
 	namespace details
 		{
-		template <typename T> class consume_operation_pre_void     { protected: void consume_pre    (std::vector<T>& elements) const noexcept {} };
-		template <typename T> class consume_operation_post_void    { protected: void consume_post   (std::vector<T>& elements) const noexcept {} };
+		template <typename T> class consume_operation_pre_void { protected: void consume_pre (std::vector<T>&) const noexcept {} };
+		template <typename T> class consume_operation_post_void{ protected: void consume_post(std::vector<T>&) const noexcept {} };
 
 		template <typename T>
 		class consume_operation_current

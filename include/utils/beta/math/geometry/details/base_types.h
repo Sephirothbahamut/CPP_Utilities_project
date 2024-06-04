@@ -1,18 +1,19 @@
 #pragma once
 
+#include <span>
+#include <array>
+#include <vector>
+#include <optional>
+
+#include "../../../../memory.h"
+#include "../../../../math/math.h"
 #include "../../../../compilation/gpu.h"
 #include "../../../../math/constants.h"
 #include "../../../../oop/disable_move_copy.h"
 
-namespace utils::math
-	{
-	template <typename T, size_t size>
-	class vec;
-	template <typename T>
-	struct rect;
-
-	struct transform2;
-	};
+#include "../../../../math/vec2.h"
+#include "../../../../math/rect.h"
+#include "../../../../math/transform2.h"
 
 namespace utils::math::geometry
 	{
@@ -23,16 +24,26 @@ namespace utils::math::geometry
 			owner, observer, const_observer
 			};
 
-		template <type storage, typename T>
+		template <type storage, typename T, bool use_wrapper = false>
 		using single = std::conditional_t
 			<
 			storage == type::owner,
 			T,
 			std::conditional_t
 			/**/<
-			/**/storage == type::observer,
-			/**/std::reference_wrapper<T>,
-			/**/std::reference_wrapper<const T>
+			/**/use_wrapper,
+			/**/std::conditional_t
+			/**//**/<
+			/**//**/storage == type::observer,
+			/**//**/std::reference_wrapper<T>,
+			/**//**/std::reference_wrapper<const T>
+			/**//**/>,
+			/**/std::conditional_t
+			/**//**/<
+			/**//**/storage == type::observer,
+			/**//**/T&,
+			/**//**/const T&
+			/**//**/>
 			/**/>
 			>;
 
@@ -49,8 +60,8 @@ namespace utils::math::geometry
 			std::conditional_t
 			/**/<
 			/**/storage == type::observer,
-			/**/std::reference_wrapper<T>,
-			/**/std::reference_wrapper<const T>
+			/**/std::span<T, extent>,
+			/**/std::span<const T, extent>
 			/**/>
 			>;
 
@@ -63,7 +74,7 @@ namespace utils::math::geometry
 					{
 					return type::const_observer;
 					}
-				else { return type::observer }
+				else { return type::observer; }
 				}
 			else { return type::owner; }
 			}
@@ -203,50 +214,14 @@ namespace utils::math::geometry
 	
 	using closest_point_with_distance = closest_with_distance<vec2f>;
 
+	template <typename T>
 	struct closest_pair_with_distance 
 		{
-		vec2f closest_in_source; 
-		vec2f closest_in_target; 
+		T closest_in_source; 
+		T closest_in_target; 
 		signed_distance distance;
 		utils_gpu_available constexpr closest_pair_with_distance operator-() const noexcept { return {closest_in_target, closest_in_source, -distance}; }
 		};
 
-	namespace shape
-		{
-		template <typename derived_T>
-		struct interface
-			{
-			protected:
-				using derived_t = derived_T;
-				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
-
-			public:
-				//Interactions are defined in common, so interactions.h can be included after base_types.h and all shapes definitions
-				utils_gpu_available constexpr side                         side_of              (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr float                        distance             (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr geometry::signed_distance    distance_signed      (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr vec<float, 2>                closest_point_of     (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr vec<float, 2>                closest_point_to     (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr closest_point_with_distance  closest_with_distance(const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr closest_pair_with_distance   closest_pair         (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr vec<float, 2>                vector_to            (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr bool                         intersects           (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr std::optional<vec<float, 2>> intersection_with    (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr bool                         contains             (const concepts::any auto& other) const noexcept;
-				utils_gpu_available constexpr bool                         collides_with        (const concepts::any auto& other) const noexcept;
-		
-				utils_gpu_available constexpr derived_t  scale         (const float                    & scaling    ) const noexcept { auto ret{derived()}; return ret.scale_self    (scaling    ); }
-				utils_gpu_available constexpr derived_t  rotate        (const angle::base<float, 360.f>& rotation   ) const noexcept { auto ret{derived()}; return ret.rotate_self   (rotation   ); }
-				utils_gpu_available constexpr derived_t  translate     (const vec<float, 2>            & translation) const noexcept { auto ret{derived()}; return ret.translate_self(translation); }
-				utils_gpu_available constexpr derived_t  transform     (const transform2               & transform  ) const noexcept { auto ret{derived()}; return ret.transform_self(transform  ); }
-
-				utils_gpu_available constexpr derived_t& scale_self    (const float      & scaling    ) noexcept = delete;
-				utils_gpu_available constexpr derived_t& rotate_self   (const angle::degf& rotation   ) noexcept = delete;
-				utils_gpu_available constexpr derived_t& translate_self(const vec2f      & translation) noexcept = delete;
-				utils_gpu_available constexpr derived_t& transform_self(const transform2 & transform  ) noexcept = delete;
-
-				utils_gpu_available constexpr aabb bounding_box() const noexcept = delete;
-			};
-		}
+	using closest_points_with_distance = closest_pair_with_distance<vec2f>;
 	}

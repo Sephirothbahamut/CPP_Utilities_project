@@ -136,6 +136,7 @@
     <ClInclude Include="include\utils\beta\containers\resource_manager.h" />
     <ClInclude Include="include\utils\beta\math\geometry\all.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\details\root.h" />
     <ClInclude Include="include\utils\beta\math\geometry\group.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h" />
@@ -204,7 +205,10 @@
     <ClInclude Include="include\utils\containers\segmented_vector.h" />
     <ClInclude Include="include\utils\containers\std_hash.h" />
     <ClInclude Include="include\utils\containers\storage_for.h" />
-    <ClInclude Include="include\utils\details\vec\common.h" />
+    <ClInclude Include="include\utils\details\vec\all.h" />
+    <ClInclude Include="include\utils\details\vec\base.h" />
+    <ClInclude Include="include\utils\details\vec\data.h" />
+    <ClInclude Include="include\utils\details\vec\definitions.h" />
     <ClInclude Include="include\utils\details\vec\memberwise_operators.h" />
     <ClInclude Include="include\utils\details\vec\output.h" />
     <ClInclude Include="include\utils\enum.h" />

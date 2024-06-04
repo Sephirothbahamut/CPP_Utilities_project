@@ -8,7 +8,7 @@ namespace utils::math::geometry::shape
 	namespace generic
 		{
 		template <storage::type storage_type>
-		using point = ::utils::math::vec<storage::single<storage_type, float>, 2>;
+		using point = ::utils::math::vec<storage::single<storage_type, float, true>, 2>;
 		}
 	namespace concepts
 		{

@@ -16,7 +16,6 @@ namespace utils::oop
 		struct crtp_concept_friend;
 		}
 
-	
 	template <typename derived_T, typename unique_t = void>
 	class crtp
 		{

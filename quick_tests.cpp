@@ -1,6 +1,19 @@
 ﻿#include <string>
 #include <iostream>
 
+#include "include/utils/math/vec.h"
+
+int main()
+	{
+	utils::math::vec<float, 2> v1;
+	utils::math::vec<float, 2> v2{1.f, 2.f};
+	utils::math::vec<float, 2> v3{v2};
+	utils::math::vec<float, 2> v4{v2 + v3};
+	}
+
+
+
+/*
 #include "include/utils/memory.h"
 #include "include/utils/console/initializer.h"
 #include "include/utils/console/colour.h"
@@ -39,8 +52,11 @@
 #include "include/utils/tracking.h"
 #include "include/utils/containers/resource_manager.h"
 
-#include "include/utils/beta/math/geometry/all.h"
-#include "include/utils/beta/math/geometry/group.h"
+//#include "include/utils/beta/math/geometry/all.h"
+//#include "include/utils/beta/math/geometry/group.h"
+#include "include/utils/beta/math/geometry/shape/point.h"
+#include "include/utils/beta/math/geometry/shape/aabb.h"
+#include "include/utils/beta/math/geometry/shape/ab.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -219,77 +235,77 @@ int main()
 	//		}, shape);
 	//	}
 
-	std::cout << "utils::math::rect<float>: " << sizeof(utils::math::rect<float>) << std::endl;
-	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
-	std::cout << "utils::math::vec2f:       " << sizeof(utils::math::vec2f) << std::endl;
-	std::cout << "expected:                 " << (sizeof(float) * 2) << std::endl;
-	std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::circle) << std::endl;
-	std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
-	std::cout << "segment:                  " << sizeof(utils::math::geometry::shape::segment) << std::endl;
-	std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
-	std::cout << "bezier:                   " << sizeof(utils::math::geometry::shape::bezier<4>) << std::endl;
-	std::cout << "expected:                 " << (sizeof(float) * 8) << std::endl;
-
-	const utils::math::geometry::shape::point testpt{10.f, 0.f};
-	const utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
-	const utils::math::geometry::shape::polygon testpoly{{15.f, -5.f}, {20.f, 0.f}, {15.f, 5.f}};
-	const utils::math::geometry::shape::view::polygon<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
-	const utils::math::geometry::shape::bezier<4> testcurve{utils::math::vec2f{10.f, 10.f}, utils::math::vec2f{200.f, 10.f}, utils::math::vec2f{300.f, 100.f}, utils::math::vec2f{50.f, 150.f}};
-
-	utils::math::geometry::shape::mixed testglyph;
-	testglyph.add_first_vertex({ 32.f,  32.f});
-	testglyph.add_segment     ({128.f,  32.f});
-	testglyph.add_segment     ({256.f, 128.f});
-	testglyph.add_segment     ({128.f, 224.f});
-	testglyph.add_segment     ({ 32.f, 224.f});
-
-	utils::math::geometry::group<false> group;
-	group.add(testglyph);
-	group.add(testsg);
-
-	group.for_each([](const auto& shape)
-		{
-		if constexpr (utils::math::geometry::shape::concepts::segment<std::remove_cvref_t<decltype(shape)>>)
-			{
-			std::cout << "segment\n\t" << shape.a << ", " << shape.b << std::endl;
-			}
-		else if constexpr (utils::math::geometry::shape::concepts::mixed<std::remove_cvref_t<decltype(shape)>>)
-			{
-			std::cout << "mixed\n\tvertices count: " << shape.vertices.size() << std::endl;
-			}
-		});
-
-	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpt)>);
-	static_assert(utils::math::geometry::shape::concepts::point<decltype(testpt)>);
-
-	static_assert(utils::math::geometry::shape::concepts::any<decltype(testsg)>);
-	static_assert(utils::math::geometry::shape::concepts::ab<decltype(testsg)>);
-	static_assert(utils::math::geometry::shape::concepts::segment<decltype(testsg)>);
-
-	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpoly)>);
-	static_assert(utils::math::geometry::shape::concepts::any<decltype(testpolyview)>);
-	
-	static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpoly)>);
-	static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpolyview)>);
-
-	static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpoly)>);
-	static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpolyview)>);
-
-	static_assert(utils::math::geometry::shape::concepts::bezier<decltype(testcurve)>);
-
-	std::cout << testpt.distance_signed(testpoly    ).value << std::endl;
-	std::cout << testpt.distance_signed(testpolyview).value << std::endl;
-	std::cout << testpt.distance_signed(testcurve   ).value << std::endl;
-
-
-	std::cout << utils::console::colour::restore_defaults << std::endl;
-	for (size_t i = 0; i < 256; i++)
-		{
-		std::cout << utils::console::colour::foreground{utils::graphics::colour::rgb_u{0, i, 255 - i}};
-		std::cout << utils::console::colour::background{utils::graphics::colour::rgb_u{0, 255 - i, i}};
-		std::cout << "#";
-		}
-	std::cout << utils::console::colour::restore_defaults << std::endl;
+	//std::cout << "utils::math::rect<float>: " << sizeof(utils::math::rect<float>) << std::endl;
+	//std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
+	//std::cout << "utils::math::vec2f:       " << sizeof(utils::math::vec2f) << std::endl;
+	//std::cout << "expected:                 " << (sizeof(float) * 2) << std::endl;
+	//std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::circle) << std::endl;
+	//std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
+	//std::cout << "segment:                  " << sizeof(utils::math::geometry::shape::segment) << std::endl;
+	//std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
+	//std::cout << "bezier:                   " << sizeof(utils::math::geometry::shape::bezier<4>) << std::endl;
+	//std::cout << "expected:                 " << (sizeof(float) * 8) << std::endl;
+	//
+	//const utils::math::geometry::shape::point testpt{10.f, 0.f};
+	//const utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
+	//const utils::math::geometry::shape::polygon testpoly{{15.f, -5.f}, {20.f, 0.f}, {15.f, 5.f}};
+	//const utils::math::geometry::shape::view::polygon<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
+	//const utils::math::geometry::shape::bezier<4> testcurve{utils::math::vec2f{10.f, 10.f}, utils::math::vec2f{200.f, 10.f}, utils::math::vec2f{300.f, 100.f}, utils::math::vec2f{50.f, 150.f}};
+	//
+	//utils::math::geometry::shape::mixed testglyph;
+	//testglyph.add_first_vertex({ 32.f,  32.f});
+	//testglyph.add_segment     ({128.f,  32.f});
+	//testglyph.add_segment     ({256.f, 128.f});
+	//testglyph.add_segment     ({128.f, 224.f});
+	//testglyph.add_segment     ({ 32.f, 224.f});
+	//
+	//utils::math::geometry::group<false> group;
+	//group.add(testglyph);
+	//group.add(testsg);
+	//
+	//group.for_each([](const auto& shape)
+	//	{
+	//	if constexpr (utils::math::geometry::shape::concepts::segment<std::remove_cvref_t<decltype(shape)>>)
+	//		{
+	//		std::cout << "segment\n\t" << shape.a << ", " << shape.b << std::endl;
+	//		}
+	//	else if constexpr (utils::math::geometry::shape::concepts::mixed<std::remove_cvref_t<decltype(shape)>>)
+	//		{
+	//		std::cout << "mixed\n\tvertices count: " << shape.vertices.size() << std::endl;
+	//		}
+	//	});
+	//
+	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testpt)>);
+	//static_assert(utils::math::geometry::shape::concepts::point<decltype(testpt)>);
+	//
+	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testsg)>);
+	//static_assert(utils::math::geometry::shape::concepts::ab<decltype(testsg)>);
+	//static_assert(utils::math::geometry::shape::concepts::segment<decltype(testsg)>);
+	//
+	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testpoly)>);
+	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testpolyview)>);
+	//
+	//static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpoly)>);
+	//static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpolyview)>);
+	//
+	//static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpoly)>);
+	//static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpolyview)>);
+	//
+	//static_assert(utils::math::geometry::shape::concepts::bezier<decltype(testcurve)>);
+	//
+	//std::cout << testpt.distance_signed(testpoly    ).value << std::endl;
+	//std::cout << testpt.distance_signed(testpolyview).value << std::endl;
+	//std::cout << testpt.distance_signed(testcurve   ).value << std::endl;
+	//
+	//
+	//std::cout << utils::console::colour::restore_defaults << std::endl;
+	//for (size_t i = 0; i < 256; i++)
+	//	{
+	//	std::cout << utils::console::colour::foreground{utils::graphics::colour::rgb_u{0, i, 255 - i}};
+	//	std::cout << utils::console::colour::background{utils::graphics::colour::rgb_u{0, 255 - i, i}};
+	//	std::cout << "#";
+	//	}
+	//std::cout << utils::console::colour::restore_defaults << std::endl;
 	
 	utils::logging::logger<utils::logging::message<utils::logging::output_style_t::tag_as_separator>> logger;
 
@@ -312,3 +328,4 @@ int main()
 
 	return 0;
 	}
+	*/
