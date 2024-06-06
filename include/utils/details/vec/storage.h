@@ -51,32 +51,36 @@ namespace utils::details::vector
 
 			template <std::convertible_to<value_type>... Args>
 				requires(!static_value_is_reference && static_size >= sizeof...(Args))
-			utils_gpu_available constexpr storage(const Args&... args) noexcept : array{std::forward<Args>(args)...} {}
+			utils_gpu_available constexpr storage(Args&&... args) noexcept : array{std::forward<Args>(args)...} {}
 
 			template <std::same_as<nonref_value_type>... Args>
 				requires(static_value_is_reference && static_size == sizeof...(Args))
-			utils_gpu_available constexpr storage(const Args&... args) noexcept : array{std::forward<Args>(args)...} {}
+			utils_gpu_available constexpr storage(Args&&... args) noexcept : array{std::forward<Args>(args)...} {}
 
+			utils_gpu_available constexpr storage(const concepts::compatible_vector<self_t> auto& other) noexcept
+				requires(!static_value_is_reference && static_size == std::remove_cvref_t<decltype(other)>::static_size) : array{other.array}
+				{}
+			
 			utils_gpu_available constexpr storage(const concepts::compatible_vector<self_t> auto& other) noexcept
 				requires(!static_value_is_reference)
 				{
+				constexpr size_t other_size{std::remove_cvref_t<decltype(other)>::static_size};
 				size_t i{0};
-				for (; i < utils::math::min(static_size, decltype(other)::static_size); i++)
+				for (; i < utils::math::min(static_size, other_size); i++)
 					{
 					operator[](i) = static_cast<value_type>(other[i]);
 					}
-				for (size_t i = other.size(); i < static_size; i++)
+				for (size_t i = other_size; i < static_size; i++)
 					{
-					if constexpr (decltype(other)::static_size) { operator[](i) = value_type{}; }
+					if constexpr (other_size) { operator[](i) = value_type{}; }
 					else { operator[](i) = value_type{}; }
 					}
 				}
-
 			utils_gpu_available constexpr storage(const concepts::compatible_vector auto& other) noexcept
 				requires
 				(
 				static_value_is_reference &&
-				static_size == decltype(other)::static_size &&
+				static_size == std::remove_cvref_t<decltype(other)>::static_size &&
 				std::same_as<typename decltype(other)::value_type, nonref_value_type>
 				) :
 					array{std::apply([](auto&... values) -> array_t { return {values ...}; }, other)}
@@ -84,7 +88,8 @@ namespace utils::details::vector
 
 			utils_gpu_available constexpr self_t& operator=(const concepts::compatible_vector auto& other) noexcept
 				{
-				for (size_t i{0}; i < utils::math::min(static_size, decltype(other)::static_size); i++)
+				constexpr size_t other_size{std::remove_cvref_t<decltype(other)>::static_size};
+				for (size_t i{0}; i < utils::math::min(static_size, other_size); i++)
 					{
 					operator[](i) = static_cast<value_type>(other[i]);
 					}

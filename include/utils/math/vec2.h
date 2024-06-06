@@ -66,15 +66,15 @@ namespace utils::math
 					}
 
 				template <typename T = float, T f_a_v = 360.f>
-				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y, derived().x); }
+				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y(), derived().x()); }
 				
 				// VEC & ANGLE OPERATIONS
 				utils_gpu_available constexpr derived_t  operator+ (const math::angle::concepts::angle auto& angle) const noexcept
 					{
 					return
 						{
-						derived().x * angle.cos() - derived().y * angle.sin(),
-						derived().x * angle.sin() + derived().y * angle.cos()
+						derived().x() * angle.cos() - derived().y() * angle.sin(),
+						derived().x() * angle.sin() + derived().y() * angle.cos()
 						};
 					}
 				utils_gpu_available constexpr derived_t  operator- (const math::angle::concepts::angle auto& angle) const noexcept
@@ -82,8 +82,8 @@ namespace utils::math
 					const auto nngle{-angle};
 					return
 						{
-						derived().x * nngle.cos() - derived().y * nngle.sin(),
-						derived().x * nngle.sin() + derived().y * nngle.cos()
+						derived().x() * nngle.cos() - derived().y() * nngle.sin(),
+						derived().x() * nngle.sin() + derived().y() * nngle.cos()
 						};
 					}
 
@@ -95,8 +95,8 @@ namespace utils::math
 					}
 
 				// OTHER
-				utils_gpu_available constexpr derived_t perpendicular_right           () const noexcept { return { derived().y, -derived().x}; }
-				utils_gpu_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y,  derived().x}; }
+				utils_gpu_available constexpr derived_t perpendicular_right           () const noexcept { return { derived().y(), -derived().x()}; }
+				utils_gpu_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y(),  derived().x()}; }
 				utils_gpu_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
 				utils_gpu_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 

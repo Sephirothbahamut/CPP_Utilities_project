@@ -5,6 +5,7 @@
 #include <type_traits>
 
 #include "../compilation/gpu.h"
+#include "../memory.h"
 
 namespace utils::math
 	{
@@ -12,6 +13,14 @@ namespace utils::math
 		{
 		template <typename T>
 		concept number = std::integral<T> || std::floating_point<T>;
+
+		template <typename T>
+		concept undecorated_floating_point = std::floating_point<std::remove_cvref_t<T>>;
+		template <typename T>
+		concept undecorated_integral = std::integral<std::remove_cvref_t<T>>;
+
+		template <typename T>
+		concept undecorated_number = undecorated_floating_point<T> || undecorated_integral<T>;
 		};
 
 	template <typename T>
@@ -128,8 +137,7 @@ namespace utils::math
 		inline static constexpr const T full_value{FULL_VALUE};
 
 		template <concepts::type_based_numeric_range other>
-		utils_gpu_available
-		static other::value_type cast_to(value_type value) noexcept
+		utils_gpu_available static other::value_type cast_to(value_type value) noexcept
 			{
 			if constexpr (std::same_as<value_type, typename other::value_type>)
 				{

@@ -57,7 +57,7 @@ namespace utils::math
 
 	namespace details
 		{
-		inline extern constexpr const char vec_name[]{"vec"};
+		inline extern constexpr const char name_vec[]{"vec"};
 
 		template<class T, size_t size, typename derived_T>
 		class vec_sized_specialization {};
@@ -92,15 +92,13 @@ namespace utils::math
 			}
 		}
 
-
-
 	template<typename T, size_t size>
-	struct utils_oop_empty_bases vec : ::utils::details::vector::base<T, size, vec, details::vec_name>, details::vec_sized_specialization<T, size, vec<T, size>>
+	struct utils_oop_empty_bases vec : ::utils::details::vector::base<T, size, vec, details::name_vec>, details::vec_sized_specialization<T, size, vec<T, size>>
 		{
 		template<class T, size_t size, typename derived_T>
 		friend class details::vec_sized_specialization;
 
-		using base_t = ::utils::details::vector::base<T, size, vec, details::vec_name>;
+		using base_t = ::utils::details::vector::base<T, size, vec, details::name_vec>;
 		using base_t::static_size; 
 		using base_t::static_value_is_reference;
 		using typename base_t::self_t;

@@ -2,7 +2,7 @@
 
 #include "base.h"
 #include "definitions.h"
-#include "data.h"
+#include "storage.h"
 #include "memberwise_operators.h"
 #include "output.h"
 
@@ -10,12 +10,14 @@ namespace utils::details::vector
 	{
 	template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_t, const char* name>
 	struct utils_oop_empty_bases base :
+		concept_common_flag_type,
 		definitions<T, size, unspecialized_derived_t>,
 		storage<definitions<T, size, unspecialized_derived_t>>,
 		memberwise_operators<definitions<T, size, unspecialized_derived_t>>,
 		output<name>
 		{
 		using storage<definitions<T, size, unspecialized_derived_t>>::storage;
+		using storage<definitions<T, size, unspecialized_derived_t>>::operator=;
 		
 		using definitions<T, size, unspecialized_derived_t>::static_size              ;
 		using definitions<T, size, unspecialized_derived_t>::static_value_is_reference;

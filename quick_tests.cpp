@@ -1,19 +1,6 @@
 ﻿#include <string>
 #include <iostream>
 
-#include "include/utils/math/vec.h"
-
-int main()
-	{
-	utils::math::vec<float, 2> v1;
-	utils::math::vec<float, 2> v2{1.f, 2.f};
-	utils::math::vec<float, 2> v3{v2};
-	utils::math::vec<float, 2> v4{v2 + v3};
-	}
-
-
-
-/*
 #include "include/utils/memory.h"
 #include "include/utils/console/initializer.h"
 #include "include/utils/console/colour.h"
@@ -309,23 +296,23 @@ int main()
 	
 	utils::logging::logger<utils::logging::message<utils::logging::output_style_t::tag_as_separator>> logger;
 
-	logger.log("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.err("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.wrn("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.dgn("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.inf("Hello wolrd\nhow are you\ni'm alright thanks");
+	logger.log("log Hello wolrd\nhow are you\ni'm alright thanks");
+	logger.err("err Hello wolrd\nhow are you\ni'm alright thanks");
+	logger.wrn("wrn Hello wolrd\nhow are you\ni'm alright thanks");
+	logger.dgn("dgn Hello wolrd\nhow are you\ni'm alright thanks");
+	logger.inf("inf Hello wolrd\nhow are you\ni'm alright thanks");
 	logger.flush();
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;
+	utils::logging::logger<utils::logging::message<utils::logging::output_style_t::on_line>> logger2;
 
-	logger.log("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.err("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.wrn("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.dgn("Hello wolrd\nhow are you\ni'm alright thanks");
-	logger.inf("Hello wolrd\nhow are you\ni'm alright thanks");
+	logger2.log("log Hello wolrd\nhow are you\ni'm alright thanks");
+	logger2.err("err Hello wolrd\nhow are you\ni'm alright thanks");
+	logger2.wrn("wrn Hello wolrd\nhow are you\ni'm alright thanks");
+	logger2.dgn("dgn Hello wolrd\nhow are you\ni'm alright thanks");
+	logger2.inf("inf Hello wolrd\nhow are you\ni'm alright thanks");
 
 	std::cout << "Terminating program" << std::endl;
 
 	return 0;
 	}
-	*/

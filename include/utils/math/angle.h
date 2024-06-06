@@ -6,22 +6,24 @@
 #include <variant> //Angle class
 #include <concepts>
 
+#include "../compilation/gpu.h"
 #include "constants.h"
-#include "../math/math.h"
+#include "math.h"
 #include "../template_wrappers.h"
+#include "../memory.h"
 
 //TODO write test cases
 
 namespace utils::math::angle
 	{
-	template <std::floating_point T, T full_angle_value>
+	template <utils::math::concepts::undecorated_number T, utils::remove_reference_t<T> full_angle_value>
 	class base;
 	
-	template <std::floating_point T = float>
-	using deg = base<T, static_cast<T>(360.)>;
+	template <utils::math::concepts::undecorated_number T = float>
+	using deg = base<T, static_cast<utils::remove_reference_t<T>>(360.)>;
 
-	template <std::floating_point T = float>
-	using rad = base<T, T{static_cast<T>(2. * constants::PId)}>;
+	template <utils::math::concepts::undecorated_number T = float>
+	using rad = base<T, T{static_cast<utils::remove_reference_t<T>>(2. * constants::PId)}>;
 
 	using degf = deg<float >;
 	using radf = rad<float >;
@@ -66,48 +68,74 @@ namespace utils::math::angle
 		{
 		template <typename T>
 		concept angle = std::same_as<std::remove_cvref_t<T>, utils::math::angle::base<typename T::value_type, T::full_angle>>;
+
+		template <typename T, typename to>
+		concept compatible_angle = angle<T> && angle<to> && std::convertible_to<typename T::nonref_value_type, typename to::nonref_value_type>;
 		}
 
-	template <std::floating_point T = float, T full_angle_value = 1.f >
+	template <utils::math::concepts::undecorated_number T = float, utils::remove_reference_t<T> full_angle_value = 1.f >
 	class base
 		{
 		public:
 			using value_type = T;
-			inline static constexpr value_type full_angle{full_angle_value};
-			inline static constexpr value_type half_angle{full_angle / value_type{2}};
+			using self_t = base<T, full_angle_value>;
+			using nonref_value_type = utils::remove_reference_t<value_type>;
+			using nonref_self_t = base<nonref_value_type, full_angle_value>;
+
+			inline static constexpr const bool static_value_is_reference{utils::concepts::reference<T>};
+
+			inline static constexpr nonref_value_type full_angle{full_angle_value};
+			inline static constexpr nonref_value_type half_angle{full_angle / static_cast<nonref_value_type>(2.)};
 
 			value_type value{ 0.f };
 
-			utils_gpu_available constexpr base() = default;
-			utils_gpu_available constexpr base(T value) : value{value} {}
+			utils_gpu_available constexpr base() requires(!static_value_is_reference) = default;
+			utils_gpu_available constexpr base(const nonref_value_type& value) requires(!static_value_is_reference) : value{value} {}
 
-			utils_gpu_available constexpr base(common::direction      dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{8} )} {}
-			utils_gpu_available constexpr base(common::hex_flat_top   dir) : value{                              static_cast<T>(dir) * (full_angle_value / T{6} )} {}
-			utils_gpu_available constexpr base(common::hex_pointy_top dir) : value{(full_angle_value / T{12}) + (static_cast<T>(dir) * (full_angle_value / T{6}))} {}
-			
+			utils_gpu_available constexpr base(common::direction      dir) requires(!static_value_is_reference) : value{                                                           static_cast<nonref_value_type>(dir) * (full_angle_value / static_cast<nonref_value_type>(8)) } {}
+			utils_gpu_available constexpr base(common::hex_flat_top   dir) requires(!static_value_is_reference) : value{                                                           static_cast<nonref_value_type>(dir) * (full_angle_value / static_cast<nonref_value_type>(6)) } {}
+			utils_gpu_available constexpr base(common::hex_pointy_top dir) requires(!static_value_is_reference) : value{(full_angle_value / static_cast<nonref_value_type>(12)) + (static_cast<nonref_value_type>(dir) * (full_angle_value / static_cast<nonref_value_type>(6)))} {}
+
+			utils_gpu_available constexpr base(nonref_value_type& value) requires(static_value_is_reference) : value{value} {}
+
 			// template <value_type other_full_angle>
 			// base(const base<value_type, other_full_angle>& src) : value{ (src.value / other_full_angle) * full_angle } {}
 			// template <>
 			// base<value_type, full_angle_value>(const base<value_type, full_angle_value>& src) : value{src.value} {}
 
-			template <value_type other_full_angle>
-			utils_gpu_available constexpr operator base<value_type, other_full_angle>() const noexcept
+			template <nonref_value_type other_full_angle>
+			utils_gpu_available constexpr base(const base<nonref_value_type, other_full_angle>& other) noexcept
+				requires(!static_value_is_reference)
 				{
-				if constexpr (other_full_angle == full_angle) { return {value}; }
-				else { return {(value / full_angle) * other_full_angle}; }
+				if constexpr (other_full_angle == full_angle) 
+					{
+					value = other.value; 
+					}
+				else 
+					{
+					value = (other.value / other_full_angle) * full_angle; 
+					}
 				}
 
-			utils_gpu_available constexpr base clamp() const noexcept
+			template <nonref_value_type other_full_angle>
+			utils_gpu_available constexpr self_t& operator=(const base<nonref_value_type, other_full_angle>& other) noexcept
 				{
-				if constexpr (full_angle == 1.f) { return {value - std::floor(value)}; }
+				const nonref_self_t remapped_other{other};
+				value = remapped_other.value;
+				return *this;
+				}
+
+			utils_gpu_available constexpr nonref_self_t clamp() const noexcept
+				{
+				if constexpr (full_angle == static_cast<nonref_value_type>(1.f)) { return {value - std::floor(value)}; }
 				else
 					{
-					value_type new_value{ std::fmod(value, full_angle) };
+					nonref_value_type new_value{ std::fmod(value, full_angle) };
 					if (new_value < 0) { new_value += full_angle; }
 					return { new_value };
 					}
 				}
-			utils_gpu_available constexpr base& clamp_self()       noexcept { *this = clamp(); return *this; }
+			utils_gpu_available constexpr self_t& clamp_self() noexcept { value = clamp().value; return *this; }
 
 			// Shouldn't be needed because...
 			//template <value_type other_full_angle> base  operator+ (const base<other_full_angle> oth) const noexcept { return {value + static_cast<base<full_angle>>(oth).value}; }
@@ -125,23 +153,23 @@ namespace utils::math::angle
 			//bool operator!=(const base oth) const noexcept { return !(*this == oth); }
 
 			// ...except it doesn't automatically cast, so here we go...
-			template <T full_angle_value> utils_gpu_available constexpr base  operator+ (const base<T, full_angle_value> oth) const noexcept { return {value + static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <T full_angle_value> utils_gpu_available constexpr base  operator- (const base<T, full_angle_value> oth) const noexcept { return {value - static_cast<base<value_type, full_angle>>(oth).value}; }
-			template <T full_angle_value> utils_gpu_available constexpr base& operator+=(const base<T, full_angle_value> oth)       noexcept { return *this = *this + oth; }
-			template <T full_angle_value> utils_gpu_available constexpr base& operator-=(const base<T, full_angle_value> oth)       noexcept { return *this = *this - oth; }
-			template <T full_angle_value> utils_gpu_available constexpr bool  operator==(const base<T, full_angle_value> oth) const noexcept { return clamp().value == static_cast<base<value_type, full_angle>>(oth).clamp().value; }
-			template <T full_angle_value> utils_gpu_available constexpr bool  operator!=(const base<T, full_angle_value> oth) const noexcept { return !(*this == oth); }
+			utils_gpu_available constexpr nonref_self_t  operator+ (const concepts::compatible_angle<self_t> auto& other) const noexcept { return {value + nonref_self_t{other}.value}; }
+			utils_gpu_available constexpr nonref_self_t  operator- (const concepts::compatible_angle<self_t> auto& other) const noexcept { return {value - nonref_self_t{other}.value}; }
+			utils_gpu_available constexpr self_t       & operator+=(const concepts::compatible_angle<self_t> auto& other)       noexcept { return *this = *this + other; }
+			utils_gpu_available constexpr self_t       & operator-=(const concepts::compatible_angle<self_t> auto& other)       noexcept { return *this = *this - other; }
+			utils_gpu_available constexpr bool           operator==(const concepts::compatible_angle<self_t> auto& other) const noexcept { return clamp().value == nonref_self_t{other}.clamp().value; }
+			utils_gpu_available constexpr bool           operator!=(const concepts::compatible_angle<self_t> auto& other) const noexcept { return !(*this == other); }
 			
-			utils_gpu_available constexpr base  operator+ (value_type oth) const noexcept { return { value + oth }; }
-			utils_gpu_available constexpr base  operator- (value_type oth) const noexcept { return { value - oth }; }
-			utils_gpu_available constexpr base  operator* (value_type oth) const noexcept { return { value * oth }; }
-			utils_gpu_available constexpr base  operator/ (value_type oth) const noexcept { return { value / oth }; }
-			utils_gpu_available constexpr base& operator+=(value_type oth)       noexcept { return *this = *this + oth; }
-			utils_gpu_available constexpr base& operator-=(value_type oth)       noexcept { return *this = *this - oth; }
-			utils_gpu_available constexpr base& operator*=(value_type oth)       noexcept { return *this = *this * oth; }
-			utils_gpu_available constexpr base& operator/=(value_type oth)       noexcept { return *this = *this / oth; }
+			utils_gpu_available constexpr nonref_self_t  operator+ (const nonref_value_type& other) const noexcept { return { value + other }; }
+			utils_gpu_available constexpr nonref_self_t  operator- (const nonref_value_type& other) const noexcept { return { value - other }; }
+			utils_gpu_available constexpr nonref_self_t  operator* (const nonref_value_type& other) const noexcept { return { value * other }; }
+			utils_gpu_available constexpr nonref_self_t  operator/ (const nonref_value_type& other) const noexcept { return { value / other }; }
+			utils_gpu_available constexpr self_t       & operator+=(const nonref_value_type& other)       noexcept { return *this = *this + other; }
+			utils_gpu_available constexpr self_t       & operator-=(const nonref_value_type& other)       noexcept { return *this = *this - other; }
+			utils_gpu_available constexpr self_t       & operator*=(const nonref_value_type& other)       noexcept { return *this = *this * other; }
+			utils_gpu_available constexpr self_t       & operator/=(const nonref_value_type& other)       noexcept { return *this = *this / other; }
 
-			utils_gpu_available constexpr base  operator-()const noexcept { return base{ value + half_angle }.clamp(); }
+			utils_gpu_available constexpr nonref_self_t operator-()const noexcept { return nonref_self_t{value + half_angle}.clamp(); }
 
 			/// <summary>
 			/// Distance within a full angle. Disregards differences larger than one full angle.
@@ -149,50 +177,53 @@ namespace utils::math::angle
 			/// <param name="a"></param>
 			/// <param name="b"></param>
 			/// <returns></returns>
-			utils_gpu_available static constexpr base min_distance(const base a, const base b) noexcept
+			utils_gpu_available static constexpr nonref_self_t min_distance(const self_t& a, const concepts::compatible_angle<self_t> auto& b) noexcept
 				{
-				if constexpr (std::is_integral_v<value_type>)
+				const nonref_self_t converted_b{b};
+				if constexpr (std::is_integral_v<nonref_value_type>)
 					{
-					T d{(b.value - a.value) % full_angle};
+					nonref_value_type d{(converted_b.value - a.value) % full_angle};
 					return d < -half_angle ? d + full_angle : d > half_angle ? d - full_angle : d;
 					}
-				else if constexpr (std::is_floating_point_v<value_type>)
+				else if constexpr (std::is_floating_point_v<nonref_value_type>)
 					{
-					T d{std::modf((b.value - a.value), full_angle)};
+					nonref_value_type d{std::modf((converted_b.value - a.value), full_angle)};
 					return d < -half_angle ? d + full_angle : d > half_angle ? d - full_angle : d;
 					}
 				}
 
-			utils_gpu_available constexpr value_type normalize_in_range(base min, base max) const noexcept
+			utils_gpu_available constexpr nonref_value_type normalize_in_range(const concepts::compatible_angle<self_t> auto& min, const concepts::compatible_angle<self_t> auto& max) const noexcept
 				{
-				min.clamp();
-				max.clamp();
-				value_type next_max{ min.value <= max.value ? max.value : max.value + full_angle };
-				value_type min_to_this{ (min.value <= value ? value : value + full_angle) - min.value };
-				value_type min_to_max{ next_max - min.value };
+				nonref_self_t converted_min{min};
+				nonref_self_t converted_max{max};
+				converted_min.clamp();
+				converted_max.clamp();
+				nonref_value_type next_max{ converted_min.value <= converted_max.value ? converted_max.value : converted_max.value + full_angle };
+				nonref_value_type min_to_this{ (converted_min.value <= value ? value : value + full_angle) - converted_min.value };
+				nonref_value_type min_to_max{ next_max - converted_min.value };
 				if (min_to_this < min_to_max) { return min_to_this / min_to_max; }
 
-				base halfway{ (next_max + min.value) * .5f };
-				base opposite{ -halfway };
-				value_type next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
+				nonref_self_t halfway{ (next_max + converted_min.value) * .5f };
+				nonref_self_t opposite{ -halfway };
+				nonref_value_type next_opposite{ next_max < opposite.value ? opposite.value : opposite.value + full_angle };
 				if (next_opposite < next_max) { next_opposite += full_angle; }
 
-				value_type min_to_opposite{ next_opposite - min.value };
+				nonref_value_type min_to_opposite{ next_opposite - converted_min.value };
 				return min_to_this < min_to_opposite ? min_to_this / min_to_max : (min_to_this - full_angle) / min_to_max;
 				}
 
 	#pragma region Trigonometry
-			utils_gpu_available inline        constexpr value_type sin  (                          ) const noexcept { return std::sin(rad_value()); }
-			utils_gpu_available inline        constexpr value_type cos  (                          ) const noexcept { return std::cos(rad_value()); }
-			utils_gpu_available inline        constexpr value_type tan  (                          ) const noexcept { return std::tan(rad_value()); }
-			utils_gpu_available inline static constexpr base       asin (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::asin(n)} }; }
-			utils_gpu_available inline static constexpr base       acos (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::acos(n)} }; }
-			utils_gpu_available inline static constexpr base       atan (value_type n              )       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::atan(n)} }; }
-			utils_gpu_available inline static constexpr base       atan2(value_type a, value_type b)       noexcept { return { base<value_type, value_type{2} * constants::PIf>{std::atan2(a, b)} }; }
+			utils_gpu_available inline        constexpr nonref_value_type sin  (                                        ) const noexcept { return std::sin(rad_value()); }
+			utils_gpu_available inline        constexpr nonref_value_type cos  (                                        ) const noexcept { return std::cos(rad_value()); }
+			utils_gpu_available inline        constexpr nonref_value_type tan  (                                        ) const noexcept { return std::tan(rad_value()); }
+			utils_gpu_available inline static constexpr nonref_self_t     asin (nonref_value_type n                     )       noexcept { return { base<nonref_value_type, static_cast<nonref_value_type>(2. * constants::PId)>{std::asin(n)} }; }
+			utils_gpu_available inline static constexpr nonref_self_t     acos (nonref_value_type n                     )       noexcept { return { base<nonref_value_type, static_cast<nonref_value_type>(2. * constants::PId)>{std::acos(n)} }; }
+			utils_gpu_available inline static constexpr nonref_self_t     atan (nonref_value_type n                     )       noexcept { return { base<nonref_value_type, static_cast<nonref_value_type>(2. * constants::PId)>{std::atan(n)} }; }
+			utils_gpu_available inline static constexpr nonref_self_t     atan2(nonref_value_type a, nonref_value_type b)       noexcept { return { base<nonref_value_type, static_cast<nonref_value_type>(2. * constants::PId)>{std::atan2(a, b)} }; }
 	#pragma endregion Trigonometry
 
 		private:
-			utils_gpu_available constexpr value_type rad_value() const noexcept { return static_cast<base<value_type, 2.f * constants::PIf>>(*this).value; }
+			utils_gpu_available constexpr nonref_value_type rad_value() const noexcept { return static_cast<base<nonref_value_type, static_cast<nonref_value_type>(2. * constants::PId)>>(*this).value; }
 		};
 	
 	namespace literals
@@ -252,10 +283,10 @@ namespace utils::math
 		template <math::angle::concepts::angle T> utils_gpu_available inline constexpr float                                      sin  (const T& a      ) noexcept { return a.sin(); }
 		template <math::angle::concepts::angle T> utils_gpu_available inline constexpr float                                      cos  (const T& a      ) noexcept { return a.cos(); }
 		template <math::angle::concepts::angle T> utils_gpu_available inline constexpr float                                      tan  (const T& a      ) noexcept { return a.tan        (    ); }
-		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> asin (float n         ) noexcept { return angle::rad<T>::asin (n   ); }
-		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> acos (float n         ) noexcept { return angle::rad<T>::acos (n   ); }
-		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> atan (float n         ) noexcept { return angle::rad<T>::atan (n   ); }
-		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, 2.f * constants::PIf> atan2(float a, float b) noexcept { return angle::rad<T>::atan2(a, b); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, static_cast<T>(2. * constants::PI)> asin (float n         ) noexcept { return angle::rad<T>::asin (n   ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, static_cast<T>(2. * constants::PI)> acos (float n         ) noexcept { return angle::rad<T>::acos (n   ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, static_cast<T>(2. * constants::PI)> atan (float n         ) noexcept { return angle::rad<T>::atan (n   ); }
+		template <std ::floating_point         T> utils_gpu_available inline constexpr math::angle::base<T, static_cast<T>(2. * constants::PI)> atan2(float a, float b) noexcept { return angle::rad<T>::atan2(a, b); }
 		}
 	} 
 

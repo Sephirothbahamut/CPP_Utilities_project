@@ -27,34 +27,14 @@ namespace utils
 	namespace concepts
 		{
 		template <typename T>
-		concept reference = std::same_as<std::remove_cvref_t<T>, std::reference_wrapper<typename T::type>>;
+		concept reference_wrapper = std::same_as<std::remove_cvref_t<T>, std::reference_wrapper<typename T::type>>;
+		template <typename T>
+		concept reference_raw = std::is_reference_v<T>;
+
+		template <typename T>
+		concept reference = reference_wrapper<T> || reference_raw<T>;
 		}
 	static_assert(concepts::reference<std::reference_wrapper<float>>);
-
-	template <typename T>
-	struct remove_cvref
-		{
-		using type = std::remove_cvref_t<T>;
-		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
-		utils_gpu_available static constexpr type cast(const T& input) { return static_cast<type>(input); }
-		};
-
-	template <concepts::reference T>
-	struct remove_cvref<T>
-		{
-		using type = std::remove_cvref_t<typename T::type>;
-		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
-		utils_gpu_available static constexpr type cast(const T& input) { return static_cast<type>(input); }
-		};
-
-	template <typename T>
-	using remove_cvref_t = typename remove_cvref<T>::type;
-
-	template <typename T>
-	utils_gpu_available constexpr auto remove_cvref_v(T& in) noexcept -> remove_cvref_t<T>&
-		{
-		return static_cast<remove_cvref_t<T>&>(in);
-		}
 
 	template <typename T>
 	struct remove_reference
@@ -64,10 +44,10 @@ namespace utils
 		utils_gpu_available static constexpr type cast(const T& input) { return static_cast<type>(input); }
 		};
 
-	template <concepts::reference T>
+	template <concepts::reference_wrapper T>
 	struct remove_reference<T>
 		{
-		using type = std::remove_reference_t<typename T::type>;
+		using type = typename T::type;
 		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
 		utils_gpu_available static constexpr type cast(const T& input) { return static_cast<type>(input); }
 		};
