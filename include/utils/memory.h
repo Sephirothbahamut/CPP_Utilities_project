@@ -29,10 +29,17 @@ namespace utils
 		template <typename T>
 		concept reference_wrapper = std::same_as<std::remove_cvref_t<T>, std::reference_wrapper<typename T::type>>;
 		template <typename T>
+		concept const_reference_wrapper = reference_wrapper<T> && std::is_const_v<typename T::type>;
+
+		template <typename T>
 		concept reference_raw = std::is_reference_v<T>;
+		template <typename T>
+		concept const_reference_raw = std::is_reference_v<T> && std::is_const_v<T>;
 
 		template <typename T>
 		concept reference = reference_wrapper<T> || reference_raw<T>;
+		template <typename T>
+		concept const_reference = const_reference_wrapper<T> || const_reference_raw<T>;
 		}
 	static_assert(concepts::reference<std::reference_wrapper<float>>);
 

@@ -15,11 +15,36 @@ namespace utils::math
 		using value_type = T;
 		using nonref_value_type = utils::remove_reference_t<value_type>;
 		using nonref_self_t = rect<nonref_value_type>;
-		
-		template <std::convertible_to<value_type> T_oth> requires (!utils::concepts::reference<value_type>)
-		static self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {position.x(), position.y(), position.x() + size.x(), position.y() + size.y()}; }
-		template <std::convertible_to<value_type> T_oth>
-		static self_t from_ul_dr  (utils::math::vec2<T_oth> ul, utils::math::vec2<T_oth> dr) { return {ul.x(), ul.y(), dr.x(), dr.y()}; }
+
+		struct create : ::utils::oop::non_constructible
+			{
+			template <std::convertible_to<value_type> T_oth> requires (!utils::concepts::reference<value_type>)
+			static self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {position.x(), position.y(), position.x() + size.x(), position.y() + size.y()}; }
+			
+			template <std::convertible_to<value_type> T_oth>
+			static self_t from_ul_dr  (utils::math::vec2<T_oth> ul, utils::math::vec2<T_oth> dr) { return {ul.x(), ul.y(), dr.x(), dr.y()}; }
+
+			template <std::convertible_to<value_type> T_oth>
+			static self_t from_vertices(utils::math::vec2<T_oth>& a, utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
+				requires (utils::concepts::reference<value_type>)
+				{
+				nonref_value_type& min_x{std::min(a.x(), b.x())};//vertices.x(), ...)};
+				nonref_value_type& min_y{std::min(a.y(), b.y())};//vertices.y(), ...)};
+				nonref_value_type& max_x{std::max(a.x(), b.x())};//vertices.x(), ...)};
+				nonref_value_type& max_y{std::max(a.y(), b.y())};//vertices.y(), ...)};
+				return {min_x, min_y, max_x, max_y};
+				}
+			template <std::convertible_to<value_type> T_oth>
+			static self_t from_vertices(const utils::math::vec2<T_oth>& a, const utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
+				requires (!utils::concepts::reference<value_type>)
+				{
+				nonref_value_type min_x{std::min(a.x(), b.x())};//vertices.x(), ...)};
+				nonref_value_type min_y{std::min(a.y(), b.y())};//vertices.y(), ...)};
+				nonref_value_type max_x{std::max(a.x(), b.x())};//vertices.x(), ...)};
+				nonref_value_type max_y{std::max(a.y(), b.y())};//vertices.y(), ...)};
+				return {min_x, min_y, max_x, max_y};
+				}
+			};
 
 		using storage_t = utils::storage::multiple<storage::get_type<value_type>(), nonref_value_type, 4>;
 		storage_t container;
@@ -354,7 +379,7 @@ namespace utils::math
 		utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept { return *this; } //TODO
 		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
 
-		utils_gpu_available constexpr nonref_self_t bounding_box() const noexcept { return *this; };
+		utils_gpu_available constexpr nonref_self_t bounding_box() const noexcept { return *this; }
 		};
 	}
 

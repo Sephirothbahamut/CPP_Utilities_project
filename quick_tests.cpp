@@ -181,6 +181,15 @@ int main()
 
 	const auto ret{point.transform(transform)};
 
+
+	utils::math::geometry::shape::point pa{3.f, 1.f};
+	utils::math::geometry::shape::point pb{1.f, 3.f};
+	utils::math::geometry::shape::point pc{5.f, 2.f};
+
+	const auto aabb{utils::math::geometry::shape::aabb::create::from_vertices(pa, pb)};
+
+	std::cout << std::endl;
+
 	//utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
 	//utils::math::geometry::shape::point point{0.f, 1.f};
 	//utils::math::geometry::shape::segment segment{point, point};

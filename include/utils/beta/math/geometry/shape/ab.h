@@ -13,15 +13,20 @@ namespace utils::math::geometry::shape
 			public:
 				using self_t = ab<storage_type>;
 				inline static constexpr storage::type static_storage_type{storage_type};
-				using stored_type = storage::single<static_storage_type, shape::point>;
-				stored_type _a;
-				stored_type _b;
+				using value_type = storage::single<static_storage_type, shape::point>;
+				using nonref_value_type = utils::remove_reference_t<value_type>;
+				using nonref_self_t = ab<storage::type::owner>;
 				
-				utils_gpu_available constexpr const shape::point& a() const noexcept { return static_cast<const shape::point&>(_a); }
-				utils_gpu_available constexpr       shape::point& a()       noexcept { return static_cast<      shape::point&>(_a); }
+				std::array<value_type, 2> container;
 
-				utils_gpu_available constexpr const shape::point& b() const noexcept { return static_cast<const shape::point&>(_b); }
-				utils_gpu_available constexpr       shape::point& b()       noexcept { return static_cast<      shape::point&>(_b); }
+				utils_gpu_available const nonref_value_type& operator[](size_t index) const noexcept { return static_cast<const nonref_value_type&>(container[index]); }
+				utils_gpu_available       nonref_value_type& operator[](size_t index)       noexcept { return static_cast<      nonref_value_type&>(container[index]); }
+				
+				utils_gpu_available constexpr const shape::point& a() const noexcept { return (*this)[0]; }
+				utils_gpu_available constexpr       shape::point& a()       noexcept { return (*this)[0]; }
+				
+				utils_gpu_available constexpr const shape::point& b() const noexcept { return (*this)[1]; }
+				utils_gpu_available constexpr       shape::point& b()       noexcept { return (*this)[1]; }
 
 				utils_gpu_available constexpr const shape::point& operator[](const size_t& index) const noexcept { return index == 0 ? a() : b(); }
 				utils_gpu_available constexpr       shape::point& operator[](const size_t& index)       noexcept { return index == 0 ? a() : b(); }
@@ -73,32 +78,53 @@ namespace utils::math::geometry::shape
 					return {a().x + t * delta.x, a().y + t * delta.y};
 					}
 				
-				#pragma region geometry shape methods
-					utils_gpu_available constexpr self_t  scale         (const float                    & scaling    ) const noexcept { auto ret{*this}; return ret.scale_self    (scaling    ); }
-					utils_gpu_available constexpr self_t  rotate        (const angle::base<float, 360.f>& rotation   ) const noexcept { auto ret{*this}; return ret.rotate_self   (rotation   ); }
-					utils_gpu_available constexpr self_t  translate     (const vec<float, 2>            & translation) const noexcept { auto ret{*this}; return ret.translate_self(translation); }
-					utils_gpu_available constexpr self_t  transform     (const utils::math::transform2  & transform  ) const noexcept { auto ret{*this}; return ret.transform_self(transform  ); }
+				
+				utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
+				utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
+				utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
+				utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
 
-					utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept;
-					utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept;
-					utils_gpu_available constexpr self_t& translate_self(const vec<float, 2>            & translation) noexcept;
-					utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept;
+				utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept { for(auto& value : container) { value.scale_self    (scaling    ); } return *this; }
+				utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept { for(auto& value : container) { value.rotate_self   (rotation   ); } return *this; }
+				utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept { for(auto& value : container) { value.translate_self(translation); } return *this; }
+				utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept { for(auto& value : container) { value.transform_self(transform  ); } return *this; }
 
-					utils_gpu_available constexpr rect<float> bounding_box() const noexcept;
-				#pragma endregion geometry shape methods
+				utils_gpu_available constexpr shape::aabb bounding_box() const noexcept 
+					{
+					return shape::aabb::from_vertices(a(), b());
+					}
 			};
 
 		template <storage::type storage_type> 
 		struct line : ab<storage_type>
 			{
-			inline static constexpr geometry::ends static_ends{ends};
-			
+			inline static constexpr geometry::ends static_ends{geometry::ends::create::infinite()};
+
+			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
+			utils_gpu_available constexpr float length () const noexcept { return utils::math::constants::finf; }
+			};
+
+		template <storage::type storage_type> 
+		struct ray : ab<storage_type>
+			{
+			inline static constexpr geometry::ends static_ends{geometry::ends::create::open(true, false)};
+
 			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
 			utils_gpu_available constexpr float length () const noexcept { return utils::math::constants::finf; }
 			utils_gpu_available constexpr float projected_percent(const concepts::point auto& other) const noexcept
-			}
-		template <storage::type storage_type> using ray     = ab<storage_type, ends::create::open(true , false)>;
-		template <storage::type storage_type> using segment = ab<storage_type, ends::create::open(true , true )>;
+				{
+				return std::max(0.f, ab<storage_type>::projected_percent(other));
+				}
+			};
+
+		template <storage::type storage_type> 
+		struct segment : ab<storage_type>
+			{
+			utils_gpu_available constexpr float projected_percent(const concepts::point auto& other) const noexcept
+				{
+				return std::clamp(ab<storage_type>::projected_percent(other), 0.f, 1.f);
+				}
+			};
 		}
 
 	namespace concepts

@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <memory>
+#include "math/math.h"
 
 namespace utils::storage
 	{
@@ -46,14 +47,8 @@ namespace utils::storage
 	template <typename T>
 	inline static consteval type get_type()
 		{
-		if constexpr (std::same_as<typename T::value_type, std::reference_wrapper<typename T::value_type::value_type>>)
-			{
-			if constexpr (std::is_const<typename T::value_type::value_type>)
-				{
-				return type::const_observer;
-				}
-			else { return type::observer; }
-			}
-		else { return type::owner; }
+		if constexpr (concepts::const_reference<T>) { return type::const_observer; }
+		else if constexpr (concepts::reference<T>) { return type::observer; }
+		else return type::owner;
 		}
 	}
