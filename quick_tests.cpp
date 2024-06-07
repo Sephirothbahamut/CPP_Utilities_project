@@ -41,9 +41,10 @@
 
 //#include "include/utils/beta/math/geometry/all.h"
 //#include "include/utils/beta/math/geometry/group.h"
+#include "include/utils/math/transform2.h"
 #include "include/utils/beta/math/geometry/shape/point.h"
 #include "include/utils/beta/math/geometry/shape/aabb.h"
-#include "include/utils/beta/math/geometry/shape/ab.h"
+//#include "include/utils/beta/math/geometry/shape/ab.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -68,6 +69,7 @@ struct child_type : angry_type
 int main()
 	{
 	using namespace utils::output;
+	using namespace utils::math::angle::literals;
 
 	utils::trackable_wrapper<child_type> child1{1};
 	utils::trackable_wrapper<angry_type> parent1{1, 2.f};
@@ -170,6 +172,14 @@ int main()
 	utils::console::initializer console_initializer;
 
 	using namespace utils::output;
+
+	utils::math::geometry::shape::point point{0.f, 1.f};
+	const auto result{point + 1.f};
+	const auto& result2{point += point};
+	const auto& result3{point += 3.f};
+	utils::math::transform2 transform{.translation{10.f, 2.f}, .rotation{12_rad}};
+
+	const auto ret{point.transform(transform)};
 
 	//utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
 	//utils::math::geometry::shape::point point{0.f, 1.f};

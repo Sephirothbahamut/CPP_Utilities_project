@@ -8,7 +8,7 @@ namespace utils::math::geometry::shape
 	namespace generic
 		{
 		template <storage::type storage_type>
-		using aabb = ::utils::math::rect<storage::single<storage_type, float, false>>;
+		using aabb = ::utils::math::rect<storage::single<storage_type, float>>;
 		}
 	namespace concepts
 		{

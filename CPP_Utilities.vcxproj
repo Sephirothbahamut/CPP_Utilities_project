@@ -137,6 +137,7 @@
     <ClInclude Include="include\utils\beta\math\geometry\all.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\root.h" />
+    <ClInclude Include="include\utils\beta\math\geometry\details\vertices_sequence.h" />
     <ClInclude Include="include\utils\beta\math\geometry\group.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="include\utils\oop\disable_move_copy.h" />
     <ClInclude Include="include\utils\oop\virtual.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
+    <ClInclude Include="include\utils\storage.h" />
     <ClInclude Include="include\utils\string.h" />
     <ClInclude Include="include\utils\third_party\concurrentqueue.h" />
     <ClInclude Include="include\utils\third_party\jc_voronoi.h" />

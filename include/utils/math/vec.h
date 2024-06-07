@@ -12,7 +12,7 @@
 namespace utils::math
 	{
 	template <typename T, size_t size>
-	class vec;
+	struct vec;
 	
 	//fast typenames
 	template <typename T, size_t size> 
@@ -59,7 +59,7 @@ namespace utils::math
 		{
 		inline extern constexpr const char name_vec[]{"vec"};
 
-		template<class T, size_t size, typename derived_T>
+		template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_T>
 		class vec_sized_specialization {};
 
 		struct pair_sizes_t
@@ -93,9 +93,9 @@ namespace utils::math
 		}
 
 	template<typename T, size_t size>
-	struct utils_oop_empty_bases vec : ::utils::details::vector::base<T, size, vec, details::name_vec>, details::vec_sized_specialization<T, size, vec<T, size>>
+	struct utils_oop_empty_bases vec : ::utils::details::vector::base<T, size, vec, details::name_vec>, details::vec_sized_specialization<T, size, vec>
 		{
-		template<class T, size_t size, typename derived_T>
+		template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_T>
 		friend class details::vec_sized_specialization;
 
 		using base_t = ::utils::details::vector::base<T, size, vec, details::name_vec>;
@@ -164,19 +164,16 @@ namespace utils::math
 			}
 
 		/// <summary> Evaluate distance in the size of this vec. Missing coordinates are considered 0. </summary>
-		utils_gpu_available static constexpr value_type distance(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		utils_gpu_available static constexpr nonref_value_type distance(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
 			{
 			return std::sqrt(distance2(a, b)); 
 			}
 
 		/// <summary> Evaluate distance in all the axes of the smaller vec. </summary>
-		utils_gpu_available static constexpr value_type distance_shared(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		utils_gpu_available static constexpr nonref_value_type distance_shared(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
 			{
 			return std::sqrt(distance_shared2(a, b)); 
 			}
-
-#pragma endregion distances
-#pragma region interpolation
 
 		utils_gpu_available static constexpr nonref_self_t slerp_fast(const self_t& a, const self_t& b, value_type t) noexcept
 			{
@@ -194,7 +191,6 @@ namespace utils::math
 			return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 			}
 
-#pragma endregion interpolation
 		struct create : ::utils::oop::non_constructible
 			{
 			utils_gpu_available static constexpr self_t zero    () noexcept requires(!static_value_is_reference && static_size >= 1) { return {value_type{ 0}}; }

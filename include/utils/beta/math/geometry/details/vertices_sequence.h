@@ -1,24 +1,71 @@
 #pragma once
 
+#include <span>
+#include <array>
+#include <vector>
 #include <optional>
 
-#include "../../../../memory.h"
-#include "../../../../storage.h"
-#include "../../../../math/math.h"
-#include "../../../../math/vec2.h"
-#include "../../../../compilation/gpu.h"
-#include "../../../../math/constants.h"
-#include "../../../../oop/disable_move_copy.h"
-
-namespace utils::math
-	{
-	template <typename T, size_t size>
-	struct vec;
-	using vec2f = vec<float, 2>;
-	}
+#include "base_types.h"
+#include "../shape/ab.h"
+#include "../shape/point.h"
 
 namespace utils::math::geometry
 	{
+	template <bool 
+
+	namespace storage
+		{
+		enum class type
+			{
+			owner, observer, const_observer
+			};
+
+		template <type storage, typename T>
+		using single = std::conditional_t
+			<
+			storage == type::owner,
+			T,
+			std::conditional_t
+			/**/<
+			/**/storage == type::observer,
+			/**/std::reference_wrapper<T>,
+			/**/std::reference_wrapper<const T>
+			/**/>
+			>;
+
+		template <type storage, typename T, size_t extent = std::dynamic_extent>
+		using multiple = std::conditional_t
+			<
+			storage == type::owner,
+			std::conditional_t
+				<
+				extent == std::dynamic_extent,
+				std::vector<T>,
+				std::array <T, extent>
+				>,
+			std::conditional_t
+			/**/<
+			/**/storage == type::observer,
+			/**/std::span<      T, extent>,
+			/**/std::span<const T, extent>
+			/**/>
+			>;
+
+		template <typename T>
+		inline static consteval type get_type()
+			{
+			if constexpr (std::same_as<typename T::value_type, std::reference_wrapper<typename T::value_type::value_type>>)
+				{
+				if constexpr (std::is_const<typename T::value_type::value_type>)
+					{
+					return type::const_observer;
+					}
+				else { return type::observer; }
+				}
+			else { return type::owner; }
+			}
+		}
+
 	struct ends
 		{
 		struct create : ::utils::oop::non_constructible
@@ -71,8 +118,8 @@ namespace utils::math::geometry
 		{
 		namespace details {}
 		namespace generic {}
-		namespace owner   {}
-		namespace view    {}
+		namespace owner {}
+		namespace view {}
 
 		using namespace owner;
 		}

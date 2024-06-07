@@ -2,6 +2,7 @@
 
 #include "vec.h"
 #include "angle.h"
+#include "../oop/conditional_inheritance.h"
 
 namespace utils::math
 	{
@@ -49,70 +50,72 @@ namespace utils::math
 
 	namespace details
 		{
-		template<class T, typename derived_T>
-		class utils_oop_empty_bases vec_sized_specialization<T, 2, derived_T>
+		template<typename T, template <typename, size_t> class unspecialized_derived_T>
+		class utils_oop_empty_bases vec_sized_specialization<T, 2, unspecialized_derived_T>
 			{
 			private:
-				using derived_t = derived_T;
-				utils_gpu_available constexpr const derived_t& derived() const noexcept { return static_cast<const derived_t&>(*this); }
-				utils_gpu_available constexpr       derived_t& derived()       noexcept { return static_cast<      derived_t&>(*this); }
+				using self_t = unspecialized_derived_T<T, 2>;
+				utils_gpu_available constexpr const self_t& self() const noexcept { return static_cast<const self_t&>(*this); }
+				utils_gpu_available constexpr       self_t& self()       noexcept { return static_cast<      self_t&>(*this); }
 
 			public:
-				utils_gpu_available  static constexpr derived_t from(const math::angle::concepts::angle auto& angle, T magnitude = 1) noexcept
+				using value_type = typename T;
+				template <typename T, size_t size>
+				using unspecialized_derived_t = unspecialized_derived_T<T, size>;
+				using nonref_value_type = typename utils::remove_reference_t<value_type>;
+				using nonref_self_t     = unspecialized_derived_t<nonref_value_type, 2>;
+
+				utils_gpu_available  static constexpr self_t from(const math::angle::concepts::angle auto& angle, T magnitude = 1) noexcept
 					{
 					auto x{angle.cos() * magnitude};
 					auto y{angle.sin() * magnitude};
-					return derived_t{x, y};
+					return self_t{x, y};
 					}
 
 				template <typename T = float, T f_a_v = 360.f>
-				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(derived().y(), derived().x()); }
+				utils_gpu_available constexpr math::angle::base<T, f_a_v> angle() const noexcept { return math::angle::base<T, f_a_v>::atan2(self().y(), self().x()); }
 				
-				// VEC & ANGLE OPERATIONS
-				utils_gpu_available constexpr derived_t  operator+ (const math::angle::concepts::angle auto& angle) const noexcept
+				utils_gpu_available constexpr nonref_self_t operator+ (const math::angle::concepts::angle auto& angle) const noexcept
 					{
 					return
 						{
-						derived().x() * angle.cos() - derived().y() * angle.sin(),
-						derived().x() * angle.sin() + derived().y() * angle.cos()
+						self().x() * angle.cos() - self().y() * angle.sin(),
+						self().x() * angle.sin() + self().y() * angle.cos()
 						};
 					}
-				utils_gpu_available constexpr derived_t  operator- (const math::angle::concepts::angle auto& angle) const noexcept
+				utils_gpu_available constexpr nonref_self_t operator- (const math::angle::concepts::angle auto& angle) const noexcept
 					{
 					const auto nngle{-angle};
 					return
 						{
-						derived().x() * nngle.cos() - derived().y() * nngle.sin(),
-						derived().x() * nngle.sin() + derived().y() * nngle.cos()
+						self().x() * nngle.cos() - self().y() * nngle.sin(),
+						self().x() * nngle.sin() + self().y() * nngle.cos()
 						};
 					}
 
-				utils_gpu_available constexpr derived_t& operator+=(const math::angle::concepts::angle auto& angle) noexcept { return derived() = derived() + angle; }
-				utils_gpu_available constexpr derived_t& operator-=(const math::angle::concepts::angle auto& angle) noexcept { return derived() = derived() - angle; }
-				utils_gpu_available constexpr derived_t& operator= (const math::angle::concepts::angle auto& angle) noexcept
+				utils_gpu_available constexpr self_t& operator+=(const math::angle::concepts::angle auto& angle) noexcept { return self() = self() + angle; }
+				utils_gpu_available constexpr self_t& operator-=(const math::angle::concepts::angle auto& angle) noexcept { return self() = self() - angle; }
+				utils_gpu_available constexpr self_t& operator= (const math::angle::concepts::angle auto& angle) noexcept
 					{
-					return derived() = {angle.cos() * derived().magnitude(), angle.sin() * derived().magnitude()}; 
+					return self() = {angle.cos() * self().magnitude(), angle.sin() * self().magnitude()}; 
 					}
 
-				// OTHER
-				utils_gpu_available constexpr derived_t perpendicular_right           () const noexcept { return { derived().y(), -derived().x()}; }
-				utils_gpu_available constexpr derived_t perpendicular_left            () const noexcept { return {-derived().y(),  derived().x()}; }
-				utils_gpu_available constexpr derived_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
-				utils_gpu_available constexpr derived_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+				utils_gpu_available constexpr nonref_self_t perpendicular_right           () const noexcept { return { self().y(), -self().x()}; }
+				utils_gpu_available constexpr nonref_self_t perpendicular_left            () const noexcept { return {-self().y(),  self().x()}; }
+				utils_gpu_available constexpr nonref_self_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
+				utils_gpu_available constexpr nonref_self_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
+				
+				utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{self()}; return ret.scale_self    (scaling    ); }
+				utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{self()}; return ret.rotate_self   (rotation   ); }
+				utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{self()}; return ret.translate_self(translation); }
+				utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept;
 
-				#pragma region geometry shape methods
-					utils_gpu_available constexpr derived_t  scale         (const float                    & scaling    ) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.scale_self    (scaling    ); }
-					utils_gpu_available constexpr derived_t  rotate        (const angle::base<float, 360.f>& rotation   ) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.rotate_self   (rotation   ); }
-					utils_gpu_available constexpr derived_t  translate     (const vec<float, 2>            & translation) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.translate_self(translation); }
-					utils_gpu_available constexpr derived_t  transform     (const utils::math::transform2  & transform  ) const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>) { auto ret{derived()}; return ret.transform_self(transform  ); }
+				utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(std::same_as<typename self_t::nonref_value_type, float>) { return self() *= scaling    ; }
+				utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(std::same_as<typename self_t::nonref_value_type, float>) { return self() += rotation   ; }
+				utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept requires(std::same_as<typename self_t::nonref_value_type, float>) { return self() += translation; }
+				utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept;
 
-					utils_gpu_available constexpr derived_t& scale_self    (const float                    & scaling    ) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
-					utils_gpu_available constexpr derived_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
-					utils_gpu_available constexpr derived_t& translate_self(const vec<float, 2>            & translation) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
-					utils_gpu_available constexpr derived_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
-
-					utils_gpu_available constexpr rect<float> bounding_box() const noexcept requires(std::same_as<typename derived_t::nonref_value_type, float>);
-				#pragma endregion geometry shape methods
+				utils_gpu_available constexpr rect<float> bounding_box() const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>);
 			};
 		}
 	}

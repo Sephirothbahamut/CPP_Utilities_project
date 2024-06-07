@@ -55,8 +55,8 @@ namespace utils::details::vector
 			pointer   operator->() noexcept { return static_cast<pointer  >(inner_iterator.operator->()); }
 			};
 
-		using iterator               = typename base_iterator<typename array_t::iterator              , const nonref_value_type>;
-		using const_iterator         = typename base_iterator<typename array_t::const_iterator        ,       nonref_value_type>;
+		using iterator               = typename base_iterator<typename array_t::iterator              ,       nonref_value_type>;
+		using const_iterator         = typename base_iterator<typename array_t::const_iterator        , const nonref_value_type>;
 		using reverse_iterator       = typename base_iterator<typename array_t::reverse_iterator      ,       nonref_value_type>;
 		using const_reverse_iterator = typename base_iterator<typename array_t::const_reverse_iterator, const nonref_value_type>;
 		};

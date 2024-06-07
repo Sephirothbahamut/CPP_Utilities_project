@@ -559,6 +559,12 @@
     <ClInclude Include="include\utils\details\vec\all.h">
       <Filter>Utils\details\vec</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\beta\math\geometry\details\vertices_sequence.h">
+      <Filter>Beta\math\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\storage.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

@@ -1,33 +1,40 @@
 #pragma once
 
-#include "../memory.h"
 #include "vec2.h"
+#include "transform2.h"
+#include "../memory.h"
+#include "../storage.h"
+#include "../compilation/gpu.h"
 
 namespace utils::math
 	{
 	template <typename T = float>
-	struct rect
+	struct utils_oop_empty_bases rect
 		{
 		using self_t = rect<T>;
 		using value_type = T;
 		using nonref_value_type = utils::remove_reference_t<value_type>;
+		using nonref_self_t = rect<nonref_value_type>;
 		
 		template <std::convertible_to<value_type> T_oth> requires (!utils::concepts::reference<value_type>)
-		static self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {.ll{position.x}, .up{position.y}, .rr{position.x + size.x}, .dw{position.y + size.y}}; }
-		template <std::convertible_to<value_type> T_oth> requires (!utils::concepts::reference<value_type>)
-		static self_t from_ul_dr  (utils::math::vec2<T_oth> ul      , utils::math::vec2<T_oth> dr  ) { return {.ll{ul      .x}, .up{ul      .y}, .rr{dr      .x         }, .dw{dr      .y         }}; }
+		static self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {position.x(), position.y(), position.x() + size.x(), position.y() + size.y()}; }
+		template <std::convertible_to<value_type> T_oth>
+		static self_t from_ul_dr  (utils::math::vec2<T_oth> ul, utils::math::vec2<T_oth> dr) { return {ul.x(), ul.y(), dr.x(), dr.y()}; }
 
-		template <std::same_as<nonref_value_type> T_oth> requires (utils::concepts::reference<value_type>)
-		static self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {.ll{position.x}, .up{position.y}, .rr{position.x + size.x}, .dw{position.y + size.y}}; }
-		template <std::same_as<nonref_value_type> T_oth> requires (utils::concepts::reference<value_type>)
-		static self_t from_ul_dr  (utils::math::vec2<T_oth> ul      , utils::math::vec2<T_oth> dr  ) { return {.ll{ul      .x}, .up{ul      .y}, .rr{dr      .x         }, .dw{dr      .y         }}; }
+		using storage_t = utils::storage::multiple<storage::get_type<value_type>(), nonref_value_type, 4>;
+		storage_t container;
 
-#pragma region Variables
-		value_type ll;
-		value_type up;
-		value_type rr;
-		value_type dw;
-#pragma endregion Variables
+		utils_gpu_available const nonref_value_type& operator[](size_t index) const noexcept { return static_cast<const nonref_value_type&>(container[index]); }
+		utils_gpu_available       nonref_value_type& operator[](size_t index)       noexcept { return static_cast<      nonref_value_type&>(container[index]); }
+		
+		utils_gpu_available const nonref_value_type& ll() const noexcept { return (*this)[0]; }
+		utils_gpu_available       nonref_value_type& ll()       noexcept { return (*this)[0]; }
+		utils_gpu_available const nonref_value_type& up() const noexcept { return (*this)[1]; }
+		utils_gpu_available       nonref_value_type& up()       noexcept { return (*this)[1]; }
+		utils_gpu_available const nonref_value_type& rr() const noexcept { return (*this)[2]; }
+		utils_gpu_available       nonref_value_type& rr()       noexcept { return (*this)[2]; }
+		utils_gpu_available const nonref_value_type& dw() const noexcept { return (*this)[3]; }
+		utils_gpu_available       nonref_value_type& dw()       noexcept { return (*this)[3]; }
 
 #pragma region Proxies
 	#pragma region Position
@@ -41,14 +48,14 @@ namespace utils::math
 			friend class p_proxy<is_const>;
 
 			public:
-				operator nonref_value_type () const noexcept { return r.ll; }
-				operator nonref_value_type&() noexcept requires(!is_const) { return utils::remove_reference_v(r.ll); }
+				operator nonref_value_type () const noexcept { return r.ll(); }
+				operator nonref_value_type&() noexcept requires(!is_const) { return utils::remove_reference_v(r.ll()); }
 
 				x_proxy& operator=(const nonref_value_type& new_value) noexcept 
 					requires(!is_const)
 					{
 					nonref_value_type previous_width{r.width()};
-					remove_reference_v(r.ll) = new_value;
+					remove_reference_v(r.ll()) = new_value;
 					r.width() = previous_width; 
 					return *this; 
 					}
@@ -71,14 +78,14 @@ namespace utils::math
 			friend class p_proxy<is_const>;
 
 			public:
-				operator nonref_value_type() const noexcept { return r.up; }
-				operator nonref_value_type& () noexcept requires(!is_const) { return utils::remove_reference_v(r.up); }
+				operator nonref_value_type() const noexcept { return r.up(); }
+				operator nonref_value_type& () noexcept requires(!is_const) { return utils::remove_reference_v(r.up()); }
 
 				y_proxy& operator=(const nonref_value_type& new_value) noexcept
 					requires(!is_const)
 					{
 					nonref_value_type previous_height{r.height()};
-					remove_reference_v(r.up) = new_value;
+					remove_reference_v(r.up()) = new_value;
 					r.height() = previous_height;
 					return *this;
 					}
@@ -136,12 +143,12 @@ namespace utils::math
 			friend class s_proxy<is_const>;
 
 			public:
-				operator nonref_value_type() const noexcept { return r.rr - r.ll; }
+				operator nonref_value_type() const noexcept { return r.rr() - r.ll(); }
 
 				w_proxy& operator=(const nonref_value_type& new_value) noexcept
 					requires(!is_const)
 					{
-					remove_reference_v(r.rr) = r.ll + new_value;
+					remove_reference_v(r.rr()) = r.ll() + new_value;
 					return *this;
 					}
 
@@ -163,12 +170,12 @@ namespace utils::math
 			friend class s_proxy<is_const>;
 
 			public:
-				operator nonref_value_type() const noexcept { return r.dw - r.up; }
+				operator nonref_value_type() const noexcept { return r.dw() - r.up(); }
 
 				h_proxy& operator=(const nonref_value_type& new_value) noexcept 
 					requires(!is_const)
 					{
-					utils::remove_reference_v(r.dw) = r.up + new_value;
+					utils::remove_reference_v(r.dw()) = r.up() + new_value;
 					return *this;
 					}
 
@@ -332,74 +339,22 @@ namespace utils::math
 		p_proxy<false>  p           ()       noexcept { return get_p (); }
 		p_proxy<false>  pos         ()       noexcept { return get_p (); }
 		p_proxy<false>  position    ()       noexcept { return get_p (); }
-
-		// Center
-		__declspec(property(get = get_center)) vec2<nonref_value_type> center;
-
 #pragma endregion Properties
-		
-
-		//using geometry::shape_base<self_t>::closest_point_and_distance;
-		//using geometry::shape_base<self_t>::closest_point_to;
-		//using geometry::shape_base<self_t>::distance_min;
-		//using geometry::shape_base<self_t>::vector_to;
-		//using geometry::shape_base<self_t>::intersects;
-		//using geometry::shape_base<self_t>::intersection;
-		//using geometry::shape_base<self_t>::contains;
-		//using geometry::shape_base<self_t>::collides_with;
-		//
-		//vec2f closest_point_to(const geometry::point& other) const noexcept;
-		//float                distance_min    (const geometry::point& b) const noexcept;
-		//bool                 intersects      (const geometry::point& other) const noexcept;
-		//std::optional<vec2f> intersection    (const geometry::point& other) const noexcept;
-		////bool                 contains        (const geometry::point& other) const noexcept;
-		//
-		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::segment& other) const noexcept;
-		//bool                 intersects      (const geometry::segment& other) const noexcept;
-		//std::optional<vec2f> intersection    (const geometry::segment& other) const noexcept;
-		//bool                 contains        (const geometry::segment& other) const noexcept;
-		//
-		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::aabb& other) const noexcept;
-		//bool                 intersects      (const geometry::aabb& other) const noexcept;
-		//std::optional<vec2f> intersection    (const geometry::aabb& other) const noexcept;
-		//bool                 contains        (const geometry::aabb& other) const noexcept;
-		//
-		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::polygon& other) const noexcept;
-		//bool                 intersects      (const geometry::polygon& other) const noexcept;
-		//std::optional<vec2f> intersection    (const geometry::polygon& other) const noexcept;
-		//bool                 contains        (const geometry::polygon& other) const noexcept;
-		//
-		//geometry::closest_point_and_distance_t closest_point_and_distance(const geometry::circle& other) const noexcept;
-		//bool                 intersects      (const geometry::circle& other) const noexcept;
-		//std::optional<vec2f> intersection    (const geometry::circle& other) const noexcept;
-		//bool                 contains        (const geometry::circle& other) const noexcept;
-		//
-		//auto get_edges()       noexcept;
-		//auto get_edges() const noexcept;
-		//
-		//self_t& scale_self    (const float      & scaling    ) noexcept;
-		//self_t& rotate_self   (const angle::radf& rotation   ) noexcept;
-		//self_t& translate_self(const vec2f      & translation) noexcept;
-		//
-		//self_t bounding_box() const noexcept { return *this; }
 
 		template <std::convertible_to<nonref_value_type> point_value_type>
 		bool contains(const vec2<point_value_type>& point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
 
-		
-		#pragma region geometry shape methods
-			utils_gpu_available constexpr rect<value_type>  scale         (const float                    & scaling    ) const noexcept { auto ret{*this}; return ret.scale_self    (scaling    ); }
-			utils_gpu_available constexpr rect<value_type>  rotate        (const angle::base<float, 360.f>& rotation   ) const noexcept { auto ret{*this}; return ret.rotate_self   (rotation   ); }
-			utils_gpu_available constexpr rect<value_type>  translate     (const vec<float, 2>            & translation) const noexcept { auto ret{*this}; return ret.translate_self(translation); }
-			utils_gpu_available constexpr rect<value_type>  transform     (const transform2               & transform  ) const noexcept { auto ret{*this}; return ret.transform_self(transform  ); }
+		utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
+		utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
+		utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
+		utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
 
-			utils_gpu_available constexpr rect<value_type>& scale_self    (const float      & scaling    ) noexcept;
-			utils_gpu_available constexpr rect<value_type>& rotate_self   (const angle::degf& rotation   ) noexcept;
-			utils_gpu_available constexpr rect<value_type>& translate_self(const vec2f      & translation) noexcept;
-			utils_gpu_available constexpr rect<value_type>& transform_self(const transform2 & transform  ) noexcept;
+		utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept { return *this; } //TODO
+		utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept { return *this; } //TODO
+		utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept { return *this; } //TODO
+		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
 
-			utils_gpu_available constexpr rect<float> bounding_box() const noexcept;
-		#pragma endregion geometry shape methods
+		utils_gpu_available constexpr nonref_self_t bounding_box() const noexcept { return *this; };
 		};
 	}
 
@@ -415,10 +370,10 @@ namespace utils::math
 //			namespace ucc = utils::console::colour;
 //
 //			os  << ucc::brace << "(" 
-//				<< ucc::type << "left"  << ucc::separ << ": " << ucc::value << aabb.ll << ucc::separ << ", "
-//				<< ucc::type << "up"    << ucc::separ << ": " << ucc::value << aabb.up << ucc::separ << ", "
-//				<< ucc::type << "right" << ucc::separ << ": " << ucc::value << aabb.rr << ucc::separ << ", "
-//				<< ucc::type << "down"  << ucc::separ << ": " << ucc::value << aabb.dw << ucc::separ
+//				<< ucc::type << "left"  << ucc::separ << ": " << ucc::value << aabb.ll() << ucc::separ << ", "
+//				<< ucc::type << "up"    << ucc::separ << ": " << ucc::value << aabb.up() << ucc::separ << ", "
+//				<< ucc::type << "right" << ucc::separ << ": " << ucc::value << aabb.rr() << ucc::separ << ", "
+//				<< ucc::type << "down"  << ucc::separ << ": " << ucc::value << aabb.dw() << ucc::separ
 //				<< ucc::brace << ")";
 //			return os;
 //			}
