@@ -63,5 +63,8 @@
     <ClCompile Include="math\rect.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
+    <ClCompile Include="containers\storage.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

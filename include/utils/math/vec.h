@@ -107,6 +107,20 @@ namespace utils::math
 		using typename base_t::nonref_self_t;
 
 		using base_t::base;
+		using base_t::operator=;
+
+		//utils_gpu_available constexpr vec(const /*utils::details::vector::concepts::compatible_vector<self_t>*/ auto& other) noexcept
+		//	requires(!static_value_is_reference && static_size == std::remove_cvref_t<decltype(other)>::static_size) : base_t{other.array}
+		//	{}
+		utils_gpu_available constexpr vec(const utils::details::vector::concepts::compatible_vector auto& other) noexcept
+			requires
+			(
+			static_value_is_reference&&
+			static_size == std::remove_cvref_t<decltype(other)>::static_size &&
+			std::same_as<typename decltype(other)::value_type, nonref_value_type>
+			) :
+			base_t{std::apply([](auto&... values) -> base_t::array_t { return {values ...}; }, other)}
+			{}
 
 		utils_gpu_available constexpr const nonref_value_type& x() const noexcept requires(static_size >= 1) { return (*this)[0]; }
 		utils_gpu_available constexpr       nonref_value_type& x()       noexcept requires(static_size >= 1) { return (*this)[0]; }

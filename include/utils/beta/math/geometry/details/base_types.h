@@ -6,6 +6,7 @@
 #include "../../../../storage.h"
 #include "../../../../math/math.h"
 #include "../../../../math/vec2.h"
+#include "../../../../math/transform2.h"
 #include "../../../../compilation/gpu.h"
 #include "../../../../math/constants.h"
 #include "../../../../oop/disable_move_copy.h"
@@ -15,10 +16,18 @@ namespace utils::math
 	template <typename T, size_t size>
 	struct vec;
 	using vec2f = vec<float, 2>;
+	template <typename T>
+	struct rect;
+	}
+
+namespace utils::math::geometry::shape
+	{
+	using aabb = utils::math::rect<float>;
 	}
 
 namespace utils::math::geometry
 	{
+
 	struct ends
 		{
 		struct create : ::utils::oop::non_constructible

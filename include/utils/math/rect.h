@@ -13,19 +13,22 @@ namespace utils::math
 		{
 		using self_t = rect<T>;
 		using value_type = T;
-		using nonref_value_type = utils::remove_reference_t<value_type>;
+		using nonref_value_type = utils::remove_const_reference_t<value_type>;
 		using nonref_self_t = rect<nonref_value_type>;
+
+		using vertex_owner = utils::math::vec2<nonref_value_type>;
+		using vertex_observer = utils::math::vecref2<nonref_value_type>;
 
 		struct create : ::utils::oop::non_constructible
 			{
 			template <std::convertible_to<value_type> T_oth> requires (!utils::concepts::reference<value_type>)
-			static self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {position.x(), position.y(), position.x() + size.x(), position.y() + size.y()}; }
+			utils_gpu_available inline static constexpr self_t from_possize(utils::math::vec2<T_oth> position, utils::math::vec2<T_oth> size) { return {position.x(), position.y(), position.x() + size.x(), position.y() + size.y()}; }
 			
 			template <std::convertible_to<value_type> T_oth>
-			static self_t from_ul_dr  (utils::math::vec2<T_oth> ul, utils::math::vec2<T_oth> dr) { return {ul.x(), ul.y(), dr.x(), dr.y()}; }
+			utils_gpu_available inline static constexpr  self_t from_ul_dr  (utils::math::vec2<T_oth> ul, utils::math::vec2<T_oth> dr) { return {ul.x(), ul.y(), dr.x(), dr.y()}; }
 
 			template <std::convertible_to<value_type> T_oth>
-			static self_t from_vertices(utils::math::vec2<T_oth>& a, utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
+			utils_gpu_available inline static constexpr self_t from_vertices(utils::math::vec2<T_oth>& a, utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
 				requires (utils::concepts::reference<value_type>)
 				{
 				nonref_value_type& min_x{std::min(a.x(), b.x())};//vertices.x(), ...)};
@@ -35,7 +38,7 @@ namespace utils::math
 				return {min_x, min_y, max_x, max_y};
 				}
 			template <std::convertible_to<value_type> T_oth>
-			static self_t from_vertices(const utils::math::vec2<T_oth>& a, const utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
+			utils_gpu_available inline static constexpr self_t from_vertices(const utils::math::vec2<T_oth>& a, const utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
 				requires (!utils::concepts::reference<value_type>)
 				{
 				nonref_value_type min_x{std::min(a.x(), b.x())};//vertices.x(), ...)};
@@ -64,184 +67,191 @@ namespace utils::math
 #pragma region Proxies
 	#pragma region Position
 		template <bool is_const>
-		class p_proxy;
+		class proxy_position;
 		template <bool is_const>
-		class x_proxy
+		class proxy_x
 			{
 			template <typename T2>
 			friend struct rect;
-			friend class p_proxy<is_const>;
+			friend class proxy_position<is_const>;
+			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
 				operator nonref_value_type () const noexcept { return r.ll(); }
 				operator nonref_value_type&() noexcept requires(!is_const) { return utils::remove_reference_v(r.ll()); }
 
-				x_proxy& operator=(const nonref_value_type& new_value) noexcept 
+				proxy_x& operator=(const nonref_value_type& new_value) noexcept
 					requires(!is_const)
 					{
 					nonref_value_type previous_width{r.width()};
-					remove_reference_v(r.ll()) = new_value;
+					r.ll() = new_value;
 					r.width() = previous_width; 
 					return *this; 
 					}
 
-				nonref_value_type operator+(const nonref_value_type& delta) const noexcept { return utils::remove_reference_v(*this) + delta; }
-				nonref_value_type operator-(const nonref_value_type& delta) const noexcept { return utils::remove_reference_v(*this) - delta; }
+				nonref_value_type operator+(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) + delta; }
+				nonref_value_type operator-(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) - delta; }
 
-				x_proxy& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
-				x_proxy& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
+				proxy_x& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
+				proxy_x& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
 
 			private:
-				x_proxy(self_t& r) : r{r} {}
-				self_t& r;
+				proxy_x(rect_t& r) : r{r} {}
+				rect_t& r;
 			};
 		template <bool is_const>
-		class y_proxy
+		class proxy_y
 			{
 			template <typename T2>
 			friend struct rect;
-			friend class p_proxy<is_const>;
+			friend class proxy_position<is_const>;
+			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
 				operator nonref_value_type() const noexcept { return r.up(); }
 				operator nonref_value_type& () noexcept requires(!is_const) { return utils::remove_reference_v(r.up()); }
 
-				y_proxy& operator=(const nonref_value_type& new_value) noexcept
+				proxy_y& operator=(const nonref_value_type& new_value) noexcept
 					requires(!is_const)
 					{
 					nonref_value_type previous_height{r.height()};
-					remove_reference_v(r.up()) = new_value;
+					r.up() = new_value;
 					r.height() = previous_height;
 					return *this;
 					}
 
-				nonref_value_type operator+(const nonref_value_type& delta) const noexcept { return utils::remove_reference_v(*this) + delta; }
-				nonref_value_type operator-(const nonref_value_type& delta) const noexcept { return utils::remove_reference_v(*this) - delta; }
+				nonref_value_type operator+(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) + delta; }
+				nonref_value_type operator-(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) - delta; }
 
-				y_proxy& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
-				y_proxy& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
+				proxy_y& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
+				proxy_y& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
 
 			private:
-				y_proxy(self_t& r) : r{r} {}
-				self_t& r;
+				proxy_y(rect_t& r) : r{r} {}
+				rect_t& r;
 			};
 		template <bool is_const>
-		class p_proxy
+		class proxy_position
 			{
 			template <typename T2>
 			friend struct rect;
+			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
-				x_proxy<is_const> x;
-				y_proxy<is_const> y;
+				proxy_x<is_const> x;
+				proxy_y<is_const> y;
 
-				operator vec2<nonref_value_type>() const noexcept { return {r.ul()}; }
-				operator vecref2<nonref_value_type>() noexcept { return {r.ul()}; }
+				operator vertex_owner() const noexcept { return r.ul(); }
+				operator vertex_observer() noexcept { return r.ul(); }
 
-				p_proxy& operator=(const vec2<nonref_value_type>& new_value) noexcept
+				proxy_position& operator=(const vertex_owner& new_value) noexcept
 					requires(!is_const)
 					{
-					x = new_value.x;
-					y = new_value.y;
+					x = new_value.x();
+					y = new_value.y();
 					return *this;
 					}
 
-				vec2<nonref_value_type> operator+(const vec2<nonref_value_type>& delta) const noexcept { return static_cast<vec2<nonref_value_type>>(*this) + delta; }
-				vec2<nonref_value_type> operator-(const vec2<nonref_value_type>& delta) const noexcept { return static_cast<vec2<nonref_value_type>>(*this) - delta; }
+				vertex_owner operator+(const vertex_owner& delta) const noexcept { return static_cast<vertex_owner>(*this) + delta; }
+				vertex_owner operator-(const vertex_owner& delta) const noexcept { return static_cast<vertex_owner>(*this) - delta; }
 
-				p_proxy& operator+=(const vec2<nonref_value_type>& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
-				p_proxy& operator-=(const vec2<nonref_value_type>& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
+				proxy_position& operator+=(const vertex_owner& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
+				proxy_position& operator-=(const vertex_owner& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
 
 			private:
-				p_proxy(self_t& r) : x{r}, y{r}, r{r} {}
-				self_t& r;
+				proxy_position(rect_t& r) : x{r}, y{r}, r{r} {}
+				rect_t& r;
 			};
 	#pragma endregion Position
 	#pragma region Size
 		template <bool is_const>
-		class s_proxy;
+		class proxy_size;
 		template <bool is_const>
-		class w_proxy
+		class proxy_width
 			{
 			template <typename T2>
 			friend struct rect;
-			friend class s_proxy<is_const>;
+			friend class proxy_size<is_const>;
+			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
 				operator nonref_value_type() const noexcept { return r.rr() - r.ll(); }
 
-				w_proxy& operator=(const nonref_value_type& new_value) noexcept
+				proxy_width& operator=(const nonref_value_type& new_value) noexcept
 					requires(!is_const)
 					{
-					remove_reference_v(r.rr()) = r.ll() + new_value;
+					r.rr() = r.ll() + new_value;
 					return *this;
 					}
 
 				nonref_value_type operator+(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) + delta; }
 				nonref_value_type operator-(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) - delta; }
 
-				w_proxy& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
-				w_proxy& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
+				proxy_width& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
+				proxy_width& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
 
 			private:
-				w_proxy(self_t& r) : r{r} {}
-				self_t& r;
+				proxy_width(rect_t& r) : r{r} {}
+				rect_t& r;
 			};
 		template <bool is_const>
-		class h_proxy 
+		class proxy_height 
 			{
 			template <typename T2>
 			friend struct rect;
-			friend class s_proxy<is_const>;
+			friend class proxy_size<is_const>;
+			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
 				operator nonref_value_type() const noexcept { return r.dw() - r.up(); }
 
-				h_proxy& operator=(const nonref_value_type& new_value) noexcept 
+				proxy_height& operator=(const nonref_value_type& new_value) noexcept 
 					requires(!is_const)
 					{
-					utils::remove_reference_v(r.dw()) = r.up() + new_value;
+					r.dw() = r.up() + new_value;
 					return *this;
 					}
 
 				nonref_value_type operator+(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) + delta; }
 				nonref_value_type operator-(const nonref_value_type& delta) const noexcept { return static_cast<nonref_value_type>(*this) - delta; }
 
-				h_proxy& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
-				h_proxy& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
+				proxy_height& operator+=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
+				proxy_height& operator-=(const nonref_value_type& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
 
 			private:
-				h_proxy(self_t& r) : r{r} {}
-				self_t& r;
+				proxy_height(rect_t& r) : r{r} {}
+				rect_t& r;
 			};
 		template <bool is_const>
-		class s_proxy
+		class proxy_size
 			{
 			template <typename T2>
 			friend struct rect;
+			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
-				w_proxy<is_const> w;
-				h_proxy<is_const> h;
+				proxy_width<is_const> w;
+				proxy_height<is_const> h;
 
 				operator vec2<nonref_value_type>() const noexcept { return r.dr() - r.ul(); }
 
-				s_proxy& operator=(const vec2<nonref_value_type>& new_value) noexcept requires(!is_const)
+				proxy_size& operator=(const vec2<nonref_value_type>& new_value) noexcept requires(!is_const)
 					{
-					w = new_value.x;
-					h = new_value.y;
+					w = new_value.x();
+					h = new_value.y();
 					return *this;
 					}
 
-				vec2<nonref_value_type> operator+(const vec2<nonref_value_type>& delta) const noexcept { return static_cast<vec2<nonref_value_type>>(*this) + delta; }
-				vec2<nonref_value_type> operator-(const vec2<nonref_value_type>& delta) const noexcept { return static_cast<vec2<nonref_value_type>>(*this) - delta; }
 
-				s_proxy& operator+=(const vec2<nonref_value_type>& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
-				s_proxy& operator-=(const vec2<nonref_value_type>& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
+				vertex_owner operator+(const vertex_owner& delta) const noexcept { return static_cast<vertex_owner>(*this) + delta; }
+				vertex_owner operator-(const vertex_owner& delta) const noexcept { return static_cast<vertex_owner>(*this) - delta; }
+
+				proxy_size& operator+=(const vertex_owner& delta) noexcept requires(!is_const) { return (*this) = operator+(delta); }
+				proxy_size& operator-=(const vertex_owner& delta) noexcept requires(!is_const) { return (*this) = operator-(delta); }
 
 			private:
-				s_proxy(self_t& r) : w{r}, h{r}, r{r} {}
-				self_t& r;
+				proxy_size(rect_t& r) : w{r}, h{r}, r{r} {}
+				rect_t& r;
 			};
 	#pragma endregion Size
 #pragma endregion Proxies
@@ -250,134 +260,82 @@ namespace utils::math
 
 #pragma region Accessors
 		// Corners
-		auto  get_up() const noexcept { return utils::remove_reference_v(up); }
-		auto  get_dw() const noexcept { return utils::remove_reference_v(dw); }
-		auto  get_rr() const noexcept { return utils::remove_reference_v(rr); }
-		auto  get_ll() const noexcept { return utils::remove_reference_v(ll); }
-		auto& get_up()       noexcept { return utils::remove_reference_v(up); }
-		auto& get_dw()       noexcept { return utils::remove_reference_v(dw); }
-		auto& get_rr()       noexcept { return utils::remove_reference_v(rr); }
-		auto& get_ll()       noexcept { return utils::remove_reference_v(ll); }
-
-		void  set_up(nonref_value_type v) noexcept { utils::remove_reference_v(up) = v; }
-		void  set_dw(nonref_value_type v) noexcept { utils::remove_reference_v(dw) = v; }
-		void  set_rr(nonref_value_type v) noexcept { utils::remove_reference_v(rr) = v; }
-		void  set_ll(nonref_value_type v) noexcept { utils::remove_reference_v(ll) = v; }
-
-		const vec2   <nonref_value_type> get_ul() const noexcept { return {utils::remove_reference_v(ll), utils::remove_reference_v(up)}; }
-		const vec2   <nonref_value_type> get_ur() const noexcept { return {utils::remove_reference_v(rr), utils::remove_reference_v(up)}; }
-		const vec2   <nonref_value_type> get_dr() const noexcept { return {utils::remove_reference_v(rr), utils::remove_reference_v(dw)}; }
-		const vec2   <nonref_value_type> get_dl() const noexcept { return {utils::remove_reference_v(ll), utils::remove_reference_v(dw)}; }
-		      vecref2<nonref_value_type> get_ul()       noexcept { return {utils::remove_reference_v(ll), utils::remove_reference_v(up)}; }
-		      vecref2<nonref_value_type> get_ur()       noexcept { return {utils::remove_reference_v(rr), utils::remove_reference_v(up)}; }
-		      vecref2<nonref_value_type> get_dr()       noexcept { return {utils::remove_reference_v(rr), utils::remove_reference_v(dw)}; }
-		      vecref2<nonref_value_type> get_dl()       noexcept { return {utils::remove_reference_v(ll), utils::remove_reference_v(dw)}; }
-		
-		void set_ul(vec2<nonref_value_type> value) noexcept { utils::remove_reference_v(ll) = value.x; utils::remove_reference_v(up) = value.y; }
-		void set_ur(vec2<nonref_value_type> value) noexcept { utils::remove_reference_v(rr) = value.x; utils::remove_reference_v(up) = value.y; }
-		void set_dr(vec2<nonref_value_type> value) noexcept { utils::remove_reference_v(rr) = value.x; utils::remove_reference_v(dw) = value.y; }
-		void set_dl(vec2<nonref_value_type> value) noexcept { utils::remove_reference_v(ll) = value.x; utils::remove_reference_v(dw) = value.y; }
+		utils_gpu_available constexpr vertex_owner    ul() const noexcept { return {ll(), up()}; }
+		utils_gpu_available constexpr vertex_owner    ur() const noexcept { return {rr(), up()}; }
+		utils_gpu_available constexpr vertex_owner    dr() const noexcept { return {rr(), dw()}; }
+		utils_gpu_available constexpr vertex_owner    dl() const noexcept { return {ll(), dw()}; }
+		utils_gpu_available constexpr vertex_observer ul()       noexcept { return {ll(), up()}; }
+		utils_gpu_available constexpr vertex_observer ur()       noexcept { return {rr(), up()}; }
+		utils_gpu_available constexpr vertex_observer dr()       noexcept { return {rr(), dw()}; }
+		utils_gpu_available constexpr vertex_observer dl()       noexcept { return {ll(), dw()}; }
 
 		// Pos-size
-		x_proxy<true > get_x () const noexcept { return {*this}; }
-		y_proxy<true > get_y () const noexcept { return {*this}; }
-		w_proxy<true > get_w () const noexcept { return {*this}; }
-		h_proxy<true > get_h () const noexcept { return {*this}; }
-		p_proxy<true > get_p () const noexcept { return {*this}; }
-		s_proxy<true > get_s () const noexcept { return {*this}; }
-		x_proxy<false> get_x ()       noexcept requires(!std::is_const<nonref_value_type>) { return {*this}; }
-		y_proxy<false> get_y ()       noexcept requires(!std::is_const<nonref_value_type>) { return {*this}; }
-		w_proxy<false> get_w ()       noexcept requires(!std::is_const<nonref_value_type>) { return {*this}; }
-		h_proxy<false> get_h ()       noexcept requires(!std::is_const<nonref_value_type>) { return {*this}; }
-		p_proxy<false> get_p ()       noexcept requires(!std::is_const<nonref_value_type>) { return {*this}; }
-		s_proxy<false> get_s ()       noexcept requires(!std::is_const<nonref_value_type>) { return {*this}; }
-
-		      void     set_x (     nonref_value_type  value) noexcept { nonref_value_type tmp = get_w(); remove_reference_v(ll) = value; set_w(tmp); }
-		      void     set_y (     nonref_value_type  value) noexcept { nonref_value_type tmp = get_h(); remove_reference_v(up) = value; set_h(tmp); }
-		      void     set_h (     nonref_value_type  value) noexcept { remove_reference_v(dw) = up + value; }
-		      void     set_w (     nonref_value_type  value) noexcept { remove_reference_v(rr) = ll + value; }
-		      void     set_s (vec2<nonref_value_type> value) noexcept { set_w(value.x); set_h(value.y); }
-		      void     set_p (vec2<nonref_value_type> value) noexcept 
-			{
-			vec2<nonref_value_type> prev_s{get_s()};
-			set_x(value.x); set_y(value.y); 
-			set_s(prev_s);
-			}
+		proxy_x       <true > x () const noexcept { return {*this}; }
+		proxy_y       <true > y () const noexcept { return {*this}; }
+		proxy_width   <true > w () const noexcept { return {*this}; }
+		proxy_height  <true > h () const noexcept { return {*this}; }
+		proxy_position<true > p () const noexcept { return {*this}; }
+		proxy_size    <true > s () const noexcept { return {*this}; }
+		proxy_x       <false> x ()       noexcept { return {*this}; }
+		proxy_y       <false> y ()       noexcept { return {*this}; }
+		proxy_width   <false> w ()       noexcept { return {*this}; }
+		proxy_height  <false> h ()       noexcept { return {*this}; }
+		proxy_position<false> p ()       noexcept { return {*this}; }
+		proxy_size    <false> s ()       noexcept { return {*this}; }
 
 		// Center
-		     nonref_value_type  get_center_x()        const noexcept { return ll + (w() / nonref_value_type{2}); }
-		     nonref_value_type  get_center_y()        const noexcept { return up + (h() / nonref_value_type{2}); }
-		vec2<nonref_value_type> get_center  ()        const noexcept { return {get_center_x(), get_center_y()}; }
-		void set_center_x(T value) noexcept { auto half_w{get_w() / nonref_value_type{2}}; remove_reference_v(ll) = value - half_w; remove_reference_v(rr) = value + half_w; }
-		void set_center_y(T value){ auto half_h{get_h() / nonref_value_type{2}}; remove_reference_v(up) = value - half_h; remove_reference_v(dw) = value + half_h; }
-		void set_center(vec2<nonref_value_type> value) noexcept { set_center_x(value.x); set_center_y(value.y); }
+		//     nonref_value_type  get_center_x()        const noexcept { return ll + (w() / nonref_value_type{2}); }
+		//     nonref_value_type  get_center_y()        const noexcept { return up + (h() / nonref_value_type{2}); }
+		//vec2<nonref_value_type> get_center  ()        const noexcept { return {get_center_x(), get_center_y()}; }
+		//void set_center_x(T value) noexcept { auto half_w{get_w() / nonref_value_type{2}}; remove_reference_v(ll) = value - half_w; remove_reference_v(rr) = value + half_w; }
+		//void set_center_y(T value){ auto half_h{get_h() / nonref_value_type{2}}; remove_reference_v(up) = value - half_h; remove_reference_v(dw) = value + half_h; }
+		//void set_center(vec2<nonref_value_type> value) noexcept { set_center_x(value.x); set_center_y(value.y); }
 #pragma endregion Accessors
 
-#pragma region Properties
-
+#pragma region Aliases
 		// Corners
-		const vec2   <nonref_value_type> ul          () const noexcept { return  get_ul() ; }
-		const vec2   <nonref_value_type> up_left     () const noexcept { return  get_ul() ; }
-		const vec2   <nonref_value_type> top_left    () const noexcept { return  get_ul() ; }
-		const vec2   <nonref_value_type> ur          () const noexcept { return  get_ur() ; }
-		const vec2   <nonref_value_type> up_right    () const noexcept { return  get_ur() ; }
-		const vec2   <nonref_value_type> top_right   () const noexcept { return  get_ur() ; }
-		const vec2   <nonref_value_type> dr          () const noexcept { return  get_dr() ; }
-		const vec2   <nonref_value_type> down_right  () const noexcept { return  get_dr() ; }
-		const vec2   <nonref_value_type> bottom_right() const noexcept { return  get_dr() ; }
-		const vec2   <nonref_value_type> dl          () const noexcept { return  get_dl() ; }
-		const vec2   <nonref_value_type> down_left   () const noexcept { return  get_dl() ; }
-		const vec2   <nonref_value_type> bottom_left () const noexcept { return  get_dl() ; }
-		      vecref2<nonref_value_type> ul          ()       noexcept { return {get_ul()}; }
-		      vecref2<nonref_value_type> up_left     ()       noexcept { return {get_ul()}; }
-		      vecref2<nonref_value_type> top_left    ()       noexcept { return {get_ul()}; }
-		      vecref2<nonref_value_type> ur          ()       noexcept { return {get_ur()}; }
-		      vecref2<nonref_value_type> up_right    ()       noexcept { return {get_ur()}; }
-		      vecref2<nonref_value_type> top_right   ()       noexcept { return {get_ur()}; }
-		      vecref2<nonref_value_type> dr          ()       noexcept { return {get_dr()}; }
-		      vecref2<nonref_value_type> down_right  ()       noexcept { return {get_dr()}; }
-		      vecref2<nonref_value_type> bottom_right()       noexcept { return {get_dr()}; }
-		      vecref2<nonref_value_type> dl          ()       noexcept { return {get_dl()}; }
-		      vecref2<nonref_value_type> down_left   ()       noexcept { return {get_dl()}; }
-		      vecref2<nonref_value_type> bottom_left ()       noexcept { return {get_dl()}; }
+		utils_gpu_available constexpr auto  up_left     () const noexcept { return ul(); }
+		utils_gpu_available constexpr auto  top_left    () const noexcept { return ul(); }
+		utils_gpu_available constexpr auto  up_right    () const noexcept { return ur(); }
+		utils_gpu_available constexpr auto  top_right   () const noexcept { return ur(); }
+		utils_gpu_available constexpr auto  down_right  () const noexcept { return dr(); }
+		utils_gpu_available constexpr auto  bottom_right() const noexcept { return dr(); }
+		utils_gpu_available constexpr auto  down_left   () const noexcept { return dl(); }
+		utils_gpu_available constexpr auto  bottom_left () const noexcept { return dl(); }
+		utils_gpu_available constexpr auto& up_left     ()       noexcept { return ul(); }
+		utils_gpu_available constexpr auto& top_left    ()       noexcept { return ul(); }
+		utils_gpu_available constexpr auto& up_right    ()       noexcept { return ur(); }
+		utils_gpu_available constexpr auto& top_right   ()       noexcept { return ur(); }
+		utils_gpu_available constexpr auto& down_right  ()       noexcept { return dr(); }
+		utils_gpu_available constexpr auto& bottom_right()       noexcept { return dr(); }
+		utils_gpu_available constexpr auto& down_left   ()       noexcept { return dl(); }
+		utils_gpu_available constexpr auto& bottom_left ()       noexcept { return dl(); }
 
 		// Pos-size
-		x_proxy<true >  x           () const noexcept { return get_x (); }
-		y_proxy<true >  y           () const noexcept { return get_y (); }
-		h_proxy<true >  h           () const noexcept { return get_h (); }
-		h_proxy<true >  height      () const noexcept { return get_h (); }
-		w_proxy<true >  w           () const noexcept { return get_w (); }
-		w_proxy<true >  width       () const noexcept { return get_w (); }
-		s_proxy<true >  s           () const noexcept { return get_s (); }
-		s_proxy<true >  size        () const noexcept { return get_s (); }
-		p_proxy<true >  p           () const noexcept { return get_p (); }
-		p_proxy<true >  pos         () const noexcept { return get_p (); }
-		p_proxy<true >  position    () const noexcept { return get_p (); }
-		x_proxy<false>  x           ()       noexcept { return get_x (); }
-		y_proxy<false>  y           ()       noexcept { return get_y (); }
-		h_proxy<false>  h           ()       noexcept { return get_h (); }
-		h_proxy<false>  height      ()       noexcept { return get_h (); }
-		w_proxy<false>  w           ()       noexcept { return get_w (); }
-		w_proxy<false>  width       ()       noexcept { return get_w (); }
-		s_proxy<false>  s           ()       noexcept { return get_s (); }
-		s_proxy<false>  size        ()       noexcept { return get_s (); }
-		p_proxy<false>  p           ()       noexcept { return get_p (); }
-		p_proxy<false>  pos         ()       noexcept { return get_p (); }
-		p_proxy<false>  position    ()       noexcept { return get_p (); }
-#pragma endregion Properties
+		auto height  () const noexcept { return h(); }
+		auto width   () const noexcept { return w(); }
+		auto size    () const noexcept { return s(); }
+		auto pos     () const noexcept { return p(); }
+		auto position() const noexcept { return p(); }
+		auto height  ()       noexcept { return h(); }
+		auto width   ()       noexcept { return w(); }
+		auto size    ()       noexcept { return s(); }
+		auto pos     ()       noexcept { return p(); }
+		auto position()       noexcept { return p(); }
+#pragma endregion Aliases
 
 		template <std::convertible_to<nonref_value_type> point_value_type>
-		bool contains(const vec2<point_value_type>& point) const noexcept { return point.x >= ll && point.x <= rr && point.y >= up && point.y <= dw; }
+		bool contains(const vec2<point_value_type>& point) const noexcept { return point.x() >= ll() && point.x() <= rr() && point.y() >= up() && point.y() <= dw(); }
 
 		utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
 		utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
 		utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
 		utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
 
-		utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept { return *this; } //TODO
-		utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept { return *this; } //TODO
-		utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept { return *this; } //TODO
-		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
+		utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<nonref_value_type, float>) { return size() *= scaling; }
+		utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<nonref_value_type, float>) { return *this; }
+		utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<nonref_value_type, float>) { return pos() += translation; }
+		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<nonref_value_type, float>) { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
 
 		utils_gpu_available constexpr nonref_self_t bounding_box() const noexcept { return *this; }
 		};

@@ -85,7 +85,7 @@ namespace utils::details::vector
 				) :
 					array{std::apply([](auto&... values) -> array_t { return {values ...}; }, other)}
 				{}
-
+				
 			utils_gpu_available constexpr self_t& operator=(const concepts::compatible_vector auto& other) noexcept
 				{
 				constexpr size_t other_size{std::remove_cvref_t<decltype(other)>::static_size};

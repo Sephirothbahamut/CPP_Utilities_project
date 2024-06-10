@@ -40,6 +40,9 @@ namespace utils
 		concept reference = reference_wrapper<T> || reference_raw<T>;
 		template <typename T>
 		concept const_reference = const_reference_wrapper<T> || const_reference_raw<T>;
+
+		template <typename T>
+		concept const_value = std::is_const_v<T> || const_reference_wrapper<T>;
 		}
 	static_assert(concepts::reference<std::reference_wrapper<float>>);
 
@@ -61,6 +64,25 @@ namespace utils
 
 	template <typename T>
 	using remove_reference_t = typename remove_reference<T>::type;
+
+	template <typename T>
+	struct remove_const_reference
+		{
+		using type = std::remove_cvref_t<T>;
+		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
+		utils_gpu_available static constexpr type cast(const T& input) { return static_cast<type>(input); }
+		};
+
+	template <concepts::reference_wrapper T>
+	struct remove_const_reference<T>
+		{
+		using type = std::remove_cvref_t<typename T::type>;
+		//type operator()(const T& input) { return std::static_cast<type>(input); } //TODO when MSVC implements static operator()
+		utils_gpu_available static constexpr type cast(const T& input) { return static_cast<type>(input); }
+		};
+
+	template <typename T>
+	using remove_const_reference_t = typename remove_const_reference<T>::type;
 
 	template <typename T>
 	utils_gpu_available constexpr auto remove_reference_v(T& in) noexcept -> remove_reference_t<T>&

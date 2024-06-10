@@ -169,6 +169,7 @@
     <ClCompile Include="containers\object_pool.cpp" />
     <ClCompile Include="containers\polymorphic_access_container.cpp" />
     <ClCompile Include="containers\segmented_vector.cpp" />
+    <ClCompile Include="containers\storage.cpp" />
     <ClCompile Include="counting.cpp" />
     <ClCompile Include="math\rect.cpp" />
     <ClCompile Include="math\vec_operators.cpp" />

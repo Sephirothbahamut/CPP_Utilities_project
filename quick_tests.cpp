@@ -5,11 +5,11 @@
 #include "include/utils/console/initializer.h"
 #include "include/utils/console/colour.h"
 
-#include "include/utils/math/vec.h"
-#include "include/utils/math/vec2.h"
-#include "include/utils/math/vec3.h"
-#include "include/utils/math/angle.h"
-#include "include/utils/math/rect.h"
+//#include "include/utils/math/vec.h"
+//#include "include/utils/math/vec2.h"
+//#include "include/utils/math/vec3.h"
+//#include "include/utils/math/angle.h"
+//#include "include/utils/math/rect.h"
 
 #include "include/utils/output/std_containers.h"
 #include "include/utils/graphics/colour.h"
@@ -39,12 +39,18 @@
 #include "include/utils/tracking.h"
 #include "include/utils/containers/resource_manager.h"
 
+#include "include/utils/storage.h"
+
 //#include "include/utils/beta/math/geometry/all.h"
 //#include "include/utils/beta/math/geometry/group.h"
-#include "include/utils/math/transform2.h"
-#include "include/utils/beta/math/geometry/shape/point.h"
-#include "include/utils/beta/math/geometry/shape/aabb.h"
+//#include "include/utils/math/transform2.h"
+//#include "include/utils/beta/math/geometry/shape/point.h"
+//#include "include/utils/beta/math/geometry/shape/aabb.h"
 //#include "include/utils/beta/math/geometry/shape/ab.h"
+
+//#include "include/utils/beta/math/geometry/shape/implementation/point.h"
+//#include "include/utils/beta/math/geometry/shape/implementation/aabb.h"
+//#include "include/utils/beta/math/geometry/shape/implementation/ab.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -172,23 +178,33 @@ int main()
 	utils::console::initializer console_initializer;
 
 	using namespace utils::output;
-
-	utils::math::geometry::shape::point point{0.f, 1.f};
-	const auto result{point + 1.f};
-	const auto& result2{point += point};
-	const auto& result3{point += 3.f};
-	utils::math::transform2 transform{.translation{10.f, 2.f}, .rotation{12_rad}};
-
-	const auto ret{point.transform(transform)};
+	
 
 
-	utils::math::geometry::shape::point pa{3.f, 1.f};
-	utils::math::geometry::shape::point pb{1.f, 3.f};
-	utils::math::geometry::shape::point pc{5.f, 2.f};
-
-	const auto aabb{utils::math::geometry::shape::aabb::create::from_vertices(pa, pb)};
-
-	std::cout << std::endl;
+	//utils::math::geometry::shape::point point{0.f, 1.f};
+	//const auto result{point + 1.f};
+	//const auto& result2{point += point};
+	//const auto& result3{point += 3.f};
+	//utils::math::transform2 transform{.translation{10.f, 2.f}, .rotation{12_rad}};
+	//
+	//const auto ret{point.transform(transform)};
+	//
+	//
+	//utils::math::geometry::shape::point pa{3.f, 1.f};
+	//const utils::math::geometry::shape::point pb{1.f, 3.f};
+	//utils::math::geometry::shape::point pc{5.f, 2.f};
+	//utils::math::geometry::shape::point pd{pa};
+	//utils::math::geometry::shape::point pe{pb};
+	//utils::math::geometry::shape::point pf{pa.x(), pa.y()};
+	//utils::math::geometry::shape::point pg{pb.x(), pa.y()};
+	//
+	////const auto aabb{utils::math::geometry::shape::aabb::create::from_vertices(pa, pb)};
+	//float fa, fb;
+	//utils::math::geometry::shape::observer::point po(point);
+	//utils::math::geometry::shape::const_observer::point pco{point};
+	//utils::math::geometry::shape::point pco_to_p{pco};
+	//
+	//std::cout << std::endl;
 
 	//utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
 	//utils::math::geometry::shape::point point{0.f, 1.f};

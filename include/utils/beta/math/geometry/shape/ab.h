@@ -19,20 +19,27 @@ namespace utils::math::geometry::shape
 				
 				std::array<value_type, 2> container;
 
+				template <storage::type other_storage_type>
+				ab(const ab<other_storage_type>& other) noexcept requires(!utils::concepts::reference<value_type>) : container{other.a(), other.b()} {}
+
+				template <storage::type other_storage_type>
+				ab(ab<other_storage_type>& other) noexcept 
+					requires(utils::concepts::reference<value_type> && !utils::concepts::const_reference<typename ab<other_storage_type>::value_type>) 
+					: container{other.a(), other.b()} {}
+
 				utils_gpu_available const nonref_value_type& operator[](size_t index) const noexcept { return static_cast<const nonref_value_type&>(container[index]); }
 				utils_gpu_available       nonref_value_type& operator[](size_t index)       noexcept { return static_cast<      nonref_value_type&>(container[index]); }
 				
-				utils_gpu_available constexpr const shape::point& a() const noexcept { return (*this)[0]; }
-				utils_gpu_available constexpr       shape::point& a()       noexcept { return (*this)[0]; }
-				
-				utils_gpu_available constexpr const shape::point& b() const noexcept { return (*this)[1]; }
-				utils_gpu_available constexpr       shape::point& b()       noexcept { return (*this)[1]; }
+				utils_gpu_available constexpr const nonref_value_type& a() const noexcept { return static_cast<const nonref_value_type&>(container[0]); }
+				utils_gpu_available constexpr       nonref_value_type& a()       noexcept { return static_cast<      nonref_value_type&>(container[0]); }
+				utils_gpu_available constexpr const nonref_value_type& b() const noexcept { return static_cast<const nonref_value_type&>(container[1]); }
+				utils_gpu_available constexpr       nonref_value_type& b()       noexcept { return static_cast<      nonref_value_type&>(container[1]); }
 
-				utils_gpu_available constexpr const shape::point& operator[](const size_t& index) const noexcept { return index == 0 ? a() : b(); }
-				utils_gpu_available constexpr       shape::point& operator[](const size_t& index)       noexcept { return index == 0 ? a() : b(); }
+				utils_gpu_available constexpr const nonref_value_type& operator[](const size_t& index) const noexcept { return index == 0 ? a() : b(); }
+				utils_gpu_available constexpr       nonref_value_type& operator[](const size_t& index)       noexcept { return index == 0 ? a() : b(); }
 
-				utils_gpu_available constexpr const shape::point& closest_vertex(const concepts::point auto& other) const noexcept { return shape::point::distance2(other, a()) < shape::point::distance2(other, b()) ? a() : b(); }
-				utils_gpu_available constexpr       shape::point& closest_vertex(const concepts::point auto& other) const noexcept { return shape::point::distance2(other, a()) < shape::point::distance2(other, b()) ? a() : b(); }
+				utils_gpu_available constexpr const nonref_value_type& closest_vertex(const concepts::point auto& other) const noexcept { return shape::point::distance2(other, a()) < shape::point::distance2(other, b()) ? a() : b(); }
+				utils_gpu_available constexpr       nonref_value_type& closest_vertex(      concepts::point auto& other)       noexcept { return shape::point::distance2(other, a()) < shape::point::distance2(other, b()) ? a() : b(); }
 
 				utils_gpu_available constexpr float length2() const noexcept { return shape::point::distance2(a(), b()); }
 				utils_gpu_available constexpr float length () const noexcept { return shape::point::distance (a(), b()); }
@@ -84,15 +91,12 @@ namespace utils::math::geometry::shape
 				utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
 				utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
 
-				utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept { for(auto& value : container) { value.scale_self    (scaling    ); } return *this; }
-				utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept { for(auto& value : container) { value.rotate_self   (rotation   ); } return *this; }
-				utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept { for(auto& value : container) { value.translate_self(translation); } return *this; }
-				utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept { for(auto& value : container) { value.transform_self(transform  ); } return *this; }
+				utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!utils::concepts::const_value<value_type>) { a().scale_self    (scaling    ); b().scale_self    (scaling    ); return *this; }
+				utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!utils::concepts::const_value<value_type>) { a().rotate_self   (rotation   ); b().rotate_self   (rotation   ); return *this; }
+				utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!utils::concepts::const_value<value_type>) { a().translate_self(translation); b().translate_self(translation); return *this; }
+				utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!utils::concepts::const_value<value_type>) { a().transform_self(transform  ); b().transform_self(transform  ); return *this; }
 
-				utils_gpu_available constexpr shape::aabb bounding_box() const noexcept 
-					{
-					return shape::aabb::from_vertices(a(), b());
-					}
+				utils_gpu_available constexpr shape::aabb bounding_box() const noexcept;
 			};
 
 		template <storage::type storage_type> 
@@ -134,29 +138,26 @@ namespace utils::math::geometry::shape
 		template <typename T> concept ray     = ab<T> && (T::static_ends == ends::create::open(true , false));
 		template <typename T> concept segment = ab<T> && (T::static_ends == ends::create::open(true , true ));
 		}
-
+	
 	namespace owner 
 		{
-		template <ends ends>
-		using ab = shape::generic::ab<storage::type::owner, ends>; 
-		using line    = ab<ends::create::open(false, false)>;
-		using ray     = ab<ends::create::open(true , false)>;
-		using segment = ab<ends::create::open(true , true )>;
+		using ab      = shape::generic::ab     <storage::type::owner>;
+		using line    = shape::generic::line   <storage::type::owner>;
+		using ray     = shape::generic::ray    <storage::type::owner>;
+		using segment = shape::generic::segment<storage::type::owner>;
 		}
 	namespace observer
 		{
-		template <ends ends>
-		using ab = shape::generic::ab<storage::type::observer, ends>; 
-		using line    = ab<ends::create::open(false, false)>;
-		using ray     = ab<ends::create::open(true , false)>;
-		using segment = ab<ends::create::open(true , true )>;
+		using ab      = shape::generic::ab     <storage::type::observer>;
+		using line    = shape::generic::line   <storage::type::observer>;
+		using ray     = shape::generic::ray    <storage::type::observer>;
+		using segment = shape::generic::segment<storage::type::observer>;
 		}
 	namespace const_observer
 		{
-		template <ends ends>
-		using ab = shape::generic::ab<storage::type::const_observer, ends>; 
-		using line    = ab<ends::create::open(false, false)>;
-		using ray     = ab<ends::create::open(true , false)>;
-		using segment = ab<ends::create::open(true , true )>;
+		using ab      = shape::generic::ab     <storage::type::const_observer>;
+		using line    = shape::generic::line   <storage::type::const_observer>;
+		using ray     = shape::generic::ray    <storage::type::const_observer>;
+		using segment = shape::generic::segment<storage::type::const_observer>;
 		}
 	}
