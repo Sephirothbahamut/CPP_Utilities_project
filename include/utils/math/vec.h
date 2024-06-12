@@ -16,7 +16,7 @@ namespace utils::math
 	
 	//fast typenames
 	template <typename T, size_t size> 
-	using vecref = vec<std::reference_wrapper<T>, size>;
+	using vecref = vec<T&, size>;
 	
 	template <size_t size> using vec_i      = vec   <int          , size>;
 	template <size_t size> using vec_i8     = vec   <int8_t       , size>;
@@ -52,7 +52,7 @@ namespace utils::math
 	namespace concepts
 		{
 		template <typename T>
-		concept vec = std::derived_from<T, utils::math::vec<typename T::value_type, T::static_size>>;
+		concept vec = std::derived_from<T, utils::math::vec<typename T::template_type, T::extent>>;
 		}
 
 	namespace details
@@ -74,9 +74,9 @@ namespace utils::math
 			{
 			return
 				{
-				.a{a_T::static_size},
-				.b{b_T::static_size},
-				.min{utils::math::min(a_T::static_size, b_T::static_size)}
+				.a{a_T::extent},
+				.b{b_T::extent},
+				.min{utils::math::min(a_T::extent, b_T::extent)}
 				};
 			}
 
@@ -85,9 +85,9 @@ namespace utils::math
 			{
 			return
 				{
-				.a{a_T::static_size},
-				.b{b_T::static_size},
-				.min{utils::math::min(a_T::static_size, b_T::static_size)}
+				.a{a_T::extent},
+				.b{b_T::extent},
+				.min{utils::math::min(a_T::extent, b_T::extent)}
 				};
 			}
 		}
@@ -99,59 +99,49 @@ namespace utils::math
 		friend class details::vec_sized_specialization;
 
 		using base_t = ::utils::details::vector::base<T, size, vec, details::name_vec>;
-		using base_t::static_size; 
-		using base_t::static_value_is_reference;
+		
+		using base_t::extent;
+		using base_t::storage_type;
 		using typename base_t::self_t;
 		using typename base_t::value_type;
-		using typename base_t::nonref_value_type;
+		using typename base_t::const_aware_value_type;
+		using typename base_t::template_type;
 		using typename base_t::nonref_self_t;
 
 		using base_t::base;
 		using base_t::operator=;
+		utils_gpu_available constexpr vec() noexcept requires(storage_type.is_owner()) : base_t{} {}; //for some reason it doesn't use base_t's default constructor with = default
 
-		//utils_gpu_available constexpr vec(const /*utils::details::vector::concepts::compatible_vector<self_t>*/ auto& other) noexcept
-		//	requires(!static_value_is_reference && static_size == std::remove_cvref_t<decltype(other)>::static_size) : base_t{other.array}
-		//	{}
-		utils_gpu_available constexpr vec(const utils::details::vector::concepts::compatible_vector auto& other) noexcept
-			requires
-			(
-			static_value_is_reference&&
-			static_size == std::remove_cvref_t<decltype(other)>::static_size &&
-			std::same_as<typename decltype(other)::value_type, nonref_value_type>
-			) :
-			base_t{std::apply([](auto&... values) -> base_t::array_t { return {values ...}; }, other)}
-			{}
-
-		utils_gpu_available constexpr const nonref_value_type& x() const noexcept requires(static_size >= 1) { return (*this)[0]; }
-		utils_gpu_available constexpr       nonref_value_type& x()       noexcept requires(static_size >= 1) { return (*this)[0]; }
-		utils_gpu_available constexpr const nonref_value_type& y() const noexcept requires(static_size >= 2) { return (*this)[1]; }
-		utils_gpu_available constexpr       nonref_value_type& y()       noexcept requires(static_size >= 2) { return (*this)[1]; }
-		utils_gpu_available constexpr const nonref_value_type& z() const noexcept requires(static_size >= 3) { return (*this)[2]; }
-		utils_gpu_available constexpr       nonref_value_type& z()       noexcept requires(static_size >= 3) { return (*this)[2]; }
-		utils_gpu_available constexpr const nonref_value_type& w() const noexcept requires(static_size >= 4) { return (*this)[3]; }
-		utils_gpu_available constexpr       nonref_value_type& w()       noexcept requires(static_size >= 4) { return (*this)[3]; }
+		utils_gpu_available constexpr const const_aware_value_type& x() const noexcept requires(extent >= 1) { return (*this)[0]; }
+		utils_gpu_available constexpr       const_aware_value_type& x()       noexcept requires(extent >= 1) { return (*this)[0]; }
+		utils_gpu_available constexpr const const_aware_value_type& y() const noexcept requires(extent >= 2) { return (*this)[1]; }
+		utils_gpu_available constexpr       const_aware_value_type& y()       noexcept requires(extent >= 2) { return (*this)[1]; }
+		utils_gpu_available constexpr const const_aware_value_type& z() const noexcept requires(extent >= 3) { return (*this)[2]; }
+		utils_gpu_available constexpr       const_aware_value_type& z()       noexcept requires(extent >= 3) { return (*this)[2]; }
+		utils_gpu_available constexpr const const_aware_value_type& w() const noexcept requires(extent >= 4) { return (*this)[3]; }
+		utils_gpu_available constexpr       const_aware_value_type& w()       noexcept requires(extent >= 4) { return (*this)[3]; }
 
 #pragma region distances
-		utils_gpu_available constexpr nonref_value_type get_length2() const noexcept { nonref_value_type ret{0}; base_t::for_each([&ret](const auto& value) { ret += value; }); return ret; }
-		utils_gpu_available constexpr nonref_value_type get_length () const noexcept { return std::sqrt(get_length2()); }
+		utils_gpu_available constexpr value_type get_length2() const noexcept { value_type ret{0}; base_t::for_each([&ret](const auto& value) { ret += value; }); return ret; }
+		utils_gpu_available constexpr value_type get_length () const noexcept { return std::sqrt(get_length2()); }
 
-		utils_gpu_available constexpr self_t& set_length(nonref_value_type value) noexcept { *this = normalize() * value; return *this; }
+		utils_gpu_available constexpr self_t& set_length(value_type value) noexcept requires(!storage_type.is_const()) { *this = normalize() * value; return *this; }
 
-		__declspec(property(get = get_length, put = set_length)) nonref_value_type length;
+		__declspec(property(get = get_length, put = set_length)) value_type length;
 
-		utils_gpu_available constexpr nonref_self_t normalize() const noexcept { return get_length() ? *this / get_length() : *this; }
-		utils_gpu_available constexpr self_t& normalize_self() noexcept { return *this = normalize(); }
+		utils_gpu_available constexpr nonref_self_t normalize() const noexcept { return get_length() ? nonref_self_t{*this} / get_length() : nonref_self_t{*this}; }
+		utils_gpu_available constexpr self_t& normalize_self() noexcept requires(!storage_type.is_const()) { return *this = normalize(); }
 
 		/// <summary> Evaluate distance^2 in the size of this vec. Missing coordinates are considered 0. </summary>
 		utils_gpu_available static constexpr value_type distance2(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
 			{
 			constexpr auto sizes{details::pair_sizes<self_t, decltype(b)>()};
 
-			nonref_value_type ret{0};
+			value_type ret{0};
 			size_t i{0};
 			for (; i < sizes.min; i++)
 				{
-				nonref_value_type tmp{a[i] - b[i]};
+				value_type tmp{a[i] - b[i]};
 				ret += tmp * tmp;
 				}
 					
@@ -166,11 +156,11 @@ namespace utils::math
 			{
 			constexpr auto sizes{details::pair_sizes<self_t, decltype(b)>()};
 
-			nonref_value_type ret{0};
+			value_type ret{0};
 			size_t i{0};
 			for (; i < sizes.min; i++)
 				{
-				nonref_value_type tmp{a[i] - b[i]};
+				value_type tmp{a[i] - b[i]};
 				ret += tmp * tmp;
 				}
 
@@ -178,13 +168,13 @@ namespace utils::math
 			}
 
 		/// <summary> Evaluate distance in the size of this vec. Missing coordinates are considered 0. </summary>
-		utils_gpu_available static constexpr nonref_value_type distance(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		utils_gpu_available static constexpr value_type distance(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
 			{
 			return std::sqrt(distance2(a, b)); 
 			}
 
 		/// <summary> Evaluate distance in all the axes of the smaller vec. </summary>
-		utils_gpu_available static constexpr nonref_value_type distance_shared(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		utils_gpu_available static constexpr value_type distance_shared(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
 			{
 			return std::sqrt(distance_shared2(a, b)); 
 			}
@@ -199,43 +189,42 @@ namespace utils::math
 			}
 		utils_gpu_available static constexpr nonref_self_t slerp(const self_t& a, const self_t& b, value_type t) noexcept //TODO test
 			{
-			nonref_value_type dot = utils::math::clamp(vec::dot(a, b), -1.0f, 1.0f);
-			nonref_value_type theta = std::acos(dot) * t;
+			value_type dot = utils::math::clamp(self_t::dot(a, b), -1.0f, 1.0f);
+			value_type theta = std::acos(dot) * t;
 			nonref_self_t relative_vec = (b - a * dot).normalize();
 			return ((a * std::cos(theta)) + (relative_vec * std::sin(theta)));
 			}
 
 		struct create : ::utils::oop::non_constructible
 			{
-			utils_gpu_available static constexpr self_t zero    () noexcept requires(!static_value_is_reference && static_size >= 1) { return {value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t zero    () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 1) { return {value_type{ 0}}; }
 
-			utils_gpu_available static constexpr self_t rr      () noexcept requires(!static_value_is_reference && static_size == 1) { return {value_type{ 1}}; }
-			utils_gpu_available static constexpr self_t ll      () noexcept requires(!static_value_is_reference && static_size == 1) { return {value_type{-1}}; }
-			utils_gpu_available static constexpr self_t rr      () noexcept requires(!static_value_is_reference && static_size >  1) { return {value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t ll      () noexcept requires(!static_value_is_reference && static_size >  1) { return {value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t right   () noexcept requires(!static_value_is_reference && static_size >= 1) { return rr(); }
-			utils_gpu_available static constexpr self_t left    () noexcept requires(!static_value_is_reference && static_size >= 1) { return ll(); }
+			utils_gpu_available static constexpr self_t rr      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 1) { return {value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t ll      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 1) { return {value_type{-1}}; }
+			utils_gpu_available static constexpr self_t rr      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  1) { return {value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t ll      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  1) { return {value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t right   () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 1) { return rr(); }
+			utils_gpu_available static constexpr self_t left    () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 1) { return ll(); }
 
-			utils_gpu_available static constexpr self_t up      () noexcept requires(!static_value_is_reference && static_size == 2) { return {value_type{ 0}, value_type{-1}}; }
-			utils_gpu_available static constexpr self_t dw      () noexcept requires(!static_value_is_reference && static_size == 2) { return {value_type{ 0}, value_type{ 1}}; }
-			utils_gpu_available static constexpr self_t up      () noexcept requires(!static_value_is_reference && static_size >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t dw      () noexcept requires(!static_value_is_reference && static_size >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t down    () noexcept requires(!static_value_is_reference && static_size >= 2) { return dw(); }
+			utils_gpu_available static constexpr self_t up      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 2) { return {value_type{ 0}, value_type{-1}}; }
+			utils_gpu_available static constexpr self_t dw      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 2) { return {value_type{ 0}, value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t up      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t dw      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t down    () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 2) { return dw(); }
 
-			utils_gpu_available static constexpr self_t fw      () noexcept requires(!static_value_is_reference && static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
-			utils_gpu_available static constexpr self_t bw      () noexcept requires(!static_value_is_reference && static_size == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
-			utils_gpu_available static constexpr self_t fw      () noexcept requires(!static_value_is_reference && static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t bw      () noexcept requires(!static_value_is_reference && static_size >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t forward () noexcept requires(!static_value_is_reference && static_size >= 3) { return fw(); }
-			utils_gpu_available static constexpr self_t backward() noexcept requires(!static_value_is_reference && static_size >= 3) { return bw(); }
+			utils_gpu_available static constexpr self_t fw      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t bw      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
+			utils_gpu_available static constexpr self_t fw      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t bw      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t forward () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 3) { return fw(); }
+			utils_gpu_available static constexpr self_t backward() noexcept requires(!storage_type == utils::storage::type::owner && extent >= 3) { return bw(); }
 			};
 				
-		template <concepts::vec b_t>
-		utils_gpu_available static constexpr nonref_value_type dot(const self_t& a, const b_t& b) noexcept
-			requires std::convertible_to<value_type, typename b_t::value_type>
+		template <utils::details::vector::concepts::compatible_vector<self_t> b_t>
+		utils_gpu_available static constexpr value_type dot(const self_t& a, const b_t& b) noexcept
 			{
-			nonref_value_type ret{0}; 
-			for (size_t i{0}; i < static_size; i++)
+			value_type ret{0};
+			for (size_t i{0}; i < extent; i++)
 				{
 				ret += a[i] * b[i];
 				} 
@@ -259,7 +248,7 @@ namespace utils::math
 				{
 				public:
 					template <concepts::vec b_t>
-					typename a_t::nonref_value_type operator>(const b_t& rhs) const noexcept  { return a_t::dot(lhs, rhs); }
+					typename a_t::value_type operator>(const b_t& rhs) const noexcept  { return a_t::dot(lhs, rhs); }
 					utils_gpu_available _inner(const a_t& lhs) noexcept : lhs{lhs} {}
 				private:
 					const a_t& lhs;

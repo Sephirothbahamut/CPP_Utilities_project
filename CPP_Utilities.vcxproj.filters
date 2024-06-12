@@ -550,9 +550,6 @@
     <ClInclude Include="include\utils\beta\math\geometry\details\root.h">
       <Filter>Beta\math\geometry\details</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\details\vec\storage.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\details\vec\definitions.h">
       <Filter>Utils\details\vec</Filter>
     </ClInclude>

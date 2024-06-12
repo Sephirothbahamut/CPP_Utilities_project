@@ -208,7 +208,6 @@
     <ClInclude Include="include\utils\containers\storage_for.h" />
     <ClInclude Include="include\utils\details\vec\all.h" />
     <ClInclude Include="include\utils\details\vec\base.h" />
-    <ClInclude Include="include\utils\details\vec\storage.h" />
     <ClInclude Include="include\utils\details\vec\definitions.h" />
     <ClInclude Include="include\utils\details\vec\memberwise_operators.h" />
     <ClInclude Include="include\utils\details\vec\output.h" />

@@ -4,6 +4,7 @@
 #include <concepts>
 
 #include "../../memory.h"
+#include "../../storage.h"
 #include "../../oop/crtp.h"
 #include "../../compilation/gpu.h"
 #include "../../compilation/compiler.h"
@@ -18,8 +19,6 @@ namespace utils::details::vector
 
 	template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_t>
 	struct definitions;
-	template<typename definitions_t>
-	struct storage;
 	template<typename definitions_t>
 	struct memberwise_operators;
 	template<const char* name>
@@ -41,6 +40,6 @@ namespace utils::details::vector
 	template <typename a_t, typename b_t>
 	struct get_larger
 		{
-		using type = std::conditional_t<(a_t::static_size > b_t::static_size), a_t, b_t>;
+		using type = std::conditional_t<(a_t::extent > b_t::extent), a_t, b_t>;
 		};
 	}

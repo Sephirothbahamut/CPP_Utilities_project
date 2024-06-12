@@ -1,10 +1,10 @@
 #pragma once
 
 #include "base.h"
-#include "definitions.h"
-#include "storage.h"
-#include "memberwise_operators.h"
 #include "output.h"
+#include "../../storage.h"
+#include "definitions.h"
+#include "memberwise_operators.h"
 
 namespace utils::details::vector
 	{
@@ -12,23 +12,23 @@ namespace utils::details::vector
 	struct utils_oop_empty_bases base :
 		concept_common_flag_type,
 		definitions<T, size, unspecialized_derived_t>,
-		storage<definitions<T, size, unspecialized_derived_t>>,
+		utils::storage::multiple<T, size, false>,
 		memberwise_operators<definitions<T, size, unspecialized_derived_t>>,
 		output<name>
 		{
-		using storage<definitions<T, size, unspecialized_derived_t>>::storage;
-		using storage<definitions<T, size, unspecialized_derived_t>>::operator=;
+		using utils::storage::multiple<T, size, false>::multiple;
+		using utils::storage::multiple<T, size, false>::extent;
+		using utils::storage::multiple<T, size, false>::storage_type;
+		using memberwise_operators<definitions<T, size, unspecialized_derived_t>>::operator=;
 		
-		using definitions<T, size, unspecialized_derived_t>::static_size              ;
-		using definitions<T, size, unspecialized_derived_t>::static_value_is_reference;
-		using typename definitions<T, size, unspecialized_derived_t>::self_t                ;
-		using typename definitions<T, size, unspecialized_derived_t>::nonref_self_t         ;
-		using typename definitions<T, size, unspecialized_derived_t>::array_t               ;
-		using typename definitions<T, size, unspecialized_derived_t>::value_type            ;
-		using typename definitions<T, size, unspecialized_derived_t>::nonref_value_type     ;
-		using typename definitions<T, size, unspecialized_derived_t>::iterator              ;
-		using typename definitions<T, size, unspecialized_derived_t>::const_iterator        ;
-		using typename definitions<T, size, unspecialized_derived_t>::reverse_iterator      ;
-		using typename definitions<T, size, unspecialized_derived_t>::const_reverse_iterator;
+		using typename definitions<T, size, unspecialized_derived_t>::self_t           ;
+		using typename definitions<T, size, unspecialized_derived_t>::nonref_self_t    ;
+		using typename definitions<T, size, unspecialized_derived_t>::storage_t        ;
+		using typename utils::storage::multiple<T, size, false>::value_type            ;
+		using typename utils::storage::multiple<T, size, false>::const_aware_value_type;
+		using typename utils::storage::multiple<T, size, false>::iterator              ;
+		using typename utils::storage::multiple<T, size, false>::const_iterator        ;
+		using typename utils::storage::multiple<T, size, false>::reverse_iterator      ;
+		using typename utils::storage::multiple<T, size, false>::const_reverse_iterator;
 		};
 	}
