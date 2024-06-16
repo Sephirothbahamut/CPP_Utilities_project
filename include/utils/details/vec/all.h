@@ -16,19 +16,20 @@ namespace utils::details::vector
 		memberwise_operators<definitions<T, size, unspecialized_derived_t>>,
 		output<name>
 		{
-		using utils::storage::multiple<T, size, false>::multiple;
-		using utils::storage::multiple<T, size, false>::extent;
-		using utils::storage::multiple<T, size, false>::storage_type;
+		using typename definitions<T, size, unspecialized_derived_t>::self_t       ;
+		using typename definitions<T, size, unspecialized_derived_t>::nonref_self_t;
+		using typename definitions<T, size, unspecialized_derived_t>::storage_t    ;
+
+		using storage_t::multiple;
+		using storage_t::extent;
+		using storage_t::storage_type;
 		using memberwise_operators<definitions<T, size, unspecialized_derived_t>>::operator=;
 		
-		using typename definitions<T, size, unspecialized_derived_t>::self_t           ;
-		using typename definitions<T, size, unspecialized_derived_t>::nonref_self_t    ;
-		using typename definitions<T, size, unspecialized_derived_t>::storage_t        ;
-		using typename utils::storage::multiple<T, size, false>::value_type            ;
-		using typename utils::storage::multiple<T, size, false>::const_aware_value_type;
-		using typename utils::storage::multiple<T, size, false>::iterator              ;
-		using typename utils::storage::multiple<T, size, false>::const_iterator        ;
-		using typename utils::storage::multiple<T, size, false>::reverse_iterator      ;
-		using typename utils::storage::multiple<T, size, false>::const_reverse_iterator;
+		using typename storage_t::value_type            ;
+		using typename storage_t::const_aware_value_type;
+		using typename storage_t::iterator              ;
+		using typename storage_t::const_iterator        ;
+		using typename storage_t::reverse_iterator      ;
+		using typename storage_t::const_reverse_iterator;
 		};
 	}

@@ -46,11 +46,14 @@
 //#include "include/utils/math/transform2.h"
 #include "include/utils/beta/math/geometry/shape/point.h"
 #include "include/utils/beta/math/geometry/shape/aabb.h"
-//#include "include/utils/beta/math/geometry/shape/ab.h"
+#include "include/utils/beta/math/geometry/shape/ab.h"
+#include "include/utils/beta/math/geometry/shape/polyline.h"
 
 #include "include/utils/beta/math/geometry/shape/implementation/point.h"
 #include "include/utils/beta/math/geometry/shape/implementation/aabb.h"
-//#include "include/utils/beta/math/geometry/shape/implementation/ab.h"
+#include "include/utils/beta/math/geometry/shape/implementation/ab.h"
+
+#include "include/utils/output/vec.h"
 
 //using civ = utils::oop::counting_invalidating_move;
 //
@@ -76,25 +79,6 @@ struct child_type : angry_type
 
 int main()
 	{
-
-	static_assert(sizeof(utils::math::vec2f) == (sizeof(float) * 2));
-
-	utils::math::vec2f::storage_t base_a{1.f};
-	utils::math::vec2f::storage_t base_b{1.f, 2.f};
-
-	utils::math::vec2f    vec2f_a;
-	vec2f_a.x() = vec2f_a.y() = 10.f;
-	utils::math::vec2f    vec2f_b{1.f};
-	utils::math::vec2f    vec2f_c{1.f, 2.f};
-	utils::math::vec2f    vec2f_d{vec2f_a};
-	utils::math::vec2f    vec2f_e{vec2f_a +  vec2f_b};
-	utils::math::vec2f    vec2f_f{vec2f_a += vec2f_b};
-	utils::math::vecref2f vec2f_g{vec2f_a};
-	utils::math::vecref2f vec2f_h{vec2f_g *= 2.f};
-
-	utils::math::vec2f::storage_t::inner_create(vec2f_a);
-	utils::math::vec<float&, 2> vec2f_i{utils::math::vecref2f{vec2f_a}};
-	utils::math::vec2f vec2f_j{vec2f_i};
 
 //	using namespace utils::output;
 //	using namespace utils::math::angle::literals;
@@ -208,13 +192,15 @@ int main()
 //	const auto ret{point.transform(transform)};
 //	
 //	
-//	utils::math::geometry::shape::point pa{3.f, 1.f};
-//	const utils::math::geometry::shape::point pb{1.f, 3.f};
-//	utils::math::geometry::shape::point pc{5.f, 2.f};
-//	utils::math::geometry::shape::point pd{pa};
-//	utils::math::geometry::shape::point pe{pb};
-//	utils::math::geometry::shape::point pf{pa.x(), pa.y()};
-//	utils::math::geometry::shape::point pg{pb.x(), pa.y()};
+	utils::math::geometry::shape::point pa{3.f, 1.f};
+	const utils::math::geometry::shape::point pb{1.f, 3.f};
+	utils::math::geometry::shape::point pc{5.f, 2.f};
+	utils::math::geometry::shape::point pd{pa};
+	utils::math::geometry::shape::point pe{pb};
+	utils::math::geometry::shape::point pf{pa.x(), pa.y()};
+	utils::math::geometry::shape::point pg{pb.x(), pa.y()};
+	using namespace utils::output;
+	std::cout << pg;
 //	
 //	//const auto aabb{utils::math::geometry::shape::aabb::create::from_vertices(pa, pb)};
 //	float fa, fb;

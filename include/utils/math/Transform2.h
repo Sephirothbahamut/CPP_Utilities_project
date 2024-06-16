@@ -41,12 +41,17 @@ namespace utils::math
 		};
 
 	template<typename T, template <typename, size_t> class unspecialized_derived_T>
-	utils_gpu_available constexpr details::vec_sized_specialization<T, 2, unspecialized_derived_T>::nonref_self_t details::vec_sized_specialization<T, 2, unspecialized_derived_T>::transform(const utils::math::transform2& transform) const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>)
+	utils_gpu_available constexpr 
+		details::vec_sized_specialization<T, 2, unspecialized_derived_T>::nonref_self_t 
+		details::vec_sized_specialization<T, 2, unspecialized_derived_T>::transform(const utils::math::transform2& transform) const noexcept 
+		requires(std::same_as<typename self_t::value_type, float>)
 		{
 		return self().scale(transform.scaling).rotate(transform.rotation).translate(transform.translation);
 		}
 	template<typename T, template <typename, size_t> class unspecialized_derived_T>
-	utils_gpu_available constexpr details::vec_sized_specialization<T, 2, unspecialized_derived_T>::self_t& details::vec_sized_specialization<T, 2, unspecialized_derived_T>::transform_self(const utils::math::transform2& transform) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<typename self_t::nonref_value_type, float>)
+	utils_gpu_available constexpr details::vec_sized_specialization<T, 2, unspecialized_derived_T>::self_t& 
+		details::vec_sized_specialization<T, 2, unspecialized_derived_T>::transform_self(const utils::math::transform2& transform) noexcept 
+		requires(!self_t::storage_type.is_const() && std::same_as<typename self_t::value_type, float>)
 		{
 		return self().scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation);
 		}

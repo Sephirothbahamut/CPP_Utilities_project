@@ -53,6 +53,12 @@ namespace utils::math
 		{
 		template <typename T>
 		concept vec = std::derived_from<T, utils::math::vec<typename T::template_type, T::extent>>;
+
+		template <typename T, size_t size>
+		concept vec_size = vec<T> && T::extent == size;
+
+		template <typename T, typename value_type>
+		concept vec_type = vec<T> && std::same_as<typename T::value_type, value_type>;
 		}
 
 	namespace details
@@ -74,8 +80,8 @@ namespace utils::math
 			{
 			return
 				{
-				.a{a_T::extent},
-				.b{b_T::extent},
+				.a{std::remove_cvref_t<a_T>::extent},
+				.b{std::remove_cvref_t<b_T>::extent},
 				.min{utils::math::min(a_T::extent, b_T::extent)}
 				};
 			}
@@ -85,8 +91,8 @@ namespace utils::math
 			{
 			return
 				{
-				.a{a_T::extent},
-				.b{b_T::extent},
+				.a{std::remove_cvref_t<a_T>::extent},
+				.b{std::remove_cvref_t<b_T>::extent},
 				.min{utils::math::min(a_T::extent, b_T::extent)}
 				};
 			}
@@ -131,11 +137,12 @@ namespace utils::math
 
 		utils_gpu_available constexpr nonref_self_t normalize() const noexcept { return get_length() ? nonref_self_t{*this} / get_length() : nonref_self_t{*this}; }
 		utils_gpu_available constexpr self_t& normalize_self() noexcept requires(!storage_type.is_const()) { return *this = normalize(); }
-
+		
 		/// <summary> Evaluate distance^2 in the size of this vec. Missing coordinates are considered 0. </summary>
-		utils_gpu_available static constexpr value_type distance2(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		template <utils::details::vector::concepts::compatible_vector<self_t> a_T, utils::details::vector::concepts::compatible_vector<self_t> b_T>
+		utils_gpu_available static constexpr value_type distance2(const a_T& a, const b_T& b) noexcept
 			{
-			constexpr auto sizes{details::pair_sizes<self_t, decltype(b)>()};
+			constexpr auto sizes{details::pair_sizes<a_T, b_T>()};
 
 			value_type ret{0};
 			size_t i{0};
@@ -151,10 +158,10 @@ namespace utils::math
 			return ret;
 			}
 
-		/// <summary> Evaluate distance^2 in all the axes of the smaller vec. </summary>
-		utils_gpu_available static constexpr value_type distance2_shared(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		template <utils::details::vector::concepts::compatible_vector<self_t> a_T, utils::details::vector::concepts::compatible_vector<self_t> b_T>
+		utils_gpu_available static constexpr value_type distance2_shared(const a_T& a, const b_T& b) noexcept
 			{
-			constexpr auto sizes{details::pair_sizes<self_t, decltype(b)>()};
+			constexpr auto sizes{details::pair_sizes<a_T, decltype(b)>()};
 
 			value_type ret{0};
 			size_t i{0};
@@ -168,13 +175,15 @@ namespace utils::math
 			}
 
 		/// <summary> Evaluate distance in the size of this vec. Missing coordinates are considered 0. </summary>
-		utils_gpu_available static constexpr value_type distance(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		template <utils::details::vector::concepts::compatible_vector<self_t> a_T, utils::details::vector::concepts::compatible_vector<self_t> b_T>
+		utils_gpu_available static constexpr value_type distance(const a_T& a, const b_T& b) noexcept
 			{
 			return std::sqrt(distance2(a, b)); 
 			}
 
 		/// <summary> Evaluate distance in all the axes of the smaller vec. </summary>
-		utils_gpu_available static constexpr value_type distance_shared(const self_t& a, const utils::details::vector::concepts::compatible_vector<self_t> auto& b) noexcept
+		template <utils::details::vector::concepts::compatible_vector<self_t> a_T, utils::details::vector::concepts::compatible_vector<self_t> b_T>
+		utils_gpu_available static constexpr value_type distance_shared(const a_T& a, const b_T& b) noexcept
 			{
 			return std::sqrt(distance_shared2(a, b)); 
 			}
@@ -197,27 +206,27 @@ namespace utils::math
 
 		struct create : ::utils::oop::non_constructible
 			{
-			utils_gpu_available static constexpr self_t zero    () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 1) { return {value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t zero    () noexcept requires(storage_type.is_owner() && extent >= 1) { return {value_type{ 0}}; }
 
-			utils_gpu_available static constexpr self_t rr      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 1) { return {value_type{ 1}}; }
-			utils_gpu_available static constexpr self_t ll      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 1) { return {value_type{-1}}; }
-			utils_gpu_available static constexpr self_t rr      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  1) { return {value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t ll      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  1) { return {value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t right   () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 1) { return rr(); }
-			utils_gpu_available static constexpr self_t left    () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 1) { return ll(); }
+			utils_gpu_available static constexpr self_t rr      () noexcept requires(storage_type.is_owner() && extent == 1) { return {value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t ll      () noexcept requires(storage_type.is_owner() && extent == 1) { return {value_type{-1}}; }
+			utils_gpu_available static constexpr self_t rr      () noexcept requires(storage_type.is_owner() && extent >  1) { return {value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t ll      () noexcept requires(storage_type.is_owner() && extent >  1) { return {value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t right   () noexcept requires(storage_type.is_owner() && extent >= 1) { return rr(); }
+			utils_gpu_available static constexpr self_t left    () noexcept requires(storage_type.is_owner() && extent >= 1) { return ll(); }
 
-			utils_gpu_available static constexpr self_t up      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 2) { return {value_type{ 0}, value_type{-1}}; }
-			utils_gpu_available static constexpr self_t dw      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 2) { return {value_type{ 0}, value_type{ 1}}; }
-			utils_gpu_available static constexpr self_t up      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t dw      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t down    () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 2) { return dw(); }
+			utils_gpu_available static constexpr self_t up      () noexcept requires(storage_type.is_owner() && extent == 2) { return {value_type{ 0}, value_type{-1}}; }
+			utils_gpu_available static constexpr self_t dw      () noexcept requires(storage_type.is_owner() && extent == 2) { return {value_type{ 0}, value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t up      () noexcept requires(storage_type.is_owner() && extent >  2) { return {value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t dw      () noexcept requires(storage_type.is_owner() && extent >  2) { return {value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t down    () noexcept requires(storage_type.is_owner() && extent >= 2) { return dw(); }
 
-			utils_gpu_available static constexpr self_t fw      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
-			utils_gpu_available static constexpr self_t bw      () noexcept requires(!storage_type == utils::storage::type::owner && extent == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
-			utils_gpu_available static constexpr self_t fw      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t bw      () noexcept requires(!storage_type == utils::storage::type::owner && extent >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
-			utils_gpu_available static constexpr self_t forward () noexcept requires(!storage_type == utils::storage::type::owner && extent >= 3) { return fw(); }
-			utils_gpu_available static constexpr self_t backward() noexcept requires(!storage_type == utils::storage::type::owner && extent >= 3) { return bw(); }
+			utils_gpu_available static constexpr self_t fw      () noexcept requires(storage_type.is_owner() && extent == 3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}}; }
+			utils_gpu_available static constexpr self_t bw      () noexcept requires(storage_type.is_owner() && extent == 3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}}; }
+			utils_gpu_available static constexpr self_t fw      () noexcept requires(storage_type.is_owner() && extent >  3) { return {value_type{ 0}, value_type{ 0}, value_type{ 1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t bw      () noexcept requires(storage_type.is_owner() && extent >  3) { return {value_type{ 0}, value_type{ 0}, value_type{-1}, value_type{ 0}}; }
+			utils_gpu_available static constexpr self_t forward () noexcept requires(storage_type.is_owner() && extent >= 3) { return fw(); }
+			utils_gpu_available static constexpr self_t backward() noexcept requires(storage_type.is_owner() && extent >= 3) { return bw(); }
 			};
 				
 		template <utils::details::vector::concepts::compatible_vector<self_t> b_t>

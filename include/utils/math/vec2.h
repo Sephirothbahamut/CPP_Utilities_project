@@ -105,15 +105,15 @@ namespace utils::math
 				utils_gpu_available constexpr nonref_self_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
 				utils_gpu_available constexpr nonref_self_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 				
-				utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>) { nonref_self_t ret{self()}; return ret.scale_self    (scaling    ); }
-				utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>) { nonref_self_t ret{self()}; return ret.rotate_self   (rotation   ); }
-				utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>) { nonref_self_t ret{self()}; return ret.translate_self(translation); }
-				utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>);
+				utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept requires(std::same_as<typename self_t::value_type, float>) { nonref_self_t ret{self()}; return ret.scale_self    (scaling    ); }
+				utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept requires(std::same_as<typename self_t::value_type, float>) { nonref_self_t ret{self()}; return ret.rotate_self   (rotation   ); }
+				utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept requires(std::same_as<typename self_t::value_type, float>) { nonref_self_t ret{self()}; return ret.translate_self(translation); }
+				utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept requires(std::same_as<typename self_t::value_type, float>);
 
-				utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<typename self_t::nonref_value_type, float>) { return self() *= scaling    ; }
-				utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<typename self_t::nonref_value_type, float>) { return self() += rotation   ; }
-				utils_gpu_available constexpr self_t& translate_self(const self_t                   & translation) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<typename self_t::nonref_value_type, float>) { return self() += translation; }
-				utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!utils::concepts::const_reference<value_type> && std::same_as<typename self_t::nonref_value_type, float>);
+				utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!self_t::storage_type.is_const() && std::same_as<typename self_t::value_type, float>) { return self() *= scaling    ; }
+				utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!self_t::storage_type.is_const() && std::same_as<typename self_t::value_type, float>) { return self() += rotation   ; }
+				utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!self_t::storage_type.is_const() && std::same_as<typename self_t::value_type, float>) { return self() += translation; }
+				utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!self_t::storage_type.is_const() && std::same_as<typename self_t::value_type, float>);
 
 				utils_gpu_available constexpr rect<float> bounding_box() const noexcept requires(std::same_as<typename self_t::nonref_value_type, float>);
 			};

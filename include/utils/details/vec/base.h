@@ -30,10 +30,10 @@ namespace utils::details::vector
 		concept vector = std::derived_from<T, concept_common_flag_type>;
 
 		template <typename T, typename compatible_to>
-		concept compatible_vector = vector<T> && vector<compatible_to> && std::convertible_to<typename T::nonref_value_type, typename compatible_to::nonref_value_type>;
+		concept compatible_vector = vector<T> && vector<compatible_to> && std::convertible_to<typename T::value_type, typename compatible_to::value_type>;
 
 		template <typename T, typename compatible_to>
-		concept compatible_scalar = vector<compatible_to> && std::convertible_to<T, typename compatible_to::nonref_value_type>;
+		concept compatible_scalar = vector<compatible_to> && std::convertible_to<T, typename compatible_to::value_type>;
 		}
 
 	//template <concepts::array a_t, concepts::array b_t>

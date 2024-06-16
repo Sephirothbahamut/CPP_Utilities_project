@@ -8,21 +8,23 @@
 
 namespace utils::math
 	{
+	template <typename T, typename value_type>
+	concept valid_range = std::ranges::range<T> && std::same_as<value_type, typename T::value_type>;
+
 	template <typename T = float>
 	struct utils_oop_empty_bases rect : utils::storage::multiple<T, 4, false>
 		{
 		using storage_t = utils::storage::multiple<T, 4, false>;
 
-		storage_t container;
-
 		using self_t = rect<T>;
 		using typename storage_t::value_type;
 		using typename storage_t::const_aware_value_type;
+		using storage_t::storage_type;
 		using vertex_owner = utils::math::vec2<value_type>;
 		using vertex_observer = utils::math::vecref2<const_aware_value_type>;
 		using nonref_self_t = rect<std::remove_const_t<value_type>>;
 
-		using utils::storage::multiple<T, 4, false>::multiple;
+		using storage_t::multiple;
 
 		struct create : ::utils::oop::non_constructible
 			{
@@ -32,26 +34,63 @@ namespace utils::math
 			template <std::convertible_to<value_type> T_oth>
 			utils_gpu_available inline static constexpr  self_t from_ul_dr  (utils::math::vec2<T_oth> ul, utils::math::vec2<T_oth> dr) { return {ul.x(), ul.y(), dr.x(), dr.y()}; }
 
-			template <std::convertible_to<value_type> T_oth>
-			utils_gpu_available inline static constexpr self_t from_vertices(utils::math::vec2<T_oth>& a, utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
-				requires (utils::concepts::reference<value_type>)
+			template <std::same_as<value_type> T_oth>
+			utils_gpu_available inline static constexpr self_t from_vertices(utils::math::vec2<T_oth>& a, utils::math::vec2<T_oth>& b)
+				requires (storage_type.is_observer())
 				{
-				value_type& min_x{std::min(a.x(), b.x())};//vertices.x(), ...)};
-				value_type& min_y{std::min(a.y(), b.y())};//vertices.y(), ...)};
-				value_type& max_x{std::max(a.x(), b.x())};//vertices.x(), ...)};
-				value_type& max_y{std::max(a.y(), b.y())};//vertices.y(), ...)};
-				return {min_x, min_y, max_x, max_y};
+				return 
+					{
+					a.x() < b.x() ? a.x() : b.x(),
+					a.y() < b.y() ? a.y() : b.y(),
+					a.x() > b.x() ? a.x() : b.x(),
+					a.y() > b.y() ? a.y() : b.y(),
+					};
 				}
 			template <std::convertible_to<value_type> T_oth>
-			utils_gpu_available inline static constexpr self_t from_vertices(const utils::math::vec2<T_oth>& a, const utils::math::vec2<T_oth>& b) //TODO version with any number of vertices?
-				requires (!utils::concepts::reference<value_type>)
+			utils_gpu_available inline static constexpr self_t from_vertices(const utils::math::vec2<T_oth>& a, const utils::math::vec2<T_oth>& b)
+				requires (storage_type.is_owner())
 				{
-				value_type min_x{std::min(a.x(), b.x())};//vertices.x(), ...)};
-				value_type min_y{std::min(a.y(), b.y())};//vertices.y(), ...)};
-				value_type max_x{std::max(a.x(), b.x())};//vertices.x(), ...)};
-				value_type max_y{std::max(a.y(), b.y())};//vertices.y(), ...)};
-				return {min_x, min_y, max_x, max_y};
+				return 
+					{
+					a.x() < b.x() ? a.x() : b.x(),
+					a.y() < b.y() ? a.y() : b.y(),
+					a.x() > b.x() ? a.x() : b.x(),
+					a.y() > b.y() ? a.y() : b.y(),
+					};
 				}
+
+			//utils_gpu_available inline static constexpr self_t from_vertices(valid_range<value_type> auto range)
+			//	requires (storage_type.is_observer())
+			//	{
+			//	const_aware_value_type& first{*range.begin()};
+			//	self_t ret{first.x(), first.y(), first.x(), first.y()};
+			//
+			//	for (const_aware_value_type& vertex : range)
+			//		{
+			//		if (vertex.x() < ret[0]) { ret.rebind(0, vertex.x()); }
+			//		if (vertex.y() < ret[1]) { ret.rebind(1, vertex.y()); }
+			//		if (vertex.x() > ret[2]) { ret.rebind(2, vertex.x()); }
+			//		if (vertex.y() > ret[3]) { ret.rebind(3, vertex.y()); }
+			//		}
+			//
+			//	return ret;
+			//	}
+			//
+			//utils_gpu_available inline static constexpr self_t from_vertices(valid_range<value_type> auto range)
+			//	requires (storage_type.is_owner())
+			//	{
+			//	self_t ret{utils::math::constants::finf, utils::math::constants::finf, -utils::math::constants::finf, -utils::math::constants::finf};
+			//
+			//	for (const auto& vertex : range)
+			//		{
+			//		if (vertex.x() < ret[0]) { ret[0] = vertex.x(); }
+			//		if (vertex.y() < ret[1]) { ret[1] = vertex.y(); }
+			//		if (vertex.x() > ret[2]) { ret[2] = vertex.x(); }
+			//		if (vertex.y() > ret[3]) { ret[3] = vertex.y(); }
+			//		}
+			//
+			//	return ret;
+			//	}
 			};
 		
 		utils_gpu_available const const_aware_value_type& ll() const noexcept { return (*this)[0]; }
@@ -111,8 +150,8 @@ namespace utils::math
 			using rect_t = std::conditional_t<is_const, const self_t, self_t>;
 
 			public:
-				utils_gpu_available constexpr operator value_type() const noexcept { return r.up(); }
-				utils_gpu_available constexpr operator value_type& () noexcept requires(!is_const) { return utils::remove_reference_v(r.up()); }
+				utils_gpu_available constexpr operator value_type () const noexcept { return r.up(); }
+				utils_gpu_available constexpr operator value_type&() noexcept requires(!is_const) { return utils::remove_reference_v(r.up()); }
 
 				utils_gpu_available constexpr proxy_y& operator=(const value_type& new_value) noexcept
 					requires(!is_const)
@@ -149,7 +188,7 @@ namespace utils::math
 				proxy_y<is_const> y;
 
 				utils_gpu_available constexpr operator vertex_owner() const noexcept { return {r.ul()}; }
-				utils_gpu_available constexpr operator vertex_observer() noexcept { return r.ul(); }
+				utils_gpu_available constexpr operator vertex_observer() noexcept requires(!is_const) { return r.ul(); }
 
 				utils_gpu_available constexpr proxy_position& operator=(const vertex_owner& new_value) noexcept
 					requires(!is_const)
@@ -354,10 +393,10 @@ namespace utils::math
 		utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
 		utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
 
-		utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!storage_t::storage_type.is_const() && std::same_as<value_type, float>) { size() *= scaling; return *this; }
-		utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!storage_t::storage_type.is_const() && std::same_as<value_type, float>) { return *this; }
-		utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!storage_t::storage_type.is_const() && std::same_as<value_type, float>) { pos() += translation; return *this; }
-		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!storage_t::storage_type.is_const() && std::same_as<value_type, float>) { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
+		utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { size() *= scaling; return *this; }
+		utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>&            ) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { return *this; }
+		utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { pos() += translation; return *this; }
+		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
 
 		utils_gpu_available constexpr nonref_self_t bounding_box() const noexcept { return *this; }
 		};

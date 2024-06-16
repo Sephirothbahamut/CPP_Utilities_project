@@ -161,7 +161,6 @@
     <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\mixed.h" />
     <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\path.h" />
     <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\point.h" />
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\polyline.h" />
     <ClInclude Include="include\utils\beta\math\geometry\shape\mixed.h" />
     <ClInclude Include="include\utils\beta\math\geometry\shape\path.h" />
     <ClInclude Include="include\utils\beta\math\geometry\shape\point.h" />
@@ -270,6 +269,7 @@
     <ClInclude Include="include\utils\oop\crtp.h" />
     <ClInclude Include="include\utils\oop\disable_move_copy.h" />
     <ClInclude Include="include\utils\oop\virtual.h" />
+    <ClInclude Include="include\utils\output\vec.h" />
     <ClInclude Include="include\utils\polymorphic_value.h" />
     <ClInclude Include="include\utils\storage.h" />
     <ClInclude Include="include\utils\string.h" />

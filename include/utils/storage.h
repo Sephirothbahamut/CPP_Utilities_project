@@ -8,6 +8,7 @@
 #include <concepts>
 
 #include "math/math.h"
+#include "compilation/debug.h"
 #include "oop/disable_move_copy.h"
 
 namespace utils::storage
@@ -22,28 +23,36 @@ namespace utils::storage
 		template <typename T>
 		concept vector = std::same_as<std::remove_cvref_t<T>, std::vector<typename std::remove_cvref_t<T>::value_type>>;
 		template <typename T>
-		concept array = std::same_as<std::remove_cvref_t<T>, std::array<typename std::remove_cvref_t<T>::value_type, std::tuple_size_v<std::remove_cvref_t<T>>>>;
+		concept array = std::same_as<std::remove_cvref_t<T>, std::array<typename std::remove_cvref_t<T>::value_type, std::tuple_size<std::remove_cvref_t<T>>::value>>; //Note: using tuple_size_t won't work
 		template <typename T>
 		concept span = std::same_as<std::remove_cvref_t<T>, std::span<typename std::remove_cvref_t<T>::value_type, std::remove_cvref_t<T>::extent>>;
 		}
 
 	struct type
 		{
-		utils_gpu_available constexpr bool is_observer() const noexcept { return !owner_value; }
-		utils_gpu_available constexpr bool is_owner   () const noexcept { return  owner_value; }
-		utils_gpu_available constexpr bool is_const   () const noexcept { return  const_value; }
+		utils_gpu_available consteval bool is_observer() const noexcept { return !owner_value; }
+		utils_gpu_available consteval bool is_owner   () const noexcept { return  owner_value; }
+		utils_gpu_available consteval bool is_const   () const noexcept { return  const_value; }
+		utils_gpu_available consteval bool can_construct_from_const() const noexcept { return owner_value || !const_value; }
 
 		struct create : utils::oop::non_constructible
 			{
 			template <typename T2>
-			utils_gpu_available static constexpr type from          (                        ) noexcept { return {.owner_value{!std::is_reference_v<T2>}, .const_value{std::is_const_v<std::remove_reference_t<T2>>}}; }
-			utils_gpu_available static constexpr type owner         (bool const_value = false) noexcept { return {.owner_value{true                    }, .const_value{const_value                                 }}; }
-			utils_gpu_available static constexpr type observer      (bool const_value = false) noexcept { return {.owner_value{false                   }, .const_value{const_value                                 }}; }
-			utils_gpu_available static constexpr type const_observer(bool const_value = false) noexcept { return {.owner_value{false                   }, .const_value{const_value                                 }}; }
+			utils_gpu_available static consteval type from          (                        ) noexcept { return {.owner_value{!std::is_reference_v<T2>}, .const_value{std::is_const_v<std::remove_reference_t<T2>>}}; }
+			utils_gpu_available static consteval type owner         (bool const_value = false) noexcept { return {.owner_value{true                    }, .const_value{const_value                                 }}; }
+			utils_gpu_available static consteval type observer      (bool const_value = false) noexcept { return {.owner_value{false                   }, .const_value{const_value                                 }}; }
+			utils_gpu_available static consteval type const_observer(bool const_value = false) noexcept { return {.owner_value{false                   }, .const_value{const_value                                 }}; }
 			};
 
-		bool owner_value;
-		bool const_value;
+		const bool owner_value;
+		const bool const_value;
+		};
+
+	template <typename A, typename B>
+	struct constness_matching
+		{
+		static constexpr bool other_const{std::remove_cvref_t<B>::storage_type.is_const() || std::is_const_v<B>};
+		static constexpr bool compatible_constness{std::remove_cvref_t<A>::storage_type.is_const() || std::remove_cvref_t<A>::storage_type.is_owner() || !other_const};
 		};
 
 	template <typename T, type storage_type>
@@ -72,7 +81,7 @@ namespace utils::storage
 
 		using inner_storage_t = std::conditional_t
 			<
-			storage_type.is_owner,
+			storage_type.is_owner(),
 			T,
 			std::reference_wrapper<T>
 			>;
@@ -114,11 +123,11 @@ namespace utils::storage
 		using inner_storage_t = std::conditional_t
 			<
 			storage_type.is_owner(),
-			owner_storage_t<T>,
+			owner_storage_t<const_aware_value_type>,
 			std::conditional_t
 			/**/<
 			/**/sequential_observer,
-			/**/std::span<T, extent>,
+			/**/std::span<const_aware_value_type, extent>,
 			/**/owner_storage_t<std::reference_wrapper<const_aware_value_type>>
 			/**/>
 			>;
@@ -134,6 +143,12 @@ namespace utils::storage
 		utils_gpu_available constexpr const const_aware_value_type& at        (size_t index) const                                             { return static_cast<const const_aware_value_type&>(storage.at(index)); }
 		utils_gpu_available constexpr       const_aware_value_type& at        (size_t index)                requires(!storage_type.is_const()) { return static_cast<      const_aware_value_type&>(storage.at(index)); }
  
+		utils_gpu_available constexpr void rebind(size_t index, const_aware_value_type& new_value) noexcept requires(storage_type.is_observer())
+			{
+			if constexpr (utils::compilation::debug) { assert(index < size()); }
+			storage[index] = new_value;
+			}
+
 		template <typename inner_iterator_t, typename T2>
 		struct base_iterator
 			{
@@ -164,29 +179,41 @@ namespace utils::storage
 			};
 
 		using iterator               = base_iterator<typename inner_storage_t::iterator              ,       const_aware_value_type>;
-		using const_iterator         = base_iterator<typename inner_storage_t::const_iterator        , const const_aware_value_type>;
 		using reverse_iterator       = base_iterator<typename inner_storage_t::reverse_iterator      ,       const_aware_value_type>;
-		using const_reverse_iterator = base_iterator<typename inner_storage_t::const_reverse_iterator, const const_aware_value_type>;
+		//TODO When CUDA supports C++23 this will suffice for all containers. Until then, std::span doesn't have const_iterator defined in C++20
+		//using const_iterator         = base_iterator<typename inner_storage_t::const_iterator        , const const_aware_value_type>;
+		//using const_reverse_iterator = base_iterator<typename inner_storage_t::const_reverse_iterator, const const_aware_value_type>;
+		//until then, keep this uglyness
+		template <typename       T> struct inner_storage_const_iterator            { using type =       typename T::const_iterator        ; };
+		template <typename       T> struct inner_storage_const_reverse_iterator    { using type =       typename T::const_reverse_iterator; };
+		template <concepts::span T> struct inner_storage_const_iterator        <T> { using type = const typename T::      iterator        ; };
+		template <concepts::span T> struct inner_storage_const_reverse_iterator<T> { using type = const typename T::      reverse_iterator; };
+
+		template <typename T> using inner_storage_const_iterator_t         = typename inner_storage_const_iterator        <T>::type;
+		template <typename T> using inner_storage_const_reverse_iterator_t = typename inner_storage_const_reverse_iterator<T>::type;
+
+		using const_iterator         = base_iterator<inner_storage_const_iterator_t        <inner_storage_t>, const const_aware_value_type>;
+		using const_reverse_iterator = base_iterator<inner_storage_const_reverse_iterator_t<inner_storage_t>, const const_aware_value_type>;
 		
 		utils_gpu_available constexpr       iterator           begin()       noexcept { return {storage. begin ()}; }
 		utils_gpu_available constexpr const_iterator           begin() const noexcept { return {storage. begin ()}; }
-		utils_gpu_available constexpr const_iterator          cbegin()       noexcept { return {storage.cbegin ()}; }
+		utils_gpu_available constexpr const_iterator          cbegin()       noexcept { if constexpr (!concepts::span<inner_storage_t>) { return {storage.cbegin()}; } else { return {storage.begin()}; } }
 		utils_gpu_available constexpr       iterator           end  ()       noexcept { return {storage. end   ()}; }
 		utils_gpu_available constexpr const_iterator           end  () const noexcept { return {storage. end   ()}; }
-		utils_gpu_available constexpr const_iterator          cend  ()       noexcept { return {storage.cend   ()}; }
+		utils_gpu_available constexpr const_iterator          cend  ()       noexcept { if constexpr (!concepts::span<inner_storage_t>) { return {storage.cend  ()}; } else { return {storage.end  ()}; } }
 			 
 		utils_gpu_available constexpr       reverse_iterator  rbegin()       noexcept { return {storage. rbegin()}; }
 		utils_gpu_available constexpr const_reverse_iterator  rbegin() const noexcept { return {storage. rbegin()}; }
-		utils_gpu_available constexpr const_reverse_iterator crbegin()       noexcept { return {storage.crbegin()}; }
+		utils_gpu_available constexpr const_reverse_iterator crbegin()       noexcept { if constexpr (!concepts::span<inner_storage_t>) { return {storage.crbegin()}; } else { return {storage.rbegin()}; } }
 		utils_gpu_available constexpr       reverse_iterator  rend  ()       noexcept { return {storage. rend  ()}; }
 		utils_gpu_available constexpr const_reverse_iterator  rend  () const noexcept { return {storage. rend  ()}; }
-		utils_gpu_available constexpr const_reverse_iterator crend  ()       noexcept { return {storage.crend  ()}; }
+		utils_gpu_available constexpr const_reverse_iterator crend  ()       noexcept { if constexpr (!concepts::span<inner_storage_t>) { return {storage.crend  ()}; } else { return {storage.crend  ()}; } }
 
 		utils_gpu_available constexpr multiple() requires(storage_type == ::utils::storage::type::owner) = default;
 
 		utils_gpu_available constexpr multiple(inner_storage_t&& storage) : storage{storage} {}
 
-		template <concepts::can_construct_value_type<const_aware_value_type> ...Args>
+		template <concepts::can_construct_value_type<typename inner_storage_t::value_type> ...Args>
 		utils_gpu_available constexpr multiple(Args&&... args)
 			requires
 				(
@@ -202,10 +229,14 @@ namespace utils::storage
 			storage{std::forward<Args>(args)...} {}
 
 		template <concepts::multiple other_t>
-		static inner_storage_t inner_create(other_t other) noexcept
+		static inner_storage_t inner_create(other_t& other) noexcept
+			requires 
+				(
+				std::constructible_from<typename inner_storage_t::value_type, typename other_t::inner_storage_t::reference> 
+				&& constness_matching<self_t, other_t>::compatible_constness
+				)
 			{
 			using inner_value_type = typename inner_storage_t::value_type;
-			static_assert(std::constructible_from<inner_value_type, typename other_t::inner_storage_t::reference>);
 
 			// If owner can construct each element from each other's element freely.
 			// If sparse observer with const value can construct without issues
@@ -252,15 +283,16 @@ namespace utils::storage
 							}(std::make_index_sequence<ret_extent>());
 						}
 					}
-				else
+				else if constexpr (storage_type.is_observer() && sequential_observer)
 					{
-					//TODO span edition
+					if constexpr (extent != std::dynamic_extent) { assert(extent == other.size()); }
+					return inner_storage_t(&(*(other.begin())), other.size());
 					}
 				}
 			}
 
-		template <concepts::multiple other_t>
-		utils_gpu_available constexpr multiple(other_t other) noexcept : storage{inner_create(other)} {}
+		utils_gpu_available constexpr multiple(const concepts::multiple auto& other) noexcept requires(storage_type.can_construct_from_const()) : storage{inner_create(other)} {}
+		utils_gpu_available constexpr multiple(      concepts::multiple auto& other) noexcept : storage{inner_create(other)} {}
 
 		//template <concepts::multiple other_t>
 		//utils_gpu_available constexpr multiple& operator=(other_t& other) noexcept
