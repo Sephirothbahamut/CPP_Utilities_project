@@ -59,6 +59,8 @@ namespace utils::math
 
 		template <typename T, typename value_type>
 		concept vec_type = vec<T> && std::same_as<typename T::value_type, value_type>;
+		template <typename T, typename value_type>
+		concept vec_compatible_type = vec<T> && std::convertible_to<typename T::value_type, value_type>;
 		}
 
 	namespace details

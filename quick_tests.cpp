@@ -79,7 +79,17 @@ struct child_type : angry_type
 
 int main()
 	{
+	using namespace utils::output;
 
+	utils::math::geometry::shape::polygon<3> polyline{utils::math::vec2f{1.f, -2.f}, utils::math::vec2f{-10.f, 10.f}, utils::math::vec2f{10.f, -10.f}};
+	utils::math::geometry::shape::observer::polygon<std::dynamic_extent> polyline_obs{polyline};
+
+	auto rect{polyline_obs.bounding_box()};
+	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
+	rect.size().resize({.horizontal_alignment{utils::alignment::horizontal::centre}, .vertical_alignment{utils::alignment::vertical::bottom}}, {5.f, 2.f});
+	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
+	rect.size().scale({.horizontal_alignment{utils::alignment::horizontal::left   }, .vertical_alignment{utils::alignment::vertical::middle}}, {5.f, 2.f});
+	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
 //	using namespace utils::output;
 //	using namespace utils::math::angle::literals;
 //	

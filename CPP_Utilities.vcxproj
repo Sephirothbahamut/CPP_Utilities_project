@@ -131,13 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\utils\alignment.h" />
     <ClInclude Include="include\utils\beta\containers\hive\pool.h" />
     <ClInclude Include="include\utils\beta\containers\multihandled_default.h" />
     <ClInclude Include="include\utils\beta\containers\resource_manager.h" />
     <ClInclude Include="include\utils\beta\math\geometry\all.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h" />
     <ClInclude Include="include\utils\beta\math\geometry\details\root.h" />
-    <ClInclude Include="include\utils\beta\math\geometry\details\vertices_sequence.h" />
     <ClInclude Include="include\utils\beta\math\geometry\group.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h" />
     <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h" />

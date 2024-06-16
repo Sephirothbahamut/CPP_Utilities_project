@@ -6,7 +6,6 @@
 #include <optional>
 
 #include "../details/base_types.h"
-#include "../details/vertices_sequence.h"
 #include "ab.h"
 #include "point.h"
 
@@ -14,11 +13,13 @@ namespace utils::math::geometry::shape
 	{
 	namespace generic
 		{
-		template <storage::type storage_type, ends ENDS, size_t EXTENT>
-		struct polyline : vertices_sequence<polyline<storage_type, ENDS, EXTENT>, storage_type, ENDS, EXTENT>
+		template <storage::type storage_type, ends ENDS, size_t EXTENT = std::dynamic_extent>
+		struct polyline : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>
 			{
+			inline static constexpr ends   ends  {ENDS  };
 			inline static constexpr size_t extent{EXTENT};
-			inline static constexpr ends ends{ENDS};
+
+			using utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>::multiple;
 
 			using self_t = polyline<storage_type, ends, extent>;
 			using nonref_self_t = polyline<storage::type::create::owner(), ends, extent>;
@@ -86,14 +87,24 @@ namespace utils::math::geometry::shape
 			//
 			//utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<edge_t<true >>{storage_t::storage}; }
 			//utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<edge_t<false>>{storage_t::storage}; }
+			
+			utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
+			utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
+			utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
+			utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
 
+			utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!storage_type.is_const()) { for(auto& vertex : (*this)) { vertex.scale_self    (scaling    ); } return *this; }
+			utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!storage_type.is_const()) { for(auto& vertex : (*this)) { vertex.rotate_self   (rotation   ); } return *this; }
+			utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!storage_type.is_const()) { for(auto& vertex : (*this)) { vertex.translate_self(translation); } return *this; }
+			utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!storage_type.is_const()) { for(auto& vertex : (*this)) { vertex.transform_self(transform  ); } return *this; }
+			
 			utils_gpu_available constexpr shape::aabb bounding_box() const noexcept
 				{
-				shape::aabb::create::from_vertices(*this);
+				return shape::aabb::create::from_vertices(*this);
 				}
 			};
 
-		template <storage::type storage_type, size_t extent>
+		template <storage::type storage_type, size_t extent = std::dynamic_extent>
 		using polygon = polyline<storage_type, ends::create::closed(), extent>;
 		}
 
@@ -106,23 +117,23 @@ namespace utils::math::geometry::shape
 	
 	namespace owner 
 		{
-		template <ends ends, size_t extent>
+		template <ends ends, size_t extent = std::dynamic_extent>
 		using polyline = shape::generic::polyline<storage::type::create::owner(), ends, extent>;
-		template <size_t extent>
-		using polygon = shape::generic::polyline<storage::type::create::owner(), ends::create::closed(), extent>;
+		template <size_t extent = std::dynamic_extent>
+		using polygon = shape::generic::polygon<storage::type::create::owner(), extent>;
 		}
 	namespace observer
 		{
-		template <ends ends, size_t extent>
+		template <ends ends, size_t extent = std::dynamic_extent>
 		using polyline = shape::generic::polyline<storage::type::create::observer(), ends, extent>;
-		template <size_t extent>
-		using polygon = shape::generic::polyline<storage::type::create::observer(), ends::create::closed(), extent>;
+		template <size_t extent = std::dynamic_extent>
+		using polygon = shape::generic::polygon<storage::type::create::observer(), extent>;
 		}
 	namespace const_observer
 		{
-		template <ends ends, size_t extent>
+		template <ends ends, size_t extent = std::dynamic_extent>
 		using polyline = shape::generic::polyline<storage::type::create::const_observer(), ends, extent>;
-		template <size_t extent>
-		using polygon = shape::generic::polyline<storage::type::create::const_observer(), ends::create::closed(), extent>;
+		template <size_t extent = std::dynamic_extent>
+		using polygon = shape::generic::polygon<storage::type::create::const_observer(), extent>;
 		}
 	}

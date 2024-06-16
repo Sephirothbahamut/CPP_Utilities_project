@@ -4,12 +4,13 @@
 #include "transform2.h"
 #include "../memory.h"
 #include "../storage.h"
+#include "../alignment.h"
 #include "../compilation/gpu.h"
 
 namespace utils::math
 	{
-	template <typename T, typename value_type>
-	concept valid_range = std::ranges::range<T> && std::same_as<value_type, typename T::value_type>;
+	template <typename T>
+	concept vec_range = std::ranges::range<T> && utils::math::concepts::vec_size<typename T::value_type, 2> && utils::math::concepts::vec_compatible_type<typename T::value_type, float>;
 
 	template <typename T = float>
 	struct utils_oop_empty_bases rect : utils::storage::multiple<T, 4, false>
@@ -59,38 +60,38 @@ namespace utils::math
 					};
 				}
 
-			//utils_gpu_available inline static constexpr self_t from_vertices(valid_range<value_type> auto range)
-			//	requires (storage_type.is_observer())
-			//	{
-			//	const_aware_value_type& first{*range.begin()};
-			//	self_t ret{first.x(), first.y(), first.x(), first.y()};
-			//
-			//	for (const_aware_value_type& vertex : range)
-			//		{
-			//		if (vertex.x() < ret[0]) { ret.rebind(0, vertex.x()); }
-			//		if (vertex.y() < ret[1]) { ret.rebind(1, vertex.y()); }
-			//		if (vertex.x() > ret[2]) { ret.rebind(2, vertex.x()); }
-			//		if (vertex.y() > ret[3]) { ret.rebind(3, vertex.y()); }
-			//		}
-			//
-			//	return ret;
-			//	}
-			//
-			//utils_gpu_available inline static constexpr self_t from_vertices(valid_range<value_type> auto range)
-			//	requires (storage_type.is_owner())
-			//	{
-			//	self_t ret{utils::math::constants::finf, utils::math::constants::finf, -utils::math::constants::finf, -utils::math::constants::finf};
-			//
-			//	for (const auto& vertex : range)
-			//		{
-			//		if (vertex.x() < ret[0]) { ret[0] = vertex.x(); }
-			//		if (vertex.y() < ret[1]) { ret[1] = vertex.y(); }
-			//		if (vertex.x() > ret[2]) { ret[2] = vertex.x(); }
-			//		if (vertex.y() > ret[3]) { ret[3] = vertex.y(); }
-			//		}
-			//
-			//	return ret;
-			//	}
+			utils_gpu_available inline static constexpr self_t from_vertices(vec_range auto range)
+				requires (storage_type.is_observer())
+				{
+				const_aware_value_type& first{*range.begin()};
+				self_t ret{first.x(), first.y(), first.x(), first.y()};
+			
+				for (const_aware_value_type& vertex : range)
+					{
+					if (vertex.x() < ret[0]) { ret.rebind(0, vertex.x()); }
+					if (vertex.y() < ret[1]) { ret.rebind(1, vertex.y()); }
+					if (vertex.x() > ret[2]) { ret.rebind(2, vertex.x()); }
+					if (vertex.y() > ret[3]) { ret.rebind(3, vertex.y()); }
+					}
+			
+				return ret;
+				}
+			
+			utils_gpu_available inline static constexpr self_t from_vertices(vec_range auto range)
+				requires (storage_type.is_owner())
+				{
+				self_t ret{utils::math::constants::finf, utils::math::constants::finf, -utils::math::constants::finf, -utils::math::constants::finf};
+			
+				for (const auto& vertex : range)
+					{
+					if (vertex.x() < ret[0]) { ret[0] = vertex.x(); }
+					if (vertex.y() < ret[1]) { ret[1] = vertex.y(); }
+					if (vertex.x() > ret[2]) { ret[2] = vertex.x(); }
+					if (vertex.y() > ret[3]) { ret[3] = vertex.y(); }
+					}
+			
+				return ret;
+				}
 			};
 		
 		utils_gpu_available const const_aware_value_type& ll() const noexcept { return (*this)[0]; }
@@ -233,7 +234,40 @@ namespace utils::math
 					r.rr() = r.ll() + new_value;
 					return *this;
 					}
-				
+
+				utils_gpu_available constexpr proxy_width& resize(const utils::alignment::horizontal& anchor, const value_type& new_value) noexcept
+					requires(!is_const)
+					{
+					switch (anchor)
+						{
+						case ::utils::alignment::horizontal::left:
+							{
+							r.rr() = r.ll() + new_value;
+							}
+							break;
+						case ::utils::alignment::horizontal::centre:
+							{
+							const auto centre{r.centre_x()};
+							const auto half_value{new_value / value_type{2}};
+							r.ll() = centre - half_value;
+							r.rr() = centre + half_value;
+							}
+							break;
+						case ::utils::alignment::horizontal::right:
+							{
+							r.ll() = r.rr() - new_value;
+							}
+							break;
+						}
+					return *this;
+					}
+
+				utils_gpu_available constexpr proxy_width& scale(const utils::alignment::horizontal& anchor, const value_type& factor) noexcept
+					requires(!is_const)
+					{
+					return resize(anchor, static_cast<value_type>(*this) * factor);
+					}
+
 				utils_gpu_available constexpr value_type operator+(const value_type& delta ) const noexcept { return static_cast<value_type>(*this) + delta ; }
 				utils_gpu_available constexpr value_type operator-(const value_type& delta ) const noexcept { return static_cast<value_type>(*this) - delta ; }
 				utils_gpu_available constexpr value_type operator*(const value_type& factor) const noexcept { return static_cast<value_type>(*this) * factor; }
@@ -264,6 +298,39 @@ namespace utils::math
 					{
 					r.dw() = r.up() + new_value;
 					return *this;
+					}
+
+				utils_gpu_available constexpr proxy_height& resize(const utils::alignment::vertical& anchor, const value_type& new_value) noexcept
+					requires(!is_const)
+					{
+					switch (anchor)
+						{
+						case ::utils::alignment::vertical::top:
+							{
+							r.dw() = r.up() + new_value;
+							}
+							break;
+						case ::utils::alignment::vertical::middle:
+							{
+							const auto centre{r.centre_y()};
+							const auto half_value{new_value / value_type{2}};
+							r.up() = centre - half_value;
+							r.dw() = centre + half_value;
+							}
+							break;
+						case ::utils::alignment::vertical::bottom:
+							{
+							r.up() = r.dw() - new_value;
+							}
+							break;
+						}
+					return *this;
+					}
+
+				utils_gpu_available constexpr proxy_height& scale(const utils::alignment::vertical& anchor, const value_type& factor) noexcept
+					requires(!is_const)
+					{
+					return resize(anchor, static_cast<value_type>(*this) * factor);
 					}
 
 				utils_gpu_available constexpr value_type operator+(const value_type& delta ) const noexcept { return static_cast<value_type>(*this) + delta ; }
@@ -298,6 +365,20 @@ namespace utils::math
 					w = new_value.x();
 					h = new_value.y();
 					return *this;
+					}
+
+				utils_gpu_available constexpr proxy_size& resize(const utils::alignment& anchor, const vertex_owner& new_value) noexcept
+					requires(!is_const)
+					{
+					w.resize(anchor.horizontal_alignment, new_value.x());
+					h.resize(anchor.vertical_alignment  , new_value.y());
+					return *this;
+					}
+
+				utils_gpu_available constexpr proxy_size& scale(const utils::alignment& anchor, const vertex_owner& factor) noexcept
+					requires(!is_const)
+					{
+					return resize(anchor, static_cast<vertex_owner>(*this) * factor);
 					}
 
 				utils_gpu_available constexpr vertex_owner operator+(const vertex_owner& delta ) const noexcept { return static_cast<vertex_owner>(*this) + delta ; }
@@ -345,9 +426,9 @@ namespace utils::math
 		utils_gpu_available constexpr proxy_size    <storage_t::storage_type.is_const()> s () noexcept { return {*this}; }
 
 		// Center
-		//     value_type  get_center_x()        const noexcept { return ll + (w() / value_type{2}); }
-		//     value_type  get_center_y()        const noexcept { return up + (h() / value_type{2}); }
-		//vec2<value_type> get_center  ()        const noexcept { return {get_center_x(), get_center_y()}; }
+		value_type   centre_x()        const noexcept { return ll() + (w() / value_type{2}); }
+		value_type   centre_y()        const noexcept { return up() + (h() / value_type{2}); }
+		vertex_owner centre  ()        const noexcept { return {centre_x(), centre_y()}; }
 		//void set_center_x(T value) noexcept { auto half_w{get_w() / value_type{2}}; remove_reference_v(ll) = value - half_w; remove_reference_v(rr) = value + half_w; }
 		//void set_center_y(T value){ auto half_h{get_h() / value_type{2}}; remove_reference_v(up) = value - half_h; remove_reference_v(dw) = value + half_h; }
 		//void set_center(vec2<value_type> value) noexcept { set_center_x(value.x); set_center_y(value.y); }

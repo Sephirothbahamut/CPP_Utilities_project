@@ -25,7 +25,7 @@ namespace utils::storage
 		template <typename T>
 		concept array = std::same_as<std::remove_cvref_t<T>, std::array<typename std::remove_cvref_t<T>::value_type, std::tuple_size<std::remove_cvref_t<T>>::value>>; //Note: using tuple_size_t won't work
 		template <typename T>
-		concept span = std::same_as<std::remove_cvref_t<T>, std::span<typename std::remove_cvref_t<T>::value_type, std::remove_cvref_t<T>::extent>>;
+		concept span = std::same_as<std::remove_cvref_t<T>, std::span<typename std::remove_cvref_t<T>::element_type, std::remove_cvref_t<T>::extent>>;
 		}
 
 	struct type

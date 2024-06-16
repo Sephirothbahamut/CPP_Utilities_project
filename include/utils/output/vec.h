@@ -1,3 +1,4 @@
+#pragma once
 
 #include "../details/vec/output.h"
 #include "../console/colour.h"
