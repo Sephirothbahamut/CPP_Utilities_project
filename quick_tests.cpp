@@ -93,10 +93,15 @@ int main()
 
 	std::cout << std::endl;
 
-	utils::math::vec2f va{0.f, 30.f}; 
+	utils::math::vec2f va{0.f, 30.f};
 	utils::math::vec2f vb{1.f, 20.f};
+	const utils::math::vec2f vc{1.f, 20.f};
 	static_assert(utils::math::concepts::vec_size<decltype(va), 2>);
-	utils::math::geometry::shape::segment sobs{1.f, 2.f, 3.f, 4.f};
+	utils::math::geometry::shape::segment seg{va, vb};
+	utils::math::geometry::shape::observer::segment osobs{va, vb};
+	utils::math::geometry::shape::const_observer::segment osobsc{va, vb};
+	utils::math::geometry::shape::observer::segment osobsw{seg};
+	utils::math::geometry::shape::const_observer::segment osobsczw{seg};
 
 	//for (const auto& edge : polyline.get_edges())
 	//	{

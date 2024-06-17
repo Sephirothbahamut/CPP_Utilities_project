@@ -8,31 +8,41 @@ namespace utils::math::geometry::shape
 	{
 	namespace generic
 		{
-		template <storage::type storage_type>
-		struct ab : utils::storage::multiple<storage::storage_type_for<float, storage_type>, 4, false>
+		template <storage::type STORAGE_TYPE>
+		struct ab
 			{
+			inline static constexpr storage::type storage_type = STORAGE_TYPE;
+
 			using self_t = ab<storage_type>;
-			using storage_t = utils::storage::multiple<storage::storage_type_for<float, storage_type>, 4, false>;
-			using typename storage_t::value_type;
-			using typename storage_t::const_aware_value_type;
-			using vertex_owner = utils::math::vec2<value_type>;
+			using vertex_t = generic::point<storage_type>;
 			template <bool is_function_const>
-			using vertex_observer = std::conditional_t<is_function_const, utils::math::vecref2<const value_type>, utils::math::vecref2<const_aware_value_type>>;
+			using vertex_observer = generic::point<storage::type::create::observer(is_function_const)>;
 			using nonref_self_t = ab<storage::type::create::owner()>;
 
-			//utils_gpu_available constexpr ab(const utils::math::concepts::vec_size<2> auto& a, const utils::math::concepts::vec_size<2> auto& b) noexcept
-			//	requires(storage_type.can_construct_from_const()) :
-			//	storage_t{a.x(), a.y(), b.x(), b.y()} {}
-			//
-			//utils_gpu_available constexpr ab(utils::math::concepts::vec_size<2> auto& a, utils::math::concepts::vec_size<2> auto& b) noexcept :
-			//	storage_t{a.x(), a.y(), b.x(), b.y()} {}
+			utils_gpu_available constexpr ab(const utils::math::concepts::vec_size<2> auto& a, const utils::math::concepts::vec_size<2> auto& b) noexcept
+				requires(storage_type.can_construct_from_const()) : 
+				vertex_a{a}, vertex_b{b} {}
+			
+			utils_gpu_available constexpr ab(utils::math::concepts::vec_size<2> auto& a, utils::math::concepts::vec_size<2> auto& b) noexcept :
+				vertex_a{a}, vertex_b{b} {}
 
-			using storage_t::multiple;
+			template <storage::type other_storage_type>
+			utils_gpu_available constexpr ab(ab<other_storage_type>& other) noexcept
+				requires(storage::constness_matching<self_t, ab<other_storage_type>>::compatible_constness) :
+				vertex_a{other.a()}, vertex_b{other.b()} {}
 
-			utils_gpu_available constexpr vertex_observer<true > a() const noexcept { return {(*this)[0], (*this)[1]}; }
-			utils_gpu_available constexpr vertex_observer<false> a()       noexcept { return {(*this)[0], (*this)[1]}; }
-			utils_gpu_available constexpr vertex_observer<true > b() const noexcept { return {(*this)[2], (*this)[3]}; }
-			utils_gpu_available constexpr vertex_observer<false> b()       noexcept { return {(*this)[2], (*this)[3]}; }
+			template <storage::type other_storage_type>
+			utils_gpu_available constexpr ab(const ab<other_storage_type>& other) noexcept
+				requires(storage_type.can_construct_from_const()) :
+				vertex_a{other.a()}, vertex_b{other.b()} {}
+
+			vertex_t vertex_a;
+			vertex_t vertex_b;
+
+			utils_gpu_available constexpr vertex_observer<true > a() const noexcept { return {vertex_a}; }
+			utils_gpu_available constexpr vertex_observer<false> a()       noexcept { return {vertex_a}; }
+			utils_gpu_available constexpr vertex_observer<true > b() const noexcept { return {vertex_b}; }
+			utils_gpu_available constexpr vertex_observer<false> b()       noexcept { return {vertex_b}; }
 
 			//utils_gpu_available constexpr vertex_observer<true > operator[](const size_t& index) const noexcept { return index == 0 ? a() : b(); }
 			//utils_gpu_available constexpr vertex_observer<false> operator[](const size_t& index)       noexcept { return index == 0 ? a() : b(); }
@@ -135,6 +145,8 @@ namespace utils::math::geometry::shape
 		template <storage::type storage_type> 
 		struct line : ab<storage_type>
 			{
+			using ab<storage_type>::ab;
+
 			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
 			utils_gpu_available constexpr float length () const noexcept { return utils::math::constants::finf; }
 
@@ -147,6 +159,8 @@ namespace utils::math::geometry::shape
 		template <storage::type storage_type> 
 		struct ray : ab<storage_type>
 			{
+			using ab<storage_type>::ab;
+
 			inline static constexpr geometry::ends static_ends{geometry::ends::create::open(true, false)};
 
 			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
@@ -165,6 +179,8 @@ namespace utils::math::geometry::shape
 		template <storage::type storage_type> 
 		struct segment : ab<storage_type>
 			{
+			using ab<storage_type>::ab;
+
 			utils_gpu_available constexpr float projected_percent(const concepts::point auto& other) const noexcept
 				{
 				return std::clamp(ab<storage_type>::projected_percent(other), 0.f, 1.f);
