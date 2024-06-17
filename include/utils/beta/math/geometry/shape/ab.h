@@ -19,16 +19,16 @@ namespace utils::math::geometry::shape
 			template <bool is_function_const>
 			using vertex_observer = std::conditional_t<is_function_const, utils::math::vecref2<const value_type>, utils::math::vecref2<const_aware_value_type>>;
 			using nonref_self_t = ab<storage::type::create::owner()>;
-				
+
+			//utils_gpu_available constexpr ab(const utils::math::concepts::vec_size<2> auto& a, const utils::math::concepts::vec_size<2> auto& b) noexcept
+			//	requires(storage_type.can_construct_from_const()) :
+			//	storage_t{a.x(), a.y(), b.x(), b.y()} {}
+			//
+			//utils_gpu_available constexpr ab(utils::math::concepts::vec_size<2> auto& a, utils::math::concepts::vec_size<2> auto& b) noexcept :
+			//	storage_t{a.x(), a.y(), b.x(), b.y()} {}
+
 			using storage_t::multiple;
 
-			utils_gpu_available constexpr ab(const utils::math::concepts::vec_size<2> auto& a, const utils::math::concepts::vec_size<2> auto& b) noexcept
-				requires(storage_type.can_construct_from_const()) :
-				storage_t{a.x(), a.y(), b.x(), b.y()} {}
-
-			utils_gpu_available constexpr ab(utils::math::concepts::vec_size<2> auto& a, utils::math::concepts::vec_size<2> auto& b) noexcept :
-				storage_t{a.x(), a.y(), b.x(), b.y()} {}
-				
 			utils_gpu_available constexpr vertex_observer<true > a() const noexcept { return {(*this)[0], (*this)[1]}; }
 			utils_gpu_available constexpr vertex_observer<false> a()       noexcept { return {(*this)[0], (*this)[1]}; }
 			utils_gpu_available constexpr vertex_observer<true > b() const noexcept { return {(*this)[2], (*this)[3]}; }
@@ -74,6 +74,12 @@ namespace utils::math::geometry::shape
 				return -ret;
 				}
 
+
+
+
+
+
+
 			template <bool clamp_a = false, bool clamp_b = false>
 			utils_gpu_available constexpr vec2f closest_point(const concepts::point auto& point) const noexcept
 				{
@@ -83,7 +89,35 @@ namespace utils::math::geometry::shape
 				if constexpr (clamp_b) { if (t > 1.f) { return b(); } }
 				return {a().x + t * delta.x, a().y + t * delta.y};
 				}
-				
+
+			template <bool clamp_a = false, bool clamp_b = false>
+			utils_gpu_available constexpr float minimum_distance(const concepts::point auto& point) const noexcept
+				{
+				if constexpr (clamp_a || clamp_b)
+					{
+					const float t{projected_percent(point)};
+					if constexpr (clamp_a) { if (t < 0.f) { return vec2f::distance(a(), point); } }
+					if constexpr (clamp_b) { if (t > 1.f) { return vec2f::distance(b(), point); } }
+					}
+				return std::abs(some_significant_name_ive_yet_to_figure_out(point) / a_to_b().get_length());
+				}
+
+			template <bool clamp_a = false, bool clamp_b = false>
+			utils_gpu_available constexpr signed_distance signed_distance(const concepts::point auto& point) const noexcept
+				{
+				if constexpr (clamp_a || clamp_b)
+					{
+					const float t{projected_percent(point)};
+					if constexpr (clamp_a) { if (t < 0.f) { return vec2f::distance(a(), point) * side(point); } }
+					if constexpr (clamp_b) { if (t > 1.f) { return vec2f::distance(b(), point) * side(point); } }
+					}
+				return some_significant_name_ive_yet_to_figure_out(point) / a_to_b().get_length();
+				}
+
+			utils_gpu_available constexpr side side(const concepts::point auto& point) const noexcept
+				{
+				return {some_significant_name_ive_yet_to_figure_out(point)};
+				}
 				
 			utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
 			utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }

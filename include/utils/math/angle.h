@@ -125,17 +125,30 @@ namespace utils::math::angle
 				return *this;
 				}
 
+			/// <summary> Clamps angle in range [0 - full_angle] </summary>
 			utils_gpu_available constexpr nonref_self_t clamp() const noexcept
 				{
 				if constexpr (full_angle == static_cast<nonref_value_type>(1.f)) { return {value - std::floor(value)}; }
 				else
 					{
-					nonref_value_type new_value{ std::fmod(value, full_angle) };
+					nonref_value_type new_value{std::fmod(value, full_angle)};
 					if (new_value < 0) { new_value += full_angle; }
-					return { new_value };
+					return {new_value};
 					}
 				}
+			/// <summary> Clamps angle in range [0 to full_angle] </summary>
 			utils_gpu_available constexpr self_t& clamp_self() noexcept { value = clamp().value; return *this; }
+
+			/// <summary> Clamps angle in range [-half_angle to half_angle] </summary>
+			utils_gpu_available constexpr nonref_self_t clamp_halves() const noexcept
+				{
+				nonref_value_type new_value{value};
+				while (new_value < -half_angle) { new_value += full_angle; }
+				while (new_value >  half_angle) { new_value -= full_angle; }
+				return {new_value};
+				}
+			/// <summary> Clamps angle in range [-half_angle to half_angle] </summary>
+			utils_gpu_available constexpr self_t& clamp_halves_self() noexcept { value = clamp_halves().value; return *this; }
 
 			// Shouldn't be needed because...
 			//template <value_type other_full_angle> base  operator+ (const base<other_full_angle> oth) const noexcept { return {value + static_cast<base<full_angle>>(oth).value}; }
@@ -210,6 +223,18 @@ namespace utils::math::angle
 
 				nonref_value_type min_to_opposite{ next_opposite - converted_min.value };
 				return min_to_this < min_to_opposite ? min_to_this / min_to_max : (min_to_this - full_angle) / min_to_max;
+				}
+
+			utils_gpu_available constexpr bool within(const concepts::compatible_angle<self_t> auto& a, const concepts::compatible_angle<self_t> auto& b) const noexcept
+				{
+				const auto cast_a{static_cast<nonref_self_t>(a).clamp()};
+				      auto cast_b{static_cast<nonref_self_t>(b).clamp()};
+				nonref_self_t check{*this};
+				
+				while (cast_b.value < cast_a.value) { cast_b += full_angle; }
+				while (check .value < cast_a.value) { check  += full_angle; }
+				
+				return check.value > cast_a.value && check.value < cast_b.value;
 				}
 
 	#pragma region Trigonometry

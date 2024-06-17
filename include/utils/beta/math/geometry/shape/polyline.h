@@ -19,74 +19,85 @@ namespace utils::math::geometry::shape
 			inline static constexpr ends   ends  {ENDS  };
 			inline static constexpr size_t extent{EXTENT};
 
-			using utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>::multiple;
+			using storage_t = utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>;
+			using storage_t::multiple;
+			using typename storage_t::value_type;
+			using typename storage_t::const_aware_value_type;
 
 			using self_t = polyline<storage_type, ends, extent>;
 			using nonref_self_t = polyline<storage::type::create::owner(), ends, extent>;
 
 			template <bool is_function_const>
-			using edge_t = utils::math::geometry::shape::generic::segment
+			using edge = utils::math::geometry::shape::generic::segment
 				<
 				(is_function_const || storage_type.is_const()) ? storage::type::create::const_observer() : storage::type::create::observer()
 				>;
+			template <bool is_function_const>
+			using edge_vertex = std::conditional_t
+				<
+				(is_function_const || storage_type.is_const()),
+				const value_type, 
+				const_aware_value_type
+				>;
+
+			template <bool is_function_const>
+			struct edges_view : std::ranges::view_interface<edges_view<is_function_const>>
+				{
+				using edge_t = edge<is_function_const>;
+				using vert_t = edge_vertex<is_function_const>;
+
+				using span_t = std::span<vert_t, extent>;
+				
+				class iterator
+					{
+					public:
+						using iterator_category = std::contiguous_iterator_tag;
+						using difference_type   = std::ptrdiff_t;
+						using value_type        = edge_t;
+						using pointer           = value_type*;
+						using reference         = value_type&;
+				
+						utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span}, index{index} {}
+				
+						utils_gpu_available constexpr edge_t operator*() const noexcept { return edge_t{span[index], span[index_next()]}; }
+				
+						utils_gpu_available constexpr iterator& operator++() noexcept { index++; return *this; }
+						utils_gpu_available           iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
+				
+						utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
+						utils_gpu_available friend constexpr auto operator<=>(const iterator& a, const iterator& b) noexcept { return a.index <=> b.index; }
+				
+					private:
+						span_t span;
+						size_t index{0};
+						utils_gpu_available size_t index_next() const noexcept
+							{
+							if constexpr (ends.is_closed())
+								{
+								return (index + 1) % span.size();
+								}
+							else
+								{
+								return index + 1;
+								}
+							}
+					};
+				
+				template <typename ...Args>
+				utils_gpu_available constexpr edges_view(Args&&... args) : span{std::forward<Args>(args)...} {}
+				
+				span_t span;
+				
+				utils_gpu_available constexpr auto begin() const noexcept { return iterator{span, 0}; }
+				utils_gpu_available constexpr auto end  () const noexcept
+					{
+					if constexpr (ends.is_closed()) { return iterator{span, span.size()}; }
+					else { return iterator{span, span.size() - 1}; }
+					}
+				};
 			
-			//template <typename edge_T>
-			//class edges_view : public std::ranges::view_interface<edge_T>
-			//	{
-			//	public:
-			//		using edge_t = edge_T;
-			//		using vert_t = edge_t::vertex_observer<false>;
-			//		using span_t = std::span<vert_t>;
-			//
-			//		class iterator
-			//			{
-			//			public:
-			//				using iterator_category = std::contiguous_iterator_tag;
-			//				using difference_type   = std::ptrdiff_t;
-			//				using value_type        = edge_t;
-			//				using pointer           = value_type*;
-			//				using reference         = value_type&;
-			//
-			//				utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span}, index{index} {}
-			//
-			//				utils_gpu_available constexpr value_type operator*() const noexcept { return edge_t{span[index], span[index_next()]}; }
-			//
-			//				utils_gpu_available constexpr iterator& operator++() noexcept { index++; return *this; }
-			//				utils_gpu_available           iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
-			//
-			//				utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
-			//				utils_gpu_available friend constexpr auto operator<=>(const iterator& a, const iterator& b) noexcept { return a.index <=> b.index; }
-			//
-			//			private:
-			//				span_t span;
-			//				size_t index{0};
-			//				utils_gpu_available size_t index_next() const noexcept
-			//					{
-			//					if constexpr (ends.is_closed())
-			//						{
-			//						return (index + 1) % span.size();
-			//						}
-			//					else
-			//						{
-			//						return index + 1;
-			//						}
-			//					}
-			//			};
-			//
-			//		utils_gpu_available constexpr edges_view(span_t span) : span{span} {}
-			//
-			//		span_t span;
-			//
-			//		utils_gpu_available constexpr auto begin() const noexcept { return iterator{span, 0}; }
-			//		utils_gpu_available constexpr auto end  () const noexcept
-			//			{
-			//			if constexpr (ends.is_closed()) { return iterator{span, span.size()}; }
-			//			else { return iterator{span, span.size() - 1}; }
-			//			 }
-			//	};
-			//
-			//utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<edge_t<true >>{storage_t::storage}; }
-			//utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<edge_t<false>>{storage_t::storage}; }
+			utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<true >{storage_t::storage.begin(), storage_t::storage.size()}; }
+			utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<false>{storage_t::storage.begin(), storage_t::storage.size()}; }
 			
 			utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
 			utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
@@ -102,6 +113,7 @@ namespace utils::math::geometry::shape
 				{
 				return shape::aabb::create::from_vertices(*this);
 				}
+
 			};
 
 		template <storage::type storage_type, size_t extent = std::dynamic_extent>

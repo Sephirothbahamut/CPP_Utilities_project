@@ -52,15 +52,15 @@ namespace utils::math
 	namespace concepts
 		{
 		template <typename T>
-		concept vec = std::derived_from<T, utils::math::vec<typename T::template_type, T::extent>>;
+		concept vec = std::derived_from<std::remove_cvref_t<T>, utils::math::vec<typename std::remove_cvref_t<T>::template_type, std::remove_cvref_t<T>::extent>>;
 
 		template <typename T, size_t size>
-		concept vec_size = vec<T> && T::extent == size;
+		concept vec_size = vec<T> && std::remove_cvref_t<T>::extent == size;
 
 		template <typename T, typename value_type>
-		concept vec_type = vec<T> && std::same_as<typename T::value_type, value_type>;
+		concept vec_type = vec<T> && std::same_as<typename std::remove_cvref_t<T>::value_type, value_type>;
 		template <typename T, typename value_type>
-		concept vec_compatible_type = vec<T> && std::convertible_to<typename T::value_type, value_type>;
+		concept vec_compatible_type = vec<T> && std::convertible_to<typename std::remove_cvref_t<T>::value_type, value_type>;
 		}
 
 	namespace details

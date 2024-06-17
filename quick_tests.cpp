@@ -90,6 +90,29 @@ int main()
 	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
 	rect.size().scale({.horizontal_alignment{utils::alignment::horizontal::left   }, .vertical_alignment{utils::alignment::vertical::middle}}, {5.f, 2.f});
 	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
+
+	std::cout << std::endl;
+
+	utils::math::vec2f va{0.f, 30.f}; 
+	utils::math::vec2f vb{1.f, 20.f};
+	static_assert(utils::math::concepts::vec_size<decltype(va), 2>);
+	utils::math::geometry::shape::segment sobs{1.f, 2.f, 3.f, 4.f};
+
+	//for (const auto& edge : polyline.get_edges())
+	//	{
+	//	std::cout << edge.a() << " - " << edge.b() << std::endl;
+	//	}
+	std::cout << std::endl;
+
+	using namespace utils::math::angle::literals;
+
+	const auto a{-90_deg};
+	const auto b{ 90_deg};
+	const auto c{350_deg};
+	const auto d{ 10_deg};
+
+	std::cout << c.within(a, b) << d.within(a, b) << a.within(b, c) << b.within(a, c) << b.within(d, a) << std::endl;
+	
 //	using namespace utils::output;
 //	using namespace utils::math::angle::literals;
 //	
