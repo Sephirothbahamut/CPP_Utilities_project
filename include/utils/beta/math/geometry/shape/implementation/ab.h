@@ -9,7 +9,7 @@ namespace utils::math::geometry::shape::generic
 	template <storage::type storage_type>
 	utils_gpu_available constexpr shape::aabb ab<storage_type>::bounding_box() const noexcept
 		{
-		return shape::aabb::create::from_vertices(a(), b());
+		return shape::aabb::create::from_vertices(a, b);
 		}
 	}
 

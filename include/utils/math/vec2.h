@@ -3,6 +3,7 @@
 #include "vec.h"
 #include "angle.h"
 #include "../oop/conditional_inheritance.h"
+#include "../beta/math/geometry/details/base_types.h"
 
 namespace utils::math
 	{
@@ -105,6 +106,35 @@ namespace utils::math
 				utils_gpu_available constexpr nonref_self_t perpendicular_clockwise       () const noexcept { return perpendicular_right(); }
 				utils_gpu_available constexpr nonref_self_t perpendicular_counterclockwise() const noexcept { return perpendicular_left (); }
 				
+
+
+
+				
+				#pragma region SDF_related
+				utils_gpu_available constexpr nonref_self_t closest_point(const vec2f&) const noexcept
+					requires(std::same_as<typename self_t::value_type, float>)
+					{ return self(); }
+				
+				utils_gpu_available constexpr float minimum_distance(const vec2f& point) const noexcept
+				requires(std::same_as<typename self_t::value_type, float>)
+					{
+					return nonref_self_t::distance(self(), point);
+					}
+				
+				utils_gpu_available constexpr utils::math::geometry::signed_distance signed_distance(const vec2f& point) const noexcept
+					requires(std::same_as<typename self_t::value_type, float>)
+					{
+					return {minimum_distance(point)};
+					}
+				
+				utils_gpu_available constexpr utils::math::geometry::side side(const vec2f& point) const noexcept
+					requires(std::same_as<typename self_t::value_type, float>)
+					{
+					return ((*this) == point) ? utils::math::geometry::side::create::coincident() : utils::math::geometry::side::create::outside();
+					}
+				#pragma endregion SDF_related
+
+
 				utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept requires(std::same_as<typename self_t::value_type, float>) { nonref_self_t ret{self()}; return ret.scale_self    (scaling    ); }
 				utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept requires(std::same_as<typename self_t::value_type, float>) { nonref_self_t ret{self()}; return ret.rotate_self   (rotation   ); }
 				utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept requires(std::same_as<typename self_t::value_type, float>) { nonref_self_t ret{self()}; return ret.translate_self(translation); }

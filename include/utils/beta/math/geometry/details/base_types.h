@@ -5,29 +5,12 @@
 #include "../../../../memory.h"
 #include "../../../../storage.h"
 #include "../../../../math/math.h"
-#include "../../../../math/vec2.h"
-#include "../../../../math/transform2.h"
 #include "../../../../compilation/gpu.h"
 #include "../../../../math/constants.h"
 #include "../../../../oop/disable_move_copy.h"
 
-namespace utils::math
-	{
-	template <typename T, size_t size>
-	struct vec;
-	using vec2f = vec<float, 2>;
-	template <typename T>
-	struct rect;
-	}
-
-namespace utils::math::geometry::shape
-	{
-	using aabb = utils::math::rect<float>;
-	}
-
 namespace utils::math::geometry
 	{
-
 	struct ends
 		{
 		struct create : ::utils::oop::non_constructible
@@ -158,7 +141,7 @@ namespace utils::math::geometry
 			}
 		};
 	
-	using closest_point_with_distance = closest_with_distance<vec2f>;
+	//using closest_point_with_distance = closest_with_distance<vec2f>;
 
 	template <typename T>
 	struct closest_pair_with_distance 
@@ -169,5 +152,5 @@ namespace utils::math::geometry
 		utils_gpu_available constexpr closest_pair_with_distance operator-() const noexcept { return {closest_in_target, closest_in_source, -distance}; }
 		};
 
-	using closest_points_with_distance = closest_pair_with_distance<vec2f>;
+	//using closest_points_with_distance = closest_pair_with_distance<vec2f>;
 	}

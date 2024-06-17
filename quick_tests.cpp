@@ -103,10 +103,12 @@ int main()
 	utils::math::geometry::shape::observer::segment osobsw{seg};
 	utils::math::geometry::shape::const_observer::segment osobsczw{seg};
 
-	//for (const auto& edge : polyline.get_edges())
-	//	{
-	//	std::cout << edge.a() << " - " << edge.b() << std::endl;
-	//	}
+	osobsczw.forward().angle();
+
+	for (const auto& edge : polyline.get_edges())
+		{
+		std::cout << edge.a << " - " << edge.b << std::endl;
+		}
 	std::cout << std::endl;
 
 	using namespace utils::math::angle::literals;
