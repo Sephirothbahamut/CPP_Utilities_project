@@ -190,13 +190,13 @@ namespace utils::details::vector
 namespace utils::math
 	{
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto abs(const T& v) noexcept { v.for_each_to_new<[](const auto& value) { return utils::math::abs(value)(); }>(); }
+	utils_gpu_available auto abs(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::abs(value); }>(); }
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto floor(const T& v) noexcept { v.for_each_to_new<[](const auto& value) { return utils::math::floor(value)(); }>(); }
+	utils_gpu_available auto floor(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::floor(value); }>(); }
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto ceil(const T& v) noexcept { v.for_each_to_new<[](const auto& value) { return utils::math::ceil(value)(); }>(); }
+	utils_gpu_available auto ceil(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::ceil(value); }>(); }
 
 	template <::utils::details::vector::concepts::vector T>
 	utils_gpu_available auto pow(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)

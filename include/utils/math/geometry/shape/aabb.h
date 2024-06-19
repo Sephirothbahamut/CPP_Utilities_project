@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../details/base_types.h"
-#include "../../../../math/rect.h"
+#include "../../rect.h"
 
 namespace utils::math::geometry::shape
 	{

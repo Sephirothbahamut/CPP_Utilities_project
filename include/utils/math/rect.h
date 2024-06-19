@@ -6,7 +6,7 @@
 #include "../storage.h"
 #include "../alignment.h"
 #include "../compilation/gpu.h"
-#include "../beta/math/geometry/details/base_types.h"
+#include "../math/geometry/details/base_types.h"
 
 namespace utils::math
 	{
@@ -14,7 +14,7 @@ namespace utils::math
 	concept vec_range = std::ranges::range<T> && utils::math::concepts::vec_size<typename T::value_type, 2> && utils::math::concepts::vec_compatible_type<typename T::value_type, float>;
 
 	template <typename T = float>
-	struct utils_oop_empty_bases rect : utils::storage::multiple<T, 4, false>
+	struct utils_oop_empty_bases rect : utils::storage::multiple<T, 4, false>, utils::math::geometry::shape_flag
 		{
 		using storage_t = utils::storage::multiple<T, 4, false>;
 
@@ -22,9 +22,9 @@ namespace utils::math
 		using typename storage_t::value_type;
 		using typename storage_t::const_aware_value_type;
 		using storage_t::storage_type;
-		using vertex_owner = utils::math::vec2<value_type>;
+		using vertex_owner    = utils::math::vec2<value_type>;
 		using vertex_observer = utils::math::vecref2<const_aware_value_type>;
-		using nonref_self_t = rect<std::remove_const_t<value_type>>;
+		using nonref_self_t   = rect<std::remove_const_t<value_type>>;
 
 		using storage_t::multiple;
 
@@ -431,7 +431,7 @@ namespace utils::math
 		value_type   centre_y()        const noexcept { return up() + (h() / value_type{2}); }
 		vertex_owner centre  ()        const noexcept { return {centre_x(), centre_y()}; }
 		//void set_center_x(T value) noexcept { auto half_w{get_w() / value_type{2}}; remove_reference_v(ll) = value - half_w; remove_reference_v(rr) = value + half_w; }
-		//void set_center_y(T value){ auto half_h{get_h() / value_type{2}}; remove_reference_v(up) = value - half_h; remove_reference_v(dw) = value + half_h; }
+		//void set_center_y(T value){ auto half_h{get_h() / value_type{2}}; remove_reference_v(up) = value - half_h; remove_reference_v(dw()) = value + half_h; }
 		//void set_center(vec2<value_type> value) noexcept { set_center_x(value.x); set_center_y(value.y); }
 #pragma endregion Accessors
 
@@ -467,46 +467,7 @@ namespace utils::math
 		utils_gpu_available constexpr auto position()       noexcept { return p(); }
 #pragma endregion Aliases
 
-		template <std::convertible_to<value_type> point_value_type>
-		utils_gpu_available constexpr bool contains(const vec2<point_value_type>& point) const noexcept { return point.x() >= ll() && point.x() <= rr() && point.y() >= up() && point.y() <= dw(); }
-		
-		#pragma region SDF_related
-		utils_gpu_available constexpr nonref_self_t closest_point(const vec2f&) const noexcept
-			requires(std::same_as<typename self_t::value_type, float>)
-			{
-			return self(); 
-			}
-				
-		utils_gpu_available constexpr float minimum_distance(const vec2f& point) const noexcept
-		requires(std::same_as<typename self_t::value_type, float>)
-			{
-			return nonref_self_t::distance(self(), point);
-			}
-				
-		utils_gpu_available constexpr utils::math::geometry::signed_distance signed_distance(const vec2f& point) const noexcept
-			requires(std::same_as<typename self_t::value_type, float>)
-			{
-			return {minimum_distance(point)};
-			}
-				
-		utils_gpu_available constexpr utils::math::geometry::side side(const vec2f& point) const noexcept
-			requires(std::same_as<typename self_t::value_type, float>)
-			{
-			return ((*this) == point) ? utils::math::geometry::side::create::coincident() : utils::math::geometry::side::create::outside();
-			}
-		#pragma endregion SDF_related
-
-		utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
-		utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
-		utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
-		utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
-
-		utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { size() *= scaling; return *this; }
-		utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>&            ) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { return *this; }
-		utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { pos() += translation; return *this; }
-		utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!storage_type.is_const() && std::same_as<value_type, float>) { return scale_self(transform.scaling).rotate_self(transform.rotation).translate_self(transform.translation); }
-
-		utils_gpu_available constexpr nonref_self_t bounding_box() const noexcept { return *this; }
+		utils_gpu_available constexpr bool contains(const concepts::vec_size<2> auto& point) const noexcept { return point.x() >= ll() && point.x() <= rr() && point.y() >= up() && point.y() <= dw(); }
 		};
 	}
 

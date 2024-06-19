@@ -44,14 +44,12 @@
 //#include "include/utils/beta/math/geometry/all.h"
 //#include "include/utils/beta/math/geometry/group.h"
 //#include "include/utils/math/transform2.h"
-#include "include/utils/beta/math/geometry/shape/point.h"
-#include "include/utils/beta/math/geometry/shape/aabb.h"
-#include "include/utils/beta/math/geometry/shape/ab.h"
-#include "include/utils/beta/math/geometry/shape/polyline.h"
+#include "include/utils/math/geometry/shape/point.h"
+#include "include/utils/math/geometry/shape/aabb.h"
+#include "include/utils/math/geometry/shape/ab.h"
+#include "include/utils/math/geometry/shape/polyline.h"
 
-#include "include/utils/beta/math/geometry/shape/implementation/point.h"
-#include "include/utils/beta/math/geometry/shape/implementation/aabb.h"
-#include "include/utils/beta/math/geometry/shape/implementation/ab.h"
+#include "include/utils/math/geometry/interactions.h"
 
 #include "include/utils/output/vec.h"
 
@@ -81,44 +79,7 @@ int main()
 	{
 	using namespace utils::output;
 
-	utils::math::geometry::shape::polygon<3> polyline{utils::math::vec2f{1.f, -2.f}, utils::math::vec2f{-10.f, 10.f}, utils::math::vec2f{10.f, -10.f}};
-	utils::math::geometry::shape::observer::polygon<std::dynamic_extent> polyline_obs{polyline};
-
-	auto rect{polyline_obs.bounding_box()};
-	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
-	rect.size().resize({.horizontal_alignment{utils::alignment::horizontal::centre}, .vertical_alignment{utils::alignment::vertical::bottom}}, {5.f, 2.f});
-	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
-	rect.size().scale({.horizontal_alignment{utils::alignment::horizontal::left   }, .vertical_alignment{utils::alignment::vertical::middle}}, {5.f, 2.f});
-	std::cout << rect.ul() << "/" << rect.dr() << std::endl;
-
-	std::cout << std::endl;
-
-	utils::math::vec2f va{0.f, 30.f};
-	utils::math::vec2f vb{1.f, 20.f};
-	const utils::math::vec2f vc{1.f, 20.f};
-	static_assert(utils::math::concepts::vec_size<decltype(va), 2>);
-	utils::math::geometry::shape::segment seg{va, vb};
-	utils::math::geometry::shape::observer::segment osobs{va, vb};
-	utils::math::geometry::shape::const_observer::segment osobsc{va, vb};
-	utils::math::geometry::shape::observer::segment osobsw{seg};
-	utils::math::geometry::shape::const_observer::segment osobsczw{seg};
-
-	osobsczw.forward().angle();
-
-	for (const auto& edge : polyline.get_edges())
-		{
-		std::cout << edge.a << " - " << edge.b << std::endl;
-		}
-	std::cout << std::endl;
-
-	using namespace utils::math::angle::literals;
-
-	const auto a{-90_deg};
-	const auto b{ 90_deg};
-	const auto c{350_deg};
-	const auto d{ 10_deg};
-
-	std::cout << c.within(a, b) << d.within(a, b) << a.within(b, c) << b.within(a, c) << b.within(d, a) << std::endl;
+	utils::math::geometry::shape::polygon<std::dynamic_extent> polyline{utils::math::vec2f{1.f, 2.f}, utils::math::vec2f{3.f, 4.f}, utils::math::vec2f{2.f, 5.f}};
 	
 //	using namespace utils::output;
 //	using namespace utils::math::angle::literals;
@@ -223,147 +184,6 @@ int main()
 //	
 //	utils::console::initializer console_initializer;
 //	
-//	utils::math::geometry::shape::point point{0.f, 1.f};
-//	const auto result{point + 1.f};
-//	const auto& result2{point += point};
-//	const auto& result3{point += 3.f};
-//	utils::math::transform2 transform{.translation{10.f, 2.f}, .rotation{12_rad}};
-//	
-//	const auto ret{point.transform(transform)};
-//	
-//	
-	utils::math::geometry::shape::point pa{3.f, 1.f};
-	const utils::math::geometry::shape::point pb{1.f, 3.f};
-	utils::math::geometry::shape::point pc{5.f, 2.f};
-	utils::math::geometry::shape::point pd{pa};
-	utils::math::geometry::shape::point pe{pb};
-	utils::math::geometry::shape::point pf{pa.x(), pa.y()};
-	utils::math::geometry::shape::point pg{pb.x(), pa.y()};
-	using namespace utils::output;
-	std::cout << pg;
-//	
-//	//const auto aabb{utils::math::geometry::shape::aabb::create::from_vertices(pa, pb)};
-//	float fa, fb;
-//	utils::math::geometry::shape::observer::point po(point);
-//	utils::math::geometry::shape::const_observer::point pco{point};
-//	utils::math::geometry::shape::point pco_to_p{pco};
-//	
-//	std::cout << std::endl;
-
-	//utils::math::geometry::shape::circle circle{utils::math::vec2f{0.f, 0.f}, 5.f};
-	//utils::math::geometry::shape::point point{0.f, 1.f};
-	//utils::math::geometry::shape::segment segment{point, point};
-	//
-	//using variant_t = std::variant
-	//	<
-	//	utils::math::geometry::shape::point,
-	//	utils::math::geometry::shape::circle,
-	//	utils::math::geometry::shape::segment
-	//	>;
-	//std::vector<variant_t> shapes;
-	//shapes.emplace_back(utils::math::geometry::shape::point {0.f, 0.1f});
-	//shapes.emplace_back(utils::math::geometry::shape::circle{{0.f, 0.f}, 5.f});
-	//shapes.emplace_back(utils::math::geometry::shape::segment{{.5f, -1.f}, {.5f, 1.f}});
-	//
-	//for (const auto& shape_a : shapes)
-	//	{
-	//	for (const auto& shape_b : shapes)
-	//		{
-	//		bool collides{false};
-	//
-	//		std::visit([&](const auto& shape_a)
-	//			{
-	//			std::visit([&](const auto& shape_b)
-	//				{
-	//				using a_shape_t = std::remove_reference<decltype(shape_a)>::type;
-	//				using b_shape_t = std::remove_reference<decltype(shape_b)>::type;
-	//				
-	//				//shape_a.contains             (shape_b);
-	//				//shape_a.distance             (shape_b);
-	//				//shape_a.side_of              (shape_b);
-	//				//shape_a.closest_pair         (shape_b);
-	//				//shape_a.closest_point_to     (shape_b);
-	//				//shape_a.closest_with_distance(shape_b);
-	//				//
-	//				//shape_a.intersects           (shape_b);
-	//				//shape_a.intersection_with    (shape_b);
-	//				//shape_a.collides_with        (shape_b);
-	//				}, shape_b);
-	//			}, shape_a);
-	//		}
-	//	}
-	//
-	//for (const auto& shape : shapes)
-	//	{
-	//	std::visit([&](const auto& shape)
-	//		{
-	//		std::cout << point.distance_signed(shape).value << std::endl;
-	//		}, shape);
-	//	}
-
-	//std::cout << "utils::math::rect<float>: " << sizeof(utils::math::rect<float>) << std::endl;
-	//std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
-	//std::cout << "utils::math::vec2f:       " << sizeof(utils::math::vec2f) << std::endl;
-	//std::cout << "expected:                 " << (sizeof(float) * 2) << std::endl;
-	//std::cout << "circle:                   " << sizeof(utils::math::geometry::shape::circle) << std::endl;
-	//std::cout << "expected:                 " << (sizeof(float) * 3) << std::endl;
-	//std::cout << "segment:                  " << sizeof(utils::math::geometry::shape::segment) << std::endl;
-	//std::cout << "expected:                 " << (sizeof(float) * 4) << std::endl;
-	//std::cout << "bezier:                   " << sizeof(utils::math::geometry::shape::bezier<4>) << std::endl;
-	//std::cout << "expected:                 " << (sizeof(float) * 8) << std::endl;
-	//
-	//const utils::math::geometry::shape::point testpt{10.f, 0.f};
-	//const utils::math::geometry::shape::segment testsg{{15.f, 0.f}, {20.f, 0.f}};
-	//const utils::math::geometry::shape::polygon testpoly{{15.f, -5.f}, {20.f, 0.f}, {15.f, 5.f}};
-	//const utils::math::geometry::shape::view::polygon<true> testpolyview{std::span(testpoly.vertices.begin(), testpoly.vertices.size())};
-	//const utils::math::geometry::shape::bezier<4> testcurve{utils::math::vec2f{10.f, 10.f}, utils::math::vec2f{200.f, 10.f}, utils::math::vec2f{300.f, 100.f}, utils::math::vec2f{50.f, 150.f}};
-	//
-	//utils::math::geometry::shape::mixed testglyph;
-	//testglyph.add_first_vertex({ 32.f,  32.f});
-	//testglyph.add_segment     ({128.f,  32.f});
-	//testglyph.add_segment     ({256.f, 128.f});
-	//testglyph.add_segment     ({128.f, 224.f});
-	//testglyph.add_segment     ({ 32.f, 224.f});
-	//
-	//utils::math::geometry::group<false> group;
-	//group.add(testglyph);
-	//group.add(testsg);
-	//
-	//group.for_each([](const auto& shape)
-	//	{
-	//	if constexpr (utils::math::geometry::shape::concepts::segment<std::remove_cvref_t<decltype(shape)>>)
-	//		{
-	//		std::cout << "segment\n\t" << shape.a << ", " << shape.b << std::endl;
-	//		}
-	//	else if constexpr (utils::math::geometry::shape::concepts::mixed<std::remove_cvref_t<decltype(shape)>>)
-	//		{
-	//		std::cout << "mixed\n\tvertices count: " << shape.vertices.size() << std::endl;
-	//		}
-	//	});
-	//
-	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testpt)>);
-	//static_assert(utils::math::geometry::shape::concepts::point<decltype(testpt)>);
-	//
-	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testsg)>);
-	//static_assert(utils::math::geometry::shape::concepts::ab<decltype(testsg)>);
-	//static_assert(utils::math::geometry::shape::concepts::segment<decltype(testsg)>);
-	//
-	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testpoly)>);
-	//static_assert(utils::math::geometry::shape::concepts::any<decltype(testpolyview)>);
-	//
-	//static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpoly)>);
-	//static_assert(utils::math::geometry::shape::concepts::polyline<decltype(testpolyview)>);
-	//
-	//static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpoly)>);
-	//static_assert(utils::math::geometry::shape::concepts::polygon<decltype(testpolyview)>);
-	//
-	//static_assert(utils::math::geometry::shape::concepts::bezier<decltype(testcurve)>);
-	//
-	//std::cout << testpt.distance_signed(testpoly    ).value << std::endl;
-	//std::cout << testpt.distance_signed(testpolyview).value << std::endl;
-	//std::cout << testpt.distance_signed(testcurve   ).value << std::endl;
-	//
-	//
 	//std::cout << utils::console::colour::restore_defaults << std::endl;
 	//for (size_t i = 0; i < 256; i++)
 	//	{

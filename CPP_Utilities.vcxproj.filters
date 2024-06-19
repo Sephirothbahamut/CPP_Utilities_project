@@ -56,18 +56,6 @@
     <Filter Include="Utils\details\vec">
       <UniqueIdentifier>{052b3c9f-7f3c-4702-8e79-2ae015d1a897}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\common">
-      <UniqueIdentifier>{fa51f762-d413-4a27-953d-b981bf5ae568}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\math\geometry\shapes">
-      <UniqueIdentifier>{415f7683-8f4a-4823-ad91-3744c569844c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\math\geometry\interactions">
-      <UniqueIdentifier>{c45e4545-15f3-4e79-a2c7-076ac0e8e9bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\math\geometry\voronoi">
-      <UniqueIdentifier>{82807980-9518-4b95-bad1-ca61d34ad983}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils\logging">
       <UniqueIdentifier>{0d52f7aa-5da0-4fa6-b725-8620c21c5253}</UniqueIdentifier>
     </Filter>
@@ -77,26 +65,26 @@
     <Filter Include="Utils\input_system\device">
       <UniqueIdentifier>{56436e34-99b1-4792-a336-6dd2071c2473}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math">
-      <UniqueIdentifier>{c79bb76f-2ee9-4033-9511-b7f8cda2b0a4}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\shape">
+      <UniqueIdentifier>{aa61dbc7-b0f0-45f5-b898-f58915ce2492}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math\geometry">
-      <UniqueIdentifier>{61a82b1a-2df9-427f-b481-8ceab67a6374}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\details">
+      <UniqueIdentifier>{0c6f0692-602d-425d-808b-05efb44c047a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math\geometry\details">
-      <UniqueIdentifier>{7d89a83c-0814-47c5-8be3-e8a9d9df42ef}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\interactions">
+      <UniqueIdentifier>{11d5e183-78f0-4af1-8d51-808ec9e86ab3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math\geometry\interactions">
-      <UniqueIdentifier>{e20f1537-33cb-47db-9c35-9240088fd0a3}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\interactions\aabb">
+      <UniqueIdentifier>{85b61ada-b045-4243-96a3-7b916bc617ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math\geometry\interactions\point">
-      <UniqueIdentifier>{1a38e1a3-c307-4fde-a13b-81b71e6916f6}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\interactions\point">
+      <UniqueIdentifier>{c3ccdcfa-0720-4d32-aa03-db249cc88ddd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math\geometry\shape">
-      <UniqueIdentifier>{84143c58-685c-4137-8648-6cb350209cbd}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\interactions\ab">
+      <UniqueIdentifier>{b22028a0-5384-484c-89b6-00b4543063fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Beta\math\geometry\shape\implementation">
-      <UniqueIdentifier>{078b1d7b-235b-4a3e-8452-6386bd1db9d7}</UniqueIdentifier>
+    <Filter Include="Utils\math\geometry\interactions\polyline">
+      <UniqueIdentifier>{e06e335a-b54a-4576-8c98-414136cf5166}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -337,77 +325,8 @@
     <ClInclude Include="include\utils\math\mat.h">
       <Filter>Utils\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\common\begin.h">
-      <Filter>Utils\math\geometry\common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes_discrete.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes_continuous.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\capsule.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\circle.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\continuous_point.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\point.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\polygon.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\segment.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\aabb.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\capsule.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\circle.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\continuous_point.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\point.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\polygon.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\segment.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\aabb.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\common\root.h">
-      <Filter>Utils\math\geometry\common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes\edge_ref.h">
-      <Filter>Utils\math\geometry\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\voronoi\voronoi.h">
-      <Filter>Utils\math\geometry\voronoi</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\third_party\jc_voronoi.h">
       <Filter>Utils\third_party</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\bezier.h">
-      <Filter>Utils\math\geometry</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\beta\containers\resource_manager.h">
       <Filter>Beta\containers</Filter>
@@ -448,101 +367,14 @@
     <ClInclude Include="include\utils\hash.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\all.h">
-      <Filter>Beta\math\geometry</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\oop\crtp.h">
       <Filter>Utils\oop</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\math\ranged.h">
       <Filter>Utils\math</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\details\base_types.h">
-      <Filter>Beta\math\geometry\details</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\oop\conditional_inheritance.h">
       <Filter>Utils\oop</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\bezier.h">
-      <Filter>Beta\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\base_interactions.h">
-      <Filter>Beta\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\common.h">
-      <Filter>Beta\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\simple.h">
-      <Filter>Beta\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\all.h">
-      <Filter>Beta\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\polyline.h">
-      <Filter>Beta\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\interactions\point\all.h">
-      <Filter>Beta\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\group.h">
-      <Filter>Beta\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\aabb.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\ab.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\all.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\bezier.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\capsule.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\circle.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\mixed.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\path.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\point.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\polyline.h">
-      <Filter>Beta\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\ab.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\all.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\bezier.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\capsule.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\circle.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\mixed.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\path.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\point.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\math\geometry\shape\implementation\aabb.h">
-      <Filter>Beta\math\geometry\shape\implementation</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\details\vec\definitions.h">
       <Filter>Utils\details\vec</Filter>
@@ -558,6 +390,90 @@
     </ClInclude>
     <ClInclude Include="include\utils\alignment.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shape\polyline.h">
+      <Filter>Utils\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shape\aabb.h">
+      <Filter>Utils\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shape\ab.h">
+      <Filter>Utils\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shape\point.h">
+      <Filter>Utils\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\details\base_types.h">
+      <Filter>Utils\math\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\base_types.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\point.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\aabb.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\ab.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\all.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\point\point.h">
+      <Filter>Utils\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\point\transform.h">
+      <Filter>Utils\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\point\base.h">
+      <Filter>Utils\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\aabb\all.h">
+      <Filter>Utils\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\aabb\base.h">
+      <Filter>Utils\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\aabb\point.h">
+      <Filter>Utils\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\aabb\transform.h">
+      <Filter>Utils\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\ab\base.h">
+      <Filter>Utils\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\ab\point.h">
+      <Filter>Utils\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\ab\transform.h">
+      <Filter>Utils\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\ab\all.h">
+      <Filter>Utils\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\point\all.h">
+      <Filter>Utils\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\polyline.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\polyline\base.h">
+      <Filter>Utils\math\geometry\interactions\polyline</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\polyline\point.h">
+      <Filter>Utils\math\geometry\interactions\polyline</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\polyline\transform.h">
+      <Filter>Utils\math\geometry\interactions\polyline</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\polyline\all.h">
+      <Filter>Utils\math\geometry\interactions\polyline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

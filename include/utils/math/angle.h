@@ -67,7 +67,7 @@ namespace utils::math::angle
 	namespace concepts
 		{
 		template <typename T>
-		concept angle = std::same_as<std::remove_cvref_t<T>, utils::math::angle::base<typename T::value_type, T::full_angle>>;
+		concept angle = std::same_as<std::remove_cvref_t<T>, utils::math::angle::base<typename std::remove_cvref_t<T>::value_type, std::remove_cvref_t<T>::full_angle>>;
 
 		template <typename T, typename to>
 		concept compatible_angle = angle<T> && angle<to> && std::convertible_to<typename T::nonref_value_type, typename to::nonref_value_type>;

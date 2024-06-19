@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../details/base_types.h"
-#include "../../../../math/vec2.h"
+#include "../../vec2.h"
 
 namespace utils::math::geometry::shape
 	{

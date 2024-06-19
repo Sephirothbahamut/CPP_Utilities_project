@@ -31,7 +31,7 @@ namespace utils::math
 
 	//TODO replace with std::abs when std::abs becomes constexpr conforming to C++23 standard
 	template <typename T>
-	utils_gpu_available constexpr T abs(T value) noexcept
+	utils_gpu_available constexpr T abs(const T& value) noexcept
 		{
 		return value < T{0} ? -value : value;
 		}

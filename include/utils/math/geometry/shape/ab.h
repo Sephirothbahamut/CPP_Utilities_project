@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../details/base_types.h"
-#include "../../../../storage.h"
+#include "../../../storage.h"
 #include "point.h"
 
 namespace utils::math::geometry::shape
@@ -79,64 +79,6 @@ namespace utils::math::geometry::shape
 				const float ret{((b.x() - a.x()) * (point.y() - a.y())) - ((point.x() - a.x()) * (b.y() - a.y()))};
 				return -ret;
 				}
-
-
-
-
-
-
-			#pragma region SDF_related
-			template <bool clamp_a = false, bool clamp_b = false>
-			utils_gpu_available constexpr vec2f closest_point(const vec2f& point) const noexcept
-				{
-				const vec2f delta{b - a};
-				const float t{projected_percent(point)};
-				if constexpr (clamp_a) { if (t < 0.f) { return a; } }
-				if constexpr (clamp_b) { if (t > 1.f) { return b; } }
-				return {a.x() + t * delta.x(), a.y() + t * delta.y()};
-				}
-
-			template <bool clamp_a = false, bool clamp_b = false>
-			utils_gpu_available constexpr float minimum_distance(const vec2f& point) const noexcept
-				{
-				if constexpr (clamp_a || clamp_b)
-					{
-					const float t{projected_percent(point)};
-					if constexpr (clamp_a) { if (t < 0.f) { return vec2f::distance(a, point); } }
-					if constexpr (clamp_b) { if (t > 1.f) { return vec2f::distance(b, point); } }
-					}
-				return std::abs(some_significant_name_ive_yet_to_figure_out(point) / a_to_b().get_length());
-				}
-
-			template <bool clamp_a = false, bool clamp_b = false>
-			utils_gpu_available constexpr signed_distance signed_distance(const vec2f& point) const noexcept
-				{
-				if constexpr (clamp_a || clamp_b)
-					{
-					const float t{projected_percent(point)};
-					if constexpr (clamp_a) { if (t < 0.f) { return vec2f::distance(a, point) * side(point); } }
-					if constexpr (clamp_b) { if (t > 1.f) { return vec2f::distance(b, point) * side(point); } }
-					}
-				return some_significant_name_ive_yet_to_figure_out(point) / a_to_b().get_length();
-				}
-
-			utils_gpu_available constexpr side side(const vec2f& point) const noexcept
-				{
-				return {some_significant_name_ive_yet_to_figure_out(point)};
-				}
-			#pragma endregion SDF_related
-				
-			utils_gpu_available constexpr nonref_self_t scale    (const float                    & scaling    ) const noexcept { nonref_self_t ret{*this}; return ret.scale_self    (scaling    ); }
-			utils_gpu_available constexpr nonref_self_t rotate   (const angle::base<float, 360.f>& rotation   ) const noexcept { nonref_self_t ret{*this}; return ret.rotate_self   (rotation   ); }
-			utils_gpu_available constexpr nonref_self_t translate(const vec2f                    & translation) const noexcept { nonref_self_t ret{*this}; return ret.translate_self(translation); }
-			utils_gpu_available constexpr nonref_self_t transform(const utils::math::transform2  & transform  ) const noexcept { nonref_self_t ret{*this}; return ret.transform_self(transform  ); }
-
-			utils_gpu_available constexpr self_t& scale_self    (const float                    & scaling    ) noexcept requires(!storage_type.is_const()) { a.scale_self    (scaling    ); b.scale_self    (scaling    ); return *this; }
-			utils_gpu_available constexpr self_t& rotate_self   (const angle::base<float, 360.f>& rotation   ) noexcept requires(!storage_type.is_const()) { a.rotate_self   (rotation   ); b.rotate_self   (rotation   ); return *this; }
-			utils_gpu_available constexpr self_t& translate_self(const vec2f                    & translation) noexcept requires(!storage_type.is_const()) { a.translate_self(translation); b.translate_self(translation); return *this; }
-			utils_gpu_available constexpr self_t& transform_self(const utils::math::transform2  & transform  ) noexcept requires(!storage_type.is_const()) { a.transform_self(transform  ); b.transform_self(transform  ); return *this; }
-
-			utils_gpu_available constexpr shape::aabb bounding_box() const noexcept;
 			};
 
 		template <storage::type storage_type> 
@@ -146,11 +88,6 @@ namespace utils::math::geometry::shape
 
 			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
 			utils_gpu_available constexpr float length () const noexcept { return utils::math::constants::finf; }
-
-			utils_gpu_available constexpr vec2f closest_point(const concepts::point auto& point) const noexcept
-				{
-				return ab<storage_type>::closest_point<false, false>(point); 
-				}
 			};
 
 		template <storage::type storage_type> 
@@ -167,10 +104,6 @@ namespace utils::math::geometry::shape
 				{
 				return std::max(0.f, ab<storage_type>::projected_percent(other));
 				}
-			utils_gpu_available constexpr vec2f closest_point(const concepts::point auto& point) const noexcept
-				{
-				return ab<storage_type>::closest_point<true, false>(point);
-				}
 			};
 
 		template <storage::type storage_type> 
@@ -181,10 +114,6 @@ namespace utils::math::geometry::shape
 			utils_gpu_available constexpr float projected_percent(const concepts::point auto& other) const noexcept
 				{
 				return std::clamp(ab<storage_type>::projected_percent(other), 0.f, 1.f);
-				}
-			utils_gpu_available constexpr vec2f closest_point(const concepts::point auto& point) const noexcept
-				{
-				return ab<storage_type>::closest_point<true, true>(point);
 				}
 			};
 		}

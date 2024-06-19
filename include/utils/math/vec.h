@@ -135,8 +135,6 @@ namespace utils::math
 
 		utils_gpu_available constexpr self_t& set_length(value_type value) noexcept requires(!storage_type.is_const()) { *this = normalize() * value; return *this; }
 
-		__declspec(property(get = get_length, put = set_length)) value_type length;
-
 		utils_gpu_available constexpr nonref_self_t normalize() const noexcept { return get_length() ? nonref_self_t{*this} / get_length() : nonref_self_t{*this}; }
 		utils_gpu_available constexpr self_t& normalize_self() noexcept requires(!storage_type.is_const()) { return *this = normalize(); }
 		
