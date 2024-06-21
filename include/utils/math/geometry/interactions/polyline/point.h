@@ -36,7 +36,9 @@ namespace utils::math::geometry::interactions
 		const auto edges{polyline.get_edges()};
 		if (edges.empty()) { return {}; }
 
-		return_types::closest_point_with_signed_distance ret{closest_with_signed_distance(edges[0], point)};
+		return_types::closest_point_with_signed_distance ret{closest_with_signed_distance(edges[1], point)};
+		const auto q{ret.closest};
+		const auto w{ret.distance};
 		
 		for (size_t i = 1; i < edges.size(); i++)
 			{

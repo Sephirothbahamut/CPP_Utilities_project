@@ -13,7 +13,7 @@ namespace utils::math::geometry::shape
 	namespace concepts
 		{
 		template <typename T>
-		concept point = std::same_as<T, shape::generic::point<T::storage_type>>;
+		concept point = std::same_as<std::remove_cvref_t<T>, shape::generic::point<std::remove_cvref_t<T>::storage_type>>;
 		}
 
 	namespace owner         { using point = shape::generic::point<storage::type::create::owner         ()>; }

@@ -130,7 +130,12 @@ namespace utils::math
 		utils_gpu_available constexpr       const_aware_value_type& w()       noexcept requires(extent >= 4) { return (*this)[3]; }
 
 #pragma region distances
-		utils_gpu_available constexpr value_type get_length2() const noexcept { value_type ret{0}; base_t::for_each([&ret](const auto& value) { ret += value; }); return ret; }
+		utils_gpu_available constexpr value_type get_length2() const noexcept 
+			{
+			value_type ret{0}; 
+			base_t::for_each([&ret](const auto& value) { ret += value * value; });
+			return ret; 
+			}
 		utils_gpu_available constexpr value_type get_length () const noexcept { return std::sqrt(get_length2()); }
 
 		utils_gpu_available constexpr self_t& set_length(value_type value) noexcept requires(!storage_type.is_const()) { *this = normalize() * value; return *this; }

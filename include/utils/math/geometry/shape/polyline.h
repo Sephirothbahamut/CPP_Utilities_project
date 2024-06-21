@@ -132,7 +132,26 @@ namespace utils::math::geometry::shape
 					}
 				};
 			
+			/// <summary> 
+			/// Usage note: This shape contains vertices, not edges. 
+			/// The operator[] and dereferencing an iterator in the edges view will not return a reference to an edge, it will return an actual edge object which itself contains references to the vertices.
+			/// So don't write `for(auto& edge : x.get_edges())`, write `for(auto edge : x.get_edges())` instead.
+			/// If this shape is const or the edges view is stored in a const variable, edges will be const observers.
+			/// Otherwise they will be simple observers, and changing them will affect the vertices of this shape.
+			/// A lot of tears and blood were poured into making this seemingly seamless, it's part of the reason I restarted the geometry portion of this library from scratch at least 3 times, 
+			/// please appreciate my efforts for such an useless feature nobody will ever need :)
+			/// </summary>
 			utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<true                   >{storage_t::storage.begin(), storage_t::storage.size()}; }
+
+			/// <summary> 
+			/// Usage note: This shape contains vertices, not edges. 
+			/// The operator[] and dereferencing an iterator in the edges view will not return a reference to an edge, it will return an actual edge object which itself contains references to the vertices.
+			/// So don't write `for(auto& edge : x.get_edges())`, write `for(auto edge : x.get_edges())` instead.
+			/// If this shape is const or the edges view is stored in a const variable, edges will be const observers.
+			/// Otherwise they will be simple observers, and changing them will affect the vertices of this shape.
+			/// A lot of tears and blood were poured into making this seemingly seamless, it's part of the reason I restarted the geometry portion of this library from scratch at least 3 times, 
+			/// please appreciate my efforts for such an useless feature nobody will ever need :)
+			/// </summary>
 			utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<storage_type.is_const()>{storage_t::storage.begin(), storage_t::storage.size()}; }
 			};
 

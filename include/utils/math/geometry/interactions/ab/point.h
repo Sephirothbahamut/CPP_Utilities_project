@@ -23,7 +23,11 @@ namespace utils::math::geometry::interactions
 			if constexpr (clamp_a) { if (t < 0.f) { return vec2f::distance(ab.a, point); } }
 			if constexpr (clamp_b) { if (t > 1.f) { return vec2f::distance(ab.b, point); } }
 			}
-		return std::abs(ab.some_significant_name_ive_yet_to_figure_out(point) / ab.a_to_b().get_length());
+		const auto tmp_0{ab.some_significant_name_ive_yet_to_figure_out(point)};
+		const auto tmp_1{ab.a_to_b()};
+		const auto tmp_2{tmp_1.get_length()};
+		const auto tmp_3{tmp_0 / tmp_2};
+		return std::abs(tmp_3);
 		}
 
 	utils_gpu_available constexpr return_types::side side(const shape::concepts::ab auto& ab, const vec2f& point) noexcept
@@ -40,7 +44,11 @@ namespace utils::math::geometry::interactions
 			if constexpr (clamp_a) { if (t < 0.f) { return {vec2f::distance(ab.a, point) * side(ab, point)}; } }
 			if constexpr (clamp_b) { if (t > 1.f) { return {vec2f::distance(ab.b, point) * side(ab, point)}; } }
 			}
-		return {ab.some_significant_name_ive_yet_to_figure_out(point) / ab.a_to_b().get_length()};
+		const auto tmp_0{ab.some_significant_name_ive_yet_to_figure_out(point)};
+		const auto tmp_1{ab.a_to_b()};
+		const auto tmp_2{tmp_1.get_length()};
+		const auto tmp_3{tmp_0 / tmp_2};
+		return {tmp_3};
 		}
 
 	template <bool clamp_a, bool clamp_b>
