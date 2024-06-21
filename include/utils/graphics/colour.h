@@ -81,29 +81,30 @@ namespace utils::graphics::colour
 			static_assert(size == 3 || size == 4);
 
 			using base_t = ::utils::details::vector::base<T, size, rgb, details::name_rgb>;
-			using base_t::static_size; 
-			using base_t::static_value_is_reference;
+			using base_t::extent;
+			using base_t::storage_type;
 			using typename base_t::self_t;
 			using typename base_t::value_type;
-			using typename base_t::nonref_value_type;
+			using typename base_t::const_aware_value_type;
+			using typename base_t::template_type;
 			using typename base_t::nonref_self_t;
 
-			using range = utils::math::type_based_numeric_range<nonref_value_type>;
+			using range = utils::math::type_based_numeric_range<value_type>;
 			inline static constexpr bool static_has_alpha{size == 4};
 
 			using base_t::base;
 
-			utils_gpu_available constexpr const nonref_value_type& r() const noexcept { return (*this)[0]; }
-			utils_gpu_available constexpr       nonref_value_type& r()       noexcept { return (*this)[0]; }
-			utils_gpu_available constexpr const nonref_value_type& g() const noexcept { return (*this)[1]; }
-			utils_gpu_available constexpr       nonref_value_type& g()       noexcept { return (*this)[1]; }
-			utils_gpu_available constexpr const nonref_value_type& b() const noexcept { return (*this)[2]; }
-			utils_gpu_available constexpr       nonref_value_type& b()       noexcept { return (*this)[2]; }
-			utils_gpu_available constexpr const nonref_value_type& a() const noexcept { if constexpr (static_size == 4) { return (*this)[3]; } else { return range::full_value; } }
-			utils_gpu_available constexpr       nonref_value_type& a()       noexcept requires(static_has_alpha) { return (*this)[3]; }
+			utils_gpu_available constexpr const const_aware_value_type& r() const noexcept { return (*this)[0]; }
+			utils_gpu_available constexpr       const_aware_value_type& r()       noexcept { return (*this)[0]; }
+			utils_gpu_available constexpr const const_aware_value_type& g() const noexcept { return (*this)[1]; }
+			utils_gpu_available constexpr       const_aware_value_type& g()       noexcept { return (*this)[1]; }
+			utils_gpu_available constexpr const const_aware_value_type& b() const noexcept { return (*this)[2]; }
+			utils_gpu_available constexpr       const_aware_value_type& b()       noexcept { return (*this)[2]; }
+			utils_gpu_available constexpr const const_aware_value_type& a() const noexcept { if constexpr (extent == 4) { return (*this)[3]; } else { return range::full_value; } }
+			utils_gpu_available constexpr       const_aware_value_type& a()       noexcept requires(static_has_alpha) { return (*this)[3]; }
 
-			utils_gpu_available constexpr rgb(base base, nonref_value_type components_multiplier = range::full_value, nonref_value_type alpha = range::full_value) noexcept
-				requires(!static_value_is_reference)
+			utils_gpu_available constexpr rgb(base base, value_type components_multiplier = range::full_value, value_type alpha = range::full_value) noexcept
+				requires(!storage_type.is_reference())
 				{
 				r() = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta);
 				g() = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan);
@@ -111,7 +112,8 @@ namespace utils::graphics::colour
 				if constexpr (static_has_alpha) { a() = alpha; }
 				}
 
-			utils_gpu_available constexpr rgb(const concepts::rgb auto& other) noexcept requires(!static_value_is_reference)
+			utils_gpu_available constexpr rgb(const concepts::rgb auto& other) noexcept
+				requires(!storage_type.is_reference())
 				{
 				for (size_t i = 0; i < 3; i++)
 					{
@@ -121,27 +123,28 @@ namespace utils::graphics::colour
 				if constexpr (static_has_alpha) { a() = other.a(); }
 				}
 
-			utils_gpu_available constexpr rgb(const concepts::hsv auto& hsv) noexcept requires(!static_value_is_reference);
+			utils_gpu_available constexpr rgb(const concepts::hsv auto& hsv) noexcept
+				requires(!storage_type.is_reference());
 
 			utils_gpu_available constexpr nonref_self_t blend(const concepts::colour auto& foreground) const noexcept
 				requires(std::remove_cvref_t<decltype(foreground)>::static_has_alpha)
 				{
-				using floating_t = std::conditional_t<math::concepts::undecorated_floating_point<nonref_value_type>, nonref_value_type, float>;
+				using floating_t = std::conditional_t<std::floating_point<value_type>, value_type, float>;
 				using rgba_t = rgb<floating_t, 4>;
 				const rgba_t remapped_foreground{foreground};
 				const rgba_t remapped_self{*this};
 
 				rgba_t remapped_ret;
 
-				const nonref_value_type multiplier_a{[this]() -> nonref_value_type
+				const value_type multiplier_a{[this]() -> value_type
 					{
 					if constexpr (static_has_alpha) 
 						{
-						return (static_cast<nonref_value_type>(1) - a()); 
+						return (static_cast<value_type>(1) - a());
 						}
 					else 
 						{ 
-						return static_cast<nonref_value_type>(1);
+						return static_cast<value_type>(1);
 						} 
 					}()};
 
@@ -181,11 +184,12 @@ namespace utils::graphics::colour
 			static_assert(size == 3 || size == 4);
 
 			using base_t = ::utils::details::vector::base<T, size, hsv, details::name_hsv>;
-			using base_t::static_size;
-			using base_t::static_value_is_reference;
+			using base_t::extent;
+			using base_t::storage_type;
 			using typename base_t::self_t;
 			using typename base_t::value_type;
-			using typename base_t::nonref_value_type;
+			using typename base_t::const_aware_value_type;
+			using typename base_t::template_type;
 			using typename base_t::nonref_self_t;
 
 			using range = utils::math::type_based_numeric_range<T>;
@@ -194,7 +198,7 @@ namespace utils::graphics::colour
 			using base_t::base;
 
 			utils_gpu_available constexpr hsv(base base, T components_multiplier = range::full_value, T alpha = range::full_value)
-				requires(!static_value_is_reference)
+				requires(!storage_type.is_reference())
 				{
 				if (base != base::black && components_multiplier != T{0.f}) 
 					{
@@ -219,7 +223,8 @@ namespace utils::graphics::colour
 				if constexpr (static_has_alpha) { a() = alpha; }
 				}
 
-			utils_gpu_available constexpr hsv(const concepts::hsv auto& other) noexcept requires(!static_value_is_reference)
+			utils_gpu_available constexpr hsv(const concepts::hsv auto& other) noexcept
+				requires(!storage_type.is_reference())
 				{
 				for (size_t i = 0; i < 3; i++)
 					{
@@ -229,20 +234,22 @@ namespace utils::graphics::colour
 				if constexpr (static_has_alpha) { a() = other.a(); }
 				}
 
-			utils_gpu_available constexpr hsv(const concepts::rgb auto& rgb) noexcept requires(!static_value_is_reference);
+			utils_gpu_available constexpr hsv(const concepts::rgb auto& rgb) noexcept
+				requires(!storage_type.is_reference());
 			
-			utils_gpu_available constexpr ::utils::math::angle::base<const nonref_value_type&, range::full_value> h() const noexcept { return {(*this)[0]}; }
-			utils_gpu_available constexpr ::utils::math::angle::base<      nonref_value_type&, range::full_value> h()       noexcept { return {(*this)[0]}; }
-			utils_gpu_available constexpr const nonref_value_type& s() const noexcept { return (*this)[1]; }
-			utils_gpu_available constexpr       nonref_value_type& s()       noexcept { return (*this)[1]; }
-			utils_gpu_available constexpr const nonref_value_type& v() const noexcept { return (*this)[2]; }
-			utils_gpu_available constexpr       nonref_value_type& v()       noexcept { return (*this)[2]; }
-			utils_gpu_available constexpr const nonref_value_type& a() const noexcept { if constexpr (static_size == 4) { return (*this)[3]; } else { return range::full_value; } }
-			utils_gpu_available constexpr       nonref_value_type& a()       noexcept requires(static_has_alpha) { return (*this)[3]; }
+			utils_gpu_available constexpr ::utils::math::angle::base<const const_aware_value_type&, range::full_value> h() const noexcept { return {(*this)[0]}; }
+			utils_gpu_available constexpr ::utils::math::angle::base<      const_aware_value_type&, range::full_value> h()       noexcept { return {(*this)[0]}; }
+			utils_gpu_available constexpr const const_aware_value_type& s() const noexcept { return (*this)[1]; }
+			utils_gpu_available constexpr       const_aware_value_type& s()       noexcept { return (*this)[1]; }
+			utils_gpu_available constexpr const const_aware_value_type& v() const noexcept { return (*this)[2]; }
+			utils_gpu_available constexpr       const_aware_value_type& v()       noexcept { return (*this)[2]; }
+			utils_gpu_available constexpr const const_aware_value_type& a() const noexcept { if constexpr (extent == 4) { return (*this)[3]; } else { return range::full_value; } }
+			utils_gpu_available constexpr       const_aware_value_type& a()       noexcept requires(static_has_alpha) { return (*this)[3]; }
 			};
 
 		template<utils::math::concepts::undecorated_number T, size_t size>
-		utils_gpu_available constexpr rgb<T, size>::rgb(const concepts::hsv auto& hsv) noexcept requires(!static_value_is_reference)
+		utils_gpu_available constexpr rgb<T, size>::rgb(const concepts::hsv auto& hsv) noexcept
+			requires(!storage_type.is_reference())
 			{
 			if (hsv.s() == 0)
 				{
@@ -286,7 +293,8 @@ namespace utils::graphics::colour
 			}
 
 		template<utils::math::concepts::undecorated_floating_point T, size_t size>
-		utils_gpu_available constexpr hsv<T, size>::hsv(const concepts::rgb auto& rgb) noexcept requires(!static_value_is_reference)
+		utils_gpu_available constexpr hsv<T, size>::hsv(const concepts::rgb auto& rgb) noexcept
+			requires(!storage_type.is_reference())
 			{//https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
 			using from_t = std::remove_cvref_t<decltype(rgb)>;
 			const colour::rgb<value_type, static_has_alpha> remapped_rgb{rgb};

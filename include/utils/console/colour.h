@@ -120,7 +120,7 @@ namespace utils::console::colour
 			if constexpr (concepts::foreground<colour_t>) { stream << "38"; }
 			else if constexpr (concepts::background<colour_t>) { stream << "48"; }
 
-			return stream << ";2;" << +colour.data.r << ";" << +colour.data.g << ";" << +colour.data.b << "m";
+			return stream << ";2;" << +colour.data.r() << ";" << +colour.data.g() << ";" << +colour.data.b() << "m";
 			}
 
 		//Unreachable code warning, but missing return error if removed, so... I guess it stays

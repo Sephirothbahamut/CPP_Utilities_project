@@ -2,6 +2,7 @@
 
 #include "base.h"
 #include "../point.h"
+#include "../ab.h"
 
 namespace utils::math::geometry::interactions
 	{
@@ -20,15 +21,6 @@ namespace utils::math::geometry::interactions
 		return ret;
 		}
 
-	utils_gpu_available constexpr return_types::side side(const shape::concepts::polyline auto& polyline, const vec2f& point) noexcept
-		{
-		}
-
-	utils_gpu_available constexpr return_types::signed_distance signed_distance(const shape::concepts::polyline auto& polyline, const vec2f& point) noexcept
-		{
-		return closest_with_signed_distance(polyline, point).distance;
-		}
-
 	utils_gpu_available constexpr return_types::closest_point_with_distance closest_with_distance(const shape::concepts::polyline auto& polyline, const vec2f& point) noexcept
 		{
 		return_types::closest_point_with_distance ret;
@@ -45,23 +37,40 @@ namespace utils::math::geometry::interactions
 		if (edges.empty()) { return {}; }
 
 		return_types::closest_point_with_signed_distance ret{closest_with_signed_distance(edges[0], point)};
-
+		
 		for (size_t i = 1; i < edges.size(); i++)
 			{
 			const auto candidate_edge{edges[i]};
-			const auto candidate{closest_with_signed_distance(edge, point)};
+			const auto candidate{closest_with_signed_distance(candidate_edge, point)};
 
 			if (candidate.closest != ret.closest)
 				{
-				ret.pick_closest(candidate);
+				ret.set_to_closest(candidate);
 				}
 			else
 				{
 				//Common closest means the closest is a corner, we have to check for the weird regions (see "side_corner_case_visualization.png")
 				//pick the farthest infinite line (not segment) to get the correct side
-				const shape::line line_ret      {ret      .closest};
-				const shape::line line_candidate{candidate.closest};
+				const shape::line line_ret      {edges[i - 1]};
+				const shape::line line_candidate{candidate_edge};
+
+				const return_types::signed_distance line_signed_distance_ret      {signed_distance(line_ret      , point)};
+				const return_types::signed_distance line_signed_distance_candidate{signed_distance(line_candidate, point)};
+
+				ret.distance = line_signed_distance_ret.absolute() > line_signed_distance_candidate.absolute() ? line_signed_distance_ret : line_signed_distance_candidate;
 				}
 			}
+
+		return ret;
+		}
+
+	utils_gpu_available constexpr return_types::side side(const shape::concepts::polyline auto& polyline, const vec2f& point) noexcept
+		{
+		return closest_with_signed_distance(polyline, point).distance.side();
+		}
+
+	utils_gpu_available constexpr return_types::signed_distance signed_distance(const shape::concepts::polyline auto& polyline, const vec2f& point) noexcept
+		{
+		return closest_with_signed_distance(polyline, point).distance;
 		}
 	}

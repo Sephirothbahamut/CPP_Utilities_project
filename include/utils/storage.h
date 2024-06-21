@@ -33,7 +33,7 @@ namespace utils::storage
 		utils_gpu_available consteval bool is_observer() const noexcept { return !owner_value; }
 		utils_gpu_available consteval bool is_owner   () const noexcept { return  owner_value; }
 		utils_gpu_available consteval bool is_const   () const noexcept { return  const_value; }
-		utils_gpu_available consteval bool can_construct_from_const() const noexcept { return owner_value || !const_value; }
+		utils_gpu_available consteval bool can_construct_from_const() const noexcept { return owner_value || const_value; }
 
 		struct create : utils::oop::non_constructible
 			{
@@ -41,7 +41,7 @@ namespace utils::storage
 			utils_gpu_available static consteval type from          (                        ) noexcept { return {.owner_value{!std::is_reference_v<T2>}, .const_value{std::is_const_v<std::remove_reference_t<T2>>}}; }
 			utils_gpu_available static consteval type owner         (bool const_value = false) noexcept { return {.owner_value{true                    }, .const_value{const_value                                 }}; }
 			utils_gpu_available static consteval type observer      (bool const_value = false) noexcept { return {.owner_value{false                   }, .const_value{const_value                                 }}; }
-			utils_gpu_available static consteval type const_observer(bool const_value = false) noexcept { return {.owner_value{false                   }, .const_value{const_value                                 }}; }
+			utils_gpu_available static consteval type const_observer(                        ) noexcept { return {.owner_value{false                   }, .const_value{true                                        }}; }
 			};
 
 		const bool owner_value;

@@ -2,8 +2,10 @@
 #include <iostream>
 
 #include "include/utils/memory.h"
-#include "include/utils/console/initializer.h"
+
+#include "include/utils/console/io.h"
 #include "include/utils/console/colour.h"
+#include "include/utils/console/initializer.h"
 
 #include "include/utils/math/vec.h"
 #include "include/utils/math/vec2.h"
@@ -14,7 +16,7 @@
 #include "include/utils/output/std_containers.h"
 #include "include/utils/graphics/colour.h"
 
-//#include "include/utils/containers/matrix.h"
+#include "include/utils/matrix_interface.h"
 #include "include/utils/logging/logger.h"
 
 //#include "include/utils/containers/handled_container.h"
@@ -49,7 +51,7 @@
 #include "include/utils/math/geometry/shape/ab.h"
 #include "include/utils/math/geometry/shape/polyline.h"
 
-#include "include/utils/math/geometry/interactions.h"
+//#include "include/utils/math/geometry/interactions.h"
 
 #include "include/utils/output/vec.h"
 
@@ -75,14 +77,59 @@ struct child_type : angry_type
 	int another_i;
 	};
 
+
 int main()
 	{
+	utils::console::initializer utils_console_initializer;
 	using namespace utils::output;
+	using namespace utils::math::angle::literals;
 
-	utils::math::geometry::shape::polygon<std::dynamic_extent> polyline{utils::math::vec2f{1.f, 2.f}, utils::math::vec2f{3.f, 4.f}, utils::math::vec2f{2.f, 5.f}};
+	const utils::math::geometry::shape::polygon<std::dynamic_extent> polyline{utils::math::vec2f{1.f, 2.f}, utils::math::vec2f{3.f, 4.f}, utils::math::vec2f{2.f, 5.f}};
+	const auto console_size{utils::console::size()};
+
+	system("cls");
 	
-//	using namespace utils::output;
-//	using namespace utils::math::angle::literals;
+	auto edges{polyline.get_edges()};
+	
+	for (auto edge : edges)
+		{
+		edge.a += 1.f;
+		std::cout << edge.a << " - " << edge.b << std::endl;
+		}
+
+//	for (size_t y{0}; y < console_size.y(); y++)
+//		{
+//		for (size_t x{0}; x < console_size.x(); x++)
+//			{
+//			const utils::math::vec2s coords_indices{x, y};
+//			const utils::math::vec2f coords_f
+//				{
+//				static_cast<float>(coords_indices.x()),
+//				static_cast<float>(coords_indices.y())
+//				};
+//	
+//			const auto sdist{utils::math::geometry::interactions::signed_distance(polyline, coords_f)};
+//			const float dist{sdist.absolute()};
+//	
+//			const float value{dist / 32.f};
+//	
+//			const utils::graphics::colour::rgb_f colour
+//				{
+//				sdist.side().is_inside() ? value : 0.f, 
+//				value, 
+//				sdist.side().is_outside() ? value : 0.f
+//				};
+//			const utils::graphics::colour::rgb_u colour_8
+//				{
+//				static_cast<uint8_t>(colour[0] * 255.f),
+//				static_cast<uint8_t>(colour[1] * 255.f),
+//				static_cast<uint8_t>(colour[2] * 255.f)
+//				};
+//			
+//			std::cout << utils::console::colour::background{colour_8} << "#";
+//			}
+//		std::cout << "\n";
+//		}
 //	
 //	utils::trackable_wrapper<child_type> child1{1};
 //	utils::trackable_wrapper<angry_type> parent1{1, 2.f};
