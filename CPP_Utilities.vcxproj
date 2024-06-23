@@ -205,6 +205,7 @@
     <ClInclude Include="include\utils\math\geometry\interactions\aabb\point.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\aabb\transform.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\ab.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\ab\ab.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\ab\all.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\ab\base.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\ab\point.h" />

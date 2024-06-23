@@ -66,7 +66,7 @@ namespace utils::console
 			const auto height{static_cast<size_t>(csbi.srWindow.Bottom - csbi.srWindow.Top + 1)};
 			return {width, height};
 		//	}
-			#elif utils_compilation_os_linux
+		#elif utils_compilation_os_linux
 		//	{
 			struct winsize w;
 			ioctl(fileno(stdout), TIOCGWINSZ, &w);

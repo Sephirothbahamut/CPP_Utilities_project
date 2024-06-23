@@ -475,6 +475,9 @@
     <ClInclude Include="include\utils\math\geometry\interactions\polyline\all.h">
       <Filter>Utils\math\geometry\interactions\polyline</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\ab\ab.h">
+      <Filter>Utils\math\geometry\interactions\ab</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">

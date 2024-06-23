@@ -190,28 +190,28 @@ namespace utils::details::vector
 namespace utils::math
 	{
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto abs(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::abs(value); }>(); }
+	utils_gpu_available constexpr auto abs(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::abs(value); }>(); }
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto floor(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::floor(value); }>(); }
+	utils_gpu_available constexpr auto floor(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::floor(value); }>(); }
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto ceil(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::ceil(value); }>(); }
+	utils_gpu_available constexpr auto ceil(const T& v) noexcept { return v.for_each_to_new<[](const auto& value) { return utils::math::ceil(value); }>(); }
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available auto pow(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)
+	utils_gpu_available constexpr auto pow(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)
 		{
 		return a.operator_to_new<[](const auto& a, const auto& b) { return std::pow(a, b); }>(b);
 		}
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available inline T pow(const T& a, const utils::details::vector::concepts::compatible_vector<T> auto& b)
+	utils_gpu_available constexpr T pow(const T& a, const utils::details::vector::concepts::compatible_vector<T> auto& b)
 		{
 		return a.operator_to_new<[](const auto& a, const auto& b) { return std::pow(a, b); }>(b);
 		}
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available inline typename T::nonref_self_t lerp(const T& a, const T& b, float t)
+	utils_gpu_available constexpr typename T::nonref_self_t lerp(const T& a, const T& b, float t)
 		{
 		typename T::nonref_self_t ret;
 		for (size_t i = 0; i < T::extent; i++)
@@ -222,7 +222,7 @@ namespace utils::math
 		}
 
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available inline typename T::nonref_self_t clamp(const T& in, const T& min, const T& max)
+	utils_gpu_available constexpr typename T::nonref_self_t clamp(const T& in, const T& min, const T& max)
 		{
 		typename T::nonref_self_t ret;
 		for (size_t i = 0; i < T::extent; i++)
@@ -233,19 +233,19 @@ namespace utils::math
 		}
 
 	template <utils::details::vector::concepts::vector T>
-	utils_gpu_available inline auto min(const T& a, const T& b)
+	utils_gpu_available constexpr auto min(const T& a, const T& b)
 		{
 		return a.operator_to_new<[](const auto& a, const auto& b) { return utils::math::min(a, b); }>(b);
 		}
 
 	template <utils::details::vector::concepts::vector T>
-	utils_gpu_available inline T max(const T& a, const T& b)
+	utils_gpu_available constexpr T max(const T& a, const T& b)
 		{
 		return a.operator_to_new<[](const auto& a, const auto& b) { return utils::math::max(a, b); }>(b);
 		}
 	
 	template <::utils::details::vector::concepts::vector T>
-	utils_gpu_available inline typename T::nonref_self_t clamp(const T& in, const utils::details::vector::concepts::compatible_scalar<T> auto& min, const utils::details::vector::concepts::compatible_scalar<T> auto& max)
+	utils_gpu_available constexpr typename T::nonref_self_t clamp(const T& in, const utils::details::vector::concepts::compatible_scalar<T> auto& min, const utils::details::vector::concepts::compatible_scalar<T> auto& max)
 		{
 		typename T::nonref_self_t ret;
 		for (size_t i = 0; i < T::extent; i++)
@@ -256,13 +256,13 @@ namespace utils::math
 		}
 
 	template <utils::details::vector::concepts::vector T>
-	utils_gpu_available inline typename T::nonref_self_t min(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)
+	utils_gpu_available constexpr typename T::nonref_self_t min(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)
 		{
 		return a.operator_to_new<[](const auto& a, const auto& b) { return utils::math::min(a, b); }>(b);
 		}
 
 	template <utils::details::vector::concepts::vector T>
-	utils_gpu_available inline typename T::nonref_self_t max(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)
+	utils_gpu_available constexpr typename T::nonref_self_t max(const T& a, const utils::details::vector::concepts::compatible_scalar<T> auto& b)
 		{
 		return a.operator_to_new<[](const auto& a, const auto& b) { return utils::math::max(a, b); }>(b);
 		}

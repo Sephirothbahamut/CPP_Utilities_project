@@ -227,6 +227,11 @@ namespace utils::storage
 					)
 				) :
 			storage{std::forward<Args>(args)...} {}
+				
+		template <typename iterator_t>
+		utils_gpu_available constexpr multiple(iterator_t first, size_t count)
+			requires(concepts::span<inner_storage_t>) :
+			storage{first, count} {}
 
 		template <concepts::multiple other_t>
 		static inner_storage_t inner_create(other_t& other) noexcept

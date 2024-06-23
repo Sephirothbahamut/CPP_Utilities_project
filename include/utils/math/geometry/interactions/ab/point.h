@@ -19,7 +19,7 @@ namespace utils::math::geometry::interactions
 		{
 		if constexpr (clamp_a || clamp_b)
 			{
-			const float t{ab.projected_percent(point)};
+			const float t{ab.projected_percent<false, false>(point)};
 			if constexpr (clamp_a) { if (t < 0.f) { return vec2f::distance(ab.a, point); } }
 			if constexpr (clamp_b) { if (t > 1.f) { return vec2f::distance(ab.b, point); } }
 			}
@@ -40,9 +40,9 @@ namespace utils::math::geometry::interactions
 		{
 		if constexpr (clamp_a || clamp_b)
 			{
-			const float t{ab.projected_percent(point)};
-			if constexpr (clamp_a) { if (t < 0.f) { return {vec2f::distance(ab.a, point) * side(ab, point)}; } }
-			if constexpr (clamp_b) { if (t > 1.f) { return {vec2f::distance(ab.b, point) * side(ab, point)}; } }
+			const float t{ab.projected_percent<false, false>(point)};
+			if constexpr (clamp_a) { if (t < 0.f) { return {vec2f::distance(ab.a, point) * side(ab, point).sign()}; } }
+			if constexpr (clamp_b) { if (t > 1.f) { return {vec2f::distance(ab.b, point) * side(ab, point).sign()}; } }
 			}
 		const auto tmp_0{ab.some_significant_name_ive_yet_to_figure_out(point)};
 		const auto tmp_1{ab.a_to_b()};
@@ -55,14 +55,14 @@ namespace utils::math::geometry::interactions
 	utils_gpu_available constexpr return_types::closest_point_with_distance closest_with_distance(const shape::concepts::ab auto& ab, const vec2f& point) noexcept
 		{
 		const auto closest{closest_point<clamp_a, clamp_b>(ab, point)};
-		return {closest, minimum_distance<clamp_a, clamp_b>(ab, point)};
+		return {minimum_distance<clamp_a, clamp_b>(ab, point), closest};
 		}
 
 	template <bool clamp_a, bool clamp_b>
 	utils_gpu_available constexpr return_types::closest_point_with_signed_distance closest_with_signed_distance(const shape::concepts::ab auto& ab, const vec2f& point) noexcept
 		{
 		const auto closest{closest_point<clamp_a, clamp_b>(ab, point)};
-		return {closest, signed_distance<clamp_a, clamp_b>(ab, point)};
+		return {signed_distance<clamp_a, clamp_b>(ab, point), closest};
 		}
 
 

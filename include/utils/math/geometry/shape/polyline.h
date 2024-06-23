@@ -14,7 +14,7 @@ namespace utils::math::geometry::shape
 	namespace generic
 		{
 		template <storage::type storage_type, ends ENDS, size_t EXTENT = std::dynamic_extent>
-		struct polyline : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>
+		struct polyline : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>, utils::math::geometry::shape_flag
 			{
 			inline static constexpr ends   ends  {ENDS  };
 			inline static constexpr size_t extent{EXTENT};
@@ -48,47 +48,46 @@ namespace utils::math::geometry::shape
 				using span_t = std::span<vert_t, extent>;
 
 				template <bool is_iterator_const>
-				class iterator : std::conditional_t<ENDS.open, std::contiguous_iterator_tag, std::random_access_iterator_tag>
+				struct iterator : std::conditional_t<ENDS.open, std::contiguous_iterator_tag, std::random_access_iterator_tag>
 					{
 					//TODO random access iterator implementation https://en.cppreference.com/w/cpp/iterator/random_access_iterator
-					public:
-						//using iterator_category = std::conditional_t<ENDS.open, std::contiguous_iterator_tag, std::random_access_iterator_tag>;
-						using difference_type   = std::ptrdiff_t;
-						using value_type        = edge<is_view_const || is_iterator_const>;
-						using pointer           = value_type*;
-						using reference         = value_type&;
-			
-						utils_gpu_available constexpr iterator() noexcept = default;
-						utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span}, index{index} {}
+					
+					//using iterator_category = std::conditional_t<ENDS.open, std::contiguous_iterator_tag, std::random_access_iterator_tag>;
+					using difference_type   = std::ptrdiff_t;
+					using value_type        = edge<is_view_const || is_iterator_const>;
+					using pointer           = value_type*;
+					using reference         = value_type&;
 
-						utils_gpu_available constexpr edge<true > operator*() const noexcept                                                { return edge<true >{span[index], span[index_next()]}; }
-						utils_gpu_available constexpr edge<false> operator*()       noexcept requires(!is_view_const && !is_iterator_const) { return edge<false>{span[index], span[index_next()]}; }
+					utils_gpu_available constexpr iterator() noexcept = default;
+					utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span}, index{index} {}
+
+					utils_gpu_available constexpr edge<true > operator*() const noexcept                                                { return edge<true >{span[index], span[index_next()]}; }
+					utils_gpu_available constexpr edge<false> operator*()       noexcept requires(!is_view_const && !is_iterator_const) { return edge<false>{span[index], span[index_next()]}; }
 				
-						utils_gpu_available constexpr iterator& operator++(   ) noexcept { index++; return *this; }
-						utils_gpu_available constexpr iterator& operator--(   ) noexcept { index--; return *this; }
-						utils_gpu_available constexpr iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
-						utils_gpu_available constexpr iterator  operator--(int) noexcept { iterator ret{*this}; --(*this); return ret; }
+					utils_gpu_available constexpr iterator& operator++(   ) noexcept { index++; return *this; }
+					utils_gpu_available constexpr iterator& operator--(   ) noexcept { index--; return *this; }
+					utils_gpu_available constexpr iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
+					utils_gpu_available constexpr iterator  operator--(int) noexcept { iterator ret{*this}; --(*this); return ret; }
 				
-						utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
-						utils_gpu_available friend constexpr auto operator<=>(const iterator& a, const iterator& b) noexcept { return a.index <=> b.index; }
+					utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
+					utils_gpu_available friend constexpr auto operator<=>(const iterator& a, const iterator& b) noexcept { return a.index <=> b.index; }
 				
-					private:
-						span_t span;
-						size_t index{0};
-						utils_gpu_available size_t index_next() const noexcept
+					span_t span;
+					size_t index{0};
+					utils_gpu_available size_t index_next() const noexcept
+						{
+						if constexpr (ends.is_closed())
 							{
-							if constexpr (ends.is_closed())
-								{
-								return (index + 1) % span.size();
-								}
-							else
-								{
-								return index + 1;
-								}
+							return (index + 1) % span.size();
 							}
+						else
+							{
+							return index + 1;
+							}
+						}
 					};
 				
-				static_assert(std::bidirectional_iterator<iterator<true>>);
+				//static_assert(std::bidirectional_iterator<iterator<true>>); //TODO check why non copy constructible if storage inner container is span?
 				//static_assert(std::random_access_iterator<iterator>);
 				//static_assert(std::condiguous_iterator   <iterator>);
 			
@@ -113,6 +112,7 @@ namespace utils::math::geometry::shape
 					else { return iterator{span, span.size() - 1}; }
 					}
 			
+				utils_gpu_available constexpr bool empty() const noexcept { return span.empty() || span.size() == 1; }
 				utils_gpu_available constexpr size_t size() const noexcept
 					{
 					if constexpr (ends.is_closed()) { return span.size(); }

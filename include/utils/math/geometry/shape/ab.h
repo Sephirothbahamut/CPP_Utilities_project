@@ -59,6 +59,7 @@ namespace utils::math::geometry::shape
 			utils_gpu_available constexpr vec2f perpendicular_left () const noexcept { return forward().perpendicular_left (); }
 
 			/// <summary> Projecting point to the line that goes through a-b, at what percentage of the segment a-b it lies. < 0 is before a, > 1 is after b, proportionally to the a-b distance </summary>
+			template <bool clamp_a, bool clamp_b>
 			utils_gpu_available constexpr float projected_percent(const concepts::point auto& point) const noexcept
 				{
 				//from shadertoy version, mathematically equivalent I think maybe perhaps, idk, i'm not into maths
@@ -69,7 +70,10 @@ namespace utils::math::geometry::shape
 				//previous version, mathematically equivalent I think maybe perhaps, idk, i'm not into maths
 				//http://csharphelper.com/blog/2016/09/find-the-shortest-distance-between-a-point-and-a-line-segment-in-c/
 				const vec2f delta{b - a};
-				return ((point.x() - a.x()) * delta.x() + (point.y() - a.y()) * delta.y()) / (delta.x() * delta.x() + delta.y() * delta.y());
+				const auto ret{((point.x() - a.x()) * delta.x() + (point.y() - a.y()) * delta.y()) / (delta.x() * delta.x() + delta.y() * delta.y())};
+				if constexpr (clamp_a) { if (ret < 0.f) { return 0.f; } }
+				if constexpr (clamp_b) { if (ret > 1.f) { return 1.f; } }
+				return ret;
 				}
 
 			utils_gpu_available constexpr float some_significant_name_ive_yet_to_figure_out(const concepts::point auto& point) const noexcept
@@ -85,24 +89,31 @@ namespace utils::math::geometry::shape
 		struct line : ab<storage_type>
 			{
 			using ab<storage_type>::ab;
+			inline static constexpr geometry::ends ends{geometry::ends::create::infinite()};
 
 			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
 			utils_gpu_available constexpr float length () const noexcept { return utils::math::constants::finf; }
+
+			using ab<storage_type>::projected_percent;
+			utils_gpu_available constexpr float projected_percent(const concepts::point auto& point) const noexcept
+				{
+				return projected_percent<false, false>(point);
+				}
 			};
 
 		template <storage::type storage_type> 
 		struct ray : ab<storage_type>
 			{
 			using ab<storage_type>::ab;
-
-			inline static constexpr geometry::ends static_ends{geometry::ends::create::open(true, false)};
+			inline static constexpr geometry::ends ends{geometry::ends::create::open(true, false)};
 
 			utils_gpu_available constexpr float length2() const noexcept { return utils::math::constants::finf; }
 			utils_gpu_available constexpr float length () const noexcept { return utils::math::constants::finf; }
 
-			utils_gpu_available constexpr float projected_percent(const concepts::point auto& other) const noexcept
+			using ab<storage_type>::projected_percent;
+			utils_gpu_available constexpr float projected_percent(const concepts::point auto& point) const noexcept
 				{
-				return std::max(0.f, ab<storage_type>::projected_percent(other));
+				return projected_percent<true, false>(point);
 				}
 			};
 
@@ -110,10 +121,12 @@ namespace utils::math::geometry::shape
 		struct segment : ab<storage_type>
 			{
 			using ab<storage_type>::ab;
+			inline static constexpr geometry::ends ends{geometry::ends::create::open(true, true)};
 
-			utils_gpu_available constexpr float projected_percent(const concepts::point auto& other) const noexcept
+			using ab<storage_type>::projected_percent;
+			utils_gpu_available constexpr float projected_percent(const concepts::point auto& point) const noexcept
 				{
-				return std::clamp(ab<storage_type>::projected_percent(other), 0.f, 1.f);
+				return projected_percent<true, true>(point);
 				}
 			};
 		}

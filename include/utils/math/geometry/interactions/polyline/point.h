@@ -36,31 +36,37 @@ namespace utils::math::geometry::interactions
 		const auto edges{polyline.get_edges()};
 		if (edges.empty()) { return {}; }
 
-		return_types::closest_point_with_signed_distance ret{closest_with_signed_distance(edges[1], point)};
-		const auto q{ret.closest};
-		const auto w{ret.distance};
-		
-		for (size_t i = 1; i < edges.size(); i++)
+		return_types::closest_point_with_signed_distance ret;
+		size_t closest_index{0};
+
+		for (size_t i{0}; i < edges.size(); i++)
 			{
 			const auto candidate_edge{edges[i]};
 			const auto candidate{closest_with_signed_distance(candidate_edge, point)};
-
-			if (candidate.closest != ret.closest)
+			if (candidate.distance.absolute() < ret.distance.absolute())
 				{
-				ret.set_to_closest(candidate);
+				ret = candidate;
+				closest_index = i;
 				}
-			else
-				{
-				//Common closest means the closest is a corner, we have to check for the weird regions (see "side_corner_case_visualization.png")
-				//pick the farthest infinite line (not segment) to get the correct side
-				const shape::line line_ret      {edges[i - 1]};
-				const shape::line line_candidate{candidate_edge};
-
-				const return_types::signed_distance line_signed_distance_ret      {signed_distance(line_ret      , point)};
-				const return_types::signed_distance line_signed_distance_candidate{signed_distance(line_candidate, point)};
-
-				ret.distance = line_signed_distance_ret.absolute() > line_signed_distance_candidate.absolute() ? line_signed_distance_ret : line_signed_distance_candidate;
+			else if (candidate.distance.absolute() == ret.distance.absolute() && i == (edges.size() - 1))
+				{//if first and last are equidistant to the point, it means the "first" edge clockwise is the last edge
+				closest_index = i;
 				}
+			}
+
+		if (ret.closest == edges[closest_index].b)
+			{
+			//Common closest means the closest is a corner, we have to check for the weird regions (see "side_corner_case_visualization.png")
+			//pick the farthest infinite line (not segment) to get the correct side
+			const shape::line line_previous{edges[closest_index                  ]};
+			const shape::line line_next    {edges[edges.index_next(closest_index)]};
+		
+			const return_types::signed_distance line_signed_distance_previous{signed_distance(line_previous, point)};
+			const return_types::signed_distance line_signed_distance_next    {signed_distance(line_next    , point)};
+		
+			const auto side{line_signed_distance_previous.absolute() > line_signed_distance_next.absolute() ? line_signed_distance_previous.side() : line_signed_distance_next.side()};
+			const auto side_multiplier{side.value() < 0.f ? -1.f : 1.f};
+			ret.distance = {ret.distance.absolute() * side};
 			}
 
 		return ret;

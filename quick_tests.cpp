@@ -19,6 +19,7 @@
 #include "include/utils/matrix_interface.h"
 #include "include/utils/logging/logger.h"
 
+#include "include/utils/clock.h"
 //#include "include/utils/containers/handled_container.h"
 //#include "include/utils/containers/multihandled.h"
 
@@ -84,27 +85,57 @@ int main()
 	using namespace utils::output;
 	using namespace utils::math::angle::literals;
 
-	utils::math::geometry::shape::polygon<std::dynamic_extent> polyline{utils::math::vec2f{0.f, 0.f}, utils::math::vec2f{10.f, 0.f}, utils::math::vec2f{5.f, 5.f}};
-	utils::math::geometry::interactions::translate_self(polyline, {3.f, 3.f});
+	std::vector<utils::math::vec2f> vertices
+		{
+		utils::math::vec2f{0.f, 0.f},
+		utils::math::vec2f{100.f, 0.f},
+		utils::math::vec2f{100.f, 100.f},
+		utils::math::vec2f{0.f, 100.f},
+		utils::math::vec2f{0.f, 0.f},
+		utils::math::vec2f{100.f, 0.f},
+		utils::math::vec2f{50.f, 50.f}
+		};
+
+	using span_t = utils::math::geometry::shape::observer::polygon<3>::storage_t::inner_storage_t;
+	
+	utils::math::geometry::shape::polygon<std::dynamic_extent> polyline{utils::math::vec2f{0.f, 0.f}, utils::math::vec2f{100.f, 0.f}, utils::math::vec2f{50.f, 50.f}};
+	utils::math::geometry::shape::observer::polygon<4> triangle_a{vertices.begin(), size_t{4}};
+	utils::math::geometry::shape::observer::polygon<3> triangle_b{vertices.begin() + 4, size_t{3}};
+
+	utils::math::geometry::interactions::translate_self(polyline, {5.f, 5.f});
+	
+	utils::math::geometry::interactions::translate_self(triangle_a, {5.f, 5.f});
+	utils::math::geometry::interactions::scale_self    (triangle_b, .5f);
+	utils::math::geometry::interactions::translate_self(triangle_b, {20.f, 20.f});
+
 
 	const auto console_size{utils::console::size()};
+	std::stringstream console_stream;
 
 	for (size_t y{0}; y < console_size.y(); y++)
 		{
-		std::cout << "\n";
+		//console_stream << "\n";
 		for (size_t x{0}; x < console_size.x(); x++)
 			{
 			const utils::math::vec2s coords_indices{x, y};
 			const utils::math::vec2f coords_f
 				{
 				static_cast<float>(coords_indices.x()),
-				static_cast<float>(coords_indices.y())
+				static_cast<float>(coords_indices.y() * 2.f)
 				};
 	
-			const auto sdist{utils::math::geometry::interactions::signed_distance(polyline, coords_f)};
-			const float dist{sdist.absolute()};
-	
-			const float value{dist / 32.f};
+			const auto shape{polyline};
+			const auto sdist_a{utils::math::geometry::interactions::signed_distance(triangle_a, coords_f)};
+			const auto sdist_b{utils::math::geometry::interactions::signed_distance(triangle_b, coords_f)};
+
+			const auto gdist_a{utils::math::geometry::interactions::gradient_signed_distance(triangle_a, coords_f)};
+			const auto gdist_b{utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f)};
+			const auto gdist  {utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist_a, gdist_b)};
+
+			const auto min_dist{std::min(sdist_a.absolute(), sdist_b.absolute())};
+			const auto sdist{utils::math::geometry::interactions::return_types::signed_distance::subtract(sdist_a, sdist_b)};
+			
+			const float value{sdist.absolute() / 16.f};
 	
 			const utils::graphics::colour::rgb_f colour
 				{
@@ -112,16 +143,30 @@ int main()
 				value, 
 				sdist.side().is_outside() ? value : 0.f
 				};
+
+			const auto normalized_gradient{gdist.gradient.normalize()};
+			const auto positive_gradient{(normalized_gradient / 2.f) + 1.f};
+
+			const utils::graphics::colour::rgb_f colour_gradient
+				{
+				value,
+				normalized_gradient.x() * value,
+				normalized_gradient.y() * value,
+				};
+
 			const utils::graphics::colour::rgb_u colour_8
 				{
-				static_cast<uint8_t>(colour[0] * 255.f),
-				static_cast<uint8_t>(colour[1] * 255.f),
-				static_cast<uint8_t>(colour[2] * 255.f)
+				static_cast<uint8_t>(colour_gradient[0] * 255.f),
+				static_cast<uint8_t>(colour_gradient[1] * 255.f),
+				static_cast<uint8_t>(colour_gradient[2] * 255.f)
 				};
 			
-			std::cout << utils::console::colour::foreground{colour_8} << utils::console::colour::background{colour_8} << "#";
+			console_stream << utils::console::colour::foreground{colour_8} << utils::console::colour::background{colour_8} << "#";
 			}
 		}
+	
+	std::cout << console_stream.str() << utils::console::colour::restore_defaults << std::endl;
+
 //	
 //	utils::trackable_wrapper<child_type> child1{1};
 //	utils::trackable_wrapper<angry_type> parent1{1, 2.f};
