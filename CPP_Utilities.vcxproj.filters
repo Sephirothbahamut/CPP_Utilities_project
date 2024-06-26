@@ -478,6 +478,27 @@
     <ClInclude Include="include\utils\math\geometry\interactions\ab\ab.h">
       <Filter>Utils\math\geometry\interactions\ab</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\all.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shapes.h">
+      <Filter>Utils\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\shape\all.h">
+      <Filter>Utils\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\third_party\stb_image.h">
+      <Filter>Utils\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\third_party\stb_image_write.h">
+      <Filter>Utils\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\graphics\image.h">
+      <Filter>Utils\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\vec_s.h">
+      <Filter>Utils\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -491,6 +512,9 @@
     </ClCompile>
     <ClCompile Include="include\utils\console\io.cpp">
       <Filter>Utils\console</Filter>
+    </ClCompile>
+    <ClCompile Include="include\utils\graphics\image.cpp">
+      <Filter>Utils\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

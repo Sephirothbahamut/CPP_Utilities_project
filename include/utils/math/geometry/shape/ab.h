@@ -9,7 +9,7 @@ namespace utils::math::geometry::shape
 	namespace generic
 		{
 		template <storage::type STORAGE_TYPE>
-		struct ab
+		struct ab : geometry::shape_flag
 			{
 			inline static constexpr storage::type storage_type = STORAGE_TYPE;
 

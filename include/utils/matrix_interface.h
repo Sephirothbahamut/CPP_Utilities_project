@@ -3,6 +3,7 @@
 #include <ranges>
 
 #include "math/vec2.h"
+#include "console/colour.h"
 #include "compilation/gpu.h"
 #include "compilation/debug.h"
 
@@ -22,10 +23,10 @@ namespace utils
 				static constexpr size_t      static_width {WIDTH };
 				static constexpr size_t      static_height{HEIGHT};
 
-				utils_gpu_available math::vec2s sizes () const noexcept { return static_sizes  ; }
-				utils_gpu_available size_t      size  () const noexcept { return static_size   ; }
-				utils_gpu_available size_t      width () const noexcept { return static_sizes.x; }
-				utils_gpu_available size_t      height() const noexcept { return static_sizes.y; }
+				utils_gpu_available math::vec2s sizes () const noexcept { return static_sizes    ; }
+				utils_gpu_available size_t      size  () const noexcept { return static_size     ; }
+				utils_gpu_available size_t      width () const noexcept { return static_sizes.x(); }
+				utils_gpu_available size_t      height() const noexcept { return static_sizes.y(); }
 
 			private:
 			};
@@ -36,12 +37,12 @@ namespace utils
 			public:
 				static constexpr matrix_memory memory_layout{MEMORY_LAYOUT};
 
-				utils_gpu_available matrix_root(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x * sizes.y} {}
+				utils_gpu_available matrix_root(math::vec2s sizes) : _sizes{sizes}, _size{sizes.x() * sizes.y()} {}
 
-				utils_gpu_available math::vec2s sizes () const noexcept { return _sizes; }
-				utils_gpu_available size_t      size  () const noexcept { return _size ; }
-				utils_gpu_available size_t      width () const noexcept { return _sizes.x; }
-				utils_gpu_available size_t      height() const noexcept { return _sizes.y; }
+				utils_gpu_available math::vec2s sizes () const noexcept { return _sizes    ; }
+				utils_gpu_available size_t      size  () const noexcept { return _size     ; }
+				utils_gpu_available size_t      width () const noexcept { return _sizes.x(); }
+				utils_gpu_available size_t      height() const noexcept { return _sizes.y(); }
 
 			private:
 				math::vec2s _sizes{};
@@ -81,29 +82,29 @@ namespace utils
 				using matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>::width ;
 				using matrix_root<WIDTH, HEIGHT, MEMORY_LAYOUT>::height;
 
-				utils_gpu_available size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x, coords.y); }
+				utils_gpu_available size_t get_index(math::vec2s coords) const noexcept { return get_index(coords.x(), coords.y()); }
 				utils_gpu_available size_t get_index(size_t x, size_t y) const noexcept
 					{
-					if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * sizes().x); }
+					if constexpr (memory_layout == matrix_memory::width_first) { return x + (y * sizes().x()); }
 					else { return y + (x * sizes().y); }
 					}
-				utils_gpu_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % sizes().x; } else { return index / sizes().y; } }
-				utils_gpu_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x; } else { return index % sizes().y; } }
+				utils_gpu_available size_t      get_x     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index % sizes().x(); } else { return index / sizes().y(); } }
+				utils_gpu_available size_t      get_y     (size_t index) const noexcept { if constexpr (memory_layout == matrix_memory::width_first) { return index / sizes().x(); } else { return index % sizes().y(); } }
 				utils_gpu_available math::vec2s get_coords(size_t index) const noexcept { return {get_x(index), get_y(index)}; }
 				
 				utils_gpu_available const_reference operator[](size_type   i     ) const noexcept { return container()[i]; }
 				utils_gpu_available       reference operator[](size_type   i     )       noexcept { return container()[i]; }
-				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return container()[get_index(coords.x, coords.y)];    }
-				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return container()[get_index(coords.x, coords.y)];    }
+				utils_gpu_available const_reference operator[](math::vec2s coords) const noexcept { return container()[get_index(coords.x(), coords.y())];    }
+				utils_gpu_available       reference operator[](math::vec2s coords)       noexcept { return container()[get_index(coords.x(), coords.y())];    }
 				                    const_reference at(size_type i             ) const { if (!validate_index (i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
 				                          reference at(size_type i             )       { if (!validate_index (i   )) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]( i    ); }
 				                    const_reference at(size_type x, size_type y) const { if (!validate_coords(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
 				                          reference at(size_type x, size_type y)       { if (!validate_coords(x, y)) { throw std::out_of_range{"Matrix access out of bounds."}; } return operator[]({x, y}); }
-				                    const_reference at(math::vec2s coords      ) const { return at(coords.x, coords.y); }
-				                          reference at(math::vec2s coords      )       { return at(coords.x, coords.y); }
+				                    const_reference at(math::vec2s coords      ) const { return at(coords.x(), coords.y()); }
+				                          reference at(math::vec2s coords      )       { return at(coords.x(), coords.y()); }
 
-				utils_gpu_available bool validate_coords(math::vec2s coords      ) const noexcept { return validate_coords(coords.x, coords.y); }
-				utils_gpu_available bool validate_coords(size_type x, size_type y) const noexcept { return (x < sizes().x) && (y < sizes().y); }
+				utils_gpu_available bool validate_coords(math::vec2s coords      ) const noexcept { return validate_coords(coords.x(), coords.y()); }
+				utils_gpu_available bool validate_coords(size_type x, size_type y) const noexcept { return (x < sizes().x()) && (y < sizes().y()); }
 				utils_gpu_available bool validate_index (size_type i             ) const noexcept { return i < size(); }
 
 				utils_gpu_available const auto begin  () const noexcept { return container().begin  (); }
@@ -196,7 +197,7 @@ namespace utils
 			
 			utils_gpu_available constexpr matrix_wrapper(const utils::math::vec2s& sizes) requires(WIDTH == 0 && HEIGHT == 0) :
 				base_t{sizes},
-				_container(sizes.x * sizes.y)
+				_container(sizes.x() * sizes.y())
 				{}
 
 			utils_gpu_available matrix_wrapper(utils::math::vec2s sizes, container_T container) requires(WIDTH == 0 && HEIGHT == 0) :
@@ -236,11 +237,12 @@ namespace utils
 		{
 		using container_t = std::vector<T>;
 		using wrapper_t = matrix_wrapper<container_t, 0, 0, MEMORY_LAYOUT>;
-		matrix(const math::vec2s& sizes) : wrapper_t{sizes, container_t(sizes.x * sizes.y)} {}
+		matrix(const math::vec2s& sizes) : wrapper_t{sizes, container_t(sizes.x() * sizes.y())} {}
 
 		template <class range_t>
 		matrix(const math::vec2s& sizes, const range_t& range) : wrapper_t{sizes, container_t(range.begin(), range.end())} {}
 		};
+	
 	}
 
 namespace utils::output
@@ -255,20 +257,20 @@ namespace utils::output
 
 			if (!container.empty())
 				{
-				for (size_t y = 0; y < container.sizes().y - 1; y++)
+				for (size_t y = 0; y < container.sizes().y() - 1; y++)
 					{
-					for (size_t x = 0; x < container.sizes().x - 1; x++)
+					for (size_t x = 0; x < container.sizes().x() - 1; x++)
 						{
 						os << ucc::value << container[{x, y}] << ucc::separ << ", ";
 						}
-					os << ucc::value << container[{container.sizes().x - 1, y}] << " | ";
+					os << ucc::value << container[{container.sizes().x() - 1, y}] << " | ";
 					}
 				
-				for (size_t x = 0; x < container.sizes().x - 1; x++)
+				for (size_t x = 0; x < container.sizes().x() - 1; x++)
 					{
-					os << ucc::value << container[{x, container.sizes().y - 1}] << ucc::separ << ", ";
+					os << ucc::value << container[{x, container.sizes().y() - 1}] << ucc::separ << ", ";
 					}
-				os << ucc::value << container[{container.sizes().x - 1, container.sizes().y - 1}];
+				os << ucc::value << container[{container.sizes().x() - 1, container.sizes().y() - 1}];
 				}
 			return os << ucc::brace << "]";
 			}
@@ -278,7 +280,7 @@ namespace utils::output
 	inline ::std::ostream& operator<<(::std::ostream& os, const utils::matrix_wrapper<container_T, WIDTH, HEIGHT, MEMORY_LAYOUT>& container) noexcept
 		{
 		namespace ucc = utils::console::colour;
-		os << ucc::type << "mat" << container.sizes().x << "x" << container.sizes().y << typeid(container_T::value_type).name();
+		os << ucc::type << "mat" << container.sizes().x() << "x" << container.sizes().y() << typeid(container_T::value_type).name();
 		return utils::output::typeless::operator<<(os, container);
 		}
 	}

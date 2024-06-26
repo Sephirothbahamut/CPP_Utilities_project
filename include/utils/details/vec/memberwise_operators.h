@@ -20,19 +20,12 @@ namespace utils::details::vector
 		public:
 			template <auto callback> utils_gpu_available void for_each() const noexcept { for (const auto& value : self()) { callback(value); } }
 			template <auto callback> utils_gpu_available void for_each()       noexcept { for (      auto& value : self()) { callback(value); } }
-
-			template <auto callback> utils_gpu_available nonref_self_t for_each_to_new() const noexcept
-				{
-				nonref_self_t ret;
-				for (size_t i{0}; i < extent; i++)
-					{
-					ret[i] = callback(self()[i]);
-					}
-				return ret;
-				}
+			
 			utils_gpu_available void for_each(auto callback) const noexcept { for (const auto& value : self()) { callback(value); } }
 			utils_gpu_available void for_each(auto callback)       noexcept { for (      auto& value : self()) { callback(value); } }
-			utils_gpu_available nonref_self_t for_each_to_new(auto callback) const noexcept
+
+			template <auto callback> 
+			utils_gpu_available nonref_self_t for_each_to_new() const noexcept
 				{
 				nonref_self_t ret;
 				for (size_t i{0}; i < extent; i++)
@@ -41,6 +34,17 @@ namespace utils::details::vector
 					}
 				return ret;
 				}
+
+			//template <typename callback_t>
+			//utils_gpu_available nonref_self_t for_each_to_new(callback_t callback) const noexcept
+			//	{
+			//	nonref_self_t ret;
+			//	for (size_t i{0}; i < extent; i++)
+			//		{
+			//		ret[i] = callback(self()[i]);
+			//		}
+			//	return ret;
+			//	}
 
 			template <auto callback>
 			utils_gpu_available constexpr self_t& operator_self_assign(const concepts::compatible_scalar<self_t> auto& scalar) noexcept

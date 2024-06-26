@@ -16,7 +16,7 @@ namespace utils::math::geometry::interactions
 
 	utils_gpu_available constexpr return_types::side side(const shape::concepts::point auto& point, const vec2f& other) noexcept
 		{
-		return ((*this) == other) ? return_types::side::create::coincident() : return_types::side::create::outside();
+		return (point == other) ? return_types::side::create::coincident() : return_types::side::create::outside();
 		}
 
 	utils_gpu_available constexpr return_types::signed_distance signed_distance(const shape::concepts::point auto& point, const vec2f& other) noexcept

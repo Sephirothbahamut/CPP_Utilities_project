@@ -105,6 +105,9 @@ namespace utils::storage
 		concept multiple = std::derived_from<std::remove_cvref_t<T>, utils::storage::multiple<typename std::remove_cvref_t<T>::template_type, std::remove_cvref_t<T>::extent, std::remove_cvref_t<T>::sequential_observer>>;
 		}
 
+	struct construct_flag_data {};
+	struct construct_flag_size {};
+
 
 	template <typename T, size_t EXTENT = std::dynamic_extent, bool SEQUENTIAL_OBSERVER = true>
 	struct multiple
@@ -209,12 +212,26 @@ namespace utils::storage
 		utils_gpu_available constexpr const_reverse_iterator  rend  () const noexcept { return {storage. rend  ()}; }
 		utils_gpu_available constexpr const_reverse_iterator crend  ()       noexcept { if constexpr (!concepts::span<inner_storage_t>) { return {storage.crend  ()}; } else { return {storage.crend  ()}; } }
 
-		utils_gpu_available constexpr multiple() requires(storage_type == ::utils::storage::type::owner) = default;
+		utils_gpu_available constexpr multiple() requires(storage_type.is_owner()) = default;
 
 		utils_gpu_available constexpr multiple(inner_storage_t&& storage) : storage{storage} {}
 
+		utils_gpu_available constexpr multiple(size_t size)
+			requires(storage_type.is_owner() && concepts::vector<inner_storage_t>) : 
+			multiple{utils::storage::construct_flag_size{}, size}
+			{};
+
 		template <concepts::can_construct_value_type<typename inner_storage_t::value_type> ...Args>
-		utils_gpu_available constexpr multiple(Args&&... args)
+		utils_gpu_available constexpr multiple(Args&&... args) : multiple{utils::storage::construct_flag_data{}, std::forward<Args>(args)...}
+			{}
+
+		utils_gpu_available constexpr multiple(utils::storage::construct_flag_size, size_t size)
+			requires(storage_type.is_owner() && concepts::vector<inner_storage_t>) :
+			storage(size)
+			{};
+
+		template <concepts::can_construct_value_type<typename inner_storage_t::value_type> ...Args>
+		utils_gpu_available constexpr multiple(utils::storage::construct_flag_data, Args&&... args)
 			requires
 				(
 				concepts::vector<inner_storage_t> || 

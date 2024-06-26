@@ -104,7 +104,7 @@ namespace utils::graphics::colour
 			utils_gpu_available constexpr       const_aware_value_type& a()       noexcept requires(static_has_alpha) { return (*this)[3]; }
 
 			utils_gpu_available constexpr rgb(base base, value_type components_multiplier = range::full_value, value_type alpha = range::full_value) noexcept
-				requires(!storage_type.is_reference())
+				requires(storage_type.is_owner())
 				{
 				r() = components_multiplier * (base == base::white || base == base::red   || base == base::yellow  || base == base::magenta);
 				g() = components_multiplier * (base == base::white || base == base::green || base == base::yellow  || base == base::cyan);
@@ -113,7 +113,7 @@ namespace utils::graphics::colour
 				}
 
 			utils_gpu_available constexpr rgb(const concepts::rgb auto& other) noexcept
-				requires(!storage_type.is_reference())
+				requires(storage_type.is_owner())
 				{
 				for (size_t i = 0; i < 3; i++)
 					{
@@ -124,7 +124,7 @@ namespace utils::graphics::colour
 				}
 
 			utils_gpu_available constexpr rgb(const concepts::hsv auto& hsv) noexcept
-				requires(!storage_type.is_reference());
+				requires(storage_type.is_owner());
 
 			utils_gpu_available constexpr nonref_self_t blend(const concepts::colour auto& foreground) const noexcept
 				requires(std::remove_cvref_t<decltype(foreground)>::static_has_alpha)
@@ -198,7 +198,7 @@ namespace utils::graphics::colour
 			using base_t::base;
 
 			utils_gpu_available constexpr hsv(base base, T components_multiplier = range::full_value, T alpha = range::full_value)
-				requires(!storage_type.is_reference())
+				requires(storage_type.is_owner())
 				{
 				if (base != base::black && components_multiplier != T{0.f}) 
 					{
@@ -224,7 +224,7 @@ namespace utils::graphics::colour
 				}
 
 			utils_gpu_available constexpr hsv(const concepts::hsv auto& other) noexcept
-				requires(!storage_type.is_reference())
+				requires(storage_type.is_owner())
 				{
 				for (size_t i = 0; i < 3; i++)
 					{
@@ -235,7 +235,7 @@ namespace utils::graphics::colour
 				}
 
 			utils_gpu_available constexpr hsv(const concepts::rgb auto& rgb) noexcept
-				requires(!storage_type.is_reference());
+				requires(storage_type.is_owner());
 			
 			utils_gpu_available constexpr ::utils::math::angle::base<const const_aware_value_type&, range::full_value> h() const noexcept { return {(*this)[0]}; }
 			utils_gpu_available constexpr ::utils::math::angle::base<      const_aware_value_type&, range::full_value> h()       noexcept { return {(*this)[0]}; }
@@ -249,7 +249,7 @@ namespace utils::graphics::colour
 
 		template<utils::math::concepts::undecorated_number T, size_t size>
 		utils_gpu_available constexpr rgb<T, size>::rgb(const concepts::hsv auto& hsv) noexcept
-			requires(!storage_type.is_reference())
+			requires(storage_type.is_owner())
 			{
 			if (hsv.s() == 0)
 				{
@@ -294,7 +294,7 @@ namespace utils::graphics::colour
 
 		template<utils::math::concepts::undecorated_floating_point T, size_t size>
 		utils_gpu_available constexpr hsv<T, size>::hsv(const concepts::rgb auto& rgb) noexcept
-			requires(!storage_type.is_reference())
+			requires(storage_type.is_owner())
 			{//https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
 			using from_t = std::remove_cvref_t<decltype(rgb)>;
 			const colour::rgb<value_type, static_has_alpha> remapped_rgb{rgb};

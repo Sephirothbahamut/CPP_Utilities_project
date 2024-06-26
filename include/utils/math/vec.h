@@ -69,6 +69,8 @@ namespace utils::math
 
 		template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_T>
 		class vec_sized_specialization {};
+		template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_T>
+		class vec_typed_specialization {};
 
 		struct pair_sizes_t
 			{
@@ -101,10 +103,15 @@ namespace utils::math
 		}
 
 	template<typename T, size_t size>
-	struct utils_oop_empty_bases vec : ::utils::details::vector::base<T, size, vec, details::name_vec>, details::vec_sized_specialization<T, size, vec>
+	struct utils_oop_empty_bases vec : 
+		::utils::details::vector::base<T, size, vec, details::name_vec>, 
+		details::vec_sized_specialization<T, size, vec>, 
+		details::vec_typed_specialization<T, size, vec>
 		{
 		template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_T>
 		friend class details::vec_sized_specialization;
+		template<typename T, size_t size, template <typename, size_t> class unspecialized_derived_T>
+		friend class details::vec_typed_specialization;
 
 		using base_t = ::utils::details::vector::base<T, size, vec, details::name_vec>;
 		

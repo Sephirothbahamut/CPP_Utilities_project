@@ -1,5 +1,6 @@
 ﻿#include <string>
 #include <iostream>
+#include <execution>
 
 #include "include/utils/memory.h"
 
@@ -10,13 +11,13 @@
 #include "include/utils/math/vec.h"
 #include "include/utils/math/vec2.h"
 #include "include/utils/math/vec3.h"
+#include "include/utils/math/vec_s.h"
 #include "include/utils/math/angle.h"
 #include "include/utils/math/rect.h"
 
 #include "include/utils/output/std_containers.h"
 #include "include/utils/graphics/colour.h"
 
-#include "include/utils/matrix_interface.h"
 #include "include/utils/logging/logger.h"
 
 #include "include/utils/clock.h"
@@ -30,6 +31,7 @@
 //#include "include/utils/containers/multithreading/multiqueue_consumer.h"
 //
 #include "include/utils/containers/object_pool.h"
+#include "include/utils/matrix_interface.h"
 //
 //#include "include/utils/oop/counting.h"
 //
@@ -64,6 +66,8 @@
 //	int v;
 //	};
 
+#include "include/utils/third_party/stb_image.h"
+#include "include/utils/third_party/stb_image_write.h"
 
 
 struct angry_type
@@ -77,24 +81,41 @@ struct child_type : angry_type
 	child_type(int i) : angry_type{i, 0.f}, another_i{i * 2} {}
 	int another_i;
 	};
+float smoothstep(float edge0, float edge1, float x) {
+	// Scale, bias and saturate x to 0..1 range
+	x = std::clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+	// Evaluate polynomial
+	return x * x * (3 - 2 * x);
+	}
 
+utils::math::vec3f sdgCircle(utils::math::vec2f p, float r)
+	{
+	const float l = p.get_length();
+	const auto div{p / l};
+	return utils::math::vec3f(l - r, div.x(), div.y());
+	}
 
 int main()
 	{
+
+
 	utils::console::initializer utils_console_initializer;
 	using namespace utils::output;
 	using namespace utils::math::angle::literals;
 
 	std::vector<utils::math::vec2f> vertices
 		{
-		utils::math::vec2f{0.f, 0.f},
-		utils::math::vec2f{100.f, 0.f},
+		utils::math::vec2f{  0.f,   0.f},
+		utils::math::vec2f{100.f,   0.f},
 		utils::math::vec2f{100.f, 100.f},
-		utils::math::vec2f{0.f, 100.f},
-		utils::math::vec2f{0.f, 0.f},
-		utils::math::vec2f{100.f, 0.f},
-		utils::math::vec2f{50.f, 50.f}
+		utils::math::vec2f{  0.f, 100.f},
+		utils::math::vec2f{  0.f,   0.f},
+		utils::math::vec2f{100.f,   0.f},
+		utils::math::vec2f{ 50.f,  50.f}
 		};
+
+	utils::math::vec2f asdqwe{0.f, 0.f};
+	asdqwe = -asdqwe;
 
 	using span_t = utils::math::geometry::shape::observer::polygon<3>::storage_t::inner_storage_t;
 	
@@ -108,64 +129,70 @@ int main()
 	utils::math::geometry::interactions::scale_self    (triangle_b, .5f);
 	utils::math::geometry::interactions::translate_self(triangle_b, {20.f, 20.f});
 
+	const utils::math::vec3f light_source{100.f, 50.f, 10.f};
 
-	const auto console_size{utils::console::size()};
-	std::stringstream console_stream;
+	utils::math::vec2s image_sizes{size_t{1024}, size_t{1024}};
+	utils::storage::multiple<utils::graphics::colour::rgba_u> image{image_sizes.sizes_to_size()};
+	std::ranges::iota_view indices(size_t{0}, image.size());
 
-	for (size_t y{0}; y < console_size.y(); y++)
+	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t index)
 		{
-		//console_stream << "\n";
-		for (size_t x{0}; x < console_size.x(); x++)
+		const utils::math::vec2s coords_indices{image_sizes.index_to_coords(index)};
+		const utils::math::vec2f coords_f
 			{
-			const utils::math::vec2s coords_indices{x, y};
-			const utils::math::vec2f coords_f
+			static_cast<float>(coords_indices.x()),
+			static_cast<float>(coords_indices.y())
+			};
+		
+		const auto shape{polyline};
+		const auto sdist_a{utils::math::geometry::interactions::signed_distance(triangle_a, coords_f)};
+		const auto sdist_b{utils::math::geometry::interactions::signed_distance(triangle_b, coords_f)};
+
+		const auto gdist_a{utils::math::geometry::interactions::gradient_signed_distance(triangle_a, coords_f)};
+		const auto gdist_b{utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f)};
+		//const auto gdist  {utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist_a, gdist_b)};
+		//const auto gdist{utils::math::geometry::interactions::gradient_signed_distance(triangle_a.get_edges()[0], coords_f)};
+
+		const auto tmp{sdgCircle(coords_f - utils::math::vec2f{256.f, 256.f}, 32.f)};
+		const utils::math::geometry::interactions::return_types::gradient_signed_distance gdist
+			{
+			.distance{tmp.x()},
+			.gradient
 				{
-				static_cast<float>(coords_indices.x()),
-				static_cast<float>(coords_indices.y() * 2.f)
-				};
-	
-			const auto shape{polyline};
-			const auto sdist_a{utils::math::geometry::interactions::signed_distance(triangle_a, coords_f)};
-			const auto sdist_b{utils::math::geometry::interactions::signed_distance(triangle_b, coords_f)};
+				tmp.y(),
+				tmp.z()
+				}
+			};
 
-			const auto gdist_a{utils::math::geometry::interactions::gradient_signed_distance(triangle_a, coords_f)};
-			const auto gdist_b{utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f)};
-			const auto gdist  {utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist_a, gdist_b)};
+		//utils::math::vec3f normal{tmp.x(), normal_dir.y(), missing_to_max};
+		//normal.normalize();
+		
 
-			const auto min_dist{std::min(sdist_a.absolute(), sdist_b.absolute())};
-			const auto sdist{utils::math::geometry::interactions::return_types::signed_distance::subtract(sdist_a, sdist_b)};
 			
-			const float value{sdist.absolute() / 16.f};
-	
-			const utils::graphics::colour::rgb_f colour
-				{
-				sdist.side().is_inside() ? value : 0.f, 
-				value, 
-				sdist.side().is_outside() ? value : 0.f
-				};
+		// Sdist colour
 
-			const auto normalized_gradient{gdist.gradient.normalize()};
-			const auto positive_gradient{(normalized_gradient / 2.f) + 1.f};
+		utils::graphics::colour::rgb_f colour
+			{
+			std::fmod(gdist.distance.value, 64.f),
+			std::fmod(gdist.gradient.x()  , 64.f),
+			std::fmod(gdist.gradient.y()  , 64.f)
+			};
+		colour /= 64.f;
+		
+		const utils::graphics::colour::rgba_u colour_8
+			{
+			static_cast<uint8_t>(colour[0] * 255.f),
+			static_cast<uint8_t>(colour[1] * 255.f),
+			static_cast<uint8_t>(colour[2] * 255.f),
+			uint8_t{255}
+			};
 
-			const utils::graphics::colour::rgb_f colour_gradient
-				{
-				value,
-				normalized_gradient.x() * value,
-				normalized_gradient.y() * value,
-				};
+		image[image_sizes.coords_to_index(coords_indices)] = colour_8;
+		});
 
-			const utils::graphics::colour::rgb_u colour_8
-				{
-				static_cast<uint8_t>(colour_gradient[0] * 255.f),
-				static_cast<uint8_t>(colour_gradient[1] * 255.f),
-				static_cast<uint8_t>(colour_gradient[2] * 255.f)
-				};
-			
-			console_stream << utils::console::colour::foreground{colour_8} << utils::console::colour::background{colour_8} << "#";
-			}
-		}
-	
-	std::cout << console_stream.str() << utils::console::colour::restore_defaults << std::endl;
+	stbi_write_png("output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));
+
+
 
 //	
 //	utils::trackable_wrapper<child_type> child1{1};
