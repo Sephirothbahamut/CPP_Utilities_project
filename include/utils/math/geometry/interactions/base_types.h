@@ -160,7 +160,7 @@ namespace utils::math::geometry::interactions::return_types
 		return
 			{
 			closest_point_with_signed_distance.distance,
-			closest_point_with_signed_distance.closest - point
+			(closest_point_with_signed_distance.closest - point).normalize()
 			};
 		}
 

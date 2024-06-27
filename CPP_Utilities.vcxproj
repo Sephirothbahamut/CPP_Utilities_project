@@ -228,6 +228,7 @@
     <ClInclude Include="include\utils\math\geometry\shape\aabb.h" />
     <ClInclude Include="include\utils\math\geometry\shape\ab.h" />
     <ClInclude Include="include\utils\math\geometry\shape\all.h" />
+    <ClInclude Include="include\utils\math\geometry\shape\bezier.h" />
     <ClInclude Include="include\utils\math\geometry\shape\point.h" />
     <ClInclude Include="include\utils\math\geometry\shape\polyline.h" />
     <ClInclude Include="include\utils\math\ranged.h" />

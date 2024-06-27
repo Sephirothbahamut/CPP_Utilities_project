@@ -123,11 +123,11 @@ int main()
 	utils::math::geometry::shape::observer::polygon<4> triangle_a{vertices.begin(), size_t{4}};
 	utils::math::geometry::shape::observer::polygon<3> triangle_b{vertices.begin() + 4, size_t{3}};
 
-	utils::math::geometry::interactions::translate_self(polyline, {5.f, 5.f});
+	utils::math::geometry::interactions::translate_self(polyline, {50.f, 50.f});
 	
-	utils::math::geometry::interactions::translate_self(triangle_a, {5.f, 5.f});
+	utils::math::geometry::interactions::translate_self(triangle_a, {50.f, 50.f});
 	utils::math::geometry::interactions::scale_self    (triangle_b, .5f);
-	utils::math::geometry::interactions::translate_self(triangle_b, {20.f, 20.f});
+	utils::math::geometry::interactions::translate_self(triangle_b, {120.f, 145.f});
 
 	const utils::math::vec3f light_source{100.f, 50.f, 10.f};
 
@@ -150,40 +150,57 @@ int main()
 
 		const auto gdist_a{utils::math::geometry::interactions::gradient_signed_distance(triangle_a, coords_f)};
 		const auto gdist_b{utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f)};
-		//const auto gdist  {utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist_a, gdist_b)};
-		//const auto gdist{utils::math::geometry::interactions::gradient_signed_distance(triangle_a.get_edges()[0], coords_f)};
+		auto gdist  {utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist_a, gdist_b)};
+		//auto gdist{utils::math::geometry::interactions::gradient_signed_distance(triangle_a.get_edges()[0], coords_f)};
 
-		const auto tmp{sdgCircle(coords_f - utils::math::vec2f{256.f, 256.f}, 32.f)};
-		const utils::math::geometry::interactions::return_types::gradient_signed_distance gdist
-			{
-			.distance{tmp.x()},
-			.gradient
-				{
-				tmp.y(),
-				tmp.z()
-				}
-			};
-
+		//const auto tmp{sdgCircle(coords_f - utils::math::vec2f{256.f, 256.f}, 32.f)};
+		//utils::math::geometry::interactions::return_types::gradient_signed_distance gdist
+		//	{
+		//	.distance{tmp.x()},
+		//	.gradient
+		//		{
+		//		tmp.y(),
+		//		tmp.z()
+		//		}
+		//	};
+		//utils::graphics::colour::rgb_f colour{1.f};
+		//colour -= (utils::graphics::colour::rgb_f{.1f, .4f, .7f} * gdist.distance.side().sign());
+		//
+		//colour *= 1.0 - std::exp(-4.0 * (gdist.distance.absolute() * .001f));
+		//colour *= 0.8 + 0.2 * std::cos(280.0 * gdist.distance.value * .001f);
 		//utils::math::vec3f normal{tmp.x(), normal_dir.y(), missing_to_max};
 		//normal.normalize();
+
+		gdist.distance.value *= .006f;
+
+		utils::math::vec3f col = (gdist.distance.side().is_outside()) ? utils::math::vec3f{.9f, .6f, .3f} : utils::math::vec3f{.4f, .7f, .85f};
 		
+		col = utils::math::vec3f{gdist.gradient.x() * .5f + .5f, gdist.gradient.y() * .5f + .5f, 1.f};
+		col *= 1.0 - 0.5 * std::exp(-16.0 * gdist.distance.absolute());
+		col *= 0.9 + 0.1 * std::cos(150.0 * gdist.distance.value);
+		col = utils::math::lerp(col, utils::math::vec3f{1.f}, 1.f - smoothstep(0.f, .01f, gdist.distance.absolute()));
+
+		if (gdist.distance.side().is_inside())
+			{
+			col *= .5f;
+			}
 
 			
 		// Sdist colour
 
-		utils::graphics::colour::rgb_f colour
-			{
-			std::fmod(gdist.distance.value, 64.f),
-			std::fmod(gdist.gradient.x()  , 64.f),
-			std::fmod(gdist.gradient.y()  , 64.f)
-			};
-		colour /= 64.f;
+		//utils::graphics::colour::rgb_f colour
+		//	{
+		//	std::fmod(gdist.distance.value, 64.f),
+		//	std::fmod(gdist.gradient.x()  , 64.f),
+		//	std::fmod(gdist.gradient.y()  , 64.f)
+		//	};
+		//colour /= 64.f;
 		
 		const utils::graphics::colour::rgba_u colour_8
 			{
-			static_cast<uint8_t>(colour[0] * 255.f),
-			static_cast<uint8_t>(colour[1] * 255.f),
-			static_cast<uint8_t>(colour[2] * 255.f),
+			static_cast<uint8_t>(col[0] * 255.f),
+			static_cast<uint8_t>(col[1] * 255.f),
+			static_cast<uint8_t>(col[2] * 255.f),
 			uint8_t{255}
 			};
 
