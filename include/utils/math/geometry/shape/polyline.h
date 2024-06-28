@@ -13,13 +13,12 @@ namespace utils::math::geometry::shape
 	{
 	namespace generic
 		{
-		template <storage::type storage_type, ends ENDS, size_t EXTENT = std::dynamic_extent>
-		struct polyline : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>, utils::math::geometry::shape_flag
+		template <storage::type storage_type, ends ENDS, size_t extent = std::dynamic_extent>
+		struct polyline : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, extent, true>, utils::math::geometry::shape_flag
 			{
 			inline static constexpr ends   ends  {ENDS  };
-			inline static constexpr size_t extent{EXTENT};
 
-			using storage_t = utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, EXTENT, true>;
+			using storage_t = utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, extent, true>;
 			using storage_t::multiple;
 			using typename storage_t::value_type;
 			using typename storage_t::const_aware_value_type;

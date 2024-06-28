@@ -81,6 +81,11 @@ namespace utils::math::geometry::shape
 				//signed distance from line in proportion to the distance between a and b, idk, i'm not a math guy
 				//enough alone to get the sign for side, but needs to be divided by (a-b).length to get the signed distance
 				const float ret{((b.x() - a.x()) * (point.y() - a.y())) - ((point.x() - a.x()) * (b.y() - a.y()))};
+
+				//Note: it's not the dot product
+				//const auto a_to_point(point - a);
+				//const float dot{utils::math::vec2f::dot(a_to_b(), a_to_point)};
+
 				return -ret;
 				}
 			};

@@ -86,6 +86,9 @@
     <Filter Include="Utils\math\geometry\interactions\polyline">
       <UniqueIdentifier>{e06e335a-b54a-4576-8c98-414136cf5166}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\math\geometry\interactions\bezier">
+      <UniqueIdentifier>{becfa24b-dcbf-4734-88b8-285594591f93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\utils\concepts.h">
@@ -501,6 +504,21 @@
     </ClInclude>
     <ClInclude Include="include\utils\math\geometry\shape\bezier.h">
       <Filter>Utils\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier.h">
+      <Filter>Utils\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\base.h">
+      <Filter>Utils\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\point.h">
+      <Filter>Utils\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\transform.h">
+      <Filter>Utils\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\all.h">
+      <Filter>Utils\math\geometry\interactions\bezier</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include "aabb.h"
 #include "ab.h"
 #include "polyline.h"
+#include "bezier.h"
 
 namespace utils::math::geometry::interactions
 	{

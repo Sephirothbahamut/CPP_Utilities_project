@@ -62,7 +62,8 @@ namespace utils::math::geometry::interactions
 	utils_gpu_available constexpr return_types::closest_point_with_signed_distance closest_with_signed_distance(const shape::concepts::ab auto& ab, const vec2f& point) noexcept
 		{
 		const auto closest{closest_point<clamp_a, clamp_b>(ab, point)};
-		return {signed_distance<clamp_a, clamp_b>(ab, point), closest};
+		const auto distance{signed_distance<clamp_a, clamp_b>(ab, point)};
+		return {closest, distance};
 		}
 
 

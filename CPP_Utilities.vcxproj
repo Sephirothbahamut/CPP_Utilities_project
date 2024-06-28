@@ -214,6 +214,11 @@
     <ClInclude Include="include\utils\math\geometry\interactions\ab\transform.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\all.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\base_types.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\all.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\base.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\point.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\bezier\transform.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\point.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\point\all.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\point\base.h" />

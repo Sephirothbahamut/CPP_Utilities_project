@@ -118,6 +118,10 @@ namespace utils::math::geometry::interactions::return_types
 
 		utils_gpu_available static constexpr gradient_signed_distance create(const closest_point_with_signed_distance& closest_point_with_signed_distance, const shape::concepts::point auto& point) noexcept;
 
+		utils_gpu_available static constexpr gradient_signed_distance merge_absolute(const gradient_signed_distance& a, const gradient_signed_distance& b) noexcept
+			{
+			return a.distance.absolute() < b.distance.absolute() ? a : b;
+			}
 		utils_gpu_available static constexpr gradient_signed_distance merge(const gradient_signed_distance& a, const gradient_signed_distance& b) noexcept
 			{
 			return a.distance.value < b.distance.value ? a : b;
@@ -136,8 +140,8 @@ namespace utils::math::geometry::interactions::return_types
 
 	struct closest_point_with_signed_distance
 		{
-		signed_distance distance{utils::math::constants::finf};
 		shape::point closest{0.f, 0.f};
+		signed_distance distance{utils::math::constants::finf};
 
 		utils_gpu_available static constexpr closest_point_with_signed_distance pick_closest(const closest_point_with_signed_distance& a, const closest_point_with_signed_distance& b) noexcept
 			{

@@ -49,10 +49,7 @@
 //#include "include/utils/beta/math/geometry/all.h"
 //#include "include/utils/beta/math/geometry/group.h"
 //#include "include/utils/math/transform2.h"
-#include "include/utils/math/geometry/shape/point.h"
-#include "include/utils/math/geometry/shape/aabb.h"
-#include "include/utils/math/geometry/shape/ab.h"
-#include "include/utils/math/geometry/shape/polyline.h"
+#include "include/utils/math/geometry/shapes.h"
 
 #include "include/utils/math/geometry/interactions.h"
 
@@ -122,6 +119,7 @@ int main()
 	utils::math::geometry::shape::polygon<std::dynamic_extent> polyline{utils::math::vec2f{0.f, 0.f}, utils::math::vec2f{100.f, 0.f}, utils::math::vec2f{50.f, 50.f}};
 	utils::math::geometry::shape::observer::polygon<4> triangle_a{vertices.begin(), size_t{4}};
 	utils::math::geometry::shape::observer::polygon<3> triangle_b{vertices.begin() + 4, size_t{3}};
+	utils::math::geometry::shape::bezier<3> bezier{utils::math::vec2f{300.f, 300.f}, utils::math::vec2f{200.f, 600.f}, utils::math::vec2f{800.f, 400.f}};
 
 	utils::math::geometry::interactions::translate_self(polyline, {50.f, 50.f});
 	
@@ -151,25 +149,9 @@ int main()
 		const auto gdist_a{utils::math::geometry::interactions::gradient_signed_distance(triangle_a, coords_f)};
 		const auto gdist_b{utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f)};
 		auto gdist  {utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist_a, gdist_b)};
-		//auto gdist{utils::math::geometry::interactions::gradient_signed_distance(triangle_a.get_edges()[0], coords_f)};
 
-		//const auto tmp{sdgCircle(coords_f - utils::math::vec2f{256.f, 256.f}, 32.f)};
-		//utils::math::geometry::interactions::return_types::gradient_signed_distance gdist
-		//	{
-		//	.distance{tmp.x()},
-		//	.gradient
-		//		{
-		//		tmp.y(),
-		//		tmp.z()
-		//		}
-		//	};
-		//utils::graphics::colour::rgb_f colour{1.f};
-		//colour -= (utils::graphics::colour::rgb_f{.1f, .4f, .7f} * gdist.distance.side().sign());
-		//
-		//colour *= 1.0 - std::exp(-4.0 * (gdist.distance.absolute() * .001f));
-		//colour *= 0.8 + 0.2 * std::cos(280.0 * gdist.distance.value * .001f);
-		//utils::math::vec3f normal{tmp.x(), normal_dir.y(), missing_to_max};
-		//normal.normalize();
+		const auto gdist_bezier{utils::math::geometry::interactions::gradient_signed_distance(bezier, coords_f)};
+		gdist = utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist, gdist_bezier);
 
 		gdist.distance.value *= .006f;
 
@@ -184,17 +166,6 @@ int main()
 			{
 			col *= .5f;
 			}
-
-			
-		// Sdist colour
-
-		//utils::graphics::colour::rgb_f colour
-		//	{
-		//	std::fmod(gdist.distance.value, 64.f),
-		//	std::fmod(gdist.gradient.x()  , 64.f),
-		//	std::fmod(gdist.gradient.y()  , 64.f)
-		//	};
-		//colour /= 64.f;
 		
 		const utils::graphics::colour::rgba_u colour_8
 			{
