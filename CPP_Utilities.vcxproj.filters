@@ -97,19 +97,390 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\utils\beta\containers\hive\pool.h">
-      <Filter>Beta\containers\hive</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\resource_manager.h">
-      <Filter>Beta\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\beta\containers\multihandled_default.h">
-      <Filter>Beta\containers</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Library\include\utils\console\initializer.cpp">
+      <Filter>Library\console</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\include\utils\console\io.cpp">
+      <Filter>Library\console</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\include\utils\graphics\image.cpp">
+      <Filter>Library\graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h">
+      <Filter>Beta\containers\hive</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\beta\containers\buffer.h">
+      <Filter>Beta\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\beta\containers\multihandled_default.h">
+      <Filter>Beta\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\beta\containers\resource_manager.h">
+      <Filter>Beta\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\compilation\gpu.h">
+      <Filter>Library\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\compilation\OS.h">
+      <Filter>Library\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\compilation\warnings.h">
+      <Filter>Library\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\compilation\compiler.h">
+      <Filter>Library\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\compilation\debug.h">
+      <Filter>Library\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\console\colour.h">
+      <Filter>Library\console</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\console\initializer.h">
+      <Filter>Library\console</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\console\io.h">
+      <Filter>Library\console</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\buffer.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\flat_map.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\flat_set.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\handled_container.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\linked_vector.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\matrix.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\matrix_dyn.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\matrix_memory_layout.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multihandled.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multihandled_default.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multihandled_default_old.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multihandled_unsafe.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multitype_container.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\object_pool.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\polymorphic_access_container.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\polymorphic_container.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\resource_manager.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\segmented_vector.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\std_hash.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\storage_for.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\hive\next.h">
+      <Filter>Library\containers\hive</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\hive\skipfield.h">
+      <Filter>Library\containers\hive</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\consumable_queue.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\consumption_delegating_queue.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\multiqueue_consumer.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\operations_flags.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\producer_consumer_queue.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\self_consuming_queue.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\multithreading\concurrent_queue.h">
+      <Filter>Library\containers\multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\details\vec\base.h">
+      <Filter>Library\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\details\vec\definitions.h">
+      <Filter>Library\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\details\vec\memberwise_operators.h">
+      <Filter>Library\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\details\vec\output.h">
+      <Filter>Library\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\details\vec\all.h">
+      <Filter>Library\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\graphics\colour.h">
+      <Filter>Library\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\graphics\image.h">
+      <Filter>Library\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\input_system\common.h">
+      <Filter>Library\input_system</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\input_system\mouse.h">
+      <Filter>Library\input_system</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\input_system\device\gamepad.h">
+      <Filter>Library\input_system\device</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\input_system\device\keyboard.h">
+      <Filter>Library\input_system\device</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\input_system\device\mouse.h">
+      <Filter>Library\input_system\device</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\input_system\device\common.h">
+      <Filter>Library\input_system\device</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\logging\logger.h">
+      <Filter>Library\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\logging\message.h">
+      <Filter>Library\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\angle.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\average.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\constants.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\easings.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\identity_numbers.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\mat.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\math.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\ranged.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\rect.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\transform2.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\vec.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\vec_s.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\vec2.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\vec3.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\all.h">
+      <Filter>Library\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\group.h">
+      <Filter>Library\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions.h">
+      <Filter>Library\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shapes.h">
+      <Filter>Library\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\details\base_types.h">
+      <Filter>Library\math\geometry\details</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\aabb.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\all.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\base_types.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\mixed.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\point.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\polyline.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\aabb\all.h">
+      <Filter>Library\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\aabb\base.h">
+      <Filter>Library\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\aabb\point.h">
+      <Filter>Library\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\aabb\transform.h">
+      <Filter>Library\math\geometry\interactions\aabb</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab\base.h">
+      <Filter>Library\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab\point.h">
+      <Filter>Library\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab\transform.h">
+      <Filter>Library\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab\ab.h">
+      <Filter>Library\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab\all.h">
+      <Filter>Library\math\geometry\interactions\ab</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\point.h">
+      <Filter>Library\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\all.h">
+      <Filter>Library\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\base.h">
+      <Filter>Library\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\mixed\all.h">
+      <Filter>Library\math\geometry\interactions\mixed</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\mixed\base.h">
+      <Filter>Library\math\geometry\interactions\mixed</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\mixed\point.h">
+      <Filter>Library\math\geometry\interactions\mixed</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\point\point.h">
+      <Filter>Library\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\point\transform.h">
+      <Filter>Library\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\point\all.h">
+      <Filter>Library\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\point\base.h">
+      <Filter>Library\math\geometry\interactions\point</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\polyline\base.h">
+      <Filter>Library\math\geometry\interactions\polyline</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\polyline\point.h">
+      <Filter>Library\math\geometry\interactions\polyline</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\polyline\all.h">
+      <Filter>Library\math\geometry\interactions\polyline</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\base.h">
+      <Filter>Library\math\geometry\interactions\vertices</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\transform.h">
+      <Filter>Library\math\geometry\interactions\vertices</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\all.h">
+      <Filter>Library\math\geometry\interactions\vertices</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\oop\counting.h">
+      <Filter>Library\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\oop\crtp.h">
+      <Filter>Library\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\oop\disable_move_copy.h">
+      <Filter>Library\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\oop\virtual.h">
+      <Filter>Library\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\oop\conditional_inheritance.h">
+      <Filter>Library\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\output\vec.h">
+      <Filter>Library\output</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\output\std_containers.h">
+      <Filter>Library\output</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\third_party\magic_enum.h">
+      <Filter>Library\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\third_party\polymorphic_value.h">
+      <Filter>Library\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\third_party\stb_image.h">
+      <Filter>Library\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\third_party\stb_image_write.h">
+      <Filter>Library\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\third_party\concurrentqueue.h">
+      <Filter>Library\third_party</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\third_party\jc_voronoi.h">
+      <Filter>Library\third_party</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Library\include\utils\math\geometry\interactions\polyline\side_corner_case_visualization.png">
+      <Filter>Library\math\geometry\interactions\polyline</Filter>
+    </Image>
   </ItemGroup>
 </Project>
