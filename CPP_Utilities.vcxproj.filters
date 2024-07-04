@@ -8,334 +8,97 @@
     <Filter Include="Beta">
       <UniqueIdentifier>{9c42cfdd-7d7a-4381-8f9c-08590ea61584}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{14fda5b3-7e80-4148-bdc3-599502fc01fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\compilation">
-      <UniqueIdentifier>{e3365c61-f688-4e19-b2cc-5646264d74d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\console">
-      <UniqueIdentifier>{0f9ff369-2642-46ad-86d7-c31e1375a012}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\containers">
-      <UniqueIdentifier>{fca3cf14-c1e3-424c-9697-ee8f2f85cab1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\containers\hive">
-      <UniqueIdentifier>{554a512e-fd5c-4fb1-a9ef-8fc722a43ab0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\output">
-      <UniqueIdentifier>{d4632c88-329e-431a-a065-6263af4d1628}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\math">
-      <UniqueIdentifier>{2b48f215-9162-4760-a577-bf15c8e1e403}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\math\geometry">
-      <UniqueIdentifier>{b522fefe-7c38-4bd8-aa57-1c7fdf7948a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\details">
-      <UniqueIdentifier>{a4c6619d-f6a2-431b-9217-8523b8125c16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\graphics">
-      <UniqueIdentifier>{b3f67c0a-6ee7-4b09-af2c-49c239bd3ff0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Beta\containers">
       <UniqueIdentifier>{2a958667-309e-4493-836a-ecffa05fef2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Beta\containers\hive">
       <UniqueIdentifier>{a6d5cc8d-35eb-449d-8021-c27a17b95748}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\containers\multithreading">
+    <Filter Include="Library">
+      <UniqueIdentifier>{14fda5b3-7e80-4148-bdc3-599502fc01fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\compilation">
+      <UniqueIdentifier>{e3365c61-f688-4e19-b2cc-5646264d74d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\containers">
+      <UniqueIdentifier>{fca3cf14-c1e3-424c-9697-ee8f2f85cab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\containers\hive">
+      <UniqueIdentifier>{554a512e-fd5c-4fb1-a9ef-8fc722a43ab0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\containers\multithreading">
       <UniqueIdentifier>{aee5b14c-b39c-4407-8266-0366b7f38944}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\oop">
-      <UniqueIdentifier>{e933390c-bf5a-49d8-8671-fa9c474cde98}</UniqueIdentifier>
+    <Filter Include="Library\output">
+      <UniqueIdentifier>{d4632c88-329e-431a-a065-6263af4d1628}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\third_party">
-      <UniqueIdentifier>{dc330aa9-0fc5-4efd-a6c7-2e95a859a34e}</UniqueIdentifier>
+    <Filter Include="Library\math">
+      <UniqueIdentifier>{2b48f215-9162-4760-a577-bf15c8e1e403}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\details\vec">
-      <UniqueIdentifier>{052b3c9f-7f3c-4702-8e79-2ae015d1a897}</UniqueIdentifier>
+    <Filter Include="Library\math\geometry">
+      <UniqueIdentifier>{b522fefe-7c38-4bd8-aa57-1c7fdf7948a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\logging">
-      <UniqueIdentifier>{0d52f7aa-5da0-4fa6-b725-8620c21c5253}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\input_system">
-      <UniqueIdentifier>{31f72530-c40d-485a-9273-0c555bc1f868}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\input_system\device">
-      <UniqueIdentifier>{56436e34-99b1-4792-a336-6dd2071c2473}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\math\geometry\shape">
+    <Filter Include="Library\math\geometry\shape">
       <UniqueIdentifier>{aa61dbc7-b0f0-45f5-b898-f58915ce2492}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\details">
+    <Filter Include="Library\math\geometry\details">
       <UniqueIdentifier>{0c6f0692-602d-425d-808b-05efb44c047a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions">
+    <Filter Include="Library\math\geometry\interactions">
       <UniqueIdentifier>{11d5e183-78f0-4af1-8d51-808ec9e86ab3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\aabb">
+    <Filter Include="Library\math\geometry\interactions\aabb">
       <UniqueIdentifier>{85b61ada-b045-4243-96a3-7b916bc617ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\point">
+    <Filter Include="Library\math\geometry\interactions\point">
       <UniqueIdentifier>{c3ccdcfa-0720-4d32-aa03-db249cc88ddd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\ab">
+    <Filter Include="Library\math\geometry\interactions\ab">
       <UniqueIdentifier>{b22028a0-5384-484c-89b6-00b4543063fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\polyline">
+    <Filter Include="Library\math\geometry\interactions\polyline">
       <UniqueIdentifier>{e06e335a-b54a-4576-8c98-414136cf5166}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\bezier">
+    <Filter Include="Library\math\geometry\interactions\bezier">
       <UniqueIdentifier>{becfa24b-dcbf-4734-88b8-285594591f93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\mixed">
+    <Filter Include="Library\math\geometry\interactions\mixed">
       <UniqueIdentifier>{2aac7614-50cd-4f50-897d-94bb2746e3b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\math\geometry\interactions\vertices">
+    <Filter Include="Library\math\geometry\interactions\vertices">
       <UniqueIdentifier>{68a21143-52a2-4c54-9bfe-a18cca8819c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\details">
+      <UniqueIdentifier>{a4c6619d-f6a2-431b-9217-8523b8125c16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\details\vec">
+      <UniqueIdentifier>{052b3c9f-7f3c-4702-8e79-2ae015d1a897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\graphics">
+      <UniqueIdentifier>{b3f67c0a-6ee7-4b09-af2c-49c239bd3ff0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\oop">
+      <UniqueIdentifier>{e933390c-bf5a-49d8-8671-fa9c474cde98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\third_party">
+      <UniqueIdentifier>{dc330aa9-0fc5-4efd-a6c7-2e95a859a34e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\logging">
+      <UniqueIdentifier>{0d52f7aa-5da0-4fa6-b725-8620c21c5253}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\input_system">
+      <UniqueIdentifier>{31f72530-c40d-485a-9273-0c555bc1f868}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\input_system\device">
+      <UniqueIdentifier>{56436e34-99b1-4792-a336-6dd2071c2473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\console">
+      <UniqueIdentifier>{0f9ff369-2642-46ad-86d7-c31e1375a012}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\utils\concepts.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\compilation\debug.h">
-      <Filter>Utils\compilation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\compilation\OS.h">
-      <Filter>Utils\compilation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\console\io.h">
-      <Filter>Utils\console</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\console\colour.h">
-      <Filter>Utils\console</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\output\std_containers.h">
-      <Filter>Utils\output</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\identity_numbers.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\math.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\vec.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\vec2.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\vec3.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\angle.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\constants.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\graphics\colour.h">
-      <Filter>Utils\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\average.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\easings.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\enum.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\memory.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\id_pool.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\flat_set.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\handled_container.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\buffer.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\template_wrappers.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\tracking.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\wrapper.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\variadic.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\variant.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\matrix.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\matrix_dyn.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\transform2.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\matrix_memory_layout.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\try_opt.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\flat_map.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\polymorphic_access_container.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\polymorphic_container.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\polymorphic_value.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multitype_container.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\construct.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\storage_for.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multihandled.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multihandled_default.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\hive\next.h">
-      <Filter>Utils\containers\hive</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\hive\skipfield.h">
-      <Filter>Utils\containers\hive</Filter>
-    </ClInclude>
     <ClInclude Include="include\utils\beta\containers\hive\pool.h">
       <Filter>Beta\containers\hive</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\linked_vector.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\segmented_vector.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\multiqueue_consumer.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\consumable_queue.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\self_consuming_queue.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\producer_consumer_queue.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\consumption_delegating_queue.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\operations_flags.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\flags.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\std_hash.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multithreading\concurrent_queue.h">
-      <Filter>Utils\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\thread_pool.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multihandled_unsafe.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\multihandled_default_old.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\future.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\rect.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\clock.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\one_time_tasks.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\index_range.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\oop\counting.h">
-      <Filter>Utils\oop</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\oop\virtual.h">
-      <Filter>Utils\oop</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\object_pool.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\third_party\magic_enum.h">
-      <Filter>Utils\third_party</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\third_party\polymorphic_value.h">
-      <Filter>Utils\third_party</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\third_party\concurrentqueue.h">
-      <Filter>Utils\third_party</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\containers\resource_manager.h">
-      <Filter>Utils\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\oop\disable_move_copy.h">
-      <Filter>Utils\oop</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\compilation\gpu.h">
-      <Filter>Utils\compilation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\details\vec\base.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\details\vec\memberwise_operators.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\details\vec\output.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\compilation\warnings.h">
-      <Filter>Utils\compilation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\compilation\compiler.h">
-      <Filter>Utils\compilation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\matrix_interface.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\mat.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\third_party\jc_voronoi.h">
-      <Filter>Utils\third_party</Filter>
     </ClInclude>
     <ClInclude Include="include\utils\beta\containers\resource_manager.h">
       <Filter>Beta\containers</Filter>
@@ -343,229 +106,10 @@
     <ClInclude Include="include\utils\beta\containers\multihandled_default.h">
       <Filter>Beta\containers</Filter>
     </ClInclude>
-    <ClInclude Include="include\utils\name.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\string.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\console\initializer.h">
-      <Filter>Utils\console</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\logging\message.h">
-      <Filter>Utils\logging</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\logging\logger.h">
-      <Filter>Utils\logging</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\input_system\common.h">
-      <Filter>Utils\input_system</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\input_system\device\mouse.h">
-      <Filter>Utils\input_system\device</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\input_system\device\common.h">
-      <Filter>Utils\input_system\device</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\input_system\device\gamepad.h">
-      <Filter>Utils\input_system\device</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\input_system\device\keyboard.h">
-      <Filter>Utils\input_system\device</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\hash.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\oop\crtp.h">
-      <Filter>Utils\oop</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\ranged.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\oop\conditional_inheritance.h">
-      <Filter>Utils\oop</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\details\vec\definitions.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\details\vec\all.h">
-      <Filter>Utils\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\storage.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\output\vec.h">
-      <Filter>Utils\output</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\alignment.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\polyline.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\aabb.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\ab.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\point.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\details\base_types.h">
-      <Filter>Utils\math\geometry\details</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\base_types.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\point.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\aabb.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\ab.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\all.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\point\point.h">
-      <Filter>Utils\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\point\transform.h">
-      <Filter>Utils\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\point\base.h">
-      <Filter>Utils\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\aabb\all.h">
-      <Filter>Utils\math\geometry\interactions\aabb</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\aabb\base.h">
-      <Filter>Utils\math\geometry\interactions\aabb</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\aabb\point.h">
-      <Filter>Utils\math\geometry\interactions\aabb</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\aabb\transform.h">
-      <Filter>Utils\math\geometry\interactions\aabb</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\ab\base.h">
-      <Filter>Utils\math\geometry\interactions\ab</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\ab\point.h">
-      <Filter>Utils\math\geometry\interactions\ab</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\ab\transform.h">
-      <Filter>Utils\math\geometry\interactions\ab</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\ab\all.h">
-      <Filter>Utils\math\geometry\interactions\ab</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\point\all.h">
-      <Filter>Utils\math\geometry\interactions\point</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\polyline.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\polyline\base.h">
-      <Filter>Utils\math\geometry\interactions\polyline</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\polyline\point.h">
-      <Filter>Utils\math\geometry\interactions\polyline</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\polyline\all.h">
-      <Filter>Utils\math\geometry\interactions\polyline</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\ab\ab.h">
-      <Filter>Utils\math\geometry\interactions\ab</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\all.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shapes.h">
-      <Filter>Utils\math\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\all.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\third_party\stb_image.h">
-      <Filter>Utils\third_party</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\third_party\stb_image_write.h">
-      <Filter>Utils\third_party</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\graphics\image.h">
-      <Filter>Utils\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\vec_s.h">
-      <Filter>Utils\math</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\bezier.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\bezier.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\bezier\base.h">
-      <Filter>Utils\math\geometry\interactions\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\bezier\point.h">
-      <Filter>Utils\math\geometry\interactions\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\bezier\all.h">
-      <Filter>Utils\math\geometry\interactions\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\mixed.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\mixed.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\mixed\base.h">
-      <Filter>Utils\math\geometry\interactions\mixed</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\mixed\point.h">
-      <Filter>Utils\math\geometry\interactions\mixed</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\mixed\all.h">
-      <Filter>Utils\math\geometry\interactions\mixed</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\shape\vertices.h">
-      <Filter>Utils\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\vertices.h">
-      <Filter>Utils\math\geometry\interactions</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\vertices\base.h">
-      <Filter>Utils\math\geometry\interactions\vertices</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\vertices\transform.h">
-      <Filter>Utils\math\geometry\interactions\vertices</Filter>
-    </ClInclude>
-    <ClInclude Include="include\utils\math\geometry\interactions\vertices\all.h">
-      <Filter>Utils\math\geometry\interactions\vertices</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="quick_test_libs_implementation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\utils\console\initializer.cpp">
-      <Filter>Utils\console</Filter>
-    </ClCompile>
-    <ClCompile Include="include\utils\console\io.cpp">
-      <Filter>Utils\console</Filter>
-    </ClCompile>
-    <ClCompile Include="include\utils\graphics\image.cpp">
-      <Filter>Utils\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
