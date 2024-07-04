@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/D "WIN32_LEAN_AND_MEAN" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -218,7 +218,10 @@
     <ClInclude Include="include\utils\math\geometry\interactions\bezier\all.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\bezier\base.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\bezier\point.h" />
-    <ClInclude Include="include\utils\math\geometry\interactions\bezier\transform.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\mixed.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\mixed\all.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\mixed\base.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\mixed\point.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\point.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\point\all.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\point\base.h" />
@@ -228,14 +231,19 @@
     <ClInclude Include="include\utils\math\geometry\interactions\polyline\all.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\polyline\base.h" />
     <ClInclude Include="include\utils\math\geometry\interactions\polyline\point.h" />
-    <ClInclude Include="include\utils\math\geometry\interactions\polyline\transform.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\vertices.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\vertices\all.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\vertices\base.h" />
+    <ClInclude Include="include\utils\math\geometry\interactions\vertices\transform.h" />
     <ClInclude Include="include\utils\math\geometry\shapes.h" />
     <ClInclude Include="include\utils\math\geometry\shape\aabb.h" />
     <ClInclude Include="include\utils\math\geometry\shape\ab.h" />
     <ClInclude Include="include\utils\math\geometry\shape\all.h" />
     <ClInclude Include="include\utils\math\geometry\shape\bezier.h" />
+    <ClInclude Include="include\utils\math\geometry\shape\mixed.h" />
     <ClInclude Include="include\utils\math\geometry\shape\point.h" />
     <ClInclude Include="include\utils\math\geometry\shape\polyline.h" />
+    <ClInclude Include="include\utils\math\geometry\shape\vertices.h" />
     <ClInclude Include="include\utils\math\ranged.h" />
     <ClInclude Include="include\utils\math\easings.h" />
     <ClInclude Include="include\utils\math\identity_numbers.h" />
