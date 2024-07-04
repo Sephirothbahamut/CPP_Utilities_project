@@ -137,9 +137,10 @@ namespace utils::storage
 
 		inner_storage_t storage;
 
-		utils_gpu_available constexpr size_t size() const noexcept { return storage.size(); }
-		utils_gpu_available constexpr const auto data() const noexcept { return storage.data(); }
-		utils_gpu_available constexpr       auto data()       noexcept { return storage.data(); }
+		utils_gpu_available constexpr       size_t size () const noexcept { return storage.size (); }
+		utils_gpu_available constexpr       bool   empty() const noexcept { return storage.empty(); }
+		utils_gpu_available constexpr const auto   data () const noexcept { return storage.data (); }
+		utils_gpu_available constexpr       auto   data ()       noexcept { return storage.data (); }
 
 		utils_gpu_available constexpr const       value_type& operator[](size_t index) const noexcept                                    { return static_cast<const       value_type&>(storage   [index]); }
 		utils_gpu_available constexpr const_aware_value_type& operator[](size_t index)       noexcept requires(!storage_type.is_const()) { return static_cast<const_aware_value_type&>(storage   [index]); }

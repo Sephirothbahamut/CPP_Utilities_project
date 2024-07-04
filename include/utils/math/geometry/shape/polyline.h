@@ -8,20 +8,22 @@
 #include "../details/base_types.h"
 #include "ab.h"
 #include "point.h"
+#include "vertices.h"
 
 namespace utils::math::geometry::shape
 	{
 	namespace generic
 		{
 		template <storage::type storage_type, ends ENDS, size_t extent = std::dynamic_extent>
-		struct polyline : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, extent, true>, utils::math::geometry::shape_flag
+		struct polyline : vertices<storage_type, ENDS, extent>
 			{
-			inline static constexpr ends   ends  {ENDS  };
-
-			using storage_t = utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, extent, true>;
-			using storage_t::multiple;
-			using typename storage_t::value_type;
-			using typename storage_t::const_aware_value_type;
+			using vertices_t = vertices<storage_type, ENDS, extent>;
+			using vertices_t::size;
+			using vertices_t::ends;
+			using vertices_t::vertices;
+			using vertices_t::operator[];
+			using typename vertices_t::value_type;
+			using typename vertices_t::const_aware_value_type;
 
 			using self_t = polyline<storage_type, ends, extent>;
 			using nonref_self_t = polyline<storage::type::create::owner(), ends, extent>;
@@ -40,95 +42,61 @@ namespace utils::math::geometry::shape
 				>;
 
 			template <bool is_view_const>
-			struct edges_view : std::ranges::view_interface<edges_view<is_view_const>>
+			struct edges_view : std::ranges::view_interface<edges_view<is_view_const>>, utils::oop::non_copyable, utils::oop::non_movable
 				{
 				using vert_t = vertex<is_view_const>;
 			
-				using span_t = std::span<vert_t, extent>;
+				using polyline_t = std::conditional_t<is_view_const, const self_t, self_t>;
+				polyline_t* polyline_ptr{nullptr};
+
+				utils_gpu_available constexpr edges_view(polyline_t& polyline) : polyline_ptr{&polyline} {}
 
 				template <bool is_iterator_const>
 				struct iterator : std::conditional_t<ENDS.open, std::contiguous_iterator_tag, std::random_access_iterator_tag>
 					{
 					//TODO random access iterator implementation https://en.cppreference.com/w/cpp/iterator/random_access_iterator
 					
+					using polyline_t = std::conditional_t<is_view_const, const self_t, self_t>;
+					polyline_t* polyline_ptr{nullptr};
+					
 					//using iterator_category = std::conditional_t<ENDS.open, std::contiguous_iterator_tag, std::random_access_iterator_tag>;
 					using difference_type   = std::ptrdiff_t;
-					using value_type        = edge<is_view_const || is_iterator_const>;
+					using value_type        = edge<is_iterator_const>;
 					using pointer           = value_type*;
 					using reference         = value_type&;
 
 					utils_gpu_available constexpr iterator() noexcept = default;
-					utils_gpu_available constexpr iterator(span_t span, size_t index = 0) noexcept : span{span}, index{index} {}
+					utils_gpu_available constexpr iterator(polyline_t& polyline, size_t index = 0) noexcept : polyline_ptr{&polyline}, index{index} {}
 
-					utils_gpu_available constexpr edge<true > operator*() const noexcept                                                { return edge<true >{span[index], span[index_next()]}; }
-					utils_gpu_available constexpr edge<false> operator*()       noexcept requires(!is_view_const && !is_iterator_const) { return edge<false>{span[index], span[index_next()]}; }
+					utils_gpu_available constexpr auto operator*() const noexcept { return edge<true             >{polyline_ptr->ends_aware_access(index), polyline_ptr->ends_aware_access(index + 1)}; }
+					utils_gpu_available constexpr auto operator*()       noexcept { return edge<is_iterator_const>{polyline_ptr->ends_aware_access(index), polyline_ptr->ends_aware_access(index + 1)}; }
 				
 					utils_gpu_available constexpr iterator& operator++(   ) noexcept { index++; return *this; }
 					utils_gpu_available constexpr iterator& operator--(   ) noexcept { index--; return *this; }
 					utils_gpu_available constexpr iterator  operator++(int) noexcept { iterator ret{*this}; ++(*this); return ret; }
 					utils_gpu_available constexpr iterator  operator--(int) noexcept { iterator ret{*this}; --(*this); return ret; }
 				
-					utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.span.begin() == b.span.begin(); };
+					utils_gpu_available friend constexpr bool operator== (const iterator& a, const iterator& b) noexcept { return a.index == b.index && a.polyline_ptr == b.polyline_ptr; };
 					utils_gpu_available friend constexpr auto operator<=>(const iterator& a, const iterator& b) noexcept { return a.index <=> b.index; }
-				
-					span_t span;
+					
 					size_t index{0};
-					utils_gpu_available size_t index_next() const noexcept
-						{
-						if constexpr (ends.is_closed())
-							{
-							return (index + 1) % span.size();
-							}
-						else
-							{
-							return index + 1;
-							}
-						}
 					};
 				
 				//static_assert(std::bidirectional_iterator<iterator<true>>); //TODO check why non copy constructible if storage inner container is span?
 				//static_assert(std::random_access_iterator<iterator>);
 				//static_assert(std::condiguous_iterator   <iterator>);
 			
-				template <typename ...Args>
-				utils_gpu_available constexpr edges_view(Args&&... args) : span{std::forward<Args>(args)...} {}
-				
-				span_t span;
 			
-				utils_gpu_available const edge<true > operator[](const size_t& index) const noexcept                          { return edge<true >{span[index], span[index_next(index)]}; }//////////////////// some constness mess here
-				utils_gpu_available       edge<false> operator[](const size_t& index)       noexcept requires(!is_view_const) { return edge<false>{span[index], span[index_next(index)]}; }
+				utils_gpu_available constexpr auto operator[](const size_t& index) const noexcept                          { return edge<true         >{polyline_ptr->ends_aware_access(index), polyline_ptr->ends_aware_access(index + 1)}; }
+				utils_gpu_available constexpr auto operator[](const size_t& index)       noexcept requires(!is_view_const) { return edge<is_view_const>{polyline_ptr->ends_aware_access(index), polyline_ptr->ends_aware_access(index + 1)}; }
 
-				utils_gpu_available constexpr auto begin() const noexcept                          { return iterator<true >{span, 0}; }
-				utils_gpu_available constexpr auto begin()       noexcept requires(!is_view_const) { return iterator<false>{span, 0}; }
-				utils_gpu_available constexpr auto end  () const noexcept
-					{
-					if constexpr (ends.is_closed()) { return iterator<true>{span, span.size()}; }
-					else { return iterator{span, span.size() - 1}; }
-					}
-				utils_gpu_available constexpr auto end() noexcept requires(!is_view_const)
-					{
-					if constexpr (ends.is_closed()) { return iterator<false>{span, span.size()}; }
-					else { return iterator{span, span.size() - 1}; }
-					}
+				utils_gpu_available constexpr auto begin() const noexcept { return iterator<true         >{*polyline_ptr, 0     }; }
+				utils_gpu_available constexpr auto begin()       noexcept { return iterator<is_view_const>{*polyline_ptr, 0     }; }
+				utils_gpu_available constexpr auto end  () const noexcept { return iterator<true         >{*polyline_ptr, size()}; }
+				utils_gpu_available constexpr auto end  ()       noexcept { return iterator<is_view_const>{*polyline_ptr, size()}; }
 			
-				utils_gpu_available constexpr bool empty() const noexcept { return span.empty() || span.size() == 1; }
-				utils_gpu_available constexpr size_t size() const noexcept
-					{
-					if constexpr (ends.is_closed()) { return span.size(); }
-					else { return span.empty() ? 0 : span.size() - 1; }
-					}
-			
-				utils_gpu_available size_t index_next(size_t index) const noexcept
-					{
-					if constexpr (ends.is_closed())
-						{
-						return (index + 1) % span.size();
-						}
-					else
-						{
-						return index + 1;
-						}
-					}
+				utils_gpu_available constexpr bool   empty() const noexcept { return polyline_ptr->empty() || polyline_ptr->size() == 1; }
+				utils_gpu_available constexpr size_t size () const noexcept { return polyline_ptr->ends_aware_size() - 1; }
 				};
 			
 			/// <summary> 
@@ -140,7 +108,7 @@ namespace utils::math::geometry::shape
 			/// A lot of tears and blood were poured into making this seemingly seamless, it's part of the reason I restarted the geometry portion of this library from scratch at least 3 times, 
 			/// please appreciate my efforts for such an useless feature nobody will ever need :)
 			/// </summary>
-			utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<true                   >{storage_t::storage.begin(), storage_t::storage.size()}; }
+			utils_gpu_available constexpr auto get_edges() const noexcept { return edges_view<true>{*this}; }
 
 			/// <summary> 
 			/// Usage note: This shape contains vertices, not edges. 
@@ -151,7 +119,7 @@ namespace utils::math::geometry::shape
 			/// A lot of tears and blood were poured into making this seemingly seamless, it's part of the reason I restarted the geometry portion of this library from scratch at least 3 times, 
 			/// please appreciate my efforts for such an useless feature nobody will ever need :)
 			/// </summary>
-			utils_gpu_available constexpr auto get_edges()       noexcept { return edges_view<storage_type.is_const()>{storage_t::storage.begin(), storage_t::storage.size()}; }
+			utils_gpu_available constexpr auto get_edges() noexcept { return edges_view<storage_type.is_const()>{*this}; }
 			};
 
 		template <storage::type storage_type, size_t extent = std::dynamic_extent>

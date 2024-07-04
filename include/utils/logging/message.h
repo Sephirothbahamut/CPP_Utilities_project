@@ -104,8 +104,6 @@ namespace utils::logging
 
 			friend std::ostream& operator<<(std::ostream& os, const message& m)
 				{
-				using namespace utils::output;
-
 				constexpr size_t timestamp_digits{std::numeric_limits<decltype(m.time.time_since_epoch().count())>::digits10};
 
 				//Data line
