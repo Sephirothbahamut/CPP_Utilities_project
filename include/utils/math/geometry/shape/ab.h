@@ -13,7 +13,7 @@ namespace utils::math::geometry::shape
 			{
 			inline static constexpr storage::type storage_type = STORAGE_TYPE;
 
-			using self_t = ab<storage_type>;
+			using self_t   = ab            <storage_type>;
 			using vertex_t = generic::point<storage_type>;
 			template <bool is_function_const>
 			using vertex_observer = generic::point<storage::type::create::observer(is_function_const)>;

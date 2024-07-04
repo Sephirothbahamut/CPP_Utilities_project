@@ -8,20 +8,21 @@
 #include "../details/base_types.h"
 #include "ab.h"
 #include "point.h"
+#include "vertices.h"
 
 namespace utils::math::geometry::shape
 	{
 	namespace generic
 		{
 		template <storage::type storage_type, size_t extent = std::dynamic_extent>
-		struct bezier : utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, extent, true>, utils::math::geometry::shape_flag
+		struct bezier : vertices<storage_type, geometry::ends::create::open(), extent>
 			{
-			using storage_t = utils::storage::multiple<storage::storage_type_for<geometry::shape::point, storage_type>, extent, true>;
-			using storage_t::size;
-			using storage_t::multiple;
-			using storage_t::operator[];
-			using typename storage_t::value_type;
-			using typename storage_t::const_aware_value_type;
+			using vertices_t = vertices<storage_type, geometry::ends::create::open(), extent>;
+			using vertices_t::size;
+			using vertices_t::vertices;
+			using vertices_t::operator[];
+			using typename vertices_t::value_type;
+			using typename vertices_t::const_aware_value_type;
 
 			using self_t = bezier<storage_type, extent>;
 			using nonref_self_t = bezier<storage::type::create::owner(), extent>;

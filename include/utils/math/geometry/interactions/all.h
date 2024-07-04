@@ -3,6 +3,7 @@
 #include "point.h"
 #include "aabb.h"
 #include "ab.h"
+#include "vertices.h"
 #include "polyline.h"
 #include "bezier.h"
 
