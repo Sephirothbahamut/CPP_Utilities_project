@@ -137,18 +137,22 @@
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\include\utils\alignment.h" />
     <ClInclude Include="Library\include\utils\beta\containers\buffer.h" />
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h" />
     <ClInclude Include="Library\include\utils\beta\containers\multihandled_default.h" />
     <ClInclude Include="Library\include\utils\beta\containers\resource_manager.h" />
+    <ClInclude Include="Library\include\utils\clock.h" />
     <ClInclude Include="Library\include\utils\compilation\compiler.h" />
     <ClInclude Include="Library\include\utils\compilation\debug.h" />
     <ClInclude Include="Library\include\utils\compilation\gpu.h" />
     <ClInclude Include="Library\include\utils\compilation\OS.h" />
     <ClInclude Include="Library\include\utils\compilation\warnings.h" />
+    <ClInclude Include="Library\include\utils\concepts.h" />
     <ClInclude Include="Library\include\utils\console\colour.h" />
     <ClInclude Include="Library\include\utils\console\initializer.h" />
     <ClInclude Include="Library\include\utils\console\io.h" />
+    <ClInclude Include="Library\include\utils\construct.h" />
     <ClInclude Include="Library\include\utils\containers\buffer.h" />
     <ClInclude Include="Library\include\utils\containers\flat_map.h" />
     <ClInclude Include="Library\include\utils\containers\flat_set.h" />
@@ -183,8 +187,14 @@
     <ClInclude Include="Library\include\utils\details\vec\definitions.h" />
     <ClInclude Include="Library\include\utils\details\vec\memberwise_operators.h" />
     <ClInclude Include="Library\include\utils\details\vec\output.h" />
+    <ClInclude Include="Library\include\utils\enum.h" />
+    <ClInclude Include="Library\include\utils\flags.h" />
+    <ClInclude Include="Library\include\utils\future.h" />
     <ClInclude Include="Library\include\utils\graphics\colour.h" />
     <ClInclude Include="Library\include\utils\graphics\image.h" />
+    <ClInclude Include="Library\include\utils\hash.h" />
+    <ClInclude Include="Library\include\utils\id_pool.h" />
+    <ClInclude Include="Library\include\utils\index_range.h" />
     <ClInclude Include="Library\include\utils\input_system\common.h" />
     <ClInclude Include="Library\include\utils\input_system\device\common.h" />
     <ClInclude Include="Library\include\utils\input_system\device\gamepad.h" />
@@ -236,6 +246,17 @@
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\base.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\transform.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shapes.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\aabb.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\ab.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\all.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\capsule.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\circle.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\mixed.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\path.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\point.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h" />
     <ClInclude Include="Library\include\utils\math\identity_numbers.h" />
     <ClInclude Include="Library\include\utils\math\mat.h" />
     <ClInclude Include="Library\include\utils\math\math.h" />
@@ -246,6 +267,10 @@
     <ClInclude Include="Library\include\utils\math\vec2.h" />
     <ClInclude Include="Library\include\utils\math\vec3.h" />
     <ClInclude Include="Library\include\utils\math\vec_s.h" />
+    <ClInclude Include="Library\include\utils\matrix_interface.h" />
+    <ClInclude Include="Library\include\utils\memory.h" />
+    <ClInclude Include="Library\include\utils\name.h" />
+    <ClInclude Include="Library\include\utils\one_time_tasks.h" />
     <ClInclude Include="Library\include\utils\oop\conditional_inheritance.h" />
     <ClInclude Include="Library\include\utils\oop\counting.h" />
     <ClInclude Include="Library\include\utils\oop\crtp.h" />
@@ -253,12 +278,22 @@
     <ClInclude Include="Library\include\utils\oop\virtual.h" />
     <ClInclude Include="Library\include\utils\output\std_containers.h" />
     <ClInclude Include="Library\include\utils\output\vec.h" />
+    <ClInclude Include="Library\include\utils\polymorphic_value.h" />
+    <ClInclude Include="Library\include\utils\storage.h" />
+    <ClInclude Include="Library\include\utils\string.h" />
+    <ClInclude Include="Library\include\utils\template_wrappers.h" />
     <ClInclude Include="Library\include\utils\third_party\concurrentqueue.h" />
     <ClInclude Include="Library\include\utils\third_party\jc_voronoi.h" />
     <ClInclude Include="Library\include\utils\third_party\magic_enum.h" />
     <ClInclude Include="Library\include\utils\third_party\polymorphic_value.h" />
     <ClInclude Include="Library\include\utils\third_party\stb_image.h" />
     <ClInclude Include="Library\include\utils\third_party\stb_image_write.h" />
+    <ClInclude Include="Library\include\utils\thread_pool.h" />
+    <ClInclude Include="Library\include\utils\tracking.h" />
+    <ClInclude Include="Library\include\utils\try_opt.h" />
+    <ClInclude Include="Library\include\utils\variadic.h" />
+    <ClInclude Include="Library\include\utils\variant.h" />
+    <ClInclude Include="Library\include\utils\wrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Library\include\utils\math\geometry\interactions\polyline\side_corner_case_visualization.png" />
