@@ -50,7 +50,7 @@ void geometry_sdf_and_normal_texture()
 
 
 	// Open polyline defined on a statically sized span of vertices over a sequence in memory, with an infinite start and a finite end
-	utils::math::geometry::shape::observer::polyline<utils::math::geometry::ends::create::closed(), 5> poyline{.vertices{vertices.begin(), size_t{5}}};
+	utils::math::geometry::shape::observer::polyline<utils::math::geometry::ends::create::open(true, false), 5> poyline{.vertices{vertices.begin(), size_t{5}}};
 
 	// Closed polygon defined on a statically sized span of vertices over a sequence in memory
 	utils::math::geometry::shape::observer::polygon<> triangle_b{.vertices{vertices.begin() + 5, size_t{3}}};
@@ -78,13 +78,15 @@ void geometry_sdf_and_normal_texture()
 			};
 
 
-		const std::array gdists
+		std::array gdists
 			{
 			utils::math::geometry::interactions::gradient_signed_distance(poyline   , coords_f),
 			utils::math::geometry::interactions::gradient_signed_distance(triangle  , coords_f),
 			utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f),
 			utils::math::geometry::interactions::gradient_signed_distance(bezier    , coords_f),
 			};
+		gdists[0].distance.value = gdists[0].distance.absolute();
+		gdists[3].distance.value = gdists[3].distance.absolute();
 
 		utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
 
@@ -95,28 +97,28 @@ void geometry_sdf_and_normal_texture()
 
 		gdist.distance.value *= .006f;
 
-		utils::math::vec3f col = (gdist.distance.side().is_outside()) ? utils::math::vec3f{.9f, .6f, .3f} : utils::math::vec3f{.4f, .7f, .85f};
-		
-		col = utils::math::vec3f{gdist.gradient.x() * .5f + .5f, gdist.gradient.y() * .5f + .5f, 1.f};
-		col *= 1.0f - 0.5f * std::exp(-16.0f * gdist.distance.absolute());
-		col *= 0.9f + 0.1f * std::cos(150.0f * gdist.distance.value);
-		col = utils::math::lerp(col, utils::math::vec3f{1.f}, 1.f - smoothstep(0.f, .01f, gdist.distance.absolute()));
+		// Inigo Quilez fancy colors
+		utils::math::vec3f colour = (gdist.distance.side().is_outside()) ? utils::math::vec3f{.9f, .6f, .3f} : utils::math::vec3f{.4f, .7f, .85f};
+		colour = utils::math::vec3f{gdist.gradient.x() * .5f + .5f, gdist.gradient.y() * .5f + .5f, 1.f};
+		colour *= 1.0f - 0.5f * std::exp(-16.0f * gdist.distance.absolute());
+		colour *= 0.9f + 0.1f * std::cos(150.0f * gdist.distance.value);
+		colour = utils::math::lerp(colour, utils::math::vec3f{1.f}, 1.f - smoothstep(0.f, .01f, gdist.distance.absolute()));
 
 		if (gdist.distance.side().is_inside())
 			{
-			col *= .5f;
+			colour *= .5f;
 			}
 		
 		const utils::graphics::colour::rgba_u colour_8
 			{
-			static_cast<uint8_t>(col[0] * 255.f),
-			static_cast<uint8_t>(col[1] * 255.f),
-			static_cast<uint8_t>(col[2] * 255.f),
+			static_cast<uint8_t>(colour[0] * 255.f),
+			static_cast<uint8_t>(colour[1] * 255.f),
+			static_cast<uint8_t>(colour[2] * 255.f),
 			uint8_t{255}
 			};
 
 		image[image_sizes.coords_to_index(coords_indices)] = colour_8;
 		});
-
+	
 	stbi_write_png("output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));
 	}
