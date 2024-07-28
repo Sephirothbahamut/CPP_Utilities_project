@@ -44,6 +44,19 @@ void geometry_sdf_and_normal_texture()
 		utils::math::vec2f{ 50.f,  50.f}
 		};
 
+	utils::math::geometry::shape::mixed mixed{utils::math::vec2f{600.f, 300.f}};
+	mixed.add_segments
+		({
+		utils::math::vec2f{620.f, 290.f},
+		utils::math::vec2f{640.f, 320.f},
+		utils::math::vec2f{640.f, 350.f}
+		});
+	mixed.add_bezier
+		({
+		utils::math::vec2f{640.f, 380.f},
+		utils::math::vec2f{580.f, 360.f}
+		});
+
 	utils::math::geometry::shape::observer::segment obseg{vertices[0], vertices[1]};
 	utils::math::geometry::interactions::translate(obseg, utils::math::vec2f{1.f, 2.3333f});
 	utils::math::geometry::interactions::side(obseg, vertices[3]);
@@ -68,7 +81,7 @@ void geometry_sdf_and_normal_texture()
 	utils::storage::multiple<utils::graphics::colour::rgba_u> image{image_sizes.sizes_to_size()};
 	std::ranges::iota_view indices(size_t{0}, image.size());
 
-	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t index)
+	std::for_each(/*std::execution::par,*/ indices.begin(), indices.end(), [&](size_t index)
 		{
 		const utils::math::vec2s coords_indices{image_sizes.index_to_coords(index)};
 		const utils::math::vec2f coords_f
@@ -77,7 +90,6 @@ void geometry_sdf_and_normal_texture()
 			static_cast<float>(coords_indices.y())
 			};
 
-
 		std::array gdists
 			{
 			utils::math::geometry::interactions::gradient_signed_distance(poyline   , coords_f),
@@ -85,14 +97,28 @@ void geometry_sdf_and_normal_texture()
 			utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f),
 			utils::math::geometry::interactions::gradient_signed_distance(bezier    , coords_f),
 			};
+
+		std::array mdists
+			{
+			utils::math::geometry::interactions::minimum_distance(mixed     , coords_f),
+			utils::math::geometry::interactions::minimum_distance(poyline   , coords_f),
+			utils::math::geometry::interactions::minimum_distance(triangle  , coords_f),
+			utils::math::geometry::interactions::minimum_distance(triangle_b, coords_f),
+			utils::math::geometry::interactions::minimum_distance(bezier    , coords_f),
+			};
 		gdists[0].distance.value = gdists[0].distance.absolute();
 		gdists[3].distance.value = gdists[3].distance.absolute();
 
 		utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
-
 		for (const auto& tmp : gdists)
 			{
 			gdist = utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist, tmp);
+			}
+		
+		float mdist{utils::math::constants::finf};
+		for (const auto& tmp : mdists)
+			{
+			mdist = utils::math::min(mdist, tmp);
 			}
 
 		gdist.distance.value *= .006f;

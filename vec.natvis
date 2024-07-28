@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="utils::math::vec&lt;*&gt;">
+		<DisplayString>{&amp;storage[0], [(int)storage.size()]}</DisplayString>
+	</Type>
+	<Type Name="utils::math::geometry::ends_aware_vertices&lt;*&gt;">
+		<Expand>
+			<IndexListItems>
+				<Size>storage.size()</Size>
+				<ValueNode>storage[$i]</ValueNode>
+			</IndexListItems>
+		</Expand>
+	</Type>
+	<Type Name="utils::math::geometry::vertices&lt;*&gt;">
+		<Expand>
+			<IndexListItems>
+				<Size>storage.size()</Size>
+				<ValueNode>storage[$i]</ValueNode>
+			</IndexListItems>
+		</Expand>
+	</Type>
+</AutoVisualizer>
