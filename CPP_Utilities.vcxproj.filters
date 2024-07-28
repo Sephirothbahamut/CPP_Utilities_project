@@ -588,4 +588,7 @@
       <Filter>Library\math\geometry\interactions\polyline</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="vec.natvis" />
+  </ItemGroup>
 </Project>
