@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-	<Type Name="utils::math::vec&lt;*&gt;">
-		<DisplayString>{&amp;storage[0], [(int)storage.size()]}</DisplayString>
+	
+	<!--Sometimes .size() works, sometimes doesn't, regardless of vec changing, it switches from working and not working seemingly randomly when something unrelated changes-->
+	<!--Type Name="utils::math::vec&lt;*&gt;">
+		<DisplayString>{&amp;operator[](0), [(int)size()]}</DisplayString>
+		<Expand>
+			<Item Name="values">storage</Item>
+		</Expand>
+	</Type-->
+	
+	<Type Name="utils::math::vec&lt;*, 2&gt;">
+		<DisplayString>{&amp;operator[](0), [2]}</DisplayString>
+		<Expand>
+			<Item Name="values">storage</Item>
+		</Expand>
 	</Type>
+	<Type Name="utils::math::vec&lt;*, 3&gt;">
+		<DisplayString>{&amp;operator[](0), [3]}</DisplayString>
+		<Expand>
+			<Item Name="values">storage</Item>
+		</Expand>
+	</Type>
+	<Type Name="utils::math::vec&lt;*, 4&gt;">
+		<DisplayString>{&amp;operator[](0), [4]}</DisplayString>
+		<Expand>
+			<Item Name="values">storage</Item>
+		</Expand>
+	</Type>
+	
+	
 	<Type Name="utils::math::geometry::ends_aware_vertices&lt;*&gt;">
 		<Expand>
 			<IndexListItems>

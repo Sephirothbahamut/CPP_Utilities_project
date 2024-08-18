@@ -281,7 +281,8 @@
     <ClInclude Include="Library\include\utils\polymorphic_value.h" />
     <ClInclude Include="Library\include\utils\storage.h" />
     <ClInclude Include="Library\include\utils\string.h" />
-    <ClInclude Include="Library\include\utils\template_wrappers.h" />
+    <ClInclude Include="Library\include\utils\template\optional.h" />
+    <ClInclude Include="Library\include\utils\template\string.h" />
     <ClInclude Include="Library\include\utils\third_party\concurrentqueue.h" />
     <ClInclude Include="Library\include\utils\third_party\jc_voronoi.h" />
     <ClInclude Include="Library\include\utils\third_party\magic_enum.h" />

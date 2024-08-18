@@ -95,6 +95,9 @@
     <Filter Include="Library\console">
       <UniqueIdentifier>{0f9ff369-2642-46ad-86d7-c31e1375a012}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\template">
+      <UniqueIdentifier>{3a2aecdc-e41d-43c7-b633-700f951fef64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -561,9 +564,6 @@
     <ClInclude Include="Library\include\utils\string.h">
       <Filter>Library</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\template_wrappers.h">
-      <Filter>Library</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\thread_pool.h">
       <Filter>Library</Filter>
     </ClInclude>
@@ -581,6 +581,12 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\wrapper.h">
       <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\template\optional.h">
+      <Filter>Library\template</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\template\string.h">
+      <Filter>Library\template</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
