@@ -112,6 +112,9 @@
     <ClCompile Include="Library\include\utils\graphics\image.cpp">
       <Filter>Library\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Library\include\utils\graphics\text.cpp">
+      <Filter>Library\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h">
@@ -587,6 +590,9 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\template\string.h">
       <Filter>Library\template</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\graphics\text.h">
+      <Filter>Library\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

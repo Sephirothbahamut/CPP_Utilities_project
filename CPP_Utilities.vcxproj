@@ -134,6 +134,7 @@
     <ClCompile Include="Library\include\utils\console\initializer.cpp" />
     <ClCompile Include="Library\include\utils\console\io.cpp" />
     <ClCompile Include="Library\include\utils\graphics\image.cpp" />
+    <ClCompile Include="Library\include\utils\graphics\text.cpp" />
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="Library\include\utils\future.h" />
     <ClInclude Include="Library\include\utils\graphics\colour.h" />
     <ClInclude Include="Library\include\utils\graphics\image.h" />
+    <ClInclude Include="Library\include\utils\graphics\text.h" />
     <ClInclude Include="Library\include\utils\hash.h" />
     <ClInclude Include="Library\include\utils\id_pool.h" />
     <ClInclude Include="Library\include\utils\index_range.h" />

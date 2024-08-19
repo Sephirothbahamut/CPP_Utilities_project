@@ -44,25 +44,27 @@ void geometry_sdf_and_normal_texture()
 		utils::math::vec2f{ 50.f,  50.f}
 		};
 	
-	//utils::math::geometry::shape::mixed<utils::math::geometry::ends::create::open()> mixed{utils::math::vec2f{130.f, 630.f}};
-	//mixed.add_segments
-	//	({
-	//	utils::math::vec2f{180.f, 580.f},
-	//	utils::math::vec2f{240.f, 600.f}
-	//	});
-	//mixed.add_bezier
-	//	({
-	//	utils::math::vec2f{180.f, 640.f},
-	//	utils::math::vec2f{230.f, 730.f}
-	//	});
-	//mixed.add_segment({150.f, 690.f});
-	utils::math::geometry::shape::mixed<utils::math::geometry::ends::closeable::create::closed()> mixed{utils::math::vec2f{120.f, 580.f}};
-	mixed.add_segment({240.f, 600.f});
+	utils::math::geometry::shape::mixed<utils::math::geometry::ends::closeable::create::closed()> mixed{utils::math::vec2f{130.f, 630.f}};
+	mixed.add_segments
+		({
+		utils::math::vec2f{180.f, 580.f},
+		utils::math::vec2f{500.f, 600.f}
+		});
 	mixed.add_bezier
 		({
-		utils::math::vec2f{180.f, 640.f},
-		utils::math::vec2f{230.f, 730.f}
+		utils::math::vec2f{380.f, 670.f},
+		utils::math::vec2f{470.f, 820.f}
 		});
+	mixed.add_segment({190.f, 790.f});
+
+	auto mixed2{mixed};
+
+	if (true)
+		{
+		auto mixed3{mixed};
+		auto mixed4{mixed3};
+		mixed2 = mixed3;
+		}
 
 	utils::math::geometry::shape::mixed mixed_inverse{utils::math::vec2f{150.f, 635.f}};
 	mixed_inverse.add_segments
@@ -73,7 +75,7 @@ void geometry_sdf_and_normal_texture()
 	mixed_inverse.add_bezier
 		({
 		utils::math::vec2f{160.f, 640.f},
-		utils::math::vec2f{214.f, 606.f}
+		utils::math::vec2f{340.f, 730.f}
 		});
 	mixed_inverse.add_segment({183.f, 592.f});
 
@@ -117,26 +119,27 @@ void geometry_sdf_and_normal_texture()
 			static_cast<float>(coords_indices.y())
 			};
 
-		if (coords_indices == utils::math::vec2s{size_t{68}, size_t{155}})
+		if (coords_indices == utils::math::vec2s{size_t{283}, size_t{580}})
 			{
 			std::cout << "a";
 			}
 
 		const auto cwsd_mixed_outer  {utils::math::geometry::interactions::closest_with_signed_distance(mixed        , coords_f)};
-		//const auto cwsd_mixed_inverse{utils::math::geometry::interactions::closest_with_signed_distance(mixed_inverse, coords_f)};
-		//const auto cwsd_mixed{utils::math::geometry::interactions::return_types::closest_point_with_signed_distance::pick_closest(cwsd_mixed_outer, cwsd_mixed_inverse)};
+		const auto cwsd_mixed_inverse{utils::math::geometry::interactions::closest_with_signed_distance(mixed_inverse, coords_f)};
+		const auto cwsd_mixed{utils::math::geometry::interactions::return_types::closest_point_with_signed_distance::pick_closest(cwsd_mixed_outer, cwsd_mixed_inverse)};
 
 		std::array gdists
 			{
-			//utils::math::geometry::interactions::gradient_signed_distance(poyline   , coords_f),
-			//utils::math::geometry::interactions::gradient_signed_distance(triangle  , coords_f),
-			//utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f),
-			//utils::math::geometry::interactions::gradient_signed_distance(bezier    , coords_f),
-			utils::math::geometry::interactions::return_types::gradient_signed_distance
-				{
-				.distance{cwsd_mixed_outer.distance},
-				.gradient{1.f, 0.f}
-				},
+			utils::math::geometry::interactions::gradient_signed_distance(poyline   , coords_f),
+			utils::math::geometry::interactions::gradient_signed_distance(triangle  , coords_f),
+			utils::math::geometry::interactions::gradient_signed_distance(triangle_b, coords_f),
+			utils::math::geometry::interactions::gradient_signed_distance(bezier    , coords_f),
+			utils::math::geometry::interactions::return_types::gradient_signed_distance::create(cwsd_mixed, coords_f),
+			//utils::math::geometry::interactions::return_types::gradient_signed_distance
+			//	{
+			//	.distance{cwsd_mixed_inverse.distance},
+			//	.gradient{0.f, 1.f}
+			//	},
 			};
 
 		utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
@@ -171,5 +174,5 @@ void geometry_sdf_and_normal_texture()
 		image[image_sizes.coords_to_index(coords_indices)] = colour_8;
 		});
 	
-	stbi_write_png("output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));
+	stbi_write_png("geometry_output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));
 	}

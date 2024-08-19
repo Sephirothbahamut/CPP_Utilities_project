@@ -3,5 +3,6 @@
 //#include "include/utils/math/geometry/voronoi/voronoi.h"
 
 #define utils_implementation
+#include <utils/graphics/text.h>
 #include <utils/graphics/image.h>
 #include <utils/console/initializer.h>

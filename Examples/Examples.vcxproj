@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="flags.cpp" />
     <ClCompile Include="geometry_sdf_and_normal_texture.cpp" />
+    <ClCompile Include="geometry_text_sdf_texture.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="name.cpp" />
