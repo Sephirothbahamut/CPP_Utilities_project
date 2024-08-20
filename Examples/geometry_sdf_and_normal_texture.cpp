@@ -10,13 +10,8 @@
 #include <utils/third_party/stb_image_write.h>
 
 #include <utils/clock.h>
-float smoothstep(float edge0, float edge1, float x) 
-	{
-	// Scale, bias and saturate x to 0..1 range
-	x = std::clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
-	// Evaluate polynomial
-	return x * x * (3.f - 2.f * x);
-	}
+
+#include "gsdf_helpers.h"
 
 void geometry_sdf_and_normal_texture()
 	{
@@ -151,27 +146,9 @@ void geometry_sdf_and_normal_texture()
 
 		gdist.distance.value *= .006f;
 
-		// Inigo Quilez fancy colors
-		utils::math::vec3f colour = (gdist.distance.side().is_outside()) ? utils::math::vec3f{.9f, .6f, .3f} : utils::math::vec3f{.4f, .7f, .85f};
-		colour = utils::math::vec3f{gdist.gradient.x() * .5f + .5f, gdist.gradient.y() * .5f + .5f, 1.f};
-		colour *= 1.0f - 0.5f * std::exp(-16.0f * gdist.distance.absolute());
-		colour *= 0.9f + 0.1f * std::cos(150.0f * gdist.distance.value);
-		colour = utils::math::lerp(colour, utils::math::vec3f{1.f}, 1.f - smoothstep(0.f, .01f, gdist.distance.absolute()));
+		const auto colour_f{gsdf_helpers::gradient_sdf_from_gdist(gdist)};
 
-		if (gdist.distance.side().is_inside())
-			{
-			colour *= .5f;
-			}
-		
-		const utils::graphics::colour::rgba_u colour_8
-			{
-			static_cast<uint8_t>(colour[0] * 255.f),
-			static_cast<uint8_t>(colour[1] * 255.f),
-			static_cast<uint8_t>(colour[2] * 255.f),
-			uint8_t{255}
-			};
-
-		image[image_sizes.coords_to_index(coords_indices)] = colour_8;
+		image[image_sizes.coords_to_index(coords_indices)] = colour_f;
 		});
 	
 	stbi_write_png("geometry_output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));

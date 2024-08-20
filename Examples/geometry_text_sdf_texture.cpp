@@ -12,43 +12,57 @@
 
 #include <utils/clock.h>
 
-namespace
-	{
-	float smoothstep(float edge0, float edge1, float x)
-		{
-		// Scale, bias and saturate x to 0..1 range
-		x = std::clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
-		// Evaluate polynomial
-		return x * x * (3.f - 2.f * x);
-		}
-	}
+#include "gsdf_helpers.h"
 
 void geometry_text_sdf_texture()
 	{
-	//std::string string{"Laelina"};
-	std::string string{"L"};
-	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string)};
+	for (size_t i = 0; i < 200; i++)
+		{
+		std::vector<utils::graphics::text::glyph_t> vec;
+
+		for (size_t i = 0; i < 200; i++)
+			{
+			utils::graphics::text::glyph_t glyph{utils::math::vec2f{10.f, 10.f}};
+			glyph.add_segments({utils::math::vec2f{20.f, 20.f}, utils::math::vec2f{30.f, 30.f}, utils::math::vec2f{40.f, 40.f}});
+			glyph.add_bezier_3pt({utils::math::vec2f{50.f, 50.f}, utils::math::vec2f{60.f, 60.f}, utils::math::vec2f{70.f, 70.f}, utils::math::vec2f{80.f, 80.f}});
+			vec.emplace_back(std::move(glyph));
+			}
+		}
+
+	//std::string string{(const char*)u8"Laelina\n\"£€$%&/()=?!^"};
+	std::string string{"I"};
+	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Arial")};
+	std::vector<utils::math::geometry::shape::aabb> aabbs(glyphs.size());
 
 	const utils::math::transform2 transform
 		{
-		.translation{64.f, 256.f + 32.f},
-		.scaling{8.f}
+		.translation{64.f, 64.f}
 		};
 
-	for (auto& glyph : glyphs)
+	const float maximum_sdf_distance{ 32.f};
+
+	std::ranges::iota_view glyphs_indices(size_t{0}, glyphs.size());
+	std::for_each(std::execution::par, glyphs_indices.begin(), glyphs_indices.end(), [&](size_t index)
 		{
+		auto& glyph{glyphs[index]};
+		auto& aabb {aabbs [index]};
+
 		utils::math::geometry::interactions::transform_self(glyph, transform);
-		}
+		aabb = utils::math::geometry::interactions::bounding_box(glyph);
+		aabb.size().resize
+			(
+			utils::alignment{.horizontal_alignment{utils::alignment::horizontal::centre}, .vertical_alignment{utils::alignment::vertical::middle}}, 
+			aabb.size() + utils::math::vec2f{maximum_sdf_distance * 2.f, maximum_sdf_distance * 2.f}
+			);
+		});
 
-	const utils::math::vec3f light_source{100.f, 50.f, 10.f};
 
-	//utils::math::vec2s image_sizes{size_t{1024 + 512}, size_t{512}};
-	utils::math::vec2s image_sizes{size_t{512}, size_t{512}};
+	utils::math::vec2s image_sizes{size_t{/*1024 +*/ 512}, size_t{512}};
 
 	utils::storage::multiple<utils::graphics::colour::rgba_u> image{image_sizes.sizes_to_size()};
 	std::ranges::iota_view indices(size_t{0}, image.size());
 
-	//*
+	/*
 	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t index)
 	/*/
 	std::for_each(indices.begin(), indices.end(), [&](size_t index)
@@ -61,68 +75,30 @@ void geometry_text_sdf_texture()
 			static_cast<float>(coords_indices.y())
 			};
 
-		if (coords_indices == utils::math::vec2s{size_t{283}, size_t{580}})
+		if (coords_indices == utils::math::vec2s{size_t{75}, size_t{134}})
 			{
 			std::cout << "a";
 			}
 
 		
 		utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
-		for (const auto& glyph : glyphs)
-			{
-			const auto tmp{utils::math::geometry::interactions::gradient_signed_distance(glyph, coords_f)};
 		
+		for (size_t glyphs_index{0}; glyphs_index < glyphs.size(); glyphs_index++)
+			{
+			const auto& aabb{aabbs[glyphs_index]};
+			//if (!aabb.contains(coords_f)) { continue; }
+
+			const auto& glyph{glyphs[glyphs_index]};
+
+			const auto tmp{utils::math::geometry::interactions::gradient_signed_distance(glyph, coords_f)};
 			gdist = utils::math::geometry::interactions::return_types::gradient_signed_distance::merge_absolute(gdist, tmp);
 			}
 
-		// Inigo Quilez fancy colors
-		//gdist.distance.value *= .006f;
-		//utils::math::vec3f colour = (gdist.distance.side().is_outside()) ? utils::math::vec3f{.9f, .6f, .3f} : utils::math::vec3f{.4f, .7f, .85f};
-		//colour = utils::math::vec3f{gdist.gradient.x() * .5f + .5f, gdist.gradient.y() * .5f + .5f, 1.f};
-		//colour *= 1.0f - 0.5f * std::exp(-16.0f * gdist.distance.absolute());
-		//colour *= 0.9f + 0.1f * std::cos(150.0f * gdist.distance.value);
-		//colour = utils::math::lerp(colour, utils::math::vec3f{1.f}, 1.f - smoothstep(0.f, .01f, gdist.distance.absolute()));
-		//
-		//if (gdist.distance.side().is_inside())
-		//	{
-		//	colour *= .5f;
-		//	}
+		const auto colour_f{gsdf_helpers::gradient_sdf_from_gdist(gdist)};
+		const auto colour_u{gsdf_helpers::rgba_f_to_u(colour_f)};
 
-		utils::math::vec3f colour;
 
-		if (gdist.distance.side().is_outside())
-			{
-			const float background_intensity{.5f};
-			const float background_shadow_mask{1.f - utils::math::vec2f::dot(gdist.gradient, light_source.xy())};
-			const float background{background_intensity * background_shadow_mask};
-
-			colour[0] = background;
-			colour[1] = background;
-			colour[2] = background;
-			}
-		else
-			{
-			const float edge_angled_area_thickness{4.f};
-			const float z{std::clamp(gdist.distance.absolute() / edge_angled_area_thickness, 0.f, 1.f)};
-			const float remainder{1.f - z};
-			utils::math::vec3f normal{gdist.gradient.x() * remainder, gdist.gradient.y() * remainder, z};
-
-			const float lightmap{utils::math::vec3f::dot(normal, light_source)};
-
-			colour[0] = 0.f;
-			colour[1] = lightmap;
-			colour[2] = lightmap;
-			}
-		
-		const utils::graphics::colour::rgba_u colour_8
-			{
-			static_cast<uint8_t>(colour[0] * 255.f),
-			static_cast<uint8_t>(colour[1] * 255.f),
-			static_cast<uint8_t>(colour[2] * 255.f),
-			uint8_t{255}
-			};
-
-		image[image_sizes.coords_to_index(coords_indices)] = colour_8;
+		image[image_sizes.coords_to_index(coords_indices)] = colour_u;
 		});
 	
 	stbi_write_png("text_output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));

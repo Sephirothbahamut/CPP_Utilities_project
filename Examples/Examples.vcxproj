@@ -145,6 +145,9 @@
     <ClCompile Include="tracking_ptr.cpp" />
     <ClCompile Include="utils_implementations.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="gsdf_helpers.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
