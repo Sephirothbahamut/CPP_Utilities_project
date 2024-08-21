@@ -16,31 +16,30 @@
 
 void geometry_text_sdf_texture()
 	{
-	static_assert(sizeof(utils::math::vec2f) == (sizeof(float) * 2));
-	// Testing outside of COM to make sure I'm not going crazy and my classes are fine
-	for (size_t i = 0; i < 200; i++)
-		{
-		std::vector<utils::graphics::text::glyph_t> vec;
-	
-		for (size_t i = 0; i < 200; i++)
-			{
-			utils::graphics::text::glyph_t glyph{utils::math::vec2f{10.f, 10.f}};
-			glyph.add_segments({utils::math::vec2f{20.f, 20.f}, utils::math::vec2f{30.f, 30.f}, utils::math::vec2f{40.f, 40.f}});
-			glyph.add_bezier_3pt({utils::math::vec2f{50.f, 50.f}, utils::math::vec2f{60.f, 60.f}, utils::math::vec2f{70.f, 70.f}, utils::math::vec2f{80.f, 80.f}});
-	
-			const utils::math::transform2 transform
-				{
-				.translation{1.f, 1.f}
-				};
-			utils::math::geometry::interactions::transform_self(glyph, transform);
-	
-			if (glyph.vertices[0].x() != 11.f) { throw std::runtime_error{"Corrupted memory"}; }
-	
-			vec.emplace_back(std::move(glyph));
-			}
-		}
+	//static_assert(sizeof(utils::math::vec2f) == (sizeof(float) * 2));
+	//for (size_t i = 0; i < 200; i++)
+	//	{
+	//	std::vector<utils::graphics::text::glyph_t> vec;
+	//
+	//	for (size_t i = 0; i < 200; i++)
+	//		{
+	//		utils::graphics::text::glyph_t glyph{utils::math::vec2f{10.f, 10.f}};
+	//		glyph.add_segments({utils::math::vec2f{20.f, 20.f}, utils::math::vec2f{30.f, 30.f}, utils::math::vec2f{40.f, 40.f}});
+	//		glyph.add_bezier_3pt({utils::math::vec2f{50.f, 50.f}, utils::math::vec2f{60.f, 60.f}, utils::math::vec2f{70.f, 70.f}, utils::math::vec2f{80.f, 80.f}});
+	//
+	//		const utils::math::transform2 transform
+	//			{
+	//			.translation{1.f, 1.f}
+	//			};
+	//		utils::math::geometry::interactions::transform_self(glyph, transform);
+	//
+	//		if (glyph.vertices[0].x() != 11.f) { throw std::runtime_error{"Corrupted memory"}; }
+	//
+	//		vec.emplace_back(std::move(glyph));
+	//		}
+	//	}
 
-	std::string string{(const char*)u8"Laelina"};//\n\"£€$%&/()=?!^"};
+	std::string string{(const char*)u8"Laelina\n\"£€$%&/()=?!^"};
 	//std::string string{"I"};
 	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Arial")};
 	std::vector<utils::math::geometry::shape::aabb> aabbs(glyphs.size());
@@ -70,8 +69,9 @@ void geometry_text_sdf_texture()
 
 	utils::math::vec2s image_sizes{size_t{/*1024 +*/ 512}, size_t{512}};
 
-	utils::storage::multiple<utils::graphics::colour::rgba_u> image{image_sizes.sizes_to_size()};
-	std::ranges::iota_view indices(size_t{0}, image.size());
+	utils::storage::multiple<utils::graphics::colour::rgba_u> image_lit {image_sizes.sizes_to_size()};
+	utils::storage::multiple<utils::graphics::colour::rgba_u> image_gsdf{image_sizes.sizes_to_size()};
+	std::ranges::iota_view indices(size_t{0}, image_lit.size());
 
 	gsdf_helpers::simple_pointlight light
 		{
@@ -93,7 +93,7 @@ void geometry_text_sdf_texture()
 			static_cast<float>(coords_indices.y())
 			};
 
-		if (coords_indices == utils::math::vec2s{size_t{75}, size_t{134}})
+		if (coords_indices == utils::math::vec2s{size_t{53}, size_t{53}})
 			{
 			std::cout << "a";
 			}
@@ -112,12 +112,20 @@ void geometry_text_sdf_texture()
 			gdist = utils::math::geometry::interactions::return_types::gradient_signed_distance::merge_absolute(gdist, tmp);
 			}
 
-		const auto colour_f{gsdf_helpers::apply_light(coords_f, gdist, light, 8.f)};
-		const auto colour_u{gsdf_helpers::rgba_f_to_u(colour_f)};
-
-
-		image[image_sizes.coords_to_index(coords_indices)] = colour_u;
+		if (true)
+			{
+			const auto colour_f{gsdf_helpers::apply_light(coords_f, gdist, light, 8.f)};
+			const auto colour_u{gsdf_helpers::rgba_f_to_u(colour_f)};
+			image_lit[image_sizes.coords_to_index(coords_indices)] = colour_u;
+			}
+		if (true)
+			{
+			const auto colour_f{gsdf_helpers::gradient_sdf_from_gdist(gdist)};
+			const auto colour_u{gsdf_helpers::rgba_f_to_u(colour_f)};
+			image_gsdf[image_sizes.coords_to_index(coords_indices)] = colour_u;
+			}
 		});
-	
-	stbi_write_png("text_output.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image.data(), static_cast<int>(image_sizes.x() * 4));
+
+	stbi_write_png("text_output_lit.png" , static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image_lit .data(), static_cast<int>(image_sizes.x() * 4));
+	stbi_write_png("text_output_gsdf.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, image_gsdf.data(), static_cast<int>(image_sizes.x() * 4));
 	}

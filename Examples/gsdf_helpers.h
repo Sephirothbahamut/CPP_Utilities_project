@@ -50,7 +50,7 @@ namespace gsdf_helpers
 		{
 		if (gdist.distance.side().is_outside())
 			{
-			return {};
+			return {0.f, 0.f, 0.f, 0.f};
 			}
 		const float z{std::clamp(gdist.distance.absolute() / edge_angled_area_thickness, 0.f, 1.f)};
 		const float leftover_percent{1.f - z};
@@ -62,7 +62,7 @@ namespace gsdf_helpers
 
 		const float lightmap{utils::math::vec3f::dot(light_direction, normal)};
 
-		return simple_pointlight.colour * simple_pointlight.intensity * lightmap;
+		return utils::math::clamp(simple_pointlight.colour * simple_pointlight.intensity * lightmap, 0.f, 1.f);
 		}
 
 	inline utils::graphics::colour::rgba_u rgba_f_to_u(const utils::graphics::colour::rgba_f& rgba_f)
