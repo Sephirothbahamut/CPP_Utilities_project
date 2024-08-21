@@ -8,8 +8,8 @@
 			<Item Name="values">storage</Item>
 		</Expand>
 	</Type-->
-	
-	<Type Name="utils::math::vec&lt;*, 2&gt;">
+
+	<!--Type Name="utils::math::vec&lt;*, 2&gt;">
 		<DisplayString>{&amp;operator[](0), [2]}</DisplayString>
 		<Expand>
 			<Item Name="values">storage</Item>
@@ -44,5 +44,5 @@
 				<ValueNode>storage[$i]</ValueNode>
 			</IndexListItems>
 		</Expand>
-	</Type>
+	</Type--!>
 </AutoVisualizer>

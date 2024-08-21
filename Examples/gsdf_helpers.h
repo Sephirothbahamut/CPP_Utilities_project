@@ -48,6 +48,10 @@ namespace gsdf_helpers
 
 	inline utils::graphics::colour::rgba_f apply_light(const utils::math::vec2f& coords_f, const utils::math::geometry::interactions::return_types::gradient_signed_distance& gdist, const simple_pointlight& simple_pointlight, const float edge_angled_area_thickness)
 		{
+		if (gdist.distance.side().is_outside())
+			{
+			return {};
+			}
 		const float z{std::clamp(gdist.distance.absolute() / edge_angled_area_thickness, 0.f, 1.f)};
 		const float leftover_percent{1.f - z};
 		utils::math::vec3f normal{gdist.gradient.x() * leftover_percent / 2.f, gdist.gradient.y() * leftover_percent / 2.f, z};
