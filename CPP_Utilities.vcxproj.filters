@@ -594,6 +594,9 @@
     <ClInclude Include="Library\include\utils\graphics\text.h">
       <Filter>Library\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\graphics\multisampling.h">
+      <Filter>Library\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Library\include\utils\math\geometry\interactions\polyline\side_corner_case_visualization.png">

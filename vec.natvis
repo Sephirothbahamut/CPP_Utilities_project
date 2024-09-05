@@ -9,7 +9,7 @@
 		</Expand>
 	</Type-->
 
-	<!--Type Name="utils::math::vec&lt;*, 2&gt;">
+	<Type Name="utils::math::vec&lt;*, 2&gt;">
 		<DisplayString>{&amp;operator[](0), [2]}</DisplayString>
 		<Expand>
 			<Item Name="values">storage</Item>
@@ -31,6 +31,7 @@
 	
 	<Type Name="utils::math::geometry::ends_aware_vertices&lt;*&gt;">
 		<Expand>
+			<Item Name="size">storage.size()</Item>
 			<IndexListItems>
 				<Size>storage.size()</Size>
 				<ValueNode>storage[$i]</ValueNode>
@@ -39,10 +40,11 @@
 	</Type>
 	<Type Name="utils::math::geometry::vertices&lt;*&gt;">
 		<Expand>
+			<Item Name="size">storage.size()</Item>
 			<IndexListItems>
 				<Size>storage.size()</Size>
 				<ValueNode>storage[$i]</ValueNode>
 			</IndexListItems>
 		</Expand>
-	</Type--!>
+	</Type>
 </AutoVisualizer>

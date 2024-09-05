@@ -193,6 +193,7 @@
     <ClInclude Include="Library\include\utils\future.h" />
     <ClInclude Include="Library\include\utils\graphics\colour.h" />
     <ClInclude Include="Library\include\utils\graphics\image.h" />
+    <ClInclude Include="Library\include\utils\graphics\multisampling.h" />
     <ClInclude Include="Library\include\utils\graphics\text.h" />
     <ClInclude Include="Library\include\utils\hash.h" />
     <ClInclude Include="Library\include\utils\id_pool.h" />

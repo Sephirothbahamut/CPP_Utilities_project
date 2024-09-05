@@ -6,6 +6,49 @@
 
 namespace gsdf_helpers
 	{
+	struct gsdf_sample_t
+		{
+		utils::math::geometry::interactions::return_types::gradient_signed_distance gsdf;
+		
+		gsdf_sample_t operator/(float count)
+			{
+			gsdf_sample_t ret{*this};
+			ret.gsdf.distance.value /= count;
+			ret.gsdf.gradient       /= count;
+			return ret;
+			}
+		gsdf_sample_t operator+(gsdf_sample_t other)
+			{
+			gsdf_sample_t ret{*this};
+			ret.gsdf.distance.value += other.gsdf.distance.value;
+			ret.gsdf.gradient       += other.gsdf.gradient      ;
+			return ret;
+			}
+		gsdf_sample_t& operator+=(gsdf_sample_t other)
+			{
+			return *this = *this + other;
+			}
+		};
+
+	struct sample_t
+		{
+		utils::graphics::colour::rgba_f gdist{0.f, 0.f, 0.f, 0.f};
+		utils::graphics::colour::rgba_f lit{0.f, 0.f, 0.f, 0.f};
+
+		sample_t operator/(float count)
+			{
+			return {gdist / count, lit / count};
+			}
+		sample_t operator+(sample_t other)
+			{
+			return {gdist + other.gdist, lit + other.lit};
+			}
+		sample_t& operator+=(sample_t other)
+			{
+			return *this = *this + other;
+			}
+		};
+
 	struct simple_pointlight
 		{
 		utils::math::vec3f position{200.f, 50.f, 50.f};
