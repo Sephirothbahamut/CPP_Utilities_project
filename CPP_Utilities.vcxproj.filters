@@ -98,6 +98,9 @@
     <Filter Include="Library\template">
       <UniqueIdentifier>{3a2aecdc-e41d-43c7-b633-700f951fef64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\math\geometry\shape\declaration">
+      <UniqueIdentifier>{613edeeb-27e0-4055-9685-2867863bb6a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -483,37 +486,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices.h">
       <Filter>Library\math\geometry\interactions</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\aabb.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\ab.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\shape\all.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bezier.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\capsule.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\circle.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\mixed.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\path.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\point.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h">
-      <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h">
       <Filter>Library\math\geometry\shape</Filter>
     </ClInclude>
     <ClInclude Include="Library\include\utils\alignment.h">
@@ -596,6 +569,69 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\graphics\multisampling.h">
       <Filter>Library\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\4pt_point_implementation.h">
+      <Filter>Library\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\3pt_point_implementation.h">
+      <Filter>Library\math\geometry\interactions\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\all.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\bezier.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\capsule.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\circle.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\mixed.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\point.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polyline.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\vertices.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\aabb.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\ab.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\aabb.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\ab.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\bezier.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\capsule.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\circle.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\mixed.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\point.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h">
+      <Filter>Library\math\geometry\shape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

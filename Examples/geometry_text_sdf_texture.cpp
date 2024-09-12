@@ -16,11 +16,11 @@
 
 void geometry_text_sdf_texture()
 	{
-	//std::string string{(const char*)u8"\n"};
-	std::string string{(const char*)u8"Laelina"};
-	//std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Gabriola")};
-	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"MagicMedieval")};
-	//std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Mana")};
+	std::string string{(const char*)u8"Freya"};
+	//u8"\n"};
+
+	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Gabriola")};
+	//L"MagicMedieval"L"Mana"
 
 	std::vector<utils::math::geometry::shape::aabb> aabbs(glyphs.size());
 
@@ -81,7 +81,6 @@ void geometry_text_sdf_texture()
 		};
 
 	utils::clock<std::chrono::high_resolution_clock, float> clock;
-
 	//*
 	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t index)
 	/*/
@@ -94,12 +93,12 @@ void geometry_text_sdf_texture()
 			static_cast<float>(coords_indices.x()),
 			static_cast<float>(coords_indices.y())
 			};
-
+	
 		//if (coords_indices != utils::math::vec2s{size_t{173}, size_t{93}})
 		//	{
 		//	return;
 		//	}
-
+	
 		const auto sample{utils::graphics::multisample<gsdf_helpers::sample_t, 4>(coords_f, [&](utils::math::vec2f coords_f)
 			{
 			utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
@@ -124,7 +123,7 @@ void geometry_text_sdf_texture()
 				.lit  {sample_lit  }
 				};
 			})};
-
+	
 		if (true)
 			{
 			const auto colour_u{gsdf_helpers::rgba_f_to_u(sample.lit)};

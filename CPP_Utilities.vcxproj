@@ -228,6 +228,8 @@
     <ClInclude Include="Library\include\utils\math\geometry\interactions\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\base_types.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\3pt_point_implementation.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\4pt_point_implementation.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\base.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier\point.h" />
@@ -255,8 +257,17 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\bezier.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\capsule.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\circle.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\aabb.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\ab.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\all.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\capsule.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\circle.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\mixed.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\point.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polyline.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\vertices.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\mixed.h" />
-    <ClInclude Include="Library\include\utils\math\geometry\shape\path.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\point.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h" />
