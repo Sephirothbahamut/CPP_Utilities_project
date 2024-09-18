@@ -101,6 +101,9 @@
     <Filter Include="Library\math\geometry\shape\declaration">
       <UniqueIdentifier>{613edeeb-27e0-4055-9685-2867863bb6a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\math\geometry\sdf">
+      <UniqueIdentifier>{28f255b6-133e-44cb-bb87-4a5dfa048c07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -632,6 +635,18 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h">
       <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\return_types.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\return_types_declaration.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h">
+      <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -250,6 +250,10 @@
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\base.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\transform.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\return_types.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\return_types_declaration.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shapes.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\aabb.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\ab.h" />

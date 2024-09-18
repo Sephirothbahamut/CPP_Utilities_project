@@ -11,6 +11,9 @@
 #include <utils/graphics/multisampling.h>
 #include <utils/third_party/stb_image_write.h>
 
+
+#include <utils/math/geometry/sdf/ab.h>
+
 #include "gsdf_helpers.h"
 
 void geometry_sdf_and_normal_texture()
@@ -126,6 +129,14 @@ void geometry_sdf_and_normal_texture()
 		.intensity{2.f}
 		};
 
+	std::vector<utils::math::geometry::shape::segment> segments
+		{
+			{utils::math::vec2f{20.f, 18.f}, utils::math::vec2f{30.f, 18.f}},
+			{utils::math::vec2f{32.f, 20.f}, utils::math::vec2f{32.f, 30.f}},
+			{utils::math::vec2f{30.f, 32.f}, utils::math::vec2f{20.f, 32.f}},
+			{utils::math::vec2f{18.f, 30.f}, utils::math::vec2f{18.f, 20.f}}
+		};
+
 	utils::clock<std::chrono::high_resolution_clock, float> clock;
 
 	//*
@@ -164,6 +175,10 @@ void geometry_sdf_and_normal_texture()
 				utils::math::geometry::interactions::gradient_signed_distance(bezier_4_pt, coords_f),
 				utils::math::geometry::interactions::gradient_signed_distance(bezier_loop, coords_f),
 				utils::math::geometry::interactions::return_types::gradient_signed_distance::create(cwsd_mixed, coords_f),
+				//segments[0].sdf(coords_f).gradient_signed_distance(),
+				segments[1].sdf(coords_f).gradient_signed_distance(),
+				segments[2].sdf(coords_f).gradient_signed_distance(),
+				//segments[3].sdf(coords_f).gradient_signed_distance()
 				};
 
 			for (const auto& tmp : gdists)
