@@ -250,8 +250,15 @@
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\base.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\vertices\transform.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\aabb.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\common.inline.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\point.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\polyline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\return_types.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\return_types_declaration.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shapes.h" />

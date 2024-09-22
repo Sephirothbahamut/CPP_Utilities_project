@@ -648,6 +648,27 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h">
       <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\polyline.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\aabb.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\all.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\common.inline.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\point.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Library\include\utils\math\geometry\interactions\polyline\side_corner_case_visualization.png">
