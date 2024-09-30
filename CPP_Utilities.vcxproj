@@ -147,6 +147,7 @@
     <ClInclude Include="Library\include\utils\compilation\compiler.h" />
     <ClInclude Include="Library\include\utils\compilation\debug.h" />
     <ClInclude Include="Library\include\utils\compilation\gpu.h" />
+    <ClInclude Include="Library\include\utils\compilation\inline.h" />
     <ClInclude Include="Library\include\utils\compilation\OS.h" />
     <ClInclude Include="Library\include\utils\compilation\warnings.h" />
     <ClInclude Include="Library\include\utils\concepts.h" />
@@ -254,6 +255,10 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\3pt.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\4pt.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\all.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\other.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common.inline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h" />
@@ -291,6 +296,7 @@
     <ClInclude Include="Library\include\utils\math\vec.h" />
     <ClInclude Include="Library\include\utils\math\vec2.h" />
     <ClInclude Include="Library\include\utils\math\vec3.h" />
+    <ClInclude Include="Library\include\utils\math\vec4.h" />
     <ClInclude Include="Library\include\utils\math\vec_s.h" />
     <ClInclude Include="Library\include\utils\matrix_interface.h" />
     <ClInclude Include="Library\include\utils\memory.h" />

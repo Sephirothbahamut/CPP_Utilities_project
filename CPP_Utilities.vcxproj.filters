@@ -104,6 +104,9 @@
     <Filter Include="Library\math\geometry\sdf">
       <UniqueIdentifier>{28f255b6-133e-44cb-bb87-4a5dfa048c07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\math\geometry\sdf\bezier">
+      <UniqueIdentifier>{b4980b50-01d7-46b8-9e66-e954e52770ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -668,6 +671,24 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\sdf\point.h">
       <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\compilation\inline.h">
+      <Filter>Library\compilation</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\4pt.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\3pt.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\all.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\other.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\vec4.h">
+      <Filter>Library\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

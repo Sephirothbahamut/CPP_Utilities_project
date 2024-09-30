@@ -16,18 +16,18 @@
 
 void geometry_text_sdf_texture()
 	{
-	std::string string{(const char*)u8"Freya"};
-	//u8"\n"};
+	//std::string string{(const char*)u8"Freya"};
+	std::string string{(const char*)u8"\n"};
 
-	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Gabriola")};
-	//L"MagicMedieval"L"Mana"
+	//std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Gabriola")};
+	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Mana")};
 
 	std::vector<utils::math::geometry::shape::aabb> aabbs(glyphs.size());
 
 	const utils::math::transform2 transform
 		{
 		.translation{0.f, 64.f},
-		//.scaling{32.f}
+		//.scaling{1.f}
 		};
 
 	const float maximum_sdf_distance{32.f};

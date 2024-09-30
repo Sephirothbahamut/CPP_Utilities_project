@@ -16,6 +16,8 @@
 #include <utils/math/geometry/sdf/aabb.h>
 #include <utils/math/geometry/sdf/point.h>
 #include <utils/math/geometry/sdf/mixed.h>
+#include <utils/math/geometry/sdf/circle.h>
+#include <utils/math/geometry/sdf/bezier.h>
 #include <utils/math/geometry/sdf/polyline.h>
 
 #include "gsdf_helpers.h"
@@ -26,6 +28,7 @@ void geometry_sdf_and_normal_texture()
 	//The world prefix is to distinguish the objects in the world from the point and aabbs used inside the image generation algorithm
 	utils::math::geometry::shape::point world_point{40.f, 840.f};
 	auto world_aabb{utils::math::geometry::shape::aabb::create::from_ul_dr(utils::math::vec2f{60.f, 400.f}, utils::math::vec2f{256.f, 475.f})};
+	utils::math::geometry::shape::circle circle{utils::math::vec2f{500.f, 400.f}, 64.f};
 
 	// Closed polygon with variable vertices count
 	utils::math::geometry::shape::polygon<std::dynamic_extent> triangle
@@ -174,18 +177,19 @@ void geometry_sdf_and_normal_texture()
 			const auto cwsd_mixed_outer  {mixed        .sdf(coords_f).closest_with_signed_distance()};
 			const auto cwsd_mixed_inverse{mixed_inverse.sdf(coords_f).closest_with_signed_distance()};
 			const auto cwsd_mixed{utils::math::geometry::interactions::return_types::closest_point_with_signed_distance::pick_closest(cwsd_mixed_outer, cwsd_mixed_inverse)};
-
+			
 			std::array gdists
 				{
 				//utils::math::geometry::interactions::gradient_signed_distance(polyline    , coords_f),
 				world_point.sdf(coords_f).gradient_signed_distance(),
 				world_aabb .sdf(coords_f).gradient_signed_distance(),
+				circle     .sdf(coords_f).gradient_signed_distance(),
 				polyline   .sdf(coords_f).gradient_signed_distance(),
 				triangle   .sdf(coords_f).gradient_signed_distance(),
 				triangle_b .sdf(coords_f).gradient_signed_distance(),
-				utils::math::geometry::interactions::gradient_signed_distance(bezier_3_pt, coords_f),
-				utils::math::geometry::interactions::gradient_signed_distance(bezier_4_pt, coords_f),
-				utils::math::geometry::interactions::gradient_signed_distance(bezier_loop, coords_f),
+				bezier_3_pt.sdf(coords_f).gradient_signed_distance(),
+				bezier_4_pt.sdf(coords_f).gradient_signed_distance(),
+				bezier_loop.sdf(coords_f).gradient_signed_distance(),
 				utils::math::geometry::interactions::return_types::gradient_signed_distance::create(cwsd_mixed, coords_f),
 				//segments[0].sdf(coords_f).gradient_signed_distance(),
 				segments[1].sdf(coords_f).gradient_signed_distance(),
