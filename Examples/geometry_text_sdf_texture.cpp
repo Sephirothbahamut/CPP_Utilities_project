@@ -38,14 +38,13 @@ void geometry_text_sdf_texture()
 		auto& glyph{glyphs[index]};
 		auto& aabb {aabbs [index]};
 
-		utils::math::geometry::interactions::transform_self(glyph, transform);
-		aabb = utils::math::geometry::interactions::bounding_box(glyph);
-		aabb.size().resize
+		glyph.transform_self(transform);
+		aabb = glyph.bounding_box();
+		aabb.proxy_size().resize
 			(
-			utils::alignment{.horizontal_alignment{utils::alignment::horizontal::centre}, .vertical_alignment{utils::alignment::vertical::middle}}, 
+			utils::alignment{.horizontal_alignment{utils::alignment::horizontal::centre}, .vertical_alignment{utils::alignment::vertical::middle}},
 			aabb.size() + utils::math::vec2f{maximum_sdf_distance * 2.f, maximum_sdf_distance * 2.f}
 			);
-
 		});
 
 	auto bounding_box{utils::math::geometry::shape::aabb::create::inverse_infinite()};
@@ -58,8 +57,8 @@ void geometry_text_sdf_texture()
 		{
 		auto& glyph{glyphs[index]};
 		auto& aabb {aabbs [index]};
-		utils::math::geometry::interactions::translate_self(glyph, -bounding_box.up_left());
-		utils::math::geometry::interactions::translate_self(aabb , -bounding_box.up_left());
+		glyph.translate_self(-bounding_box.up_left());
+		aabb .translate_self(-bounding_box.up_left());
 		});
 
 	const utils::math::vec2s image_sizes
@@ -101,7 +100,7 @@ void geometry_text_sdf_texture()
 	
 		const auto sample{utils::graphics::multisample<gsdf_helpers::sample_t, 4>(coords_f, [&](utils::math::vec2f coords_f)
 			{
-			utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
+			utils::math::geometry::sdf::gradient_signed_distance gdist;
 		
 			for (size_t glyphs_index{0}; glyphs_index < glyphs.size(); glyphs_index++)
 				{
@@ -110,8 +109,8 @@ void geometry_text_sdf_texture()
 		
 				const auto& glyph{glyphs[glyphs_index]};
 			
-				const auto tmp{utils::math::geometry::interactions::gradient_signed_distance(glyph, coords_f)};
-				gdist = utils::math::geometry::interactions::return_types::gradient_signed_distance::merge_absolute(gdist, tmp);
+				const auto tmp{glyph.sdf(coords_f).gradient_signed_distance()};
+				gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, tmp);
 				}
 			
 			const auto sample_gdist{gsdf_helpers::gradient_sdf_from_gdist(          gdist            )};

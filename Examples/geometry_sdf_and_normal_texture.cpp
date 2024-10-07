@@ -1,30 +1,24 @@
-
 #include <ranges>
+#include <algorithm>
 #include <execution>
 
 #include <utils/clock.h>
-#include <utils/math/vec2.h>
-#include <utils/math/vec3.h>
-#include <utils/math/vec_s.h>
-#include <utils/math/geometry/all.h>
+#include <utils/math/vec.h>
+#include <utils/math/geometry/shapes.h>
 #include <utils/third_party/stb_image.h>
 #include <utils/graphics/multisampling.h>
 #include <utils/third_party/stb_image_write.h>
 
+#include <utils/graphics/sdf.h>
 
-#include <utils/math/geometry/sdf/ab.h>
-#include <utils/math/geometry/sdf/aabb.h>
-#include <utils/math/geometry/sdf/point.h>
-#include <utils/math/geometry/sdf/mixed.h>
-#include <utils/math/geometry/sdf/circle.h>
-#include <utils/math/geometry/sdf/bezier.h>
-#include <utils/math/geometry/sdf/polyline.h>
+#include <utils/math/geometry/shape/sdf/all.h>
+#include <utils/math/geometry/shape/bounds/all.h>
+#include <utils/math/geometry/shape/transform/all.h>
 
 #include "gsdf_helpers.h"
 
 void geometry_sdf_and_normal_texture()
 	{
-
 	//The world prefix is to distinguish the objects in the world from the point and aabbs used inside the image generation algorithm
 	utils::math::geometry::shape::point world_point{40.f, 840.f};
 	auto world_aabb{utils::math::geometry::shape::aabb::create::from_ul_dr(utils::math::vec2f{60.f, 400.f}, utils::math::vec2f{256.f, 475.f})};
@@ -33,11 +27,8 @@ void geometry_sdf_and_normal_texture()
 	// Closed polygon with variable vertices count
 	utils::math::geometry::shape::polygon<std::dynamic_extent> triangle
 		{
-		.vertices
-			{
-			utils::math::vec2f{  0.f,   0.f},
-			utils::math::vec2f{100.f,   0.f}
-			}
+		utils::math::vec2f{  0.f,   0.f},
+		utils::math::vec2f{100.f,   0.f}
 		};
 	triangle.vertices.storage.emplace_back(50.f, 50.f);
 
@@ -95,10 +86,10 @@ void geometry_sdf_and_normal_texture()
 	mixed_inverse.add_segment({183.f, 592.f});
 
 	// Open polyline defined on a statically sized span of vertices over a sequence in memory, with an infinite start and a finite end
-	utils::math::geometry::shape::observer::polyline<utils::math::geometry::ends::closeable::create::open(true, false), 5> polyline{.vertices{vertices.begin(), size_t{5}}};
+	utils::math::geometry::shape::observer::polyline<utils::math::geometry::ends::closeable::create::open(true, false), 5> polyline{vertices.begin(), size_t{5}};
 
 	// Closed polygon defined on a statically sized span of vertices over a sequence in memory
-	utils::math::geometry::shape::observer::polygon<> triangle_b{.vertices{vertices.begin() + 5, size_t{3}}};
+	utils::math::geometry::shape::observer::polygon<> triangle_b{vertices.begin() + 5, size_t{3}};
 
 	static constexpr auto bezier_ends
 		{
@@ -107,26 +98,31 @@ void geometry_sdf_and_normal_texture()
 			utils::math::geometry::ends::ab::create::default_(false, true)
 			)
 		};
-	utils::math::geometry::shape::bezier<3, bezier_ends> bezier_3_pt{.vertices{utils::math::vec2f{840.f, 80.f}, utils::math::vec2f{440.f, 200.f}, utils::math::vec2f{420.f, 50.f}}};
-	utils::math::geometry::shape::bezier<4, bezier_ends> bezier_4_pt{.vertices
+	utils::math::geometry::shape::bezier<3, bezier_ends> bezier_3_pt
+		{
+		utils::math::vec2f{840.f,  80.f},
+		utils::math::vec2f{440.f, 200.f},
+		utils::math::vec2f{420.f,  50.f}
+		};
+	utils::math::geometry::shape::bezier<4, bezier_ends> bezier_4_pt
 		{
 		utils::math::vec2f{760.f, 670.f},
 		utils::math::vec2f{860.f, 450.f},
 		utils::math::vec2f{470.f,  90.f},
 		utils::math::vec2f{800.f, 200.f}
-		}};
-	utils::math::geometry::shape::bezier<4, bezier_ends> bezier_loop{.vertices
+		};
+	utils::math::geometry::shape::bezier<4, bezier_ends> bezier_loop
 		{
 		utils::math::vec2f{760.f, 670.f},
 		utils::math::vec2f{860.f, 450.f},
 		utils::math::vec2f{470.f,  90.f},
 		utils::math::vec2f{800.f, 200.f}
-		}};
+		};
 
-	utils::math::geometry::interactions::translate_self(polyline  , {50.f, 50.f});
-	utils::math::geometry::interactions::scale_self    (triangle  , .5f);
-	utils::math::geometry::interactions::translate_self(triangle  , {122.f, 143.f});
-	utils::math::geometry::interactions::translate_self(triangle_b, {222.f, 143.f});
+	polyline  .translate_self({50.f, 50.f});
+	triangle  .scale_self    (.5f);
+	triangle  .translate_self({122.f, 143.f});
+	triangle_b.translate_self({222.f, 143.f});
 	
 	utils::math::vec2s image_sizes{size_t{900}, size_t{900}};
 
@@ -149,8 +145,51 @@ void geometry_sdf_and_normal_texture()
 			{utils::math::vec2f{18.f, 30.f}, utils::math::vec2f{18.f, 20.f}}
 		};
 
-	utils::clock<std::chrono::high_resolution_clock, float> clock;
+	utils::graphics::sdf::debug debug_renderer;
 
+	utils::matrix<utils::math::geometry::sdf::gradient_signed_distance> gradient_signed_distance_field(image_sizes);
+	utils::graphics::sdf::evaluate_sdf_params evaluate_sdf_params
+		{
+		//.shape_padding{-32.f, -32.f, 32.f, 32.f},
+		.shape_padding{utils::math::geometry::shape::aabb::create::infinite()},
+		.merge_function{&utils::math::geometry::sdf::gradient_signed_distance::merge},
+		.gradient_signed_distance_field{gradient_signed_distance_field},
+		};
+	utils::graphics::sdf::evaluate_sdf_params evaluate_sdf_params_abs
+		{
+		//.shape_padding{-32.f, -32.f, 32.f, 32.f},
+		.shape_padding{utils::math::geometry::shape::aabb::create::infinite()},
+		.merge_function{&utils::math::geometry::sdf::gradient_signed_distance::merge_absolute},
+		.gradient_signed_distance_field{gradient_signed_distance_field},
+		};
+
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params_abs, mixed        );
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params_abs, mixed_inverse);
+
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, world_point);
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, world_aabb );
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, circle     );
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, polyline   );
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, triangle   );
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, triangle_b );
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, bezier_3_pt);
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, bezier_4_pt);
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, bezier_loop);
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, segments[1]);
+	utils::graphics::sdf::evaluate_sdf(evaluate_sdf_params, segments[2]);
+
+	const auto rendered_image{debug_renderer.render<false>(gradient_signed_distance_field)};
+
+	utils::matrix<utils::graphics::colour::rgba_u> rendered_image_u(image_sizes);
+	for (size_t i = 0; i < rendered_image_u.size(); i++)
+		{
+		rendered_image_u[i] = gsdf_helpers::rgba_f_to_u(rendered_image[i]);
+		}
+
+	stbi_write_png("geometry_output_test.png", static_cast<int>(image_sizes.x()), static_cast<int>(image_sizes.y()), 4, rendered_image_u.data(), static_cast<int>(image_sizes.x() * 4));
+	return;
+
+	utils::clock<std::chrono::high_resolution_clock, float> clock;
 	//*
 	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t index)
 	/*/
@@ -172,11 +211,11 @@ void geometry_sdf_and_normal_texture()
 		
 		const auto sample{utils::graphics::multisample<gsdf_helpers::sample_t, 4>(coords_f, [&](utils::math::vec2f coords_f)
 			{
-			utils::math::geometry::interactions::return_types::gradient_signed_distance gdist;
+			utils::math::geometry::sdf::gradient_signed_distance gdist;
 			
 			const auto cwsd_mixed_outer  {mixed        .sdf(coords_f).closest_with_signed_distance()};
 			const auto cwsd_mixed_inverse{mixed_inverse.sdf(coords_f).closest_with_signed_distance()};
-			const auto cwsd_mixed{utils::math::geometry::interactions::return_types::closest_point_with_signed_distance::pick_closest(cwsd_mixed_outer, cwsd_mixed_inverse)};
+			const auto cwsd_mixed{utils::math::geometry::sdf::closest_point_with_signed_distance::pick_closest(cwsd_mixed_outer, cwsd_mixed_inverse)};
 			
 			std::array gdists
 				{
@@ -190,7 +229,7 @@ void geometry_sdf_and_normal_texture()
 				bezier_3_pt.sdf(coords_f).gradient_signed_distance(),
 				bezier_4_pt.sdf(coords_f).gradient_signed_distance(),
 				bezier_loop.sdf(coords_f).gradient_signed_distance(),
-				utils::math::geometry::interactions::return_types::gradient_signed_distance::create(cwsd_mixed, coords_f),
+				utils::math::geometry::sdf::gradient_signed_distance::create(cwsd_mixed, coords_f),
 				//segments[0].sdf(coords_f).gradient_signed_distance(),
 				segments[1].sdf(coords_f).gradient_signed_distance(),
 				segments[2].sdf(coords_f).gradient_signed_distance(),
@@ -199,7 +238,7 @@ void geometry_sdf_and_normal_texture()
 
 			for (const auto& tmp : gdists)
 				{
-				gdist = utils::math::geometry::interactions::return_types::gradient_signed_distance::merge(gdist, tmp);
+				gdist = utils::math::geometry::sdf::gradient_signed_distance::merge(gdist, tmp);
 				}
 			
 			

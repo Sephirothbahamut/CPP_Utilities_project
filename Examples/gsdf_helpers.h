@@ -2,13 +2,13 @@
 #include <utils/math/math.h>
 #include <utils/math/vec3.h>
 #include <utils/graphics/colour.h>
-#include <utils/math/geometry/interactions/base_types.h>
+#include <utils/math/geometry/shape/sdf/return_types.h>
 
 namespace gsdf_helpers
 	{
 	struct gsdf_sample_t
 		{
-		utils::math::geometry::interactions::return_types::gradient_signed_distance gsdf;
+		utils::math::geometry::sdf::gradient_signed_distance gsdf;
 		
 		gsdf_sample_t operator/(float count)
 			{
@@ -65,7 +65,7 @@ namespace gsdf_helpers
 		}
 
 
-	inline utils::graphics::colour::rgba_f gradient_sdf_from_gdist(utils::math::geometry::interactions::return_types::gradient_signed_distance gdist)
+	inline utils::graphics::colour::rgba_f gradient_sdf_from_gdist(utils::math::geometry::sdf::gradient_signed_distance gdist)
 		{
 		// Inigo Quilez fancy colors
 		gdist.distance.value *= .006f;
@@ -89,7 +89,7 @@ namespace gsdf_helpers
 			};
 		}
 
-	inline utils::graphics::colour::rgba_f apply_light(const utils::math::vec2f& coords_f, const utils::math::geometry::interactions::return_types::gradient_signed_distance& gdist, const simple_pointlight& simple_pointlight, const float edge_angled_area_thickness)
+	inline utils::graphics::colour::rgba_f apply_light(const utils::math::vec2f& coords_f, const utils::math::geometry::sdf::gradient_signed_distance& gdist, const simple_pointlight& simple_pointlight, const float edge_angled_area_thickness)
 		{
 		if (gdist.distance.side().is_outside())
 			{

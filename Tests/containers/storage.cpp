@@ -3,7 +3,7 @@
 #include <list>
 #include <algorithm>
 #include <sstream> 
-#include "../../include/utils/storage.h"
+#include "../../Library/include/utils/storage.h"
 
 #include "CppUnitTest.h"
 
@@ -27,7 +27,7 @@ namespace Tests
 		public:
 			TEST_METHOD(general)
 				{
-				#define nocst /**/
+				#define nocst
 				nocst utils::storage::multiple<nocst float, 3> array {1.f, 2.f, 3.f};
 				const utils::storage::multiple<nocst float, 3> carray{1.f, 2.f, 3.f};
 				nocst utils::storage::multiple<const float, 3> arrayc{1.f, 2.f, 3.f};
