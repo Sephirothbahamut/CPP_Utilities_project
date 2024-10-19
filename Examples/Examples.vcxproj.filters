@@ -13,15 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\geometry_sdf_and_normal_texture">
+      <UniqueIdentifier>{9f7d4169-2fca-4e82-b1b3-c4a476526cac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utils_implementations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="geometry_sdf_and_normal_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tracking_ptr.cpp">
@@ -42,10 +42,31 @@
     <ClCompile Include="geometry_text_sdf_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\foreach_pixel.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\gsdf_in_regions.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\geometry_sdf_and_normal_texture.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\full_manual.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gsdf_helpers.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="geometry_sdf_and_normal_texture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hint.hint" />
   </ItemGroup>
 </Project>

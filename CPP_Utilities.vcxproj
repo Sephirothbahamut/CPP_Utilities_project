@@ -135,6 +135,7 @@
     <ClCompile Include="Library\include\utils\console\io.cpp" />
     <ClCompile Include="Library\include\utils\graphics\image.cpp" />
     <ClCompile Include="Library\include\utils\graphics\text.cpp" />
+    <ClCompile Include="Library\include\utils\math\geometry\shape\sdf\bezier\4pt.cpp" />
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -317,6 +318,9 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vec.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hint.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

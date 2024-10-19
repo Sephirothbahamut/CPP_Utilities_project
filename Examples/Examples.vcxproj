@@ -112,6 +112,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/D "NOMINMAX" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +128,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/D "NOMINMAX" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,17 +139,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="flags.cpp" />
-    <ClCompile Include="geometry_sdf_and_normal_texture.cpp" />
+    <ClCompile Include="geometry_sdf_and_normal_texture\full_manual.cpp" />
+    <ClCompile Include="geometry_sdf_and_normal_texture\foreach_pixel.cpp" />
+    <ClCompile Include="geometry_sdf_and_normal_texture\gsdf_in_regions.cpp" />
+    <ClCompile Include="geometry_sdf_and_normal_texture\geometry_sdf_and_normal_texture.cpp" />
     <ClCompile Include="geometry_text_sdf_texture.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="name.cpp" />
     <ClCompile Include="object_pool.cpp" />
+    <ClCompile Include="vec.cpp" />
     <ClCompile Include="tracking_ptr.cpp" />
     <ClCompile Include="utils_implementations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="geometry_sdf_and_normal_texture.h" />
     <ClInclude Include="gsdf_helpers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hint.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
