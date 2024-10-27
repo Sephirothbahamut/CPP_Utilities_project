@@ -106,9 +106,6 @@
     <ClCompile Include="Library\include\utils\graphics\text.cpp">
       <Filter>Library\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Library\include\utils\math\geometry\shape\sdf\bezier\4pt.cpp">
-      <Filter>Library\math\geometry\shape\sdf\bezier</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h">
@@ -638,6 +635,9 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\shape\transform\all.h">
       <Filter>Library\math\geometry\shape\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\regions.h">
+      <Filter>Library\containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

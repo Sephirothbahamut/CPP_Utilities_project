@@ -25,8 +25,8 @@ void geometry_text_sdf_texture()
 	{
 	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
 
-	std::string string{(const char*)u8"c"};
-	//std::string string{(const char*)u8"Freya"};
+	//std::string string{(const char*)u8"c"};
+	std::string string{(const char*)u8"Freya"};
 	//std::string string{(const char*)u8"\n"};
 
 	std::vector<utils::graphics::text::glyph_t> glyphs{utils::graphics::text::glyphs_from_string(string, L"Arial")};

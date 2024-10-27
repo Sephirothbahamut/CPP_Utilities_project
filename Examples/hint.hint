@@ -2,3 +2,5 @@
 #define utils_oop_empty_bases
 #define utils_if_release(x)
 #define utils_if_debug(x)
+
+#define NOMINMAX
