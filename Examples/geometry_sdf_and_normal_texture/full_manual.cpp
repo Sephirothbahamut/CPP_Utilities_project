@@ -88,7 +88,7 @@ void geometry_sdf_and_normal_texture::full_manual() const noexcept
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_segments_2        );
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_quadratic_as_cubic);
 		
-		const auto sample_gdist{gsdf_helpers::gradient_sdf_from_gdist(          gdist            )};
+		const auto sample_gdist{utils::graphics::sdf::debug_sample_gradient_sdf(gdist            )};
 		const auto sample_lit  {gsdf_helpers::apply_light            (coords_f, gdist, light, 8.f)};
 
 		if (true)

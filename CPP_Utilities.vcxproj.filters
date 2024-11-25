@@ -103,9 +103,6 @@
     <ClCompile Include="Library\include\utils\graphics\image.cpp">
       <Filter>Library\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Library\include\utils\graphics\text.cpp">
-      <Filter>Library\graphics</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h">
@@ -447,9 +444,6 @@
     <ClInclude Include="Library\include\utils\template\string.h">
       <Filter>Library\template</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\graphics\text.h">
-      <Filter>Library\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\graphics\multisampling.h">
       <Filter>Library\graphics</Filter>
     </ClInclude>
@@ -638,6 +632,9 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\containers\regions.h">
       <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf.h">
+      <Filter>Library\math\geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

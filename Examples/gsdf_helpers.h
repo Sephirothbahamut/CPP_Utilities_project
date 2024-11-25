@@ -64,31 +64,6 @@ namespace gsdf_helpers
 		return x * x * (3.f - 2.f * x);
 		}
 
-
-	inline utils::graphics::colour::rgba_f gradient_sdf_from_gdist(utils::math::geometry::sdf::gradient_signed_distance gdist)
-		{
-		// Inigo Quilez fancy colors
-		gdist.distance.value *= .006f;
-		utils::math::vec3f colour = (gdist.distance.side().is_outside()) ? utils::math::vec3f{.9f, .6f, .3f} : utils::math::vec3f{.4f, .7f, .85f};
-		colour = utils::math::vec3f{gdist.gradient.x() * .5f + .5f, gdist.gradient.y() * .5f + .5f, 1.f};
-		colour *= 1.0f - 0.5f * std::exp(-16.0f * gdist.distance.absolute());
-		colour *= 0.9f + 0.1f * std::cos(150.0f * gdist.distance.value);
-		colour = utils::math::lerp(colour, utils::math::vec3f{1.f}, 1.f - smoothstep(0.f, .01f, gdist.distance.absolute()));
-	
-		if (gdist.distance.side().is_inside())
-			{
-			colour *= .5f;
-			}
-
-		return utils::graphics::colour::rgba_f
-			{
-			colour[0],
-			colour[1],
-			colour[2],
-			1.f
-			};
-		}
-
 	inline utils::graphics::colour::rgba_f apply_light(const utils::math::vec2f& coords_f, const utils::math::geometry::sdf::gradient_signed_distance& gdist, const simple_pointlight& simple_pointlight, const float edge_angled_area_thickness)
 		{
 		if (gdist.distance.side().is_outside())
