@@ -241,10 +241,12 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\circle.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\mixed.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\point.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polycurve.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polyline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\vertices.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\mixed.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\point.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\polycurve.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\aabb.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\ab.h" />

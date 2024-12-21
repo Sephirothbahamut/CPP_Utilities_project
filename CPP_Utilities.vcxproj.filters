@@ -636,6 +636,12 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf.h">
       <Filter>Library\math\geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\polycurve.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polycurve.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vec.natvis" />
