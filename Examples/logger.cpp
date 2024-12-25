@@ -22,8 +22,17 @@ void logger()
 	logger.wrn("wrn Hello wolrd\nhow are you\ni'm alright thanks");
 	logger.dgn("dgn Hello wolrd\nhow are you\ni'm alright thanks");
 	logger.inf("inf Hello wolrd\nhow are you\ni'm alright thanks");
+
+	if (true)
+		{
+		const auto _{logger.section("hello world")};
+		logger.log("a");
+		logger.log("b");
+		logger.log("c");
+		}
+
 	logger.flush();
-	
+
 	std::cout << utils::console::colour::restore_defaults << std::endl;
 	utils::logging::logger<utils::logging::message<utils::logging::output_style_t::on_line>> logger2;
 	
@@ -32,6 +41,13 @@ void logger()
 	logger2.wrn("wrn Hello wolrd\nhow are you\ni'm alright thanks");
 	logger2.dgn("dgn Hello wolrd\nhow are you\ni'm alright thanks");
 	logger2.inf("inf Hello wolrd\nhow are you\ni'm alright thanks");
-	
+
+	if (true)
+		{
+		const auto _{logger2.section("hello world")};
+		logger2.log("a");
+		logger2.log("b");
+		logger2.log("c");
+		}
 	std::cout << "Terminating program" << std::endl;
 	}
