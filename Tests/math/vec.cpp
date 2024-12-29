@@ -1,7 +1,6 @@
 #include <cmath> //NaN check
 
 #include <utils/math/vec.h>
-#include <utils/math/vec2.h>
 
 #include "CppUnitTest.h"
 

@@ -89,6 +89,12 @@
     <Filter Include="Library\math\geometry\shape\bounds">
       <UniqueIdentifier>{7a7aa39c-a8c7-4149-861f-217135876e0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\math\details">
+      <UniqueIdentifier>{5a48a130-507f-4149-b8bb-b31808ebfd2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\math\details\vec">
+      <UniqueIdentifier>{b1907659-7009-410f-815b-d7adc2d5275d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -306,15 +312,6 @@
     <ClInclude Include="Library\include\utils\math\vec.h">
       <Filter>Library\math</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\vec_s.h">
-      <Filter>Library\math</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\vec2.h">
-      <Filter>Library\math</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\vec3.h">
-      <Filter>Library\math</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\all.h">
       <Filter>Library\math\geometry</Filter>
     </ClInclude>
@@ -507,9 +504,6 @@
     <ClInclude Include="Library\include\utils\compilation\inline.h">
       <Filter>Library\compilation</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\vec4.h">
-      <Filter>Library\math</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\matrix.h">
       <Filter>Library</Filter>
     </ClInclude>
@@ -641,6 +635,24 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polycurve.h">
       <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\details\vec\4.h">
+      <Filter>Library\math\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\details\vec\all.h">
+      <Filter>Library\math\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\details\vec\common.h">
+      <Filter>Library\math\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\details\vec\s.h">
+      <Filter>Library\math\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\details\vec\2.h">
+      <Filter>Library\math\details\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\details\vec\3.h">
+      <Filter>Library\math\details\vec</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

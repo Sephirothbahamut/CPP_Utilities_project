@@ -1,6 +1,6 @@
 
 #include <utils/math/math.h>
-#include <utils/math/vec3.h>
+#include <utils/math/vec.h>
 #include <utils/graphics/colour.h>
 #include <utils/math/geometry/shape/sdf/return_types.h>
 
