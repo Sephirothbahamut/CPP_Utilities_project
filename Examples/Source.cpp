@@ -1,23 +1,30 @@
 #include <utils/math/vec.h>
+#include <utils/graphics/colour.h>
+#include <utils/details/vec/all.h>
 
-utils::math::vec2f v;
-//static_assert(std::derived_from<utils::math::vec2f, utils::details::vector::concept_common_flag_type>);
-static_assert(std::is_base_of_v<utils::details::vector::concept_common_flag_type, utils::math::vec2f>);
-//static_assert(__is_base_of(utils::details::vector::concept_common_flag_type, utils::math::vec2f));
-//static_assert(__is_convertible_to(const volatile utils::math::vec2f*, const volatile utils::details::vector::concept_common_flag_type*));
+inline static constexpr const char name[]{"asd"};
 
-void f()
+template <typename T, size_t S>
+struct testruct : utils::details::vector::base<T, S, testruct, name>
 	{
-	utils::math::vec2f v0{0.f};
-	utils::math::vec2f v1{0.f, 1.f};
+	testruct<T, S>& operator=(const testruct<T, S>&);
+	};
 
-	//static_assert(std::derived_from<utils::math::vec2f, utils::details::vector::concept_common_flag_type>);
-	static_assert(std::is_base_of_v<utils::details::vector::concept_common_flag_type, utils::math::vec2f>);
-	//static_assert(__is_base_of(utils::details::vector::concept_common_flag_type, utils::math::vec2f));
-	//static_assert(__is_convertible_to(const volatile utils::math::vec2f*, const volatile utils::details::vector::concept_common_flag_type*));
+testruct<float, 2> a;
 
-	v + v;
-	v += v;
-	v = v + v;
+static_assert(utils::details::vector::concepts::vector<utils::math::vec2f>);
+static_assert(std::derived_from<testruct<float, 2>, utils::details::vector::concept_common_flag_type>);
+
+int main()
+	{
+	utils::math::vec2f va;
+	utils::math::vec2f vb{0.f};
+	utils::math::vec2f vc{1.f, 2.f};
+
+	utils::math::vec2f vd{vb + vc};
+	vd += vc;
+	vd *= 2.f;
+
+	utils::graphics::colour::rgba_f rgba{};
+	rgba += vd;
 	}
-
