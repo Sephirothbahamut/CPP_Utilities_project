@@ -204,7 +204,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="name.cpp" />
     <ClCompile Include="object_pool.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="vec.cpp" />
     <ClCompile Include="tracking_ptr.cpp" />
     <ClCompile Include="utils_implementations.cpp" />

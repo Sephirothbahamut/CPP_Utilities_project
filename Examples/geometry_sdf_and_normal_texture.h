@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ranges>
+#include <iostream>
 #include <algorithm>
 #include <execution>
 

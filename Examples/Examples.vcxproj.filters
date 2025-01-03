@@ -57,9 +57,6 @@
     <ClCompile Include="geometry_sdf_and_normal_texture\full_manual.cpp">
       <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gsdf_helpers.h">
