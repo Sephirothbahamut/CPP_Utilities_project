@@ -241,6 +241,8 @@
     <ClInclude Include="Library\include\utils\details\vec\definitions.h" />
     <ClInclude Include="Library\include\utils\details\vec\memberwise_operators.h" />
     <ClInclude Include="Library\include\utils\details\vec\output.h" />
+    <ClInclude Include="Library\include\utils\details\warnings_post.inline.h" />
+    <ClInclude Include="Library\include\utils\details\warnings_pre.inline.h" />
     <ClInclude Include="Library\include\utils\enum.h" />
     <ClInclude Include="Library\include\utils\flags.h" />
     <ClInclude Include="Library\include\utils\future.h" />

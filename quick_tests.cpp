@@ -44,9 +44,10 @@ utils::containers::regions<aggregate_t> make_aggregate_regions(regions_container
 		}
 	}
 
-
 int main()
 	{
+
+
 	std::tuple<int, float, double> tp{1, 2.3f, 4.5};
 	utils::tuple::for_each_index(tp, [](const auto& element, size_t index) { std::cout << index << ": " << element << "\n"; });
 

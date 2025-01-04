@@ -654,6 +654,12 @@
     <ClInclude Include="Library\include\utils\math\details\vec\3.h">
       <Filter>Library\math\details\vec</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\details\warnings_post.inline.h">
+      <Filter>Library\details</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\details\warnings_pre.inline.h">
+      <Filter>Library\details</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vec.natvis" />
