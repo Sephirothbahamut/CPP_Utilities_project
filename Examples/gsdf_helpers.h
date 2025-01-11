@@ -2,7 +2,7 @@
 #include <utils/math/math.h>
 #include <utils/math/vec.h>
 #include <utils/graphics/colour.h>
-#include <utils/math/geometry/shape/sdf/return_types.h>
+#include <utils/math/geometry/sdf/common.h>
 
 namespace gsdf_helpers
 	{

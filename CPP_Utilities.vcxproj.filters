@@ -77,23 +77,26 @@
     <Filter Include="Library\math\geometry\shape\declaration">
       <UniqueIdentifier>{613edeeb-27e0-4055-9685-2867863bb6a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\math\geometry\shape\sdf">
-      <UniqueIdentifier>{28f255b6-133e-44cb-bb87-4a5dfa048c07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Library\math\geometry\shape\sdf\bezier">
-      <UniqueIdentifier>{b4980b50-01d7-46b8-9e66-e954e52770ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Library\math\geometry\shape\transform">
-      <UniqueIdentifier>{4e6bb23e-2d52-4546-a113-b99f8484e9a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Library\math\geometry\shape\bounds">
-      <UniqueIdentifier>{7a7aa39c-a8c7-4149-861f-217135876e0d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Library\math\details">
       <UniqueIdentifier>{5a48a130-507f-4149-b8bb-b31808ebfd2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Library\math\details\vec">
       <UniqueIdentifier>{b1907659-7009-410f-815b-d7adc2d5275d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\math\geometry\interactions">
+      <UniqueIdentifier>{2158057d-02e3-4565-8582-67641da96bb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\math\geometry\sdf">
+      <UniqueIdentifier>{21b3dcf3-3e34-414e-8603-bc499200f2e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\math\geometry\bounds">
+      <UniqueIdentifier>{ba3ba8d8-b45f-4816-85c8-13d9f787dd6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\math\geometry\transform">
+      <UniqueIdentifier>{418061ec-3b05-44f2-a7b8-174bf02e75bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\math\geometry\sdf\bezier">
+      <UniqueIdentifier>{085e7893-6f97-4900-9898-1e2c17319f18}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -513,117 +516,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\shapes_group.h">
       <Filter>Library\math\geometry\shape</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\aabb.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\ab.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\all.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\bezier.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\circle.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\common.inline.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\common_declaration.inline.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\mixed.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\point.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\polyline.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\return_types.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\return_types_declaration.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\bezier\4pt.h">
-      <Filter>Library\math\geometry\shape\sdf\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\bezier\all.h">
-      <Filter>Library\math\geometry\shape\sdf\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\bezier\other.h">
-      <Filter>Library\math\geometry\shape\sdf\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\bezier\3pt.h">
-      <Filter>Library\math\geometry\shape\sdf\bezier</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\sdf\capsule.h">
-      <Filter>Library\math\geometry\shape\sdf</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\circle.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\common.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\common_declaration.inline.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\point.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\vertices.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\aabb.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\ab.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\capsule.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\circle.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\common.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\common_declaration.inline.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\point.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\polyline.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\aabb.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\ab.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\capsule.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\bezier.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\mixed.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\bounds\all.h">
-      <Filter>Library\math\geometry\shape\bounds</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\transform\all.h">
-      <Filter>Library\math\geometry\shape\transform</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\containers\regions.h">
       <Filter>Library\containers</Filter>
     </ClInclude>
@@ -659,6 +551,144 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\details\warnings_pre.inline.h">
       <Filter>Library\details</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\common.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab_bezier.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\all.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier_bezier.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\aabb.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\all.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\capsule.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\common.inline.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.inline.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\point.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\polyline.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\all.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\other.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\3pt.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\4pt.h">
+      <Filter>Library\math\geometry\sdf\bezier</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\common.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\common_declaration.inline.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\mixed.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\point.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\polyline.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\aabb.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\ab.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\all.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\bezier.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\capsule.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds\circle.h">
+      <Filter>Library\math\geometry\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\common.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\common_declaration.inline.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\point.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\vertices.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\aabb.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\ab.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\all.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\capsule.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform\circle.h">
+      <Filter>Library\math\geometry\transform</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\transform.h">
+      <Filter>Library\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\bounds.h">
+      <Filter>Library\math\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\common.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab_ab.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\composite.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\logging\progress_bar.h">
+      <Filter>Library\logging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

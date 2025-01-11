@@ -1,5 +1,6 @@
 #include <utils/logging/logger.h>
 #include <utils/console/initializer.h>
+#include <utils/logging/progress_bar.h>
 
 void logger()
 	{
@@ -32,6 +33,19 @@ void logger()
 		}
 
 	logger.flush();
+
+	utils::logging::progress_bar progress_bar{.01f, 50};
+
+	const size_t passes{200};
+	
+	for (size_t i = 0; i < passes; i++)
+		{
+		const float state{static_cast<float>(i) / static_cast<float>(passes)};
+		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+		progress_bar.advance(state);
+		}
+	progress_bar.complete();
+
 
 	std::cout << utils::console::colour::restore_defaults << std::endl;
 	utils::logging::logger<utils::logging::message<utils::logging::output_style_t::on_line>> logger2;

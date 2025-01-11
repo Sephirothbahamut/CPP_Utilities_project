@@ -16,9 +16,9 @@
 #include <utils/graphics/image.h>
 
 #include <utils/math/transform2.h>
-#include <utils/math/geometry/shape/sdf/all.h>
-#include <utils/math/geometry/shape/bounds/all.h>
-#include <utils/math/geometry/shape/transform/all.h>
+#include <utils/math/geometry/sdf/all.h>
+#include <utils/math/geometry/bounds/all.h>
+#include <utils/math/geometry/transform/all.h>
 
 #include "gsdf_helpers.h"
 
@@ -55,6 +55,7 @@ struct geometry_sdf_and_normal_texture
 	// More vertices added elsewhere (see constructor)
 	utils::math::geometry::shape::mixed<utils::math::geometry::ends::closeable::create::closed()> mixed        {utils::math::vec2f{130.f, 630.f}};
 	utils::math::geometry::shape::mixed<utils::math::geometry::ends::closeable::create::closed()> mixed_inverse{utils::math::vec2f{150.f, 635.f}};
+	utils::math::geometry::shape::mixed<utils::math::geometry::ends::closeable::create::open  ()> mixed_cut_self_intersections{utils::math::vec2f{630.f, 740.f}};
 
 	// Open polyline defined on a statically sized span of vertices over a sequence in memory, with an infinite start and a finite end
 	utils::math::geometry::shape::observer::polyline<utils::math::geometry::ends::closeable::create::open(true, false), 5> polyline{vertices.begin(), size_t{5}};
@@ -146,6 +147,15 @@ struct geometry_sdf_and_normal_texture
 			utils::math::vec2f{340.f, 730.f}
 			});
 		mixed_inverse.add_segment({183.f, 592.f});
+
+		// You can cut away self intersections with the last added element when constructing mixed shapes
+		mixed_cut_self_intersections.add_segment_cutting_intersection_with_last_element(utils::math::vec2f{722.f, 784.f});
+		mixed_cut_self_intersections.add_bezier_4pt_cutting_intersection_with_last_element
+			(
+			utils::math::vec2f{777.f, 785.f},
+			utils::math::vec2f{692.f, 726.f},
+			utils::math::vec2f{658.f, 790.f}
+			);
 
 		// Transforming shapes
 		polyline  .translate_self({50.f, 50.f});

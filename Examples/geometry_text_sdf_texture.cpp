@@ -13,9 +13,9 @@
 #include <utils/graphics/image.h>
 
 #include <utils/math/transform2.h>
-#include <utils/math/geometry/shape/sdf/all.h>
-#include <utils/math/geometry/shape/bounds/all.h>
-#include <utils/math/geometry/shape/transform/all.h>
+#include <utils/math/geometry/sdf/all.h>
+#include <utils/math/geometry/bounds/all.h>
+#include <utils/math/geometry/transform/all.h>
 
 #include <utils/MS/graphics/dx.h>
 #include <utils/MS/graphics/text/format.h>
@@ -55,7 +55,7 @@ void geometry_text_sdf_texture()
 	//std::string string{(const char*)u8"Freya"};
 	//std::string string{(const char*)u8"\n"};
 	std::string string{(const char*)u8"Hello, world!\nFreya\n\n"};
-	//std::string string{(const char*)u8"d"}; //"d" in MagicMedieval has self-intersecting curves that my code doesn't handle
+	//std::string string{(const char*)u8"de"}; //"d" in MagicMedieval has self-intersecting curves that my code doesn't handle
 
 	utils::MS::graphics::text::formatted_string formatted_string{dx_initializer, string, text_format, output_resolution_f};
 
@@ -72,20 +72,26 @@ void geometry_text_sdf_texture()
 	text_renderer.draw_text(formatted_string, {0.f, 0.f});
 
 	const auto renderer_output{text_renderer.get_output()};
-	const auto renderer_dx_geometries{text_renderer.get_dx_geometry_output()};
 
 	std::filesystem::create_directories("./output");
 	utils::graphics::image::save_to_file(renderer_output.image, "output/text_directwrite.png");
 
-	const auto& glyphs{renderer_output.outlines};
+	const auto& glyphs{renderer_output.glyphs};
 
 	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
 
 	
-	std::vector<utils::graphics::sdf::shape_bounding_box_wrapper<utils::MS::graphics::text::shape_outline>> bb_outlines;
+	std::vector<utils::math::geometry::shape::aabb> bb_glyphs;
 	for (const auto& glyph : glyphs)
 		{
-		bb_outlines.emplace_back(glyph, shape_padding);
+		auto aabb{utils::math::geometry::shape::aabb::create::inverse_infinite()};
+		for (const auto& outline : glyph)
+			{
+			const auto tmp{outline.bounding_box()};
+			aabb.merge_self(tmp);
+			}
+		aabb = aabb + shape_padding;
+		bb_glyphs.emplace_back(aabb);
 		}
 	
 	gsdf_helpers::simple_pointlight light
@@ -120,20 +126,19 @@ void geometry_text_sdf_texture()
 			.scale    (1.f / supersampling)
 			};
 
-		if (coords_indices == utils::math::vec2s{size_t{522}, size_t{51}})
-			{
-			std::cout << "break";
-			}
-
-
+		size_t piece_index{0};
 		utils::math::geometry::sdf::gradient_signed_distance gdist;
-		for (const auto& bb_outline : bb_outlines)
+		for (size_t i{0}; i < bb_glyphs.size(); i++)
 			{
-			const auto evaluated{bb_outline.evaluate_gradient_signed_distance(coords_f)};
-			gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated);
-			}
+			const auto& aabb{bb_glyphs[i]};
+			if (aabb.contains(coords_f))
+				{
+				const auto& glyph{glyphs[i]};
 
-		gdist.distance.value = std::abs(gdist.distance.value) * (renderer_dx_geometries.is_inside(coords_f) ? -1.f : 1.f);
+				const auto evaluated{utils::math::geometry::sdf::composite{glyph, coords_f}.gradient_signed_distance()};
+				gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated);
+				}
+			}
 			
 		const auto sample_gdist{utils::graphics::sdf::debug_sample_gradient_sdf(gdist            )};
 		const auto sample_lit  {gsdf_helpers::apply_light            (coords_f, gdist, light, 8.f)};

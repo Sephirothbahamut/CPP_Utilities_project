@@ -7,6 +7,7 @@ void geometry_sdf_and_normal_texture::full_manual() const noexcept
 
 	utils::graphics::sdf::shape_bounding_box_wrapper bb_wrapper_mixed        {mixed        , shape_padding};
 	utils::graphics::sdf::shape_bounding_box_wrapper bb_wrapper_mixed_inverse{mixed_inverse, shape_padding};
+	utils::graphics::sdf::shape_bounding_box_wrapper bb_wrapper_mixed_cut_self_intersections{mixed_cut_self_intersections, shape_padding};
 	utils::graphics::sdf::shape_bounding_box_wrapper bb_wrapper_world_point  {world_point  , shape_padding};
 	utils::graphics::sdf::shape_bounding_box_wrapper bb_wrapper_world_aabb   {world_aabb   , shape_padding};
 	utils::graphics::sdf::shape_bounding_box_wrapper bb_wrapper_circle       {circle       , shape_padding};
@@ -57,6 +58,7 @@ void geometry_sdf_and_normal_texture::full_manual() const noexcept
 		
 		const auto evaluated_mixed             {bb_wrapper_mixed             .evaluate_gradient_signed_distance(coords_f)};
 		const auto evaluated_mixed_inverse     {bb_wrapper_mixed_inverse     .evaluate_gradient_signed_distance(coords_f)};
+		const auto evaluated_mixed_cut_self_intersections{bb_wrapper_mixed_cut_self_intersections.evaluate_gradient_signed_distance(coords_f)};
 		const auto evaluated_world_point       {bb_wrapper_world_point       .evaluate_gradient_signed_distance(coords_f)};
 		const auto evaluated_world_aabb        {bb_wrapper_world_aabb        .evaluate_gradient_signed_distance(coords_f)};
 		const auto evaluated_circle            {bb_wrapper_circle            .evaluate_gradient_signed_distance(coords_f)};
@@ -75,6 +77,7 @@ void geometry_sdf_and_normal_texture::full_manual() const noexcept
 		
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated_mixed             );
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated_mixed_inverse     );
+		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_mixed_cut_self_intersections);
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_world_point       );
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_world_aabb        );
 		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_circle            );
