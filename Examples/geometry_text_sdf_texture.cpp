@@ -45,7 +45,12 @@ void geometry_text_sdf_texture()
 		};
 
 	const utils::graphics::colour::rgba_f background_colour{0.f, .1f, .2f, 1.f};
-	utils::MS::graphics::text::renderer text_renderer{dx_initializer, output_resolution, background_colour};
+	utils::MS::graphics::text::renderer text_renderer{dx_initializer, utils::MS::graphics::text::renderer::create_info
+		{
+		.resolution{output_resolution}, 
+		.clear_colour{background_colour}
+		}};
+
 	auto& default_rendering_properties{text_renderer.get_default_rendering_properties()};
 	default_rendering_properties.outline   .to_shapes = true;
 	default_rendering_properties.decorators.to_image  = false;
@@ -57,7 +62,7 @@ void geometry_text_sdf_texture()
 	std::string string{(const char*)u8"Hello, world!\nFreya\n\n"};
 	//std::string string{(const char*)u8"de"}; //"d" in MagicMedieval has self-intersecting curves that my code doesn't handle
 
-	utils::MS::graphics::text::formatted_string formatted_string{dx_initializer, string, text_format, output_resolution_f};
+	utils::MS::graphics::text::formatted_string formatted_string{string, text_format, output_resolution_f};
 
 	formatted_string.properties_regions.formatting.font.add("Mana", {10, 30});
 	formatted_string.properties_regions.rendering.text.colour.add({1.f, 0.f, 0.f, 1.f}, { 5, 5});
@@ -67,9 +72,9 @@ void geometry_text_sdf_texture()
 	formatted_string.properties_regions.rendering.text.colour.add({0.f, 0.f, 1.f, 1.f}, {25, 5});
 	//formatted_string.properties_regions.formatting.font.add("MagicMedieval", {0, 1});
 	//formatted_string.shrink_to_fit();
-	formatted_string.update();
+	const auto renderable{formatted_string.finalize(dx_initializer)};
 
-	text_renderer.draw_text(formatted_string, {0.f, 0.f});
+	text_renderer.draw_text(renderable, {0.f, 0.f});
 
 	const auto renderer_output{text_renderer.get_output()};
 
