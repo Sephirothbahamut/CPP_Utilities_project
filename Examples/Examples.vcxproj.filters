@@ -60,13 +60,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gsdf_helpers.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="geometry_sdf_and_normal_texture.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="hint.hint" />
+    <None Include="cpp.hint" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

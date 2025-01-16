@@ -1,3 +1,4 @@
+#pragma once
 
 #include <utils/math/math.h>
 #include <utils/math/vec.h>

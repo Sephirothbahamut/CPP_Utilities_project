@@ -47,9 +47,6 @@
     <Filter Include="Library\details">
       <UniqueIdentifier>{a4c6619d-f6a2-431b-9217-8523b8125c16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\details\vec">
-      <UniqueIdentifier>{052b3c9f-7f3c-4702-8e79-2ae015d1a897}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Library\graphics">
       <UniqueIdentifier>{b3f67c0a-6ee7-4b09-af2c-49c239bd3ff0}</UniqueIdentifier>
     </Filter>
@@ -236,21 +233,6 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\containers\multithreading\concurrent_queue.h">
       <Filter>Library\containers\multithreading</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\details\vec\base.h">
-      <Filter>Library\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\details\vec\definitions.h">
-      <Filter>Library\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\details\vec\memberwise_operators.h">
-      <Filter>Library\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\details\vec\output.h">
-      <Filter>Library\details\vec</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\details\vec\all.h">
-      <Filter>Library\details\vec</Filter>
     </ClInclude>
     <ClInclude Include="Library\include\utils\graphics\colour.h">
       <Filter>Library\graphics</Filter>
@@ -537,9 +519,6 @@
     <ClInclude Include="Library\include\utils\math\details\vec\common.h">
       <Filter>Library\math\details\vec</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\details\vec\s.h">
-      <Filter>Library\math\details\vec</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\math\details\vec\2.h">
       <Filter>Library\math\details\vec</Filter>
     </ClInclude>
@@ -695,6 +674,6 @@
     <Natvis Include="vec.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="hint.hint" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

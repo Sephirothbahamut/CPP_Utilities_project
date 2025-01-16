@@ -236,11 +236,6 @@
     <ClInclude Include="Library\include\utils\containers\segmented_vector.h" />
     <ClInclude Include="Library\include\utils\containers\std_hash.h" />
     <ClInclude Include="Library\include\utils\containers\storage_for.h" />
-    <ClInclude Include="Library\include\utils\details\vec\all.h" />
-    <ClInclude Include="Library\include\utils\details\vec\base.h" />
-    <ClInclude Include="Library\include\utils\details\vec\definitions.h" />
-    <ClInclude Include="Library\include\utils\details\vec\memberwise_operators.h" />
-    <ClInclude Include="Library\include\utils\details\vec\output.h" />
     <ClInclude Include="Library\include\utils\details\warnings_post.inline.h" />
     <ClInclude Include="Library\include\utils\details\warnings_pre.inline.h" />
     <ClInclude Include="Library\include\utils\enum.h" />
@@ -270,7 +265,6 @@
     <ClInclude Include="Library\include\utils\math\details\vec\4.h" />
     <ClInclude Include="Library\include\utils\math\details\vec\all.h" />
     <ClInclude Include="Library\include\utils\math\details\vec\common.h" />
-    <ClInclude Include="Library\include\utils\math\details\vec\s.h" />
     <ClInclude Include="Library\include\utils\math\easings.h" />
     <ClInclude Include="Library\include\utils\math\geometry\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\bounds.h" />
@@ -386,7 +380,7 @@
     <Natvis Include="vec.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="hint.hint" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

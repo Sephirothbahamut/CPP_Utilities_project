@@ -1,5 +1,6 @@
 ﻿#include <vector>
 #include <ranges>
+#include <iostream>
 #include <execution>
 
 #include <utils/clock.h>
@@ -26,43 +27,48 @@
 
 void geometry_text_sdf_texture()
 	{
-	const utils::math::vec2s output_resolution{size_t{512}, size_t{512}};
-	float supersampling{2.f};
+	const utils::math::vec2f output_size_mm{300.f, 300.f};
+	const utils::math::vec2f dpi{100.f, 100.f};
+
+	const utils::math::vec2f output_resolution_f{utils::math::ceil(utils::MS::graphics::conversions::mm_to_px(output_size_mm, dpi))};
+
+	const utils::math::vec2s output_resolution{static_cast<size_t>(output_resolution_f.x()), static_cast<size_t>(output_resolution_f.y())};
+	float supersampling{1.f};
 	utils::math::transform2 camera_transform{};
-	const utils::math::vec2s image_sizes{output_resolution * static_cast<size_t>(supersampling)};
+	const utils::math::vec2s supersampled_resolution{output_resolution * static_cast<size_t>(supersampling)};
 
 
 
 	utils::MS::graphics::dx::initializer dx_initializer;
 	utils::MS::graphics::dx::context     dx_context{dx_initializer};
 
-	const utils::math::vec2f output_resolution_f{static_cast<float>(output_resolution.x()), static_cast<float>(output_resolution.y())};
+
 
 	utils::MS::graphics::text::format text_format
 		{
 		.font{"Gabriola"},
-		.size{16.f},
+		.size{utils::MS::graphics::conversions::mm_to_dips(80.f)},
 		.alignment{.horizontal{utils::alignment::horizontal::centre}}
 		};
 
 	//std::string string{(const char*)u8"c"};
 	//std::string string{(const char*)u8"Freya"};
 	//std::string string{(const char*)u8"\n"};
-	//std::string string{(const char*)u8"Hello, world!\nFreya\n\n"};
-	//std::string string{(const char*)u8"Hello, world!\nFreya\n\n"};
-	std::string string{(const char*)u8"de"}; //"d" in MagicMedieval has self-intersecting curves that my code doesn't handle
+	std::string string{(const char*)u8"Hello, world!\nFreya\n\n"};
+	//std::string string{(const char*)u8"de"}; //"d" in MagicMedieval has self-intersecting curves that my code doesn't handle
 	//std::string string{(const char*)u8"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."};
 	
-	const utils::math::vec2f dpi{300.f, 300.f};
-	utils::MS::graphics::text::formatted_string formatted_string{string, text_format, utils::MS::graphics::conversions::pixels_to_dips(output_resolution_f, dpi)};
 
-	//formatted_string.properties_regions.formatting.font.add("Mana", {10, 30});
-	//formatted_string.properties_regions.rendering.text.colour.add({1.f, 0.f, 0.f, 1.f}, { 5, 5});
-	//formatted_string.properties_regions.rendering.text.colour.add({1.f, 1.f, 0.f, 1.f}, {10, 5});
-	//formatted_string.properties_regions.rendering.text.colour.add({0.f, 1.f, 0.f, 1.f}, {15, 5});
-	//formatted_string.properties_regions.rendering.text.colour.add({0.f, 1.f, 1.f, 1.f}, {20, 5});
-	//formatted_string.properties_regions.rendering.text.colour.add({0.f, 0.f, 1.f, 1.f}, {25, 5});
-	formatted_string.properties_regions.formatting.font.add("MagicMedieval", {0, 1});
+	const auto dips_size{utils::MS::graphics::conversions::px_to_dips(output_resolution_f, dpi)};
+	utils::MS::graphics::text::formatted_string formatted_string{string, text_format, dips_size};
+
+	formatted_string.properties_regions.formatting.font.add("Mana", {10, 30});
+	formatted_string.properties_regions.rendering.text.colour.add({1.f, 0.f, 0.f, 1.f}, { 5, 5});
+	formatted_string.properties_regions.rendering.text.colour.add({1.f, 1.f, 0.f, 1.f}, {10, 5});
+	formatted_string.properties_regions.rendering.text.colour.add({0.f, 1.f, 0.f, 1.f}, {15, 5});
+	formatted_string.properties_regions.rendering.text.colour.add({0.f, 1.f, 1.f, 1.f}, {20, 5});
+	formatted_string.properties_regions.rendering.text.colour.add({0.f, 0.f, 1.f, 1.f}, {25, 5});
+	//formatted_string.properties_regions.formatting.font.add("MagicMedieval", {0, 1});
 	//formatted_string.properties_regions.rendering.text.colour.add({1.f, 1.f, 1.f, 1.f}, utils::containers::region::create::full_range());
 	
 	const auto renderable{formatted_string.shrink_to_fit(dx_initializer)};
@@ -89,6 +95,7 @@ void geometry_text_sdf_texture()
 	std::filesystem::create_directories("./output");
 	utils::graphics::image::save_to_file(renderer_output.image, "output/text_directwrite.png");
 
+	return;
 	auto& glyphs{renderer_output.glyphs};
 
 	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
@@ -100,10 +107,7 @@ void geometry_text_sdf_texture()
 		auto aabb{utils::math::geometry::shape::aabb::create::inverse_infinite()};
 		for (auto& outline : glyph)
 			{
-			for (auto& vertex : outline.vertices)
-				{
-				vertex = utils::MS::graphics::conversions::dips_to_pixels(vertex, dpi);
-				}
+			outline.scale_self(utils::MS::graphics::conversions::multipliers::dips_to_px(dpi));
 
 			const auto tmp{outline.bounding_box()};
 			aabb.merge_self(tmp);
@@ -119,8 +123,8 @@ void geometry_text_sdf_texture()
 		.intensity{2.f}
 		};
 
-	utils::matrix<utils::graphics::colour::rgba_f> image_lit (image_sizes);
-	utils::matrix<utils::graphics::colour::rgba_f> image_gsdf(image_sizes);
+	utils::matrix<utils::graphics::colour::rgba_f> image_lit (supersampled_resolution);
+	utils::matrix<utils::graphics::colour::rgba_f> image_gsdf(supersampled_resolution);
 
 	std::ranges::iota_view indices(size_t{0}, image_lit.size());
 
@@ -132,7 +136,7 @@ void geometry_text_sdf_texture()
 	std::for_each(indices.begin(), indices.end(), [&](size_t index)
 	/**/
 		{
-		const utils::math::vec2s coords_indices{image_sizes.index_to_coords(index)};
+		const utils::math::vec2s coords_indices{supersampled_resolution.index_to_coords(index)};
 		const utils::math::vec2f coords_f
 			{
 			utils::math::vec2f

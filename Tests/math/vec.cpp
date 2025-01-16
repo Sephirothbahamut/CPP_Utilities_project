@@ -1,4 +1,6 @@
 #include <cmath> //NaN check
+#include <iostream>
+
 
 #include <utils/math/vec.h>
 
@@ -26,7 +28,6 @@ namespace Tests
 				utils::math::vecref2f vec2f_h{vec2f_g *= 2.f};
 				utils::math::vec2f    vec2f_i{vec2f_g};
 
-				utils::math::vec2f::storage_t::inner_create(vec2f_a);
 				utils::math::vec<float&, 2> vec2f_j{utils::math::vecref2f{vec2f_a}};
 				utils::math::vec2f vec2f_jk{vec2f_j};
 

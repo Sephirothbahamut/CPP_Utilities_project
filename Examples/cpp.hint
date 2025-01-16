@@ -1,0 +1,20 @@
+#define utils_compiler_msvc
+#define utils_compiler_clang
+#define utils_compiler_gcc
+#define utils_compiler_unknown
+#define utils_oop_empty_bases
+
+#define utils_force_inline
+#define utils_if_release(x)
+#define utils_if_debug(x)
+
+#define utils_gpu_available
+#define utils_if_gpu(x)
+
+#define utils_disable_warnings_begin
+#define utils_disable_warnings_end
+#define utils_pragma_gnu(X)
+#define utils_disable_warning(msvc_number, gcc_name)
+#define utils_disable_warning_clang(name)
+#define utils_disable_warning_gcc(name)
+#define utils_disable_warning_msvc(msvc_number)
