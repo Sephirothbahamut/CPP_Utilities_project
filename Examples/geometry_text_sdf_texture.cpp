@@ -23,7 +23,7 @@
 #include <utils/MS/graphics/text/format.h>
 #include <utils/MS/graphics/text/renderer.h>
 
-#include "gsdf_helpers.h"
+#include "dsdf_helpers.h"
 
 void geometry_text_sdf_texture()
 	{
@@ -95,7 +95,6 @@ void geometry_text_sdf_texture()
 	std::filesystem::create_directories("./output");
 	utils::graphics::image::save_to_file(renderer_output.image, "output/text_directwrite.png");
 
-	return;
 	auto& glyphs{renderer_output.glyphs};
 
 	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
@@ -116,7 +115,7 @@ void geometry_text_sdf_texture()
 		bb_glyphs.emplace_back(aabb);
 		}
 	
-	gsdf_helpers::simple_pointlight light
+	dsdf_helpers::simple_pointlight light
 		{
 		.position{200.f, 200.f, 200.f},
 		.colour{0.f, .5f, 1.f},
@@ -124,7 +123,7 @@ void geometry_text_sdf_texture()
 		};
 
 	utils::matrix<utils::graphics::colour::rgba_f> image_lit (supersampled_resolution);
-	utils::matrix<utils::graphics::colour::rgba_f> image_gsdf(supersampled_resolution);
+	utils::matrix<utils::graphics::colour::rgba_f> image_dsdf(supersampled_resolution);
 
 	std::ranges::iota_view indices(size_t{0}, image_lit.size());
 
@@ -149,7 +148,7 @@ void geometry_text_sdf_texture()
 			};
 
 		size_t piece_index{0};
-		utils::math::geometry::sdf::gradient_signed_distance gdist;
+		utils::math::geometry::sdf::direction_signed_distance gdist;
 		for (size_t i{0}; i < bb_glyphs.size(); i++)
 			{
 			const auto& aabb{bb_glyphs[i]};
@@ -157,21 +156,21 @@ void geometry_text_sdf_texture()
 				{
 				const auto& glyph{glyphs[i]};
 
-				const auto evaluated{utils::math::geometry::sdf::composite{glyph, coords_f}.gradient_signed_distance()};
-				gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated);
+				const auto evaluated{utils::math::geometry::sdf::composite{glyph, coords_f}.direction_signed_distance()};
+				gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated);
 				}
 			}
 			
-		const auto sample_gdist{utils::graphics::sdf::debug_sample_gradient_sdf(gdist            )};
-		const auto sample_lit  {gsdf_helpers::apply_light            (coords_f, gdist, light, 8.f)};
+		const auto sample_gdist{utils::graphics::sdf::debug_sample_direction_sdf(gdist            )};
+		const auto sample_lit  {dsdf_helpers::apply_light            (coords_f, gdist, light, 8.f)};
 		
-		image_gsdf[index] = sample_gdist;
+		image_dsdf[index] = sample_gdist;
 		image_lit [index] = sample_lit;
 		});
 	
 	const auto elapsed{clock.get_elapsed()};
 	std::cout << "text: " << elapsed.count() << std::endl;
 
-	utils::graphics::image::save_to_file(image_gsdf, "./output/text.png"    );
+	utils::graphics::image::save_to_file(image_dsdf, "./output/text.png"    );
 	utils::graphics::image::save_to_file(image_lit , "./output/text_lit.png");
 	}

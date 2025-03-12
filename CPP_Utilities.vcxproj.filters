@@ -669,6 +669,12 @@
     <ClInclude Include="Library\include\utils\logging\progress_bar.h">
       <Filter>Library\logging</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\oop\proxy.h">
+      <Filter>Library\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\vector_of_owner_aware.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vec.natvis" />

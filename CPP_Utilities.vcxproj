@@ -236,6 +236,7 @@
     <ClInclude Include="Library\include\utils\containers\segmented_vector.h" />
     <ClInclude Include="Library\include\utils\containers\std_hash.h" />
     <ClInclude Include="Library\include\utils\containers\storage_for.h" />
+    <ClInclude Include="Library\include\utils\containers\vector_of_owner_aware.h" />
     <ClInclude Include="Library\include\utils\details\warnings_post.inline.h" />
     <ClInclude Include="Library\include\utils\details\warnings_pre.inline.h" />
     <ClInclude Include="Library\include\utils\enum.h" />
@@ -355,6 +356,7 @@
     <ClInclude Include="Library\include\utils\oop\counting.h" />
     <ClInclude Include="Library\include\utils\oop\crtp.h" />
     <ClInclude Include="Library\include\utils\oop\disable_move_copy.h" />
+    <ClInclude Include="Library\include\utils\oop\proxy.h" />
     <ClInclude Include="Library\include\utils\oop\virtual.h" />
     <ClInclude Include="Library\include\utils\output\std_containers.h" />
     <ClInclude Include="Library\include\utils\output\vec.h" />

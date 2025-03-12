@@ -17,7 +17,7 @@
 //#include <utils/math/geometry/shape/bounds/all.h>
 //#include <utils/math/geometry/shape/transform/all.h>
 //
-//#include "gsdf_helpers.h"
+//#include "dsdf_helpers.h"
 //
 //void geometry_sdf_and_normal_texture()
 //	{
@@ -132,7 +132,7 @@
 //	utils::math::transform2 camera_transform;
 //	const utils::math::vec2s image_sizes{output_resolution * static_cast<size_t>(supersampling)};
 //
-//	gsdf_helpers::simple_pointlight light
+//	dsdf_helpers::simple_pointlight light
 //		{
 //		.position {200.f, 100.0f, 100.f},
 //		.colour   {  0.f,    .5f,   1.f},
@@ -142,7 +142,7 @@
 //
 //	utils::graphics::sdf::debug debug_renderer;
 //
-//	utils::matrix<utils::math::geometry::sdf::gradient_signed_distance> gradient_signed_distance_field(image_sizes);
+//	utils::matrix<utils::math::geometry::sdf::direction_signed_distance> direction_signed_distance_field(image_sizes);
 //
 //	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
 //	//utils::math::geometry::shape::aabb shape_padding{utils::math::geometry::shape::aabb::create::infinite()};
@@ -163,21 +163,21 @@
 //
 //	utils::clock<std::chrono::high_resolution_clock, float> clock;
 //	
-//	bb_wrapper_mixed        .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge_absolute, gradient_signed_distance_field, supersampling);
-//	bb_wrapper_mixed_inverse.evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge_absolute, gradient_signed_distance_field, supersampling);
-//	bb_wrapper_world_point  .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_world_aabb   .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_circle       .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_polyline     .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_triangle     .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_triangle_b   .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_bezier_3_pt  .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_bezier_4_pt  .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_bezier_loop  .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_segments_1   .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
-//	bb_wrapper_segments_2   .evaluate_gsdf(camera_transform, &utils::math::geometry::sdf::gradient_signed_distance::merge         , gradient_signed_distance_field, supersampling);
+//	bb_wrapper_mixed        .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge_absolute, direction_signed_distance_field, supersampling);
+//	bb_wrapper_mixed_inverse.evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge_absolute, direction_signed_distance_field, supersampling);
+//	bb_wrapper_world_point  .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_world_aabb   .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_circle       .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_polyline     .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_triangle     .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_triangle_b   .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_bezier_3_pt  .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_bezier_4_pt  .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_bezier_loop  .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_segments_1   .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
+//	bb_wrapper_segments_2   .evaluate_dsdf(camera_transform, &utils::math::geometry::sdf::direction_signed_distance::merge         , direction_signed_distance_field, supersampling);
 //	
-//	const auto rendered_image{debug_renderer.render({}, gradient_signed_distance_field, supersampling)};
+//	const auto rendered_image{debug_renderer.render({}, direction_signed_distance_field, supersampling)};
 //	
 //	auto elapsed{clock.get_elapsed()};
 //	std::cout << elapsed.count() << std::endl;
@@ -193,34 +193,34 @@
 //			std::cout << "a";
 //			}
 //		
-//		const auto evaluated_mixed        {bb_wrapper_mixed        .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_mixed_inverse{bb_wrapper_mixed_inverse.evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_world_point  {bb_wrapper_world_point  .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_world_aabb   {bb_wrapper_world_aabb   .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_circle       {bb_wrapper_circle       .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_polyline     {bb_wrapper_polyline     .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_triangle     {bb_wrapper_triangle     .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_triangle_b   {bb_wrapper_triangle_b   .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_bezier_3_pt  {bb_wrapper_bezier_3_pt  .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_bezier_4_pt  {bb_wrapper_bezier_4_pt  .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_bezier_loop  {bb_wrapper_bezier_loop  .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_segments_1   {bb_wrapper_segments_1   .evaluate_gradient_signed_distance(coords_f)};
-//		const auto evaluated_segments_2   {bb_wrapper_segments_2   .evaluate_gradient_signed_distance(coords_f)};
+//		const auto evaluated_mixed        {bb_wrapper_mixed        .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_mixed_inverse{bb_wrapper_mixed_inverse.evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_world_point  {bb_wrapper_world_point  .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_world_aabb   {bb_wrapper_world_aabb   .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_circle       {bb_wrapper_circle       .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_polyline     {bb_wrapper_polyline     .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_triangle     {bb_wrapper_triangle     .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_triangle_b   {bb_wrapper_triangle_b   .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_bezier_3_pt  {bb_wrapper_bezier_3_pt  .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_bezier_4_pt  {bb_wrapper_bezier_4_pt  .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_bezier_loop  {bb_wrapper_bezier_loop  .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_segments_1   {bb_wrapper_segments_1   .evaluate_direction_signed_distance(coords_f)};
+//		const auto evaluated_segments_2   {bb_wrapper_segments_2   .evaluate_direction_signed_distance(coords_f)};
 //
-//		utils::math::geometry::sdf::gradient_signed_distance gdist;
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated_mixed        );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated_mixed_inverse);
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_world_point  );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_world_aabb   );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_circle       );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_polyline     );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_triangle     );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_triangle_b   );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_bezier_3_pt  );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_bezier_4_pt  );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_bezier_loop  );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_segments_1   );
-//		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_segments_2   );
+//		utils::math::geometry::sdf::direction_signed_distance gdist;
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated_mixed        );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated_mixed_inverse);
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_world_point  );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_world_aabb   );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_circle       );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_polyline     );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_triangle     );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_triangle_b   );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_bezier_3_pt  );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_bezier_4_pt  );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_bezier_loop  );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_segments_1   );
+//		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_segments_2   );
 //
 //		return gdist;
 //		}, supersampling)};
@@ -233,7 +233,7 @@
 //	clock.restart();
 //
 //	utils::matrix<utils::graphics::colour::rgba_f> image_lit (image_sizes);
-//	utils::matrix<utils::graphics::colour::rgba_f> image_gsdf(image_sizes);
+//	utils::matrix<utils::graphics::colour::rgba_f> image_dsdf(image_sizes);
 //	std::ranges::iota_view indices(size_t{0}, image_lit.size());
 //
 //	//*
@@ -255,9 +255,9 @@
 //			};
 //
 //
-//		const auto sample{utils::graphics::multisample<gsdf_helpers::sample_t, 1>(coords_f, [&](utils::math::vec2f coords_f)
+//		const auto sample{utils::graphics::multisample<dsdf_helpers::sample_t, 1>(coords_f, [&](utils::math::vec2f coords_f)
 //			{
-//			utils::math::geometry::sdf::gradient_signed_distance gdist;
+//			utils::math::geometry::sdf::direction_signed_distance gdist;
 //			
 //			const auto cwsd_mixed_outer  {mixed        .sdf(coords_f).closest_with_signed_distance()};
 //			const auto cwsd_mixed_inverse{mixed_inverse.sdf(coords_f).closest_with_signed_distance()};
@@ -265,30 +265,30 @@
 //			
 //			std::array gdists
 //				{
-//				world_point.sdf(coords_f).gradient_signed_distance(),
-//				world_aabb .sdf(coords_f).gradient_signed_distance(),
-//				circle     .sdf(coords_f).gradient_signed_distance(),
-//				polyline   .sdf(coords_f).gradient_signed_distance(),
-//				triangle   .sdf(coords_f).gradient_signed_distance(),
-//				triangle_b .sdf(coords_f).gradient_signed_distance(),
-//				bezier_3_pt.sdf(coords_f).gradient_signed_distance(),
-//				bezier_4_pt.sdf(coords_f).gradient_signed_distance(),
-//				bezier_loop.sdf(coords_f).gradient_signed_distance(),
-//				utils::math::geometry::sdf::gradient_signed_distance::create(cwsd_mixed, coords_f),
-//				segments[1].sdf(coords_f).gradient_signed_distance(),
-//				segments[2].sdf(coords_f).gradient_signed_distance()
+//				world_point.sdf(coords_f).direction_signed_distance(),
+//				world_aabb .sdf(coords_f).direction_signed_distance(),
+//				circle     .sdf(coords_f).direction_signed_distance(),
+//				polyline   .sdf(coords_f).direction_signed_distance(),
+//				triangle   .sdf(coords_f).direction_signed_distance(),
+//				triangle_b .sdf(coords_f).direction_signed_distance(),
+//				bezier_3_pt.sdf(coords_f).direction_signed_distance(),
+//				bezier_4_pt.sdf(coords_f).direction_signed_distance(),
+//				bezier_loop.sdf(coords_f).direction_signed_distance(),
+//				utils::math::geometry::sdf::direction_signed_distance::create(cwsd_mixed, coords_f),
+//				segments[1].sdf(coords_f).direction_signed_distance(),
+//				segments[2].sdf(coords_f).direction_signed_distance()
 //				};
 //
 //			for (const auto& tmp : gdists)
 //				{
-//				gdist = utils::math::geometry::sdf::gradient_signed_distance::merge(gdist, tmp);
+//				gdist = utils::math::geometry::sdf::direction_signed_distance::merge(gdist, tmp);
 //				}
 //			
 //			
-//			const auto sample_gdist{gsdf_helpers::gradient_sdf_from_gdist(          gdist            )};
-//			const auto sample_lit  {gsdf_helpers::apply_light            (coords_f, gdist, light, 8.f)};
+//			const auto sample_gdist{dsdf_helpers::direction_sdf_from_gdist(          gdist            )};
+//			const auto sample_lit  {dsdf_helpers::apply_light            (coords_f, gdist, light, 8.f)};
 //			
-//			return gsdf_helpers::sample_t
+//			return dsdf_helpers::sample_t
 //				{
 //				.gdist{sample_gdist}, 
 //				.lit  {sample_lit  }
@@ -301,7 +301,7 @@
 //			}
 //		if (true)
 //			{
-//			image_gsdf[index] = sample.gdist;
+//			image_dsdf[index] = sample.gdist;
 //			}
 //		});
 //	
@@ -309,5 +309,5 @@
 //	std::cout << elapsed.count() << std::endl;
 //
 //	utils::graphics::image::save_to_file(image_lit     , "geometry_output_lit.png" );
-//	utils::graphics::image::save_to_file(image_gsdf    , "geometry_output_gsdf.png");
+//	utils::graphics::image::save_to_file(image_dsdf    , "geometry_output_dsdf.png");
 //	}

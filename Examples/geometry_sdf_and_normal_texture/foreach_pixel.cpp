@@ -2,7 +2,7 @@
 
 void geometry_sdf_and_normal_texture::foreach_pixel() const noexcept
 	{
-	utils::matrix<utils::math::geometry::sdf::gradient_signed_distance> gradient_signed_distance_field(image_sizes);
+	utils::matrix<utils::math::geometry::sdf::direction_signed_distance> direction_signed_distance_field(image_sizes);
 	utils::graphics::sdf::debug debug_renderer;
 
 	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
@@ -28,34 +28,34 @@ void geometry_sdf_and_normal_texture::foreach_pixel() const noexcept
 
 	const auto rendered_image{debug_renderer.render<true>(camera_transform, image_sizes, [&](const utils::math::vec2f coords_f)
 		{
-		const auto evaluated_mixed        {bb_wrapper_mixed        .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_mixed_inverse{bb_wrapper_mixed_inverse.evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_world_point  {bb_wrapper_world_point  .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_world_aabb   {bb_wrapper_world_aabb   .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_circle       {bb_wrapper_circle       .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_polyline     {bb_wrapper_polyline     .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_triangle     {bb_wrapper_triangle     .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_triangle_b   {bb_wrapper_triangle_b   .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_bezier_3_pt  {bb_wrapper_bezier_3_pt  .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_bezier_4_pt  {bb_wrapper_bezier_4_pt  .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_bezier_loop  {bb_wrapper_bezier_loop  .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_segments_1   {bb_wrapper_segments_1   .evaluate_gradient_signed_distance(coords_f)};
-		const auto evaluated_segments_2   {bb_wrapper_segments_2   .evaluate_gradient_signed_distance(coords_f)};
+		const auto evaluated_mixed        {bb_wrapper_mixed        .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_mixed_inverse{bb_wrapper_mixed_inverse.evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_world_point  {bb_wrapper_world_point  .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_world_aabb   {bb_wrapper_world_aabb   .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_circle       {bb_wrapper_circle       .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_polyline     {bb_wrapper_polyline     .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_triangle     {bb_wrapper_triangle     .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_triangle_b   {bb_wrapper_triangle_b   .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_bezier_3_pt  {bb_wrapper_bezier_3_pt  .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_bezier_4_pt  {bb_wrapper_bezier_4_pt  .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_bezier_loop  {bb_wrapper_bezier_loop  .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_segments_1   {bb_wrapper_segments_1   .evaluate_direction_signed_distance(coords_f)};
+		const auto evaluated_segments_2   {bb_wrapper_segments_2   .evaluate_direction_signed_distance(coords_f)};
 
-		utils::math::geometry::sdf::gradient_signed_distance gdist;
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated_mixed        );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge_absolute(gdist, evaluated_mixed_inverse);
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_world_point  );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_world_aabb   );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_circle       );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_polyline     );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_triangle     );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_triangle_b   );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_bezier_3_pt  );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_bezier_4_pt  );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_bezier_loop  );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_segments_1   );
-		gdist = utils::math::geometry::sdf::gradient_signed_distance::merge         (gdist, evaluated_segments_2   );
+		utils::math::geometry::sdf::direction_signed_distance gdist;
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated_mixed        );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated_mixed_inverse);
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_world_point  );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_world_aabb   );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_circle       );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_polyline     );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_triangle     );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_triangle_b   );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_bezier_3_pt  );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_bezier_4_pt  );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_bezier_loop  );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_segments_1   );
+		gdist = utils::math::geometry::sdf::direction_signed_distance::merge         (gdist, evaluated_segments_2   );
 
 		return gdist;
 		}, supersampling)};

@@ -5,27 +5,27 @@
 #include <utils/graphics/colour.h>
 #include <utils/math/geometry/sdf/common.h>
 
-namespace gsdf_helpers
+namespace dsdf_helpers
 	{
-	struct gsdf_sample_t
+	struct dsdf_sample_t
 		{
-		utils::math::geometry::sdf::gradient_signed_distance gsdf;
+		utils::math::geometry::sdf::direction_signed_distance dsdf;
 		
-		gsdf_sample_t operator/(float count)
+		dsdf_sample_t operator/(float count)
 			{
-			gsdf_sample_t ret{*this};
-			ret.gsdf.distance.value /= count;
-			ret.gsdf.gradient       /= count;
+			dsdf_sample_t ret{*this};
+			ret.dsdf.distance.value /= count;
+			ret.dsdf.direction       /= count;
 			return ret;
 			}
-		gsdf_sample_t operator+(gsdf_sample_t other)
+		dsdf_sample_t operator+(dsdf_sample_t other)
 			{
-			gsdf_sample_t ret{*this};
-			ret.gsdf.distance.value += other.gsdf.distance.value;
-			ret.gsdf.gradient       += other.gsdf.gradient      ;
+			dsdf_sample_t ret{*this};
+			ret.dsdf.distance.value += other.dsdf.distance.value;
+			ret.dsdf.direction       += other.dsdf.direction      ;
 			return ret;
 			}
-		gsdf_sample_t& operator+=(gsdf_sample_t other)
+		dsdf_sample_t& operator+=(dsdf_sample_t other)
 			{
 			return *this = *this + other;
 			}
@@ -65,7 +65,7 @@ namespace gsdf_helpers
 		return x * x * (3.f - 2.f * x);
 		}
 
-	inline utils::graphics::colour::rgba_f apply_light(const utils::math::vec2f& coords_f, const utils::math::geometry::sdf::gradient_signed_distance& gdist, const simple_pointlight& simple_pointlight, const float edge_angled_area_thickness)
+	inline utils::graphics::colour::rgba_f apply_light(const utils::math::vec2f& coords_f, const utils::math::geometry::sdf::direction_signed_distance& gdist, const simple_pointlight& simple_pointlight, const float edge_angled_area_thickness)
 		{
 		if (gdist.distance.side().is_outside())
 			{
@@ -73,7 +73,7 @@ namespace gsdf_helpers
 			}
 		const float z{std::clamp(gdist.distance.absolute() / edge_angled_area_thickness, 0.f, 1.f)};
 		const float leftover_percent{1.f - z};
-		utils::math::vec3f normal{gdist.gradient.x() * leftover_percent / 2.f, gdist.gradient.y() * leftover_percent / 2.f, z};
+		utils::math::vec3f normal{gdist.direction.x() * leftover_percent / 2.f, gdist.direction.y() * leftover_percent / 2.f, z};
 		normal.normalize_self();
 
 		//const auto light_direction{utils::math::vec3f{coords_f.x(), coords_f.y(), 0.f} - simple_pointlight.position};

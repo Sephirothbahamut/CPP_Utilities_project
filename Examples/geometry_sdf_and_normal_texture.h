@@ -20,7 +20,7 @@
 #include <utils/math/geometry/bounds/all.h>
 #include <utils/math/geometry/transform/all.h>
 
-#include "gsdf_helpers.h"
+#include "dsdf_helpers.h"
 
 struct geometry_sdf_and_normal_texture
 	{
@@ -29,6 +29,7 @@ struct geometry_sdf_and_normal_texture
 	utils::math::geometry::shape::point  world_point{40.f, 840.f};
 	utils::math::geometry::shape::aabb   world_aabb{utils::math::geometry::shape::aabb::create::from_ul_dr(utils::math::vec2f{60.f, 400.f}, utils::math::vec2f{256.f, 475.f})};
 	utils::math::geometry::shape::circle circle{utils::math::vec2f{500.f, 400.f}, 64.f};
+	utils::math::geometry::shape::capsule capsule{utils::math::geometry::shape::owner::segment{utils::math::vec2f{300.f, 330.f}, utils::math::vec2f{400.f, 330.f}}, 64.f};
 
 	// Closed polygon with variable vertices count
 	// More vertices added elsewhere (see constructor)
@@ -105,7 +106,7 @@ struct geometry_sdf_and_normal_texture
 	utils::math::transform2 camera_transform{};
 	const utils::math::vec2s image_sizes{output_resolution * static_cast<size_t>(supersampling)};
 
-	gsdf_helpers::simple_pointlight light
+	dsdf_helpers::simple_pointlight light
 		{
 		.position {200.f, 100.0f, 100.f},
 		.colour   {  0.f,    .5f,   1.f},
@@ -165,7 +166,7 @@ struct geometry_sdf_and_normal_texture
 		#pragma endregion shapes
 		}
 
-	void gsdf_in_regions() const noexcept;
+	void dsdf_in_regions() const noexcept;
 	void foreach_pixel  () const noexcept;
 	void full_manual    () const noexcept;
 	};

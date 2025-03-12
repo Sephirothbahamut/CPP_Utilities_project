@@ -207,7 +207,7 @@
     <ClCompile Include="flags.cpp" />
     <ClCompile Include="geometry_sdf_and_normal_texture\full_manual.cpp" />
     <ClCompile Include="geometry_sdf_and_normal_texture\foreach_pixel.cpp" />
-    <ClCompile Include="geometry_sdf_and_normal_texture\gsdf_in_regions.cpp" />
+    <ClCompile Include="geometry_sdf_and_normal_texture\dsdf_in_regions.cpp" />
     <ClCompile Include="geometry_sdf_and_normal_texture\geometry_sdf_and_normal_texture.cpp" />
     <ClCompile Include="geometry_text_sdf_texture.cpp" />
     <ClCompile Include="logger.cpp" />
@@ -220,7 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry_sdf_and_normal_texture.h" />
-    <ClInclude Include="gsdf_helpers.h" />
+    <ClInclude Include="dsdf_helpers.h" />
     <ClInclude Include="Header.h" />
   </ItemGroup>
   <ItemGroup>
