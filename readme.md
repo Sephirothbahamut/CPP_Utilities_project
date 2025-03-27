@@ -14,7 +14,7 @@ there's no need to include .lib files to the project.
 # Working headers descriptions
 
 ### Compilation constants
-[_compilation/_](https://github.com/Sephirothbahamut/utils/tree/master/include/utils/compilation)
+[_compilation/_](https://github.com/Sephirothbahamut/CPP_Utilities/tree/master/include/utils/compilation)
 
 Will add global inline constexpr variables that mirror common compilation macros, in order to use them in if-constexpr conditions.
 
@@ -23,7 +23,7 @@ if constexpr(utils::compilation::release) { ... }
 ```
 
 ### Cout extensions
-_[console/io.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/console/io.h), [console/colour.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/console/colour.h), [output/std_containers.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/output/containers.h)_
+_[console/io.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/console/io.h), [console/colour.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/console/colour.h), [output/std_containers.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/output/containers.h)_
 
 The files allow for more complex interactions with the console. 
 In particular `output/std_containers` allows to output all the standard containers. On Windows platforms the output will be coloured.
@@ -39,14 +39,14 @@ std::cout << v; // Output: [1, 2, 3]
 ```
 
 ### Logger
-_[logger.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/logger.h), [message.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/message.h)_
+_[logger.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/logging/logger.h), [message.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/logging/message.h)_
 
 Delegate output operations to a dedicated thread, in order to save the main thread from output operations overhead.
 Can support custom message types.
 The output is both in the console and in a .txt file in the active directory. The output file can be configured.
 
 ### Tracking pointer
-_[tracking.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/tracking.h)_
+_[tracking.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/tracking.h)_
 
 A "smart observer pointer" which follows resources in memory as long as they're being moved (not copied). It allows to follow objects stored in contiguous memory. 
 The resource must follow strict criteria (either inherit from trackable, or be wrapped in a trackable_wrapper). 
@@ -55,10 +55,10 @@ For instance, traditionally one could store a vector of unique pointers to some 
 
 With the tracking pointer, it is possible to observe the entities in a vector that directly owns them, even if vector growth causes reallocation, or if the vector content is sorted.
 
-See the [tests](https://github.com/Sephirothbahamut/utils/blob/master/Tests/test_tracking.cpp) for examples.
+See the [examples](https://github.com/Sephirothbahamut/CPP_Utilities_project/blob/master/Examples/tracking_ptr.cpp) for examples.
 
 ### Wrapper
-_[wrapper.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/wrapper.h)_
+_[wrapper.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/wrapper.h)_
 
 Useless alone. It exists as a pre-made class to inherit from any time a wrapper is needed. 
 It exposes std::optional and std::\*\_pointer-like syntax for accessing the wrapped content.
@@ -69,19 +69,19 @@ _algorithm/_
 Additional algorithms with an stl-like syntax
 
 ### id_pool
-_[id_pool.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/id_pool.h)_
+_[id_pool.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/id_pool.h)_
 
 Generates a pool of unique identifiers which can be released and recycled for further usage.
 
-See the [tests](https://github.com/Sephirothbahamut/utils/blob/master/Tests/test_id_pool.cpp) for examples.
+See the [tests](https://github.com/Sephirothbahamut/CPP_Utilities_project/blob/master/Tests/test_id_pool.cpp) for examples.
 
 ### Colors
-_[graphics/color.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/graphics/color.h)_
+_[graphics/color.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/graphics/colour.h)_
 
 Some quick color conversions (rgb, hsv, hsl).
 
 ### vec2
-_[math/vec.h](https://github.com/Sephirothbahamut/utils/blob/master/include/utils/math/vec2.h)_
+_[math/vec.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/math/vec.h)_
 
 A bidimensional vector with most of the common functionalities. Comes with "custom operators" for the bravest to try.
 
