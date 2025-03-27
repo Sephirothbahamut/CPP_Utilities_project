@@ -73,8 +73,6 @@ _[id_pool.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/inclu
 
 Generates a pool of unique identifiers which can be released and recycled for further usage.
 
-See the [tests](https://github.com/Sephirothbahamut/CPP_Utilities_project/blob/master/Tests/test_id_pool.cpp) for examples.
-
 ### Colors
 _[graphics/color.h](https://github.com/Sephirothbahamut/CPP_Utilities/blob/master/include/utils/graphics/colour.h)_
 
