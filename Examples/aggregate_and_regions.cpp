@@ -1,8 +1,8 @@
-﻿#include <optional>
+#include <optional>
 #include <iostream>
 
-#include "Library/include/utils/aggregate.h"
-#include "Library/include/utils/containers/aggregate_regions.h"
+#include <utils/aggregate.h>
+#include <utils/containers/aggregate_regions.h>
 
 
 
@@ -137,40 +137,4 @@ void aggregate_and_regions()
 			}
 		std::cout << "\n";
 		}
-	}
-
-void regions()
-	{
-	utils::containers::regions<int> regions;
-	regions.add(1, { 3, 20});
-	regions.add(2, { 5,  3});
-	regions.add(2, { 8,  2});
-	regions.add(2, { 9,  2});
-	regions.add(1, { 2,  1});
-	regions.add(3, {30,  3});
-	regions.add(4, {35,  1});
-	regions.add(5, {40,  3});
-	regions.add(6, {50,  3});
-	regions.add(7, {60,  3});
-
-	const auto found_it{regions.find(35)};
-	if (found_it != regions.end())
-		{
-		std::cout << "Found value :\"" << (*found_it) << "\" in region [" << found_it.region().begin << ", " << found_it.region().end() << "]\n";
-		for (auto it{found_it}; it != regions.end(); it++)
-			{
-			if (it.has_value())
-				{
-				std::cout << (*it) << ", ";
-				}
-			}
-		std::cout << "\n";
-		}
-	else { std::cout << "not found\n"; }
-	}
-
-int main()
-	{
-	aggregate_and_regions();
-	regions();
 	}

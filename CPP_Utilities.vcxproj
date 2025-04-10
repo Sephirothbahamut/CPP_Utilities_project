@@ -96,6 +96,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='clang-debug|x64'">
+    <IncludePath>../pfr_non_boost/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>../pfr_non_boost/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>../pfr_non_boost/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -189,6 +198,7 @@
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\include\utils\aggregate.h" />
     <ClInclude Include="Library\include\utils\alignment.h" />
     <ClInclude Include="Library\include\utils\beta\containers\buffer.h" />
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h" />
@@ -232,6 +242,7 @@
     <ClInclude Include="Library\include\utils\containers\polymorphic_access_container.h" />
     <ClInclude Include="Library\include\utils\containers\polymorphic_container.h" />
     <ClInclude Include="Library\include\utils\containers\regions.h" />
+    <ClInclude Include="Library\include\utils\containers\aggregate_regions.h" />
     <ClInclude Include="Library\include\utils\containers\resource_manager.h" />
     <ClInclude Include="Library\include\utils\containers\segmented_vector.h" />
     <ClInclude Include="Library\include\utils\containers\std_hash.h" />
@@ -358,6 +369,7 @@
     <ClInclude Include="Library\include\utils\oop\disable_move_copy.h" />
     <ClInclude Include="Library\include\utils\oop\proxy.h" />
     <ClInclude Include="Library\include\utils\oop\virtual.h" />
+    <ClInclude Include="Library\include\utils\optional.h" />
     <ClInclude Include="Library\include\utils\output\std_containers.h" />
     <ClInclude Include="Library\include\utils\output\vec.h" />
     <ClInclude Include="Library\include\utils\polymorphic_value.h" />

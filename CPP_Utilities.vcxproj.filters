@@ -675,6 +675,15 @@
     <ClInclude Include="Library\include\utils\containers\vector_of_owner_aware.h">
       <Filter>Library\containers</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\aggregate_regions.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\aggregate.h">
+      <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\optional.h">
+      <Filter>Library</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vec.natvis" />

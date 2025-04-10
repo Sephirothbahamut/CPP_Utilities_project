@@ -100,13 +100,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>../Library/include;../../CPP_Utilities_MS/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>../../pfr_non_boost/include;../Library/include;../../CPP_Utilities_MS/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='clang-debug|x64'">
-    <IncludePath>../Library/include;../../CPP_Utilities_MS/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>../../pfr_non_boost/include;../Library/include;../../CPP_Utilities_MS/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>../Library/include;../../CPP_Utilities_MS/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>../../pfr_non_boost/include;../Library/include;../../CPP_Utilities_MS/include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -204,6 +204,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aggregate_and_regions.cpp" />
     <ClCompile Include="flags.cpp" />
     <ClCompile Include="geometry_sdf_and_normal_texture\full_manual.cpp" />
     <ClCompile Include="geometry_sdf_and_normal_texture\foreach_pixel.cpp" />
