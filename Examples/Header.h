@@ -15,9 +15,3 @@
 #include <utils/math/geometry/transform/point.h>
 #include <utils/math/math.h>
 
-namespace abc
-	{
-	struct def {};
-	struct defh {};
-	}
-void urg();

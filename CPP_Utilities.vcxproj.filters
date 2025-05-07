@@ -95,6 +95,9 @@
     <Filter Include="Library\math\geometry\sdf\bezier">
       <UniqueIdentifier>{085e7893-6f97-4900-9898-1e2c17319f18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\algorithm">
+      <UniqueIdentifier>{46ab645d-97ac-4991-8d17-5bdd776d2448}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="quick_tests.cpp">
@@ -561,9 +564,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h">
       <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\sdf\common.inline.h">
-      <Filter>Library\math\geometry\sdf</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.inline.h">
       <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
@@ -689,6 +689,12 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\sdf\dynamic.h">
       <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\algorithm\for_each.h">
+      <Filter>Library\algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\graphics\dpi_conversions.h">
+      <Filter>Library\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

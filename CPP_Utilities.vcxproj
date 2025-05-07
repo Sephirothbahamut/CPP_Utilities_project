@@ -199,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\include\utils\aggregate.h" />
+    <ClInclude Include="Library\include\utils\algorithm\for_each.h" />
     <ClInclude Include="Library\include\utils\alignment.h" />
     <ClInclude Include="Library\include\utils\beta\containers\buffer.h" />
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="Library\include\utils\flags.h" />
     <ClInclude Include="Library\include\utils\future.h" />
     <ClInclude Include="Library\include\utils\graphics\colour.h" />
+    <ClInclude Include="Library\include\utils\graphics\dpi_conversions.h" />
     <ClInclude Include="Library\include\utils\graphics\image.h" />
     <ClInclude Include="Library\include\utils\graphics\multisampling.h" />
     <ClInclude Include="Library\include\utils\graphics\sdf.h" />
@@ -310,7 +312,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\capsule.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common.h" />
-    <ClInclude Include="Library\include\utils\math\geometry\sdf\common.inline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.inline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\composite.h" />

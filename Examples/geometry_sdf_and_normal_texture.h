@@ -17,6 +17,7 @@
 
 #include <utils/math/transform2.h>
 #include <utils/math/geometry/sdf/all.h>
+#include <utils/math/geometry/shape/all.h>
 #include <utils/math/geometry/bounds/all.h>
 #include <utils/math/geometry/transform/all.h>
 
@@ -26,9 +27,9 @@ struct geometry_sdf_and_normal_texture
 	{
 	#pragma region shapes
 	//The world prefix is to distinguish the objects in the world from the point and aabbs used inside the image generation algorithm
-	utils::math::geometry::shape::point  world_point{40.f, 840.f};
-	utils::math::geometry::shape::aabb   world_aabb{utils::math::geometry::shape::aabb::create::from_ul_dr(utils::math::vec2f{60.f, 400.f}, utils::math::vec2f{256.f, 475.f})};
-	utils::math::geometry::shape::circle circle{utils::math::vec2f{500.f, 400.f}, 64.f};
+	utils::math::geometry::shape::point   world_point{40.f, 840.f};
+	utils::math::geometry::shape::aabb    world_aabb{utils::math::geometry::shape::aabb::create::from_ul_dr(utils::math::vec2f{60.f, 400.f}, utils::math::vec2f{256.f, 475.f})};
+	utils::math::geometry::shape::circle  circle{utils::math::vec2f{500.f, 400.f}, 64.f};
 	utils::math::geometry::shape::capsule capsule{utils::math::geometry::shape::owner::segment{utils::math::vec2f{300.f, 330.f}, utils::math::vec2f{400.f, 330.f}}, 64.f};
 
 	// Closed polygon with variable vertices count
