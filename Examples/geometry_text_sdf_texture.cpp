@@ -23,6 +23,9 @@
 #include <utils/MS/graphics/text/format.h>
 #include <utils/MS/graphics/text/renderer.h>
 
+#include <utils/logging/logger.h>
+#include <utils/logging/progress_bar.h>
+
 #include "dsdf_helpers.h"
 
 void geometry_text_sdf_texture()
@@ -48,7 +51,7 @@ void geometry_text_sdf_texture()
 		{
 		.font{"Gabriola"},
 		.size{utils::MS::graphics::conversions::mm_to_dips(80.f)},
-		.alignment{.horizontal{utils::alignment::horizontal::centre}}
+		.alignment{.horizontal_alignment{utils::alignment::horizontal::centre}}
 		};
 
 	//std::string string{(const char*)u8"c"};
@@ -62,12 +65,16 @@ void geometry_text_sdf_texture()
 	const auto dips_size{utils::MS::graphics::conversions::px_to_dips(output_resolution_f, dpi)};
 	utils::MS::graphics::text::formatted_string formatted_string{string, text_format, dips_size};
 
-	formatted_string.properties_regions.formatting.font.add("Mana", {10, 30});
-	formatted_string.properties_regions.rendering.text.colour.add({1.f, 0.f, 0.f, 1.f}, { 5, 5});
-	formatted_string.properties_regions.rendering.text.colour.add({1.f, 1.f, 0.f, 1.f}, {10, 5});
-	formatted_string.properties_regions.rendering.text.colour.add({0.f, 1.f, 0.f, 1.f}, {15, 5});
-	formatted_string.properties_regions.rendering.text.colour.add({0.f, 1.f, 1.f, 1.f}, {20, 5});
-	formatted_string.properties_regions.rendering.text.colour.add({0.f, 0.f, 1.f, 1.f}, {25, 5});
+	formatted_string.properties_regions.format.font.add("Mana", {10, 30});
+	formatted_string.properties_regions.format.fill.colour.add({1.f, 0.f, 0.f, 1.f}, { 5, 5});
+	formatted_string.properties_regions.format.fill.colour.add({1.f, 1.f, 0.f, 1.f}, {10, 5});
+	formatted_string.properties_regions.format.fill.colour.add({0.f, 1.f, 0.f, 1.f}, {15, 5});
+	formatted_string.properties_regions.format.fill.colour.add({0.f, 1.f, 1.f, 1.f}, {20, 5});
+	formatted_string.properties_regions.format.fill.colour.add({0.f, 0.f, 1.f, 1.f}, {25, 5});
+	formatted_string.properties_regions.format.fill.enabled.set_full_range(true);
+	formatted_string.properties_regions.format.outline.enabled.add(true, {4, 2});
+	formatted_string.properties_regions.format.outline.colour .add({1.f, 1.f, 1.f, 1.f}, {4, 2});
+
 	//formatted_string.properties_regions.formatting.font.add("MagicMedieval", {0, 1});
 	//formatted_string.properties_regions.rendering.text.colour.add({1.f, 1.f, 1.f, 1.f}, utils::containers::region::create::full_range());
 	
@@ -85,34 +92,40 @@ void geometry_text_sdf_texture()
 		}};
 
 	auto& default_rendering_properties{text_renderer.get_default_rendering_properties()};
-	default_rendering_properties.outline   .to_shapes = true;
-	default_rendering_properties.decorators.to_image  = false;
-	default_rendering_properties.decorators.to_shapes = true;
+	default_rendering_properties.render.outline.to_shapes = true;
+	default_rendering_properties.render.outline.to_image  = true;
+	default_rendering_properties.render.outline.to_shapes = true;
 	text_renderer.draw_text(renderable, {0.f, 0.f});
 
-	auto renderer_output{text_renderer.get_output()};
+	auto renderer_output_image{text_renderer.get_output_image()};
+	auto renderer_output_shapes{text_renderer.get_output_shapes()};
 
 	std::filesystem::create_directories("./output");
-	utils::graphics::image::save_to_file(renderer_output.image, "output/text_directwrite.png");
+	utils::graphics::image::save_to_file(renderer_output_image, "output/text_directwrite.png");
 
-	auto& glyphs{renderer_output.glyphs};
+	auto& glyphs{renderer_output_shapes.glyphs};
 
 	utils::math::geometry::shape::aabb shape_padding{-32.f, -32.f, 32.f, 32.f};
 
 	
 	std::vector<utils::math::geometry::shape::aabb> bb_glyphs;
-	for (auto& glyph : glyphs)
+	for (auto& region_and_glyphs_group : glyphs)
 		{
-		auto aabb{utils::math::geometry::shape::aabb::create::inverse_infinite()};
-		for (auto& outline : glyph)
-			{
-			outline.scale_self(utils::MS::graphics::conversions::multipliers::dips_to_px(dpi));
+		auto& glyphs_group{region_and_glyphs_group.value};
 
-			const auto tmp{outline.bounding_box()};
-			aabb.merge_self(tmp);
+		for (auto& glyph : glyphs_group)
+			{
+			auto aabb{utils::math::geometry::shape::aabb::create::inverse_infinite()};
+			for (auto& outline : glyph)
+				{
+				outline.scale_self(utils::MS::graphics::conversions::multipliers::dips_to_px(dpi));
+
+				const auto tmp{outline.bounding_box()};
+				aabb.merge_self(tmp);
+				}
+			aabb = aabb + shape_padding;
+			bb_glyphs.emplace_back(aabb);
 			}
-		aabb = aabb + shape_padding;
-		bb_glyphs.emplace_back(aabb);
 		}
 	
 	dsdf_helpers::simple_pointlight light
@@ -128,6 +141,10 @@ void geometry_text_sdf_texture()
 	std::ranges::iota_view indices(size_t{0}, image_lit.size());
 
 	utils::clock<std::chrono::high_resolution_clock, float> clock;
+
+	utils::logging::progress_bar progress_bar{.01f, 50};
+	std::atomic_size_t completed{0};
+	const auto indices_count{image_lit.size()};
 
 	//*
 	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t index)
@@ -147,17 +164,24 @@ void geometry_text_sdf_texture()
 			.scale    (1.f / supersampling)
 			};
 
-		size_t piece_index{0};
 		utils::math::geometry::sdf::direction_signed_distance gdist;
-		for (size_t i{0}; i < bb_glyphs.size(); i++)
-			{
-			const auto& aabb{bb_glyphs[i]};
-			if (aabb.contains(coords_f))
-				{
-				const auto& glyph{glyphs[i]};
 
-				const auto evaluated{utils::math::geometry::sdf::composite{glyph, coords_f}.direction_signed_distance()};
-				gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated);
+
+
+		size_t bb_index{0};
+		for (auto& region_and_glyphs_group : glyphs)
+			{
+			auto& glyphs_group{region_and_glyphs_group.value};
+
+			for (auto& glyph : glyphs_group)
+				{
+				const auto& aabb{bb_glyphs[bb_index]};
+				if (aabb.contains(coords_f))
+					{
+					const auto evaluated{utils::math::geometry::sdf::composite{glyph, coords_f}.direction_signed_distance()};
+					gdist = utils::math::geometry::sdf::direction_signed_distance::merge_absolute(gdist, evaluated);
+					}
+				bb_index++;
 				}
 			}
 			
@@ -166,7 +190,12 @@ void geometry_text_sdf_texture()
 		
 		image_dsdf[index] = sample_gdist;
 		image_lit [index] = sample_lit;
+
+		completed++;
+		const float percent{completed / static_cast<float>(indices_count)};
+		progress_bar.advance(percent);
 		});
+	progress_bar.complete();
 	
 	const auto elapsed{clock.get_elapsed()};
 	std::cout << "text: " << elapsed.count() << std::endl;

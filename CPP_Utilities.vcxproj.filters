@@ -495,7 +495,7 @@
     <ClInclude Include="Library\include\utils\graphics\sdf.h">
       <Filter>Library\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\shape\shapes_group.h">
+    <ClInclude Include="Library\include\utils\math\geometry\shape\dynamic.h">
       <Filter>Library\math\geometry\shape</Filter>
     </ClInclude>
     <ClInclude Include="Library\include\utils\containers\regions.h">
@@ -683,6 +683,12 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\optional.h">
       <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\dynamic.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\dynamic.h">
+      <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -314,6 +314,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.inline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\composite.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\dynamic.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\point.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\polyline.h" />
@@ -330,6 +331,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\bezier.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\capsule.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\circle.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\dynamic.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\mixed.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\point.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\polycurve.h" />
@@ -339,7 +341,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\point.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\polycurve.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h" />
-    <ClInclude Include="Library\include\utils\math\geometry\shape\shapes_group.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\dynamic.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h" />
     <ClInclude Include="Library\include\utils\math\geometry\transform.h" />
     <ClInclude Include="Library\include\utils\math\geometry\transform\aabb.h" />
