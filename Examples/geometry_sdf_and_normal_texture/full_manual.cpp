@@ -45,18 +45,10 @@ void geometry_sdf_and_normal_texture::full_manual() const noexcept
 
 	utils::clock<std::chrono::high_resolution_clock, float> clock;
 
-	utils::algorithm::for_each::coords<true>(image_lit.sizes(), [&](const utils::algorithm::for_each::coords_callback_params& params)
+	const auto for_each{utils::algorithm::for_each::in_sizes(image_lit.sizes()).scale(supersampling)};
+	for_each.execute<false>([&](const decltype(for_each)::callback_params& params)
 		{
-		const utils::math::vec2f coords_f
-			{
-			utils::math::vec2f
-				{
-				static_cast<float>(params.indices.x()),
-				static_cast<float>(params.indices.y())
-				}
-			.transform(camera_transform)
-			.scale    (1.f / supersampling)
-			};
+		const utils::math::vec2f coords_f{params.global.floating};
 
 		utils::math::geometry::sdf::direction_signed_distance gdist;
 

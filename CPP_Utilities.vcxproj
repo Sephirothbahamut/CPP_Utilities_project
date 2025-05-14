@@ -195,11 +195,13 @@
     <ClCompile Include="Library\include\utils\console\initializer.cpp" />
     <ClCompile Include="Library\include\utils\console\io.cpp" />
     <ClCompile Include="Library\include\utils\graphics\image.cpp" />
+    <ClCompile Include="Library\include\utils\logging\progress_bar.cpp" />
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\include\utils\aggregate.h" />
     <ClInclude Include="Library\include\utils\algorithm\for_each.h" />
+    <ClInclude Include="Library\include\utils\algorithm\for_each_floating.h" />
     <ClInclude Include="Library\include\utils\alignment.h" />
     <ClInclude Include="Library\include\utils\beta\containers\buffer.h" />
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h" />
@@ -343,6 +345,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\polycurve.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\polyline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\dynamic.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\shapes_group.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\vertices.h" />
     <ClInclude Include="Library\include\utils\math\geometry\transform.h" />
     <ClInclude Include="Library\include\utils\math\geometry\transform\aabb.h" />

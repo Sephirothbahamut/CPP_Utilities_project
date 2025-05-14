@@ -103,9 +103,8 @@ struct geometry_sdf_and_normal_texture
 	#pragma endregion shapes
 
 	const utils::math::vec2s output_resolution{size_t{900}, size_t{900}};
-	float supersampling{2.f};
-	utils::math::transform2 camera_transform{};
-	const utils::math::vec2s image_sizes{output_resolution * static_cast<size_t>(supersampling)};
+	utils::math::vec2f supersampling{2.f, 2.f};
+	const utils::math::vec2s image_sizes{output_resolution * static_cast<utils::math::vec2s>(supersampling)};
 
 	dsdf_helpers::simple_pointlight light
 		{

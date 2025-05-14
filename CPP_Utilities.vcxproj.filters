@@ -112,6 +112,9 @@
     <ClCompile Include="Library\include\utils\graphics\image.cpp">
       <Filter>Library\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Library\include\utils\logging\progress_bar.cpp">
+      <Filter>Library\logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h">
@@ -695,6 +698,12 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\graphics\dpi_conversions.h">
       <Filter>Library\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\shapes_group.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\algorithm\for_each_floating.h">
+      <Filter>Library\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
