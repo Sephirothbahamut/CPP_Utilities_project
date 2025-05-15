@@ -45,20 +45,23 @@
     <ClCompile Include="vec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="geometry_sdf_and_normal_texture\foreach_pixel.cpp">
-      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
-    </ClCompile>
-    <ClCompile Include="geometry_sdf_and_normal_texture\dsdf_in_regions.cpp">
-      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
-    </ClCompile>
-    <ClCompile Include="geometry_sdf_and_normal_texture\geometry_sdf_and_normal_texture.cpp">
-      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
-    </ClCompile>
-    <ClCompile Include="geometry_sdf_and_normal_texture\full_manual.cpp">
+    <ClCompile Include="geometry_sdf_and_normal_texture\static_for_each_pixel.cpp">
       <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
     </ClCompile>
     <ClCompile Include="aggregate_and_regions.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\constructor.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\dynamic_for_each_pixel.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\dynamic_for_each_shape.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry_sdf_and_normal_texture\static_for_each_shape.cpp">
+      <Filter>Source Files\geometry_sdf_and_normal_texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +71,7 @@
     <ClInclude Include="geometry_sdf_and_normal_texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
+    <ClInclude Include="log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

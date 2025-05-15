@@ -567,9 +567,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h">
       <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.inline.h">
-      <Filter>Library\math\geometry\sdf</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h">
       <Filter>Library\math\geometry\sdf</Filter>
     </ClInclude>
@@ -701,9 +698,6 @@
     </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\shape\shapes_group.h">
       <Filter>Library\math\geometry\shape</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\include\utils\algorithm\for_each_floating.h">
-      <Filter>Library\algorithm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

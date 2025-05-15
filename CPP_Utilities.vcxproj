@@ -201,7 +201,6 @@
   <ItemGroup>
     <ClInclude Include="Library\include\utils\aggregate.h" />
     <ClInclude Include="Library\include\utils\algorithm\for_each.h" />
-    <ClInclude Include="Library\include\utils\algorithm\for_each_floating.h" />
     <ClInclude Include="Library\include\utils\alignment.h" />
     <ClInclude Include="Library\include\utils\beta\containers\buffer.h" />
     <ClInclude Include="Library\include\utils\beta\containers\hive\pool.h" />
@@ -315,7 +314,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\circle.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.h" />
-    <ClInclude Include="Library\include\utils\math\geometry\sdf\common_declaration.inline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\composite.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\dynamic.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\mixed.h" />
