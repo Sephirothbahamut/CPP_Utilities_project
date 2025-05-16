@@ -29,20 +29,21 @@ void geometry_sdf_and_normal_texture::dynamic_for_each_pixel() const noexcept
 
 		utils::math::geometry::sdf::direction_signed_distance directional_distance;
 
-		for (size_t i = 0; i < 2; i++)
-			{
-			if (bounding_boxes[i].contains(coords_f))
-				{
-				const auto evaluated{shapes[i]->sdf(coords_f).direction_signed_distance()};
-				directional_distance.merge_self_absolute(evaluated);
-				}
-			}
-		for (size_t i = 2; i < shapes.size(); i++)
+		for (size_t i = 0; i < shapes.size() - 1; i++)
 			{
 			if (bounding_boxes[i].contains(coords_f))
 				{
 				const auto evaluated{shapes[i]->sdf(coords_f).direction_signed_distance()};
 				directional_distance.merge_self(evaluated);
+				}
+			}
+		if (true)
+			{
+			size_t i{shapes.size() - 1};
+			if (bounding_boxes[i].contains(coords_f))
+				{
+				const auto evaluated{shapes[i]->sdf(coords_f).direction_signed_distance()};
+				directional_distance.merge_self_absolute(evaluated);
 				}
 			}
 		

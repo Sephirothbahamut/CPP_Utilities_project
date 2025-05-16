@@ -52,19 +52,21 @@ geometry_sdf_and_normal_texture::geometry_sdf_and_normal_texture() noexcept
 	triangle  .scale_self    (.5f);
 	triangle  .translate_self({122.f, 143.f});
 	triangle_b.translate_self({222.f, 143.f});
+	
 
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(mixed                       )>>(mixed                       ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(mixed_cut_self_intersections)>>(mixed_cut_self_intersections));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(world_point                 )>>(world_point                 ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(world_aabb                  )>>(world_aabb                  ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(circle                      )>>(circle                      ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(capsule                     )>>(capsule                     ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(polyline                    )>>(polyline                    ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(triangle                    )>>(triangle                    ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(triangle_b                  )>>(triangle_b                  ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(bezier_3_pt                 )>>(bezier_3_pt                 ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(bezier_4_pt                 )>>(bezier_4_pt                 ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(bezier_loop                 )>>(bezier_loop                 ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(quadratic_as_cubic          )>>(quadratic_as_cubic          ));
-	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<decltype(mixed_inverse               )>>(mixed_inverse               ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(mixed                       )                       >>(mixed                       ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(mixed_cut_self_intersections)                       >>(mixed_cut_self_intersections));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<typename decltype(world_point                 )::const_observer_self_t>>(world_point                 .create_observer()));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<typename decltype(world_aabb                  )::const_observer_self_t>>(world_aabb                  .create_observer()));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<typename decltype(circle                      )::const_observer_self_t>>(circle                      .create_observer()));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<typename decltype(capsule                     )::const_observer_self_t>>(capsule                     .create_observer()));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(polyline                    )                       >>(polyline                    ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(triangle                    )                       >>(triangle                    ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(triangle_b                  )                       >>(triangle_b                  ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(bezier_3_pt                 )                       >>(bezier_3_pt                 ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(bezier_4_pt                 )                       >>(bezier_4_pt                 ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(bezier_loop                 )                       >>(bezier_loop                 ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(quadratic_as_cubic          )                       >>(quadratic_as_cubic          ));
+	shapes.emplace_back(utils::make_polymorphic_value<utils::math::geometry::shape::dynamic::details::templated_child<         decltype(mixed_inverse               )                       >>(mixed_inverse               ));
+	
 	}

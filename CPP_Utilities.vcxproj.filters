@@ -591,9 +591,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\bounds\common.h">
       <Filter>Library\math\geometry\bounds</Filter>
     </ClInclude>
-    <ClInclude Include="Library\include\utils\math\geometry\bounds\common_declaration.inline.h">
-      <Filter>Library\math\geometry\bounds</Filter>
-    </ClInclude>
     <ClInclude Include="Library\include\utils\math\geometry\bounds\mixed.h">
       <Filter>Library\math\geometry\bounds</Filter>
     </ClInclude>

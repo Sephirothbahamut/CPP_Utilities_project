@@ -290,7 +290,6 @@
     <ClInclude Include="Library\include\utils\math\geometry\bounds\capsule.h" />
     <ClInclude Include="Library\include\utils\math\geometry\bounds\circle.h" />
     <ClInclude Include="Library\include\utils\math\geometry\bounds\common.h" />
-    <ClInclude Include="Library\include\utils\math\geometry\bounds\common_declaration.inline.h" />
     <ClInclude Include="Library\include\utils\math\geometry\bounds\mixed.h" />
     <ClInclude Include="Library\include\utils\math\geometry\bounds\point.h" />
     <ClInclude Include="Library\include\utils\math\geometry\bounds\polyline.h" />
