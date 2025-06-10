@@ -196,9 +196,12 @@
     <ClCompile Include="Library\include\utils\console\io.cpp" />
     <ClCompile Include="Library\include\utils\graphics\image.cpp" />
     <ClCompile Include="Library\include\utils\logging\progress_bar.cpp" />
+    <ClCompile Include="Library\include\utils\string.cpp" />
     <ClCompile Include="quick_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CPP_Utilities\include\utils\third_party\unicodelib.h" />
+    <ClInclude Include="..\CPP_Utilities\include\utils\third_party\utf8.h" />
     <ClInclude Include="Library\include\utils\aggregate.h" />
     <ClInclude Include="Library\include\utils\algorithm\for_each.h" />
     <ClInclude Include="Library\include\utils\alignment.h" />
