@@ -1,5 +1,6 @@
 # Custom
 log.txt
+.o
 
 ## Ignore Jetbrains (Clion) temporary files
 .idea/
