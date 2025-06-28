@@ -196,7 +196,7 @@ void logger()
 
 	if (const auto _{logger.section("Unicode test")})
 		{
-		logger.log("Expected: 😄 \u{1F604} (\\u1F604)");
+		logger.log("Expected: 😄 \\u{1F604} (\\u1F604)");
 
 		const char32_t codepoint{utils::string::parse_codepoint<char>("1F604")};
 		const std::string string_with_codepoint{utils::string::codepoint_to_string<char>(codepoint)};
