@@ -89,5 +89,6 @@ NOTE: This header includes _angle.h_ to keep the interface complete. However, an
 _polymorphic_value.h_
 
 THIS CODE IS __NOT__ MINE. It's in the collection only because I use it frequently.
+- just i wanted to edit this for learning you can refuse it.
 
 Click [here](https://github.com/jbcoe/polymorphic_value) for the rightful source.
