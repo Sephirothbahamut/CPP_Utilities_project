@@ -22,8 +22,11 @@ void geometry_sdf_and_normal_texture::dynamic_for_each_shape() const noexcept
 
 	utils::clock<std::chrono::high_resolution_clock, float> clock;
 
-	utils::logging::progress_bar progress_bar{.01f, 50};
-	utils::logging::partial_progress partial_progress{progress_bar.partial_progress(shapes.size())};
+	utils::logging::progress_bar<> progress_bar{utils::logging::progress_bar<>::create_info
+		{
+		.logger_ptr{std::addressof(logger)},
+		.steps_count{shapes.size()}
+		}};
 
 	const auto per_shape_function{[&](size_t shape_index)
 		{
@@ -35,7 +38,7 @@ void geometry_sdf_and_normal_texture::dynamic_for_each_shape() const noexcept
 			utils::algorithm::for_each::in_sizes(image_sizes)
 			.scale(supersampling)
 			.scaled_region(bounding_box)
-			.partial_progress(partial_progress)
+			.partial_progress(progress_bar)
 			};
 		for_each.execute<true>([&](const decltype(for_each)::callback_params& params)
 			{
@@ -56,7 +59,7 @@ void geometry_sdf_and_normal_texture::dynamic_for_each_shape() const noexcept
 			utils::algorithm::for_each::in_sizes(image_sizes)
 			.scale(supersampling)
 			.scaled_region(bounding_box)
-			.partial_progress(partial_progress)
+			.partial_progress(progress_bar)
 			};
 		for_each.execute<true>([&](const decltype(for_each)::callback_params& params)
 			{

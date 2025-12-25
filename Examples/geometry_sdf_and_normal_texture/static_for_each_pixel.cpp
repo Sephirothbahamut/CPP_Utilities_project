@@ -4,6 +4,21 @@
 
 #include "../log.h"
 
+inline utils::graphics::colour::rgb_f normal_to_rgb(const utils::math::vec3f& normal)
+	{
+	return
+		{
+		.5f + (normal.x() / 2.f),
+		.5f + (normal.y() / 2.f),
+		normal.z()
+		};
+	}
+
+inline utils::graphics::colour::rgba_f normal_to_rgba(const utils::math::vec3f& normal)
+	{
+	return {normal_to_rgb(normal), normal.get_length()};
+	}
+
 void geometry_sdf_and_normal_texture::static_for_each_pixel() const noexcept
 	{
 	const auto _{logger.section("Static foreach pixel")};
@@ -31,8 +46,9 @@ void geometry_sdf_and_normal_texture::static_for_each_pixel() const noexcept
 	utils::math::geometry::shape::aabb bb_quadratic_as_cubic          {quadratic_as_cubic          .bounding_box() + shape_padding};
 	#endif
 
-	utils::matrix<utils::graphics::colour::rgba_f> image_lit (image_sizes);
-	utils::matrix<utils::graphics::colour::rgba_f> image_dsdf(image_sizes);
+	utils::matrix<utils::graphics::colour::rgba_f> image_lit   (image_sizes);
+	utils::matrix<utils::graphics::colour::rgba_f> image_dsdf  (image_sizes);
+	utils::matrix<utils::graphics::colour::rgba_f> image_normal(image_sizes);
 
 	utils::clock<std::chrono::high_resolution_clock, float> clock;
 
@@ -61,9 +77,10 @@ void geometry_sdf_and_normal_texture::static_for_each_pixel() const noexcept
 		if (bb_segments_2                  .contains(coords_f)) { directional_distance.merge_self         (segments[2]                 .sdf(coords_f).direction_signed_distance()); }
 		if (bb_quadratic_as_cubic          .contains(coords_f)) { directional_distance.merge_self         (quadratic_as_cubic          .sdf(coords_f).direction_signed_distance()); }
 		#endif
-		
-		const auto sample_gdist{utils::graphics::sdf::debug_sample_direction_sdf(directional_distance)};
-		const auto sample_lit  {dsdf_helpers::apply_light(coords_f, directional_distance, light, 8.f)};
+
+		const auto sample_gdist {utils::graphics::sdf::debug_sample_direction_sdf(directional_distance)};
+		const auto sample_lit   {dsdf_helpers::apply_light    (coords_f, directional_distance, light, 8.f)};
+		const auto sample_normal{dsdf_helpers::evaluate_normal(coords_f, directional_distance, light, 8.f)};
 
 		if (true)
 			{
@@ -73,11 +90,16 @@ void geometry_sdf_and_normal_texture::static_for_each_pixel() const noexcept
 			{
 			image_lit[params.index] = sample_lit;
 			}
+		if (true)
+			{
+			image_normal[params.index] = normal_to_rgba(sample_normal);
+			}
 		});
 	
 	const auto elapsed{clock.get_elapsed()};
 	logger.log("Time: " + std::to_string(elapsed.count()));
 
-	utils::graphics::image::save_to_file(image_dsdf, "./output/static_foreach_pixel_dsdf.png");
-	utils::graphics::image::save_to_file(image_lit , "./output/static_foreach_pixel_lit.png" );
+	utils::graphics::image::save_to_file(image_dsdf  , "./output/static_foreach_pixel_dsdf.png");
+	utils::graphics::image::save_to_file(image_lit   , "./output/static_foreach_pixel_lit.png" );
+	utils::graphics::image::save_to_file(image_normal, "./output/static_foreach_pixel_normal.png" );
 	}
