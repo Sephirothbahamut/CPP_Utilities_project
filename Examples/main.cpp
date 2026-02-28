@@ -26,12 +26,12 @@ int main()
 	//object_pool                    ();
 	//tracking_ptr                   ();
 
-	geometry_sdf_and_normal_texture geometry_sdf_and_normal_texture;
-	geometry_sdf_and_normal_texture.dynamic_for_each_pixel();
-	geometry_sdf_and_normal_texture.dynamic_for_each_shape();
-	geometry_sdf_and_normal_texture.static_for_each_pixel ();
-	geometry_sdf_and_normal_texture.static_for_each_shape ();
+	//geometry_sdf_and_normal_texture geometry_sdf_and_normal_texture;
+	//geometry_sdf_and_normal_texture.dynamic_for_each_pixel();
+	//geometry_sdf_and_normal_texture.dynamic_for_each_shape();
+	//geometry_sdf_and_normal_texture.static_for_each_pixel ();
+	//geometry_sdf_and_normal_texture.static_for_each_shape ();
 	
 	//geometry_text_sdf_texture();
-	//logger                         ();
+	logger                         ();
 	}

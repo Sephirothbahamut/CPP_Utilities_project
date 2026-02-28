@@ -705,6 +705,24 @@
     <ClInclude Include="..\CPP_Utilities\include\utils\third_party\utf8.h">
       <Filter>Library\third_party</Filter>
     </ClInclude>
+    <ClInclude Include="Library\include\utils\containers\hierarchical_map.h">
+      <Filter>Library\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\normal.h">
+      <Filter>Library\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab_mixed.h">
+      <Filter>Library\math\geometry\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\arc.h">
+      <Filter>Library\math\geometry\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\arc.h">
+      <Filter>Library\math\geometry\shape\declaration</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\arc.h">
+      <Filter>Library\math\geometry\sdf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vec.natvis" />

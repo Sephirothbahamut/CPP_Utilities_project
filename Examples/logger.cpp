@@ -66,7 +66,7 @@ void logger()
 
 
 	
-	if(true)
+	if(false)
 		{
 		const auto _{logger.section("Progress bar testing")};
 
@@ -133,7 +133,57 @@ void logger()
 		}
 
 
+	if (true)
+		{
+		const auto _{logger.section("Progress bar 2.0 testing")};
+		utils::logging::global_progress_bar_stack<> gpbs{logger};
 
+		const auto _b{gpbs.scoped_bar(3, "Main")};
+		for (size_t i = 0; i < 3; i++)
+			{
+			const auto _{gpbs.scoped_step("Step named " + std::to_string(i))};
+			std::this_thread::sleep_for(std::chrono::milliseconds{20});
+
+			const auto _b{gpbs.scoped_bar(3)};
+
+			try
+				{
+				if (true)
+					{
+					const auto _a{gpbs.scoped_step("a")};
+					std::this_thread::sleep_for(std::chrono::milliseconds{800});
+					}
+				if (true)
+					{
+					const auto _b{gpbs.scoped_step("b")};
+					std::this_thread::sleep_for(std::chrono::milliseconds{800});
+					}
+				if (true)
+					{
+					const auto _c{gpbs.scoped_step("c")};
+
+					const utils::math::vec2s matrix_size{size_t{20}, size_t{20}};
+					const auto indices{matrix_size.indices_range()};
+					const auto _{gpbs.scoped_bar(indices.size(), "Matrix iteration")};
+					
+					std::for_each(std::execution::par_unseq, indices.begin(), indices.end(), [&gpbs, &i, &matrix_size](size_t index)
+						{
+						const auto _c{gpbs.scoped_step()};
+					
+						const auto sleep_milliseconds{std::chrono::milliseconds(200)};
+						std::this_thread::sleep_for(std::chrono::milliseconds{sleep_milliseconds});
+						});
+
+					}
+				
+				}
+			catch (const std::exception& e)
+				{
+				std::cout << "\n" << e.what() << "\n\n";
+				gpbs.redraw();
+				}
+			}
+		}
 
 
 

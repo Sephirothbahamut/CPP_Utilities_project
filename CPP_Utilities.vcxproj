@@ -37,38 +37,38 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='clang-debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='clang-debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -225,6 +225,7 @@
     <ClInclude Include="Library\include\utils\containers\flat_map.h" />
     <ClInclude Include="Library\include\utils\containers\flat_set.h" />
     <ClInclude Include="Library\include\utils\containers\handled_container.h" />
+    <ClInclude Include="Library\include\utils\containers\hierarchical_map.h" />
     <ClInclude Include="Library\include\utils\containers\hive\next.h" />
     <ClInclude Include="Library\include\utils\containers\hive\skipfield.h" />
     <ClInclude Include="Library\include\utils\containers\linked_vector.h" />
@@ -300,6 +301,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\group.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\ab_ab.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\ab_bezier.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\interactions\ab_mixed.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\all.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\bezier_bezier.h" />
     <ClInclude Include="Library\include\utils\math\geometry\interactions\common.h" />
@@ -307,6 +309,7 @@
     <ClInclude Include="Library\include\utils\math\geometry\sdf\aabb.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\ab.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\all.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\sdf\arc.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\3pt.h" />
     <ClInclude Include="Library\include\utils\math\geometry\sdf\bezier\4pt.h" />
@@ -325,12 +328,14 @@
     <ClInclude Include="Library\include\utils\math\geometry\shape\aabb.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\ab.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\all.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\arc.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\bezier.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\capsule.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\circle.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\aabb.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\ab.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\all.h" />
+    <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\arc.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\bezier.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\capsule.h" />
     <ClInclude Include="Library\include\utils\math\geometry\shape\declaration\circle.h" />
@@ -360,6 +365,7 @@
     <ClInclude Include="Library\include\utils\math\identity_numbers.h" />
     <ClInclude Include="Library\include\utils\math\mat.h" />
     <ClInclude Include="Library\include\utils\math\math.h" />
+    <ClInclude Include="Library\include\utils\math\normal.h" />
     <ClInclude Include="Library\include\utils\math\ranged.h" />
     <ClInclude Include="Library\include\utils\math\rect.h" />
     <ClInclude Include="Library\include\utils\math\transform2.h" />
