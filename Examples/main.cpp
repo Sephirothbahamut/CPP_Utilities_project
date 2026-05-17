@@ -11,27 +11,33 @@ extern void aggregate_and_regions    ();
 
 int main()
 	{
+	try
+		{
+		//using aggregate_regions_t = utils::containers::aggregate_regions<example::example_aggregate>;
+		//aggregate_regions_t aggregate_regions;
+		//aggregate_regions_t::aggregate_t agg;
+		//aggregate_regions_t::optional_t opt;
+		//aggregate_regions_t::regions_t reg;
+		//aggregate_regions_t::tuple_t tup;
+		//aggregate_and_regions();
 
-	//using aggregate_regions_t = utils::containers::aggregate_regions<example::example_aggregate>;
-	//aggregate_regions_t aggregate_regions;
-	//aggregate_regions_t::aggregate_t agg;
-	//aggregate_regions_t::optional_t opt;
-	//aggregate_regions_t::regions_t reg;
-	//aggregate_regions_t::tuple_t tup;
-	//aggregate_and_regions();
+		//vec();
+		//name                           ();
+		//flags                          ();
+		//object_pool                    ();
+		//tracking_ptr                   ();
 
-	//vec();
-	//name                           ();
-	//flags                          ();
-	//object_pool                    ();
-	//tracking_ptr                   ();
-
-	//geometry_sdf_and_normal_texture geometry_sdf_and_normal_texture;
-	//geometry_sdf_and_normal_texture.dynamic_for_each_pixel();
-	//geometry_sdf_and_normal_texture.dynamic_for_each_shape();
-	//geometry_sdf_and_normal_texture.static_for_each_pixel ();
-	//geometry_sdf_and_normal_texture.static_for_each_shape ();
+		//geometry_sdf_and_normal_texture geometry_sdf_and_normal_texture;
+		//geometry_sdf_and_normal_texture.dynamic_for_each_pixel();
+		//geometry_sdf_and_normal_texture.dynamic_for_each_shape();
+		//geometry_sdf_and_normal_texture.static_for_each_pixel ();
+		//geometry_sdf_and_normal_texture.static_for_each_shape ();
 	
-	//geometry_text_sdf_texture();
-	logger                         ();
+		//geometry_text_sdf_texture();
+		logger                         ();
+		}
+	catch (const std::exception& e)
+		{
+		std::cout << e.what();
+		}
 	}

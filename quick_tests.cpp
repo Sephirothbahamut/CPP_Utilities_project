@@ -12,7 +12,7 @@
 #include "Library/include/utils/logging/logger.h"
 #include "Library/include/utils/logging/progress_bar.h"
 
-
+#include "Library/include/utils/math/rect.h"
 
 #include <mutex>
 #include <thread>
@@ -21,19 +21,19 @@
 #include <execution>
 
 
-
-
-
 int main()
 	{
 	using logger_t = utils::logging::logger<utils::logging::message<utils::logging::output_style_t::tag_as_separator>>;
 	logger_t logger;
-
+	
 	for (size_t i = 0; i < 100; i++)
 		{
 		logger.log("asd " + std::to_string(i));
 		}
 
+
+	const utils::math::rect<float> ra{1.f, 2.f, 3.f, 4.f};
+	utils::math::rect<float> rb{ra};
 	}
 
 

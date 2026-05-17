@@ -12,4 +12,3 @@
 
 #include <utils/MS/graphics/dx.h>
 #include <utils/MS/graphics/text/renderer.h>
-#include <utils/MS/graphics/text/formatted_string.h>
