@@ -32,7 +32,7 @@ void logger()
 		std::cout << utils::console::colour::background{utils::graphics::colour::rgb_u{static_cast<uint8_t>(0), static_cast<uint8_t>(255 - i), static_cast<uint8_t>(i)}};
 		std::cout << "#";
 		}
-	std::print(utils::console::colour::to_string(utils::console::colour::restore_defaults));
+	std::cout << utils::console::colour::to_string(utils::console::colour::restore_defaults);
 
 	utils::logging::logger<utils::logging::message<utils::logging::output_style_t::tag_as_separator>> logger;
 

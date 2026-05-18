@@ -1,0 +1,12 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="clang-debug" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CPP_Utilities.vcxproj" Id="06c2dc60-4110-4d28-9660-f00e841288f8" />
+  <Project Path="Examples/Examples.vcxproj" Id="f56138a0-0c78-4f0d-941b-d276a6397ee8" />
+  <Project Path="Tests/Tests.vcxproj" Id="c8ed2a6c-6a74-4a49-8219-468aa81c6234" />
+</Solution>
